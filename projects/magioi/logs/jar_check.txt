@@ -1,0 +1,17 @@
+Thêm: ['BitmapFont.class', 'VH.class', 'VL.class', 'font/f13c.bin', 'vh_logo.png']
+Xoá: []
+Đổi: ['XMessage.class', 'a.class', 'b.class', 'c.class', 'd.class', 'e.class', 'f.class', 'g.class', 'h.class', 'i.class', 'j.class', 'k.class', 'l.class', 'm.class', 'map0.map']
+WARN BitmapFont.class: API mới so với bản gốc: java/io/DataInputStream.readFully([B)V (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/String.endsWith(Ljava/lang/String;)Z (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/String.indexOf(I)I (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/String.indexOf(II)I (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/String.valueOf(Ljava/lang/Object;)Ljava/lang/String; (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/StringBuffer.<init>(Ljava/lang/String;)V (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/util/Vector.copyInto([Ljava/lang/Object;)V (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/lang/String.valueOf(Ljava/lang/Object;)Ljava/lang/String; (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/lang/StringBuffer.<init>(Ljava/lang/String;)V (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/lang/StringBuffer.append(C)Ljava/lang/StringBuffer; (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/lang/StringBuffer.setLength(I)V (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/util/Vector.copyInto([Ljava/lang/Object;)V (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: javax/microedition/lcdui/Graphics.fillTriangle(IIIIII)V (xác nhận máy đích có)
+RESULT: PASS
