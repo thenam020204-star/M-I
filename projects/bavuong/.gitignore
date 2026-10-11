@@ -1,0 +1,11 @@
+work/
+tools/proguard.jar
+tools/cfr.jar
+tools/ecj.jar
+tools/freej2me_plus.jar
+__pycache__/
+dp_work/final/
+config/
+freej2me_system/
+rms/
+tools/ecj.jar

@@ -1,0 +1,11 @@
+MIDlet-Vendor: 兆荣联合
+Media-Price: 单次下载12元
+MIDlet-Version: 1.0.0
+MicroEdition-Configuration: CLDC-1.0
+MIDlet-1: 霸王怒与美人泪_玉品,/icon.png,ForeverHero
+MIDlet-Icon: /icon.png
+MIDlet-Name: 霸王怒与美人泪_玉品
+MicroEdition-Profile: MIDP-1.0
+MIDlet-Description: 单机版;角色扮演类;NOKIA_N7370系列;
+MIDlet-Jar-URL: BaVuongNo_VH.jar
+MIDlet-Jar-Size: 853961
