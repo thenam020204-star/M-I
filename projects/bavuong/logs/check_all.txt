@@ -1,0 +1,17 @@
+1 font .bin hop le (7 file)       OK
+1b f15/f13 = sinh lai tu f18      FAIL
+Traceback (most recent call last):
+  File "/tmp/tmp.FkoHw4PrS2/fontgen/build_fonts.py", line 25, in <module>
+    from pixeltext import container            # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'pixeltext'
+2 pixeltext selftest              FAIL
+    ~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/M-I/projects/bavuong/work/tools/pixeltext-kit/selftest.py", line 12, in T
+    assert cond, "FAIL: " + what
+           ^^^^
+AssertionError: FAIL: 15px chan chon loc: only I i j l J 1 4 keep serifs (14IJeijl,áạặậéèẻẽẹêếềểễệíìỉĩịÍÌỈĨỊ‚)
+3 pixeltext examples              OK
+4 BitmapFont.class = version 47   OK
+5 FontDemo 7 font (javac+java)    OK
+6 freej2me jar nguyen ven         OK

@@ -1,0 +1,684 @@
+[INFO] org.recompile.mobile.MobilePlatform: Accompanying JAD found! Parsing additional MIDlet properties.
+[INFO] Loading MIDlet: é­çæçºª-é­å¥³å¥ç¼ | Main Class: XMessage
+[ERROR] javax.microedition.media.Manager: Couldn't open Tone Player: Can not open line
+[INFO] javax.microedition.midlet.MIDlet: Create MIDlet
+[INFO] javax.microedition.lcdui.Canvas: Create Canvas:240, 320
+[ERROR] org.recompile.mobile.MIDletLoader: Couldn't find resource 'XConnection.class' in jar: file:/home/user/M-I/projects/magioi/out/MaGioiChienKy_VH.jar
+[ERROR] org.recompile.mobile.MIDletLoader: Error Adapting Class XConnection
+[ERROR] org.recompile.mobile.MIDletLoader: java.io.IOException: Class not found
+[INFO] javax.microedition.lcdui.Canvas: Create Canvas:240, 320
+[ERROR] org.recompile.mobile.MIDletLoader: Couldn't find resource 'cmcc.png' in jar: file:/home/user/M-I/projects/magioi/out/MaGioiChienKy_VH.jar
+[ERROR] org.recompile.mobile.MIDletLoader: Couldn't find resource 'cmcc.png' in jar: file:/home/user/M-I/projects/magioi/out/MaGioiChienKy_VH.jar
+[ERROR] org.recompile.mobile.MIDletLoader: Couldn't find resource 'sp.png' in jar: file:/home/user/M-I/projects/magioi/out/MaGioiChienKy_VH.jar
+[ERROR] org.recompile.mobile.MIDletLoader: Couldn't find resource 'sp.png' in jar: file:/home/user/M-I/projects/magioi/out/MaGioiChienKy_VH.jar
+javax.microedition.rms.RecordStoreNotFoundException: Record Store Doesn't Exist: é­çæçºª-é­å¥³å¥ç¼/972476ad09emvub3b0aw9u.rms
+	at javax.microedition.rms.RecordStore.loadRecordStore(Unknown Source)
+	at javax.microedition.rms.RecordStore.<init>(Unknown Source)
+	at javax.microedition.rms.RecordStore.openRecordStore(Unknown Source)
+	at j.a(Unknown Source)
+	at h.ah(Unknown Source)
+	at h.u(Unknown Source)
+	at h.s(Unknown Source)
+	at h.b(Unknown Source)
+	at j.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+java.lang.NullPointerException: Cannot invoke "javax.microedition.rms.RecordStore.closeRecordStore()" because "<local2>" is null
+	at j.a(Unknown Source)
+	at h.ah(Unknown Source)
+	at h.u(Unknown Source)
+	at h.s(Unknown Source)
+	at h.b(Unknown Source)
+	at j.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+z-hero-1
+z-hero-2
+daoguang
+s0
+skill10zi
+juqi
+daoguang3
+rush
+fire
+chuanghu2
+daojushangren
+jiao2
+wuqishangren
+weiba
+exp
+nvzhujuetou
+npcdaoyan
+atlei
+atlei2
+atlei3
+npcmama
+guozi1
+tou
+guozi2
+npcbaba
+npcdd
+npcmm
+jiao
+qiu
+mogu01
+matongbazi
+mianjunan
+mianju2
+mianjunv
+mianju
+splash3
+xiong
+putongjizhong
+dieboom
+xiong
+yazi
+yazi
+yazi
+tv
+npcdd
+bossfeizaoguai
+zengge
+weiba
+13run
+13attack
+d7
+boss13
+bazhuachong
+pangxie
+mogu01
+yiwenzizhan
+bo
+xiong
+3
+baozha
+baozha2
+hongyaziyazi
+skill5
+3
+yiwenzizhan
+mogu01
+mogu01
+mogu01
+mogu01
+mogu01
+fuyouguangqiu
+mifeng
+chungerenxing
+jiao3
+dluotianshi
+dluotianshi
+dluotianshi
+mofazhen
+npc3
+jiao2
+npc6
+npc2
+jiao
+npc4
+npc1
+weiba
+npc5
+weiba
+yazi
+pangxie
+mifeng
+xiong
+zuizongboss
+daoguang3
+mogu01
+matongbazi
+atlei
+atlei2
+atlei3
+baoxiang
+box1
+baoji1
+baoji2
+baoji3
+shizhu
+dudly
+llmc
+jiao3
+butterfly
+qizi
+lubiao
+paopao
+dluotianshi
+dluotianshi
+jiguangpao
+baojitiao
+nvzhujuetou
+s012
+shejihuo
+13run
+13attack
+d7
+boss13
+levelup
+bossfeizaoguai
+shuibo
+jiaoying
+long
+huoyandan
+bo
+huopeng
+bingkuai
+buxue
+effect0
+yunxuan
+tchuizi
+anim find same img: xiong
+anim find same img: yazi
+anim find same img: yazi
+anim find same img: npcdd
+anim find same img: weiba
+anim find same img: mogu01
+anim find same img: xiong
+anim find same img: 3
+anim find same img: yiwenzizhan
+anim find same img: mogu01
+anim find same img: mogu01
+anim find same img: mogu01
+anim find same img: mogu01
+anim find same img: mogu01
+anim find same img: dluotianshi
+anim find same img: dluotianshi
+anim find same img: jiao2
+anim find same img: jiao
+anim find same img: weiba
+anim find same img: weiba
+anim find same img: yazi
+anim find same img: pangxie
+anim find same img: mifeng
+anim find same img: xiong
+anim find same img: daoguang3
+anim find same img: mogu01
+anim find same img: matongbazi
+anim find same img: atlei
+anim find same img: atlei2
+anim find same img: atlei3
+anim find same img: jiao3
+anim find same img: dluotianshi
+anim find same img: dluotianshi
+anim find same img: nvzhujuetou
+anim find same img: 13run
+anim find same img: 13attack
+anim find same img: d7
+anim find same img: boss13
+anim find same img: bossfeizaoguai
+anim find same img: bo
+sound type = mid
+sound type = wav
+[ERROR] org.recompile.mobile.players.WAVPlayer: Could not prepare wav stream:No line matching interface Clip supporting format PCM_SIGNED unknown sample rate, 16 bit, stereo, 4 bytes/frame, big-endian is supported.
+worning: file foreword.png is null
+worning: file copyright.png is null
+worning: file title_1.png is null
+worning: file title_2.png is null
+java.lang.NullPointerException: Cannot invoke "javax.sound.midi.Sequencer.isRunning()" because "javax.microedition.media.Manager.exclusiveSequencers[<local0>]" is null
+[ERROR] org.recompile.mobile.players.MIDIPlayer: Failed to clean MIDI sequencer and start playback:Cannot invoke "javax.sound.midi.Sequencer.isRunning()" because "javax.microedition.media.Manager.exclusiveSequencers[<local0>]" is null
+	at javax.microedition.media.Manager.retrieveAvailableSynthIndex(Unknown Source)
+	at org.recompile.mobile.players.MIDIPlayer.prepareMidiSubsystem(Unknown Source)
+	at org.recompile.mobile.players.MIDIPlayer.start(Unknown Source)
+	at org.recompile.mobile.PlatformPlayer.start(Unknown Source)
+	at h.a(Unknown Source)
+	at h.z(Unknown Source)
+	at h.s(Unknown Source)
+	at h.b(Unknown Source)
+	at j.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+anim find same img: z-hero-1
+anim find same img: z-hero-2
+anim find same img: daoguang
+anim find same img: s0
+anim find same img: skill10zi
+anim find same img: juqi
+anim find same img: daoguang3
+anim find same img: rush
+anim find same img: fire
+anim find same img: chuanghu2
+anim find same img: daojushangren
+anim find same img: jiao2
+anim find same img: wuqishangren
+anim find same img: weiba
+anim find same img: exp
+anim find same img: nvzhujuetou
+anim find same img: npcdaoyan
+anim find same img: atlei
+anim find same img: atlei2
+anim find same img: atlei3
+anim find same img: npcmama
+anim find same img: guozi1
+anim find same img: tou
+anim find same img: guozi2
+anim find same img: npcbaba
+anim find same img: npcdd
+anim find same img: npcmm
+anim find same img: jiao
+anim find same img: qiu
+anim find same img: mogu01
+anim find same img: matongbazi
+anim find same img: mianjunan
+anim find same img: mianju2
+anim find same img: mianjunv
+anim find same img: mianju
+anim find same img: splash3
+anim find same img: xiong
+anim find same img: putongjizhong
+anim find same img: dieboom
+anim find same img: xiong
+anim find same img: yazi
+anim find same img: yazi
+anim find same img: yazi
+anim find same img: tv
+anim find same img: npcdd
+anim find same img: bossfeizaoguai
+anim find same img: zengge
+anim find same img: weiba
+anim find same img: 13run
+anim find same img: 13attack
+anim find same img: d7
+anim find same img: boss13
+anim find same img: bazhuachong
+anim find same img: pangxie
+anim find same img: mogu01
+anim find same img: yiwenzizhan
+anim find same img: bo
+anim find same img: xiong
+anim find same img: 3
+anim find same img: baozha
+anim find same img: baozha2
+anim find same img: hongyaziyazi
+anim find same img: skill5
+anim find same img: 3
+anim find same img: yiwenzizhan
+anim find same img: mogu01
+anim find same img: mogu01
+anim find same img: mogu01
+anim find same img: mogu01
+anim find same img: mogu01
+anim find same img: fuyouguangqiu
+worning: file fuyouguangqiu.png is null
+anim find same img: mifeng
+anim find same img: chungerenxing
+anim find same img: jiao3
+anim find same img: dluotianshi
+anim find same img: dluotianshi
+anim find same img: dluotianshi
+anim find same img: mofazhen
+anim find same img: npc3
+anim find same img: jiao2
+anim find same img: npc6
+anim find same img: npc2
+anim find same img: jiao
+anim find same img: npc4
+anim find same img: npc1
+anim find same img: weiba
+anim find same img: npc5
+anim find same img: weiba
+anim find same img: yazi
+anim find same img: pangxie
+anim find same img: mifeng
+anim find same img: xiong
+anim find same img: zuizongboss
+anim find same img: daoguang3
+anim find same img: mogu01
+anim find same img: matongbazi
+anim find same img: atlei
+anim find same img: atlei2
+anim find same img: atlei3
+anim find same img: baoxiang
+anim find same img: box1
+anim find same img: baoji1
+anim find same img: baoji2
+anim find same img: baoji3
+anim find same img: shizhu
+anim find same img: dudly
+anim find same img: llmc
+anim find same img: jiao3
+anim find same img: butterfly
+anim find same img: qizi
+anim find same img: lubiao
+anim find same img: paopao
+anim find same img: dluotianshi
+anim find same img: dluotianshi
+anim find same img: jiguangpao
+anim find same img: baojitiao
+anim find same img: nvzhujuetou
+anim find same img: s012
+anim find same img: shejihuo
+anim find same img: 13run
+anim find same img: 13attack
+anim find same img: d7
+anim find same img: boss13
+anim find same img: levelup
+anim find same img: bossfeizaoguai
+anim find same img: shuibo
+anim find same img: jiaoying
+anim find same img: long
+anim find same img: huoyandan
+anim find same img: bo
+anim find same img: huopeng
+anim find same img: bingkuai
+anim find same img: buxue
+anim find same img: effect0
+anim find same img: yunxuan
+anim find same img: tchuizi
+anim find same img: s0
+anim find same img: s0
+change map m_nCurrentScene = 0
+load map 34 10
+sameAsOldMap = false
+read map data
+read c
+read o
+bgCreate finish
+Activate idx:1
+m_objectRooms=1
+Activate idx:1
+m_objectRooms=2
+Activate idx:1
+m_objectRooms=3
+Activate idx:3
+m_objectRooms=4
+Activate idx:0
+m_objectRooms=5
+Activate idx:2
+m_objectRooms=6
+Activate idx:2
+m_objectRooms=7
+Activate idx:2
+m_objectRooms=8
+start S 0
+Activate idx:4
+m_objectRooms=9
+Activate idx:4
+m_objectRooms=9
+Activate idx:4
+m_objectRooms=9
+change map m_nCurrentScene = 0
+load map 41 2
+sameAsOldMap = false
+read map data
+read c
+read o
+bgCreate finish
+Activate idx:0
+m_objectRooms=1
+Activate idx:2
+m_objectRooms=2
+Activate idx:1
+m_objectRooms=3
+Activate idx:1
+m_objectRooms=4
+Activate idx:1
+m_objectRooms=5
+Activate idx:1
+m_objectRooms=6
+Activate idx:1
+m_objectRooms=7
+Activate idx:1
+m_objectRooms=8
+start S 0
+Activate idx:6
+m_objectRooms=9
+Activate idx:3
+m_objectRooms=10
+change map m_nCurrentScene = 0
+load map 35 3
+sameAsOldMap = false
+read map data
+read c
+read o
+bgCreate finish
+Activate idx:1
+m_objectRooms=1
+Activate idx:1
+m_objectRooms=2
+Activate idx:1
+m_objectRooms=3
+Activate idx:1
+m_objectRooms=4
+Activate idx:1
+m_objectRooms=5
+Activate idx:10
+m_objectRooms=6
+Activate idx:7
+m_objectRooms=7
+Activate idx:5
+m_objectRooms=8
+Activate idx:4
+m_objectRooms=9
+Activate idx:8
+m_objectRooms=10
+Activate idx:8
+m_objectRooms=11
+Activate idx:6
+m_objectRooms=12
+Activate idx:9
+m_objectRooms=13
+Activate idx:0
+m_objectRooms=14
+Activate idx:3
+m_objectRooms=15
+Activate idx:2
+m_objectRooms=16
+Activate idx:2
+m_objectRooms=17
+Activate idx:11
+m_objectRooms=18
+start S 0
+Activate idx:12
+m_objectRooms=19
+Activate idx:12
+m_objectRooms=19
+Activate idx:12
+m_objectRooms=19
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+m_nDrawQueueLength == MAX_DRAW_QUEUE_ITEMS = 64
+Activate idx:12
+m_objectRooms=19
+Activate idx:13
+m_objectRooms=19
+Activate idx:12
+m_objectRooms=20
+Activate idx:14
+m_objectRooms=19
+Activate idx:15
+m_objectRooms=20
+Activate idx:15
+m_objectRooms=21
+Activate idx:15
+m_objectRooms=19
+Activate idx:15
+m_objectRooms=22
+Activate idx:15
+m_objectRooms=23
+change map m_nCurrentScene = 0
+load map 1 10
+sameAsOldMap = false
+read map data
+read c
+read o
+bgCreate finish
+Activate idx:0
+m_objectRooms=1
+Activate idx:3
+m_objectRooms=2
+Activate idx:2
+m_objectRooms=3
+Activate idx:1
+m_objectRooms=4
+Activate idx:2
+m_objectRooms=3
+Activate idx:1
+m_objectRooms=4
+start S 0
+change map m_nCurrentScene = 0
+load map 0 1
+sameAsOldMap = false
+read map data
+read c
+read o
+bgCreate finish
+Activate idx:5
+m_objectRooms=1
+Activate idx:5
+m_objectRooms=2
+Activate idx:5
+m_objectRooms=3
+Activate idx:5
+m_objectRooms=4
+Activate idx:5
+m_objectRooms=5
+Activate idx:4
+m_objectRooms=6
+Activate idx:5
+m_objectRooms=7
+Activate idx:0
+m_objectRooms=8
+Activate idx:5
+m_objectRooms=9
+Activate idx:5
+m_objectRooms=10
+Activate idx:5
+m_objectRooms=11
+Activate idx:11
+m_objectRooms=12
+Activate idx:5
+m_objectRooms=13
+Activate idx:5
+m_objectRooms=14
+Activate idx:8
+m_objectRooms=15
+Activate idx:5
+m_objectRooms=16
+Activate idx:5
+m_objectRooms=17
+Activate idx:13
+m_objectRooms=18
+Activate idx:12
+m_objectRooms=19
+Activate idx:7
+m_objectRooms=20
+Activate idx:10
+m_objectRooms=21
+Activate idx:5
+m_objectRooms=22
+Activate idx:9
+m_objectRooms=23
+Activate idx:5
+m_objectRooms=24
+Activate idx:5
+m_objectRooms=25
+Activate idx:5
+m_objectRooms=26
+Activate idx:2
+m_objectRooms=27
+Activate idx:5
+m_objectRooms=28
+Activate idx:1
+m_objectRooms=29
+Activate idx:5
+m_objectRooms=30
+Activate idx:5
+m_objectRooms=31
+Activate idx:5
+m_objectRooms=32
+Activate idx:6
+m_objectRooms=33
+Activate idx:5
+m_objectRooms=34
+Activate idx:5
+m_objectRooms=35
+Activate idx:5
+m_objectRooms=36
+Activate idx:5
+m_objectRooms=37
+Activate idx:5
+m_objectRooms=38
+Activate idx:3
+m_objectRooms=39
+start S 0
+start S 1
+start S 2
+start S 3
+change map
+change map m_nCurrentScene = 0
+SCRIPT_PLAYER_CONTINUE_MOVE
+load map 5 2
+sameAsOldMap = false
+read map data
+read c
+read o
+bgCreate finish
+Activate idx:0
+m_objectRooms=1
+Activate idx:4
+m_objectRooms=2
+Activate idx:4
+m_objectRooms=3
+Activate idx:3
+m_objectRooms=4
+Activate idx:3
+m_objectRooms=5
+Activate idx:4
+m_objectRooms=6
+Activate idx:4
+m_objectRooms=7
+Activate idx:3
+m_objectRooms=8
+Activate idx:4
+m_objectRooms=9
+Activate idx:4
+m_objectRooms=10
+Activate idx:1
+m_objectRooms=11
+Activate idx:4
+m_objectRooms=12
+Activate idx:3
+m_objectRooms=13
+Activate idx:4
+m_objectRooms=14
+Activate idx:4
+m_objectRooms=15
+Activate idx:2
+m_objectRooms=16
+Activate idx:4
+m_objectRooms=2
+Activate idx:4
+m_objectRooms=3
+Activate idx:4
+m_objectRooms=6
+Activate idx:4
+m_objectRooms=7
+Activate idx:4
+m_objectRooms=9
+die

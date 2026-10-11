@@ -1,0 +1,1 @@
+{"fmt": "tsv", "nl": "\n", "tail": true, "bom": false, "hdr": true, "cols": {"src": 3, "dst": 4, "ctx": 5, "lim": 6}, "file": "/home/user/M-I/projects/bavuong/goc/text_can_dich_goc.tsv", "lang": "zh", "codes": "", "enc": "utf-8", "args": {"src": null, "dst": null, "ctx": null, "lim": null, "sheet": null, "enc": "utf-8"}}

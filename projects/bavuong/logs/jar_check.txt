@@ -1,0 +1,27 @@
+Thêm: ['BitmapFont.class', 'VH.class', 'VL.class', 'font/f15c.bin', 'vh_logo.png']
+Xoá: []
+Đổi: ['ForeverHero.class', 'a.class', 'b.class', 'c.class', 'e.class', 'f.class', 'g.class', 'h.class', 'i.class', 'image/game/game_008.png', 'image/game/game_009.png', 'image/game/game_012.png', 'image/game/game_014.png', 'image/game/game_016.png', 'image/game/game_032.png', 'image/game/game_034.png', 'image/game/game_035.png', 'image/game/game_038.png', 'image/game/game_039.png', 'image/game/game_041.png', 'image/game/game_047.png', 'image/game/game_048.png', 'image/game/game_053.png', 'image/game/game_059.png', 'image/game/game_map.png', 'image/game/game_menu.png', 'image/game/game_status.png', 'image/intro/intro_001.png', 'image/menu/menu_002.png', 'image/menu/menu_003.png', 'image/menu/menu_004.png', 'image/menu/menu_014.png', 'image/menu/menu_015.png', 'image/menu/menu_018.png', 'image/menu/menu_026.png', 'image/menu/menu_030.png', 'image/money.png', 'k.class', 'l.class', 'o.class', 'q.class', 'r.class', 'u.class']
+WARN BitmapFont.class: API mới so với bản gốc: java/io/DataInputStream.readFully([B)V (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/io/DataInputStream.readUTF()Ljava/lang/String; (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/io/DataInputStream.readUnsignedByte()I (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/String.charAt(I)C (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/String.endsWith(Ljava/lang/String;)Z (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/String.indexOf(I)I (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/String.indexOf(II)I (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/String.substring(I)Ljava/lang/String; (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/util/Vector.<init>()V (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/util/Vector.addElement(Ljava/lang/Object;)V (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/util/Vector.copyInto([Ljava/lang/Object;)V (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/util/Vector.size()I (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: javax/microedition/lcdui/Graphics.drawRGB([IIIIIIIZ)V (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: javax/microedition/lcdui/Graphics.drawRegion(Ljavax/microedition/lcdui/Image;IIIIIIII)V (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: javax/microedition/lcdui/Graphics.getColor()I (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: javax/microedition/lcdui/Image.createRGBImage([IIIZ)Ljavax/microedition/lcdui/Image; (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/lang/String.charAt(I)C (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/lang/String.indexOf(I)I (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/lang/String.indexOf(Ljava/lang/String;)I (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/lang/String.replace(CC)Ljava/lang/String; (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/lang/String.substring(I)Ljava/lang/String; (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: javax/microedition/lcdui/Graphics.fillTriangle(IIIIII)V (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: javax/microedition/lcdui/Image.createRGBImage([IIIZ)Ljavax/microedition/lcdui/Image; (xác nhận máy đích có)
+RESULT: PASS

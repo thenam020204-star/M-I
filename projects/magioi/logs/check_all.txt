@@ -1,0 +1,7 @@
+1 font .bin hop le (7 file)       OK
+1b f15/f13 = sinh lai tu f18      OK
+2 pixeltext selftest              OK
+3 pixeltext examples              OK
+4 BitmapFont.class = version 47   OK
+5 FontDemo 7 font (javac+java)    OK
+6 freej2me jar nguyen ven         OK

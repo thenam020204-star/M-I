@@ -1,0 +1,9 @@
+đã nạp 3637 chuỗi 
+ForeverHero 1
+o 28
+ProGuard, version 7.4.2
+WARN VH.class: API mới so với bản gốc: java/lang/String.substring(I)Ljava/lang/String; (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: javax/microedition/lcdui/Graphics.fillTriangle(IIIIII)V (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: javax/microedition/lcdui/Image.createRGBImage([IIIZ)Ljavax/microedition/lcdui/Image; (xác nhận máy đích có)
+RESULT: PASS
+OK -> out/BaVuongNo_VH.jar
