@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+MIDlet-Name: Heroes Lore Zero
+MIDlet-Version: PN.01
+MIDlet-Vendor: NAM.P
+MIDlet-1: Heroes Lore Zero, /icon.png, rpg.RPGHeroEx
+MicroEdition-Profile: MIDP-2.0
+MicroEdition-Configuration: CLDC-1.1
+MIDlet-Icon: /icon.png
+Created-By: Metaflow
+

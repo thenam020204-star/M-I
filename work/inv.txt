@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/root/.claude/skills/synced/1a2b0fee-e80d-48c0-addb-ea1fc3ce0500_aae1ec46-4ecf-4276-929c-5778f6fadfcf/j2me-viet-hoa/scripts/inventory.py", line 110, in <module>
+    main()
+    ~~~~^^
+  File "/root/.claude/skills/synced/1a2b0fee-e80d-48c0-addb-ea1fc3ce0500_aae1ec46-4ecf-4276-929c-5778f6fadfcf/j2me-viet-hoa/scripts/inventory.py", line 62, in main
+    b = z.read(n)
+  File "/usr/lib/python3.13/zipfile/__init__.py", line 1646, in read
+    with self.open(name, "r", pwd) as fp:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/zipfile/__init__.py", line 1738, in open
+    raise BadZipFile(
+        f"Overlapped entries: {zinfo.orig_filename!r} "
+        f"(possible zip bomb)")
+zipfile.BadZipFile: Overlapped entries: 'META-INF/' (possible zip bomb)
