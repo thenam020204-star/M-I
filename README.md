@@ -32,6 +32,7 @@ pixeltext_kit/    pixeltext/ (Python vẽ chữ pixel), examples/, selftest.py
 freej2me/         freej2me_plus.jar, freej2me_plus-lr.jar, Win32Pad.exe
 legacy/           script/tài liệu CŨ của bộ độ rộng cố định 6 (không còn dùng)
 check_all.sh      chạy kiểm tra từng phần
+skill/            skill j2me-viet-hoa (bản đã cập nhật theo bộ font này; đóng zip thư mục j2me-viet-hoa để tải lên claude.ai)
 ```
 
 ## Định dạng `.bin`

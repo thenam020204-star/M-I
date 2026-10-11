@@ -20,7 +20,8 @@ import itertools, os, sys, unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-sys.path.insert(0, os.path.join(ROOT, 'pixeltext_kit'))
+sys.path.insert(0, os.path.join(ROOT, 'pixeltext_kit' if os.path.isdir(os.path.join(ROOT, 'pixeltext_kit'))
+                                   else 'pixeltext-kit'))   # ten trong bo tool cua skill
 sys.path.insert(0, HERE)
 from pixeltext import container            # noqa: E402
 import sans18                              # noqa: E402
