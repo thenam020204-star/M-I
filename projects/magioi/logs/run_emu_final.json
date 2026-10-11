@@ -1,0 +1,25 @@
+{
+ "shots": [
+  "out/shots/01_splash.png",
+  "out/shots/02_hoi_am_thanh.png",
+  "out/shots/03_tieu_de.png",
+  "out/shots/04_xac_nhan_ten.png",
+  "out/shots/05_intro.png",
+  "out/shots/06_thoai_me.png",
+  "out/shots/07_thoai_aruru.png",
+  "out/shots/08_thoai_chan_dung.png",
+  "out/shots/09_ban_do.png",
+  "out/shots/10_menu_chi_so.png",
+  "out/shots/11_tui_do.png",
+  "out/shots/12_shop_vip.png"
+ ],
+ "emu_alive_at_end": true,
+ "exceptions": [
+  "[ERROR] org.recompile.mobile.MIDletLoader: Error Adapting Class XConnection",
+  "[ERROR] org.recompile.mobile.MIDletLoader: java.io.IOException: Class not found",
+  "java.lang.NullPointerException: Cannot invoke \"javax.microedition.rms.RecordStore.closeRecordStore()\" because \"<local2>\" is null",
+  "java.lang.NullPointerException: Cannot invoke \"javax.sound.midi.Sequencer.isRunning()\" because \"javax.microedition.media.Manager.exclusiveSequencers[<local0>]\" is null",
+  "javax.microedition.rms.RecordStoreNotFoundException: Record Store Doesn't Exist: é­çæçºª-é­å¥³å¥ç¼/972476ad09emvub3b0aw9u.rms"
+ ],
+ "log": "out/shots/emu.log"
+}

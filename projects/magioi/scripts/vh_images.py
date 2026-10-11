@@ -2,7 +2,7 @@
 """Vẽ lại ảnh có chữ Hán bằng pixeltext (font 13c, một màu = màu thân chữ gốc, không viền).
   vh_images.py <res_dir_gốc> <out_dir>   (out_dir = assets/res, được vh_res.py chép đè vào gói)"""
 import os, sys
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'tools', 'pixeltext-kit'))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'tools', 'pixeltext_kit'))
 from PIL import Image
 import pixeltext as pt
 

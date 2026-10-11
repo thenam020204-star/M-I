@@ -24,7 +24,14 @@ public final class VH {
     // ------------------------------------------------------------ font hook
     public static void ds(Graphics g, String s, int x, int y, int a) {
         if (s == null) return;
-        f().drawString(g, s, x, y, a == 0 ? (Graphics.TOP | Graphics.LEFT) : a);
+        if (a == 0) a = Graphics.TOP | Graphics.LEFT;
+        // nhan neo trai o nua phai man hinh (vd phim mem phai, game dat theo be rong 1 chu Han)
+        // ma chu Viet dai hon -> lui vao de khong tran mep
+        if ((a & (Graphics.HCENTER | Graphics.RIGHT)) == 0 && x > (f.ad >> 1) && x < f.ad) {
+            int w = f().stringWidth(s);
+            if (x + w > f.ad - 1) x = f.ad - 1 - w;
+        }
+        f().drawString(g, s, x, y, a);
     }
 
     public static int sw(Font fo, String s) { return f().stringWidth(s); }
