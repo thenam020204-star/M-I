@@ -1,0 +1,107 @@
+image/game/game_008.png (55, 21)
+  (0, 0, 55, 21) #f2f3ff/#1f31ff -> 'Né!' [15]
+image/game/game_009.png (60, 21)
+  (0, 0, 60, 21) #ffff00/#9f1b00 -> 'Bạo kích!' [15c]
+image/game/game_012.png (55, 13)
+  (0, 0, 55, 13) #ffff00/#900500 -> 'Lên cấp!' [13c]
+image/game/game_014.png (58, 13)
+  (0, 0, 33, 13) #ffd800/#3b0900 -> 'Bỏ qua' [13c]
+  (33, 0, 25, 13) #ffd800/#3b0900 -> 'Tiếp' [13c]
+image/game/game_016.png (60, 15)
+  (0, 0, 60, 15) #f6e8bd/None -> '#Tin địch' [13c]
+image/game/game_032.png (48, 59)
+  (0, 0, 48, 12) #3b0900/None -> 'Nhân vật' [13c]
+  (0, 12, 48, 12) #3b0900/None -> 'Trang bị' [13c]
+  (0, 24, 48, 12) #3b0900/None -> 'Võ công' [13c]
+  (0, 36, 48, 12) #3b0900/None -> 'Nhiệm vụ' [13c]
+  (0, 48, 48, 12) #3b0900/None -> 'Menu' [13c]
+image/game/game_034.png (26, 145)
+  (0, 0, 26, 13) #f6e8bd/#3b0900 -> 'Lv' [13c]
+  (0, 14, 26, 13) #f6e8bd/#3b0900 -> 'EXP' [13c]
+  (0, 28, 26, 13) #f6e8bd/#3b0900 -> 'ATK' [13c]
+  (0, 42, 26, 13) #f6e8bd/#3b0900 -> 'DEF' [13c]
+  (0, 56, 26, 13) #f6e8bd/#3b0900 -> 'HP' [13c]
+  (0, 70, 26, 13) #f6e8bd/#3b0900 -> 'MP' [13c]
+  (0, 84, 26, 13) #f6e8bd/#3b0900 -> 'DEX' [13c]
+  (0, 98, 26, 11) #f6e8bd/None -> 'C.hóa' [13c]
+  (0, 110, 26, 11) #f6e8bd/None -> 'Nặng' [13c]
+  (0, 122, 26, 11) #f6e8bd/None -> 'Đồ' [13c]
+  (0, 134, 26, 11) #f6e8bd/None -> 'Hệ' [13c]
+image/game/game_035.png (47, 59)
+  (0, 0, 23, 11) #3b0900/None -> 'STR' [13c]
+  (0, 12, 23, 11) #3b0900/None -> 'AGI' [13c]
+  (0, 24, 23, 11) #3b0900/None -> 'HP' [13c]
+  (0, 36, 23, 11) #3b0900/None -> 'MP' [13c]
+  (0, 48, 47, 11) #3b0900/None -> 'Điểm' [13c]
+image/game/game_038.png (51, 13)
+  (0, 0, 25, 13) #d8ba90/#3b0900 -> 'Kiếm' [13c]
+  (26, 0, 25, 13) #d8ba90/#3b0900 -> 'Võ' [13c]
+image/game/game_039.png (53, 47)
+  (0, 0, 47, 11) #3b0900/None -> '#Đồ' [13c]
+  (0, 12, 47, 11) #3b0900/None -> '*Chi tiết' [13c]
+  (0, 24, 47, 11) #f6e8bd/None -> '*Chi tiết' [13c]
+  (0, 36, 47, 11) #f6e8bd/None -> '#Vứt' [13c]
+image/game/game_041.png (47, 59)
+  (0, 0, 47, 11) #fae8cc/None -> 'Trang bị' [13c]
+  (0, 12, 47, 11) #fae8cc/None -> 'Phím tắt' [13c]
+  (0, 24, 47, 11) #fae8cc/None -> 'NV chính' [13c]
+  (0, 36, 47, 11) #fae8cc/None -> 'NV phụ' [13c]
+  (0, 48, 47, 11) #fae8cc/None -> 'Tài sản' [13c]
+image/game/game_047.png (61, 70)
+  (0, 0, 61, 14) #f7e9b4/#512606 -> 'Tiếp tục' [13c]
+  (0, 14, 61, 14) #f7e9b4/#512606 -> 'Lưu game' [13c]
+  (0, 28, 61, 14) #f7e9b4/#512606 -> 'Cách chơi' [13c]
+  (0, 42, 61, 14) #f7e9b4/#512606 -> 'Cài đặt' [13c]
+  (0, 56, 61, 14) #f7e9b4/#512606 -> 'Menu chính' [13c]
+image/game/game_048.png (53, 35)
+  (0, 0, 53, 11) #fae8cc/None -> 'Vật dụng' [13c]
+  (0, 12, 53, 11) #fae8cc/None -> 'Ch.luyện' [13c]
+  (0, 24, 53, 11) #fae8cc/None -> 'Rèn đúc' [13c]
+image/game/game_053.png (52, 13)
+  (0, 0, 52, 13) None/#3b0900 -> 'Phải:Về' [13c]
+image/menu/menu_030.png (52, 13)
+  (0, 0, 52, 13) None/#3b0900 -> 'Phải:Về' [13c]
+image/game/game_059.png (47, 11)
+  (0, 0, 12, 11) #f6e8bd/None -> '-' [13c]
+  (12, 0, 12, 11) #ffbd2e/None -> 'H' [13c]
+  (24, 0, 12, 11) #93c8fe/None -> 'B' [13c]
+  (36, 0, 12, 11) #ffff00/None -> 'L' [13c]
+image/game/game_map.png (50, 15)
+  (16, 0, 34, 15) #ffd800/#3b0900 -> 'Bản đồ' [13c]
+image/intro/intro_001.png (93, 15)
+  (0, 0, 93, 15) #f3cf2b/#5d2413 -> 'Nhấn OK để tiếp tục' [13c]
+image/menu/menu_002.png (100, 120)
+  (0, 0, 66, 20) #4b462c/#ffffff -> 'Chơi mới' [15c]
+  (0, 20, 66, 20) #4b462c/#ffffff -> 'Tiếp tục' [15c]
+  (0, 40, 66, 20) #4b462c/#ffffff -> 'Trợ giúp' [15c]
+  (0, 60, 66, 20) #4b462c/#ffffff -> 'Cài đặt' [15c]
+  (0, 80, 66, 20) #4b462c/#ffffff -> 'Thông tin' [15c]
+  (0, 100, 66, 20) #4b462c/#ffffff -> 'Thoát' [15c]
+image/menu/menu_003.png (100, 40)
+  (0, 0, 66, 20) #4b462c/#ffffff -> 'Chơi mới' [15c]
+  (0, 20, 66, 20) #4b462c/#ffffff -> 'Tiếp tục' [15c]
+image/menu/menu_004.png (100, 60)
+  (0, 0, 66, 20) #4b462c/#ffffff -> 'Cách chơi' [15c]
+  (0, 20, 66, 20) #4b462c/#ffffff -> 'Cốt truyện' [15c]
+  (0, 40, 66, 20) #4b462c/#ffffff -> 'Trợ giúp' [15c]
+image/menu/menu_014.png (25, 55)
+  (0, 0, 25, 14) #f7e9b4/#512606 -> 'Âm' [13c]
+  (0, 14, 25, 14) #f7e9b4/#512606 -> 'Tốc' [13c]
+  (0, 28, 25, 14) #f7e9b4/#512606 -> 'Đi' [13c]
+  (0, 42, 25, 14) #f7e9b4/#512606 -> 'Rung' [13c]
+image/menu/menu_015.png (25, 56)
+  (0, 0, 25, 14) #b4f7e2/#021c14 -> 'Tắt' [13c]
+  (0, 14, 25, 14) #ffffff/#021c14 -> 'Bật' [13c]
+  (0, 28, 25, 14) #b4f7e2/#021c14 -> 'Auto' [13c]
+  (0, 42, 25, 14) #b4f7e2/#021c14 -> 'Tay' [13c]
+image/menu/menu_018.png (25, 13)
+  (0, 0, 25, 13) #ffd800/#3b0900 -> 'Tiếp' [13c]
+image/menu/menu_026.png (58, 13)
+  (0, 0, 34, 13) #ffd800/#3b0900 -> 'Bỏ qua' [13c]
+  (34, 0, 24, 13) #ffd800/#3b0900 -> 'Tiếp' [13c]
+image/game/game_menu.png (37, 22)
+  (4, 3, 29, 16) #f8d18a/#040404 -> 'Menu' [13c]
+image/game/game_status.png (37, 22)
+  (3, 3, 31, 16) #f8d18a/#040404 -> 'Chỉ số' [13c]
+image/money.png (23, 11)
+  (0, 0, 23, 11) #f6e8bd/None -> 'Tiền' [13c]

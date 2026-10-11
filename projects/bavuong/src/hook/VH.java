@@ -162,18 +162,22 @@ public final class VH {
         t T = G.eP[G.eQ];
         // chan dung nho co san cua game: dung tren khung (a = 1..2 ben phai, con lai ben trai)
         int side = 0;                                   // 0 = khong co, 1 = trai, 2 = phai
+        int iw = 0;
         if (G.ac != null && T.a > 0) {
-            int iw = G.ac.getWidth(), ih = G.ac.getHeight();
+            int ih = G.ac.getHeight();
+            iw = G.ac.getWidth();
             side = T.a < 3 ? 2 : 1;
             g.drawImage(G.ac, side == 2 ? W - iw : 0, by - ih + 1, Graphics.TOP | Graphics.LEFT);
         }
         // tab ten: ben trai, sang phai neu chan dung o trai
         String name = G.eQ < NM.length ? NM[G.eQ] : null;
         boolean tabRight = false;
+        int tabL = BX + 6, tabR = BX + 6;               // pham vi ngang cua tab ten
         if (name != null && name.length() > 0) {
             int tw = fo.stringWidth(name) + 14, th = 19;
             tabRight = side == 1;
             int tx = tabRight ? BX + BW - tw - 6 : BX + 6, ty = by - th + 2;
+            tabL = tx; tabR = tx + tw;
             g.setColor(0x0E1222);
             g.fillRect(tx + 2, ty + 2, tw - 4, th - 4);
             frame(g, tx, ty, tw, th);                        // day tab trung vien tren cua khung
@@ -192,10 +196,15 @@ public final class VH {
             g.fillTriangle(ax, ay, ax + 7, ay, ax + 3, ay + 4);
         }
         if (G.fj == 0) {
+            // nhan "#Bo qua": dat vao khoang trong giua tab ten va chan dung tren mep khung; khong du cho thi an
             String sk = "#Bỏ qua";
-            int w = fo.stringWidth(sk);
-            int x = side == 0 && !tabRight ? BX + BW - w - 8 : (W - w) / 2;
-            outlined(g, sk, x, by - 15, 0xFFD24A);
+            int w = fo.stringWidth(sk), x;
+            if (side == 1) x = tabL - w - 6;                       // chan dung trai, tab phai
+            else if (side == 2) x = tabR + 6;                      // chan dung phai, tab trai
+            else x = BX + BW - w - 8;                              // khong chan dung: goc phai
+            int lo = side == 1 ? iw + 2 : BX + 2, hi = side == 2 ? W - iw - 2 : BX + BW - 2;
+            if (x >= lo && x + w <= hi && (x >= tabR + 4 || x + w <= tabL - 4))
+                outlined(g, sk, x, by - 15, 0xFFD24A);
         }
     }
 }

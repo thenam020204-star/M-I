@@ -12,6 +12,7 @@ B=work/build; rm -rf "$B"; mkdir -p "$B/raw" logs
 ( cd "$B/raw" && unzip -q "$P/goc/game.jar" )
 python3 -I scripts/inject.py "$TSV" "$B/raw"
 python3 -I scripts/patch_classes.py "$B/raw"
+python3 -I scripts/vh_images.py "$B/raw" "$B/raw" > logs/vh_images.txt   # vẽ lại ảnh có chữ (pixeltext)
 bash scripts/build_hook.sh "$B/raw" "$B/hook" >/dev/null
 cp "$B"/hook/*.class "$B/raw/"; cp "$BITMAPFONT_CLASS" "$B/raw/"
 mkdir -p "$B/raw/font"; cp "$FONT_DIR/f15c.bin" "$B/raw/font/"
