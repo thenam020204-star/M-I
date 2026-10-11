@@ -1314,7 +1314,7 @@ C:h.class:608	h.class	cp608	阿鲁鲁	Aruru	chuỗi UI trong h.class	18
 C:h.class:609	h.class	cp609	雪丸留在了亚留特村里，在附近进行刻苦的修炼。	Yukimaru ở lại Làng Aleut, khổ luyện ở vùng lân cận.	chuỗi UI trong h.class	
 C:i.class:298	i.class	cp298	[C:0000FF]游戏介绍[/C]:|10多年前，魔王宇春将维达卡伊姆星球上的人类的大部分良心夺走，并且几乎把人类都变成了恶魔和魔物。经过10多年的岁月，我们的男主角是仅存不多的人类，他的养母身为召唤师，收集了召唤魔王宇春的材料，将要进行召唤仪式。但，谁知道，阴差阳错……|[C:0000FF]游戏规则[/C]:|游戏中可调出游戏菜单，选择状态选项可以用来提升你的属性(每升1级能获得3点属性点，力量可提高攻击力，体质可提高防御力，敏捷可提高回避率，技巧可提高暴击几率与暴击倍数)，选择武器选项可以把武器装备到身上，选择道具选项可以使用已获得的道具或者将道具设置到快捷键上，选择技能选项可以升级喜欢的技能或者将技能设置到快捷键上(每升一级能获得一点技能点)，选择系统选项则可以保存游戏或设置游戏或查看帮助或退出游戏。|[C:0000FF]操作方法[/C]:|方向键控制人物移动。在战斗状态时，中间确认键可以进行攻击，屏幕下方有技能快捷键可以点击使用，分别对应数字1的框数字3的框数字7的框数字9的框，可以用来设置成技能快捷键，*的框#的框可以用来设置成道具快捷键。中间确认键可以与人物对话。	[C:0000FF]Giới thiệu[/C]:|Hơn 10 năm trước, Ma Vương Yuchun đã cướp đi phần lớn lương tâm của loài người trên hành tinh Vidakaim, và biến gần như toàn bộ loài người thành ác ma và ma vật. Trải qua hơn 10 năm, nam chính của chúng ta là một trong số ít con người còn sót lại. Mẹ nuôi của cậu là một triệu hồi sư, đã gom đủ nguyên liệu triệu hồi Ma Vương Yuchun và sắp cử hành nghi thức triệu hồi. Nhưng nào ai ngờ, trớ trêu thay...|[C:0000FF]Luật chơi[/C]:|Trong game có thể mở menu. Mục Trạng thái dùng để tăng chỉ số (mỗi lần lên cấp được 3 điểm chỉ số: STR tăng ATK, VIT tăng DEF, AGI tăng né tránh, DEX tăng tỉ lệ và bội số chí mạng). Mục Vũ khí để trang bị vũ khí lên người. Mục Đạo cụ để dùng đạo cụ đã có hoặc đặt đạo cụ vào phím tắt. Mục Kỹ năng để nâng cấp kỹ năng yêu thích hoặc đặt kỹ năng vào phím tắt (mỗi lần lên cấp được 1 điểm kỹ năng). Mục Hệ thống để lưu game, cài đặt, xem trợ giúp hoặc thoát game.|[C:0000FF]Cách chơi[/C]:|Phím hướng để di chuyển nhân vật. Khi chiến đấu, phím giữa để tấn công. Phía dưới màn hình có ô phím tắt kỹ năng, tương ứng ô số 1, ô số 3, ô số 7, ô số 9, dùng để đặt phím tắt kỹ năng; ô * và ô # dùng để đặt phím tắt đạo cụ. Phím giữa cũng dùng để nói chuyện với nhân vật.	chuỗi UI trong i.class	
 C:i.class:309	i.class	cp309	|全属性：+	|Mọi chỉ số: +	chuỗi UI trong i.class	
-C:i.class:310	i.class	cp310	|卡片附加属性：	|Chỉ số thẻ thêm:	chuỗi UI trong i.class	
+C:i.class:310	i.class	cp310	|卡片附加属性：	|Chỉ số thẻ thêm: 	chuỗi UI trong i.class	
 C:i.class:311	i.class	cp311	|吸血：+	|Hút máu: +	chuỗi UI trong i.class	
 C:i.class:312	i.class	cp312	|回避：+	|Né: +	chuỗi UI trong i.class	
 C:i.class:313	i.class	cp313	|掉宝率：+	|Rơi đồ: +	chuỗi UI trong i.class	
@@ -1326,20 +1326,20 @@ C:i.class:318	i.class	cp318	|暴击率：+	|Tỉ lệ chí mạng: +	chuỗi UI 
 C:i.class:319	i.class	cp319	|经验值：+	|EXP: +	chuỗi UI trong i.class	
 C:i.class:320	i.class	cp320	|血量：+	|HP: +	chuỗi UI trong i.class	
 C:i.class:321	i.class	cp321	|防御：+	|DEF: +	chuỗi UI trong i.class	
-C:i.class:322	i.class	cp322	|附加属性：	|Chỉ số thêm:	chuỗi UI trong i.class	
+C:i.class:322	i.class	cp322	|附加属性：	|Chỉ số thêm: 	chuỗi UI trong i.class	
 C:i.class:323	i.class	cp323	|魔量：+	|MP: +	chuỗi UI trong i.class	
 C:i.class:324	i.class	cp324	丢弃数量	Số lượng vứt	chuỗi UI trong i.class	10
 C:i.class:325	i.class	cp325	卖出数量	Số lượng bán	chuỗi UI trong i.class	10
 C:i.class:326	i.class	cp326	否	Không	chuỗi UI trong i.class	10
-C:i.class:327	i.class	cp327	头盔|回避：	Mũ|Né:	chuỗi UI trong i.class	
-C:i.class:328	i.class	cp328	孔)	lỗ)	chuỗi UI trong i.class	10
+C:i.class:327	i.class	cp327	头盔|回避：	Mũ|Né: 	chuỗi UI trong i.class	
+C:i.class:328	i.class	cp328	孔)	 lỗ)	chuỗi UI trong i.class	10
 C:i.class:330	i.class	cp330	换东西	Đổi đồ	chuỗi UI trong i.class	18
 C:i.class:331	i.class	cp331	无	Không	chuỗi UI trong i.class	10
 C:i.class:332	i.class	cp332	是	Có	chuỗi UI trong i.class	10
 C:i.class:333	i.class	cp333	未知区域	Vùng chưa biết	chuỗi UI trong i.class	10
-C:i.class:334	i.class	cp334	武器|攻击：	Vũ khí|ATK:	chuỗi UI trong i.class	
+C:i.class:334	i.class	cp334	武器|攻击：	Vũ khí|ATK: 	chuỗi UI trong i.class	
 C:i.class:335	i.class	cp335	购买数量	Số lượng mua	chuỗi UI trong i.class	10
-C:i.class:336	i.class	cp336	防具|防御：	Giáp|DEF:	chuỗi UI trong i.class	
+C:i.class:336	i.class	cp336	防具|防御：	Giáp|DEF: 	chuỗi UI trong i.class	
 C:i.class:337	i.class	cp337	鞋子	Giày	chuỗi UI trong i.class	10
 C:i.class:338	i.class	cp338	饰品	Trang sức	chuỗi UI trong i.class	10
 C:l.class:57	l.class	cp57	#键	Phím #	chuỗi UI trong l.class	10
@@ -1396,7 +1396,7 @@ C:l.class:205	l.class	cp205	力量	STR	chuỗi UI trong l.class	10
 C:l.class:206	l.class	cp206	医疗救护	Cứu thương	chuỗi UI trong l.class	10
 C:l.class:207	l.class	cp207	升级	Nâng cấp	chuỗi UI trong l.class	10
 C:l.class:208	l.class	cp208	卖出	Bán	chuỗi UI trong l.class	10
-C:l.class:209	l.class	cp209	卖出价：	Giá bán:	chuỗi UI trong l.class	10
+C:l.class:209	l.class	cp209	卖出价：	Giá bán: 	chuỗi UI trong l.class	10
 C:l.class:210	l.class	cp210	卖出装备	Bán trang bị	chuỗi UI trong l.class	10
 C:l.class:211	l.class	cp211	卖出道具	Bán đạo cụ	chuỗi UI trong l.class	10
 C:l.class:212	l.class	cp212	卡兹	Kaz	chuỗi UI trong l.class	10
@@ -1447,7 +1447,7 @@ C:l.class:256	l.class	cp256	强尼	Johnny	chuỗi UI trong l.class	10
 C:l.class:257	l.class	cp257	当前	Hiện tại	chuỗi UI trong l.class	10
 C:l.class:258	l.class	cp258	快捷键	Phím tắt	chuỗi UI trong l.class	18
 C:l.class:259	l.class	cp259	怒气爆发	Nộ Khí Bùng Nổ	chuỗi UI trong l.class	10
-C:l.class:260	l.class	cp260	总价:	Tổng giá:	chuỗi UI trong l.class	18
+C:l.class:260	l.class	cp260	总价:	Tổng giá: 	chuỗi UI trong l.class	18
 C:l.class:261	l.class	cp261	总算走出了罗莲城的结界！可是雪丸受伤了，先把雪丸送回村子吧，时间紧迫啊，快去吧	Cuối cùng cũng thoát khỏi kết giới Thành Roren! Nhưng Yukimaru bị thương rồi, đưa Yukimaru về làng trước đã, thời gian gấp lắm, mau đi thôi.	chuỗi UI trong l.class	
 C:l.class:262	l.class	cp262	恢复	Hồi phục	chuỗi UI trong l.class	10
 C:l.class:263	l.class	cp263	恭喜您，已增加5个技能点，可以在技能菜单中进行升级。同时存储了进度	Chúc mừng bạn, đã thêm 5 điểm kỹ năng, có thể nâng cấp trong menu Kỹ năng. Đồng thời đã lưu tiến trình.	chuỗi UI trong l.class	
@@ -1484,7 +1484,7 @@ C:l.class:293	l.class	cp293	提升血量	Tăng HP	chuỗi UI trong l.class	10
 C:l.class:294	l.class	cp294	提升防御	Tăng DEF	chuỗi UI trong l.class	10
 C:l.class:295	l.class	cp295	提升魔量	Tăng MP	chuỗi UI trong l.class	10
 C:l.class:296	l.class	cp296	攻击	ATK	chuỗi UI trong l.class	10
-C:l.class:297	l.class	cp297	效:	Hiệu ứng:	chuỗi UI trong l.class	10
+C:l.class:297	l.class	cp297	效:	Hiệu ứng: 	chuỗi UI trong l.class	10
 C:l.class:298	l.class	cp298	敏捷	AGI	chuỗi UI trong l.class	10
 C:l.class:299	l.class	cp299	新的开始	Chơi mới	chuỗi UI trong l.class	10
 C:l.class:300	l.class	cp300	无游戏存档	Chưa có save	chuỗi UI trong l.class	18
@@ -1630,7 +1630,7 @@ C:l.class:439	l.class	cp439	道具商	Người bán đồ	chuỗi UI trong l.cla
 C:l.class:440	l.class	cp440	道具已满	Đạo cụ đã đầy	chuỗi UI trong l.class	10
 C:l.class:441	l.class	cp441	重置属性点	Đặt lại điểm	chuỗi UI trong l.class	18
 C:l.class:442	l.class	cp442	金	vàng	chuỗi UI trong l.class	10
-C:l.class:443	l.class	cp443	金钱:	Tiền:	chuỗi UI trong l.class	18
+C:l.class:443	l.class	cp443	金钱:	Tiền: 	chuỗi UI trong l.class	18
 C:l.class:444	l.class	cp444	金钱不够	Không đủ tiền	chuỗi UI trong l.class	10
 C:l.class:445	l.class	cp445	锻造中...	Đang rèn...	chuỗi UI trong l.class	18
 C:l.class:446	l.class	cp446	锻造好武器，购买道具，需要足够的金钱！仅需支付信息费2元，发送1条短信，2元/条(不含通信费)，就可获得30000金币，同时将赠送您4张游戏点券（点券可在村子道具商人处兑换宝物）客服电话 021-64363139	Rèn vũ khí tốt, mua đạo cụ, cần đủ tiền! Chỉ cần trả phí tin nhắn 2 tệ, gửi 1 tin, 2 tệ/tin (chưa gồm cước), là nhận được 30000 vàng, đồng thời tặng bạn 4 điểm thẻ game (đổi bảo vật ở chỗ người bán đạo cụ trong làng). ĐT CSKH 021-64363139	chuỗi UI trong l.class	

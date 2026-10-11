@@ -217,9 +217,10 @@ public final class VH {
             box(g, BX, by + BH - h, BW, h);
             return;
         }
-        box(g, BX, by, BW, BH);
-        // chan dung + bang ten
-        int tagX = BX + 4;
+        // chan dung: ve TRUOC khung (chim sau khung ban trong suot), khong khung vuong.
+        // Anh lon (vd head_0 moi, cao 150): day anh trung canh day khung thoai.
+        // Anh nho cu (54x54): nho len tren khung, chim 12px sau vien tren.
+        boolean hasHead = false;
         if (dWho >= 0 && dWho < l.I.length && l.I[dWho] != -1) {
             if (headId != l.I[dWho]) {
                 head = loadHead(l.I[dWho]);
@@ -227,20 +228,21 @@ public final class VH {
             }
             if (head != null) {
                 int hw = head.getWidth(), hh = head.getHeight();
-                int hx = dSide == 0 ? BX + 2 : BX + BW - hw - 4;
-                int hy = by - hh - 1;
+                int hy = hh > BH + 40 ? by + BH - hh : by - hh + 12;
+                int hx = dSide == 0 ? 0 : W - hw;
+                g.setClip(0, 0, W, by + BH);
                 g.drawImage(head, hx, hy, Graphics.TOP | Graphics.LEFT);
-                g.setColor(0x2A1A04);
-                g.drawRect(hx - 2, hy - 2, hw + 3, hh + 3);
-                g.setColor(0xE0C080);
-                g.drawRect(hx - 1, hy - 1, hw + 1, hh + 1);
-                if (dSide == 0) tagX = hx + hw + 5;
+                g.setClip(0, 0, W, H);
+                hasHead = true;
             }
         }
+        box(g, BX, by, BW, BH);
+        int tagX = BX + 4;
         if (dName != null && dName.length() > 0) {
             BitmapFont fo = f();
             int tw = fo.stringWidth(dName) + 12, th = 17;
             int ty = by - th + 1;
+            if (hasHead && dSide == 0) tagX = BX + BW - tw - 4;   // bang ten o phia doi dien chan dung
             g.setColor(0x171A2F);
             g.fillRect(tagX + 2, ty + 2, tw - 4, th - 3);
             g.setColor(0x2A1A04);
@@ -268,7 +270,7 @@ public final class VH {
         }
         g.setClip(0, 0, W, H);
         if (dState == 3 && (dTick & 4) == 0) {
-            int ax = BX + BW - 12, ay = by + BH - 10;
+            int ax = BX + BW - 12, ay = by + BH - 5;
             g.setColor(0xFFD66E);
             g.fillTriangle(ax, ay, ax + 7, ay, ax + 3, ay + 4);
         }

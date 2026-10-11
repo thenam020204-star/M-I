@@ -8,7 +8,7 @@
   patch_classes.py <jar_dir>"""
 import os, sys, glob, struct
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from bcpatch import Klass
+from bcpatch import Klass, walk
 
 G, F, S = 'javax/microedition/lcdui/Graphics', 'javax/microedition/lcdui/Font', 'Ljava/lang/String;'
 MAP = {
@@ -40,6 +40,23 @@ def patch_k(k):
     # k.d(Graphics): VH.paint(g, y)
     k.replace_body('d', '(L%s;)V' % G, b'\x2a\xb2' + u2(y) + b'\xb8' + u2(pt) + b'\xb1', 2, 1)
 
+def patch_namebox(k):
+    """h: this.a(l.d[3], j.aS, 3, 0) -> TextBox tên tối đa 3 ký tự (tên Hán). Đổi iconst_3 -> iconst_5
+    (cùng 1 byte) để tên Latin như "Aruru" không ném IllegalArgumentException."""
+    tgt = None
+    for i, e in enumerate(k.cp):
+        if e and e[0] == 10 and k.ref(i) == ('h', 'a', '(%s%sII)V' % (S, S)): tgt = i
+    n = 0
+    for m, a in k.codes():
+        ms, ml, code, tail = k.split_code(a); code = bytearray(code)
+        for pc, op in walk(bytes(code)):
+            if op in (0xb6, 0xb7) and struct.unpack('>H', code[pc+1:pc+3])[0] == tgt \
+                    and code[pc-2] == 0x06 and code[pc-1] == 0x03:
+                code[pc-2] = 0x08; n += 1
+        a[1] = bytearray(struct.pack('>HHI', ms, ml, len(code))) + code + tail
+    assert n == 1, 'không thấy lời gọi TextBox tên (%d)' % n
+    return n
+
 def main(jd):
     for f in sorted(glob.glob(os.path.join(jd, '*.class'))):
         name = os.path.basename(f)[:-6]
@@ -50,6 +67,7 @@ def main(jd):
         if name == 'XMessage': m.update(SPLASH)
         n = k.redirect(m)
         if name == 'k': patch_k(k); n += 3
+        if name == 'h': n += patch_namebox(k)
         if name == 'd':
             for ci, ui, s in k.strings():
                 if s == '测': k.cp[ci] = [8, k.find_or_add_utf('MM')]; n += 1
