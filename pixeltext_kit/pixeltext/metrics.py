@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Turning a string into a set of ink pixels: spacing, wrapping, fitting."""
-from .font import Font, SIZES, height_of, is_sans
+from .font import Font, SIZES, height_of, style_rank
 
 # spacing modes ---------------------------------------------------------------
 #   'metric' : use each glyph's own advance width (what the font designer drew)
@@ -150,14 +150,14 @@ def fit(text, box, sizes=SIZES, modes=('metric', 'tight'), scales=(1,),
     """Pick the biggest (size, mode, scale) whose rendering fits `box`.
 
     box = (w, h) or (x, y, w, h).  Returns a plan dict, or None if nothing fits.
-    Preference order: bigger font > metric spacing > co chan (serif) over khong chan > bigger scale.
+    Preference order: bigger font > metric spacing > co chan > chan chon loc > khong chan > bigger scale.
     """
     if len(box) == 4: _, _, bw, bh = box
     else: bw, bh = box
     bw -= 2 * pad; bh -= 2 * pad
     best = None
     for scale in sorted(scales, reverse=True):
-        for size in sorted(sizes, key=lambda s: (height_of(s), not is_sans(s)), reverse=True):
+        for size in sorted(sizes, key=lambda s: (height_of(s), style_rank(s)), reverse=True):
             f = Font.load(size)
             for mode in modes:
                 for gap in (gaps if mode == 'tight' else (1,)):
@@ -170,6 +170,6 @@ def fit(text, box, sizes=SIZES, modes=('metric', 'tight'), scales=(1,),
                             cand = dict(size=size, mode=mode, scale=scale, text=txt,
                                         gap=gap, line_spacing=line_spacing,
                                         w=m['w'], h=m['h'], lines=m['lines'])
-                            rank = (height_of(size), mode == 'metric', not is_sans(size), scale, -m['lines'], -m['w'])
+                            rank = (height_of(size), mode == 'metric', style_rank(size), scale, -m['lines'], -m['w'])
                             if best is None or rank > best[0]: best = (rank, cand)
     return best[1] if best else None

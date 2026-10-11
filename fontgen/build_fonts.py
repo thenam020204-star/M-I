@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """Sinh bo font 15px / 13px tu fonts/f18.bin (ban chuan).
 
-    python3 fontgen/build_fonts.py            # ghi fonts/f15.bin f13.bin f15s.bin f13s.bin
+    python3 fontgen/build_fonts.py            # ghi fonts/f15 f13 (co chan), f15s f13s, f15c f13c
     python3 fontgen/build_fonts.py --check18  # tu kiem: ghep lai f18 tu chu goc + dau, so voi f18.bin
     python3 fontgen/build_fonts.py --sheet    # in bang ASCII cua tung font vua sinh
 
-Hai bien the:
+Ba bien the:
   f<co>.bin   CO CHAN  - net cua f18 (rong co dinh 7), chi nen chieu cao.
   f<co>s.bin  KHONG CHAN - glyph sans (fontgen/sans18.py) cung luoi 18px, rong theo net -> gon hon.
+  f<co>c.bin  CHAN CHON LOC - nhu khong chan, rieng I i j l J 1 4 giu chan (sans18.SELECTIVE).
 
 Cach nen: chia 18 hang thanh vung  dau(0-4) | tren x(5-8) | x-height(9-14) | duoi(15-17)
 va bo bot hang trong tung vung (15px: 5|3|5|2, 13px: 4|2|5|2). Moi glyph chon to hop hang bo
@@ -184,7 +185,7 @@ def place(canvas, rows, top, left):
                 canvas[y][x] = 1
 
 
-def compose(base, marks, size, upper, odd_ok):
+def compose(base, marks, size, upper, odd_ok, anchor_col=None):
     """base: bitmap da nen (h hang, co the rong them 2 cot le de chua dau/moc).
     Tra ve bitmap moi (cung chieu rong, cot co the am -> dung le PAD)."""
     lay = LAYOUT[size]
@@ -196,6 +197,8 @@ def compose(base, marks, size, upper, odd_ok):
     x0, x1 = ink_cols(base)
     anchor = PAD + (x0 + x1) // 2
     odd = odd_ok and (x1 - x0 + 1) % 2 == 1
+    if anchor_col is not None:      # dat dau thang mot cot (than chu), dung dau kieu le
+        anchor, odd = PAD + anchor_col, True
 
     def mk(m):
         return ODD[m] if odd and m in ODD else MARKS[m]
@@ -254,9 +257,9 @@ def decomp(ch):
     return ch, []
 
 
-def sans_glyph(ch, f18):
-    if ch in sans18.GLYPHS:
-        top, spec = sans18.GLYPHS[ch]
+def sans_glyph(ch, f18, extra=None):
+    if extra and ch in extra or ch in sans18.GLYPHS:
+        top, spec = extra[ch] if extra and ch in extra else sans18.GLYPHS[ch]
         rows = spec.split()
         w = max(len(r) for r in rows)
         bm = blank(18, w)
@@ -272,6 +275,8 @@ def sans_glyph(ch, f18):
 def build(variant, size):
     charset, f18 = load_f18()
     serif = variant == 'serif'
+    extra = sans18.SELECTIVE if variant == 'mixed' else None
+    anchors = sans18.SELECTIVE_ANCHOR if variant == 'mixed' else {}
     src = dict(f18)
     # i khong cham, dung lam goc cho í ì ỉ ĩ ị
     src['ı'] = [r[:] if y >= 9 else [0] * len(r) for y, r in enumerate(f18['i'])]
@@ -279,9 +284,10 @@ def build(variant, size):
 
     def base_of(ch):
         if ch not in cache:
-            bm = src[ch] if serif else sans_glyph(ch, src)
+            bm = src[ch] if serif else sans_glyph(ch, src, extra)
             kind = 'lower' if (ch.islower() or ch in 'ıđ') else 'upper' if ch.isalnum() else 'symbol'
-            force = BASE_OVERRIDES.get((variant, size, ch), ())
+            ov = variant if variant != 'mixed' or ch in extra else 'sans'   # chu chung -> dung chon tay cua sans
+            force = BASE_OVERRIDES.get((ov, size, ch), ())
             cache[ch] = compress(bm, size, kind, force) if bm and bm[0] else blank(KEEP_H(size), 0)
         return cache[ch]
 
@@ -300,7 +306,7 @@ def build(variant, size):
                 b = 'ı'
             base = base_of(b)
             if marks:
-                cv, pad = compose(base, marks, size, b.isupper(), not serif)
+                cv, pad = compose(base, marks, size, b.isupper(), not serif, anchors.get(b))
             else:
                 cv, pad = [r[:] for r in base], 0
             if serif:
@@ -326,8 +332,11 @@ def KEEP_H(size):
     return sum(KEEP[size].values())
 
 
+SUFFIX = {'serif': '', 'sans': 's', 'mixed': 'c'}
+
+
 def out_name(variant, size):
-    return 'f%d%s.bin' % (size, '' if variant == 'serif' else 's')
+    return 'f%d%s.bin' % (size, SUFFIX[variant])
 
 
 def sheet(charset, glyphs, per=16):
@@ -350,7 +359,7 @@ def main(argv):
         print('ghep lai f18: %d/%d glyph trung khop; khac: %s'
               % (len(charset) - len(bad), len(charset), ''.join(bad)))
         return 0
-    targets = [(v, s) for s in (15, 13) for v in ('serif', 'sans')]
+    targets = [(v, s) for s in (15, 13) for v in ('serif', 'sans', 'mixed')]
     if '--with-18s' in argv:
         targets.append(('sans', 18))
     for v, s in targets:

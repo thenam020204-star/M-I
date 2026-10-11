@@ -30,15 +30,21 @@ for s in pt.SIZES:
     T(pt.Font.load(s).ambiguous_in("TRÒ ƯƠNG ẮẰẲẴ 0O Il1|") == [], "%spx: capitals with tone marks, 0/O, I/l/1 distinct" % s)
 T(pt.Font.load(13).ambiguous_in(",‚") == [(',', '‚'), ('‚', ',')], ",/‚ ambiguity detected")
 for s in (15, 13):
-    T(pt.Font.load(s).height == s and pt.Font.load('%ds' % s).height == s, "%dpx: both variants" % s)
+    T(pt.Font.load(s).height == s == pt.Font.load('%ds' % s).height == pt.Font.load('%dc' % s).height,
+      "%dpx: all three variants" % s)
     T(set(pt.Font.load(s).glyphs[c].advance for c in pt.Font.load(s).chars if c != ' ') == {7},
       "%dpx co chan: fixed width 7 like f18" % s)
     T(pt.measure("Trò chơi mới", '%ds' % s)['w'] < pt.measure("Trò chơi mới", s)['w'] * 3 // 4,
       "%dpx khong chan is narrower" % s)
+    T(pt.measure("Trò chơi mới", '%dc' % s)['w'] < pt.measure("Trò chơi mới", s)['w'] * 3 // 4,
+      "%dpx chan chon loc is narrower" % s)
+    sel, sans = pt.Font.load('%dc' % s), pt.Font.load('%ds' % s)
+    diff = ''.join(c for c in sel.chars if sel.glyphs[c].bitmap != sans.glyphs[c].bitmap)
+    T(diff == '14IJijlíìỉĩịÍÌỈĨỊ', "%dpx chan chon loc: only I i j l J 1 4 keep serifs (%s)" % (s, diff))
 
 m = pt.measure("Trò chơi mới", 13)
 T(m['w'] == 80 and m['h'] == 13 and m['lines'] == 1, "measure 13px")
-EXPECT_W = {18: 80, 15: 80, 13: 80, '15s': 56, '13s': 54}   # "Trò chơi mới"
+EXPECT_W = {18: 80, 15: 80, 13: 80, '15s': 56, '13s': 54, '15c': 58, '13c': 56}   # "Trò chơi mới"
 for s, w_ in EXPECT_W.items():
     T(pt.measure("Trò chơi mới", s)['w'] == w_, "measure %spx" % s)
 T(pt.measure("a\nbb", 13)['lines'] == 2, "multi-line measure")

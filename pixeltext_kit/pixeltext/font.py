@@ -5,19 +5,27 @@ from . import container
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 # Every shipped cut.  18 / 15 / 13 = co chan (net cua f18, rong co dinh 7);
-# '15s' / '13s' = khong chan (rong theo net, gon hon).  15/13 sinh tu f18 bang fontgen/build_fonts.py.
-SIZES = (18, 15, 13, '15s', '13s')
+# '15s' / '13s' = khong chan (rong theo net, gon hon);
+# '15c' / '13c' = chan chon loc (nhu khong chan, rieng I i j l J 1 4 giu chan).
+# 15/13 sinh tu f18 bang fontgen/build_fonts.py.
+SIZES = (18, 15, 13, '15s', '13s', '15c', '13c')
 FONTS = {n: 'f%s.bin' % n for n in SIZES}
 ALL = SIZES
 
 
 def height_of(size):
     """pixel height of a font key: 15 -> 15, '13s' -> 13"""
-    return int(str(size).rstrip('s'))
+    return int(str(size).rstrip('sc'))
 
 
 def is_sans(size):
     return str(size).endswith('s')
+
+
+def style_rank(size):
+    """co chan 2 > chan chon loc 1 > khong chan 0 (thu tu uu tien cua fit)"""
+    s = str(size)
+    return 0 if s.endswith('s') else 1 if s.endswith('c') else 2
 # One source of truth for the .bin files: <repo>/fonts. PIXELTEXT_FONTS overrides.
 FONT_DIRS = [os.environ.get('PIXELTEXT_FONTS', ''),
              os.path.join(HERE, '..', '..', 'fonts'),

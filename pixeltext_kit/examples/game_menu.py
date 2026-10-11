@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Dựng thử một màn hình game 240x320 bằng pixeltext, ở mọi font (18/15/13 có chân, 15s/13s không chân).
+"""Dựng thử một màn hình game 240x320 bằng pixeltext, ở mọi font (18/15/13 có chân, 15s/13s không chân, 15c/13c chân chọn lọc).
 
 Mọi chữ trên màn hình đều do pixeltext vẽ - không dùng font hệ thống.
 """

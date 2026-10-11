@@ -1,17 +1,17 @@
 import java.io.*;
 import javax.microedition.lcdui.Graphics;
 
-/** Render thu moi font (18/15/13 co chan, 15s/13s khong chan) ra PNG: java FontDemo <thu_muc_font> <out.png> */
+/** Render thu moi font (18/15/13 co chan, 15s/13s khong chan, 15c/13c chan chon loc) ra PNG: java FontDemo <thu_muc_font> <out.png> */
 public class FontDemo {
     public static void main(String[] a) throws Exception {
         String dir = a[0];
-        int W = 300, H = 420, S = 3;
+        int W = 300, H = 560, S = 3;
         Graphics g = new Graphics(W, H);
         g.setColor(0x20304A); g.fillRect(0, 0, W, H);
         String text = "Vương Quốc Sủng Vật - Cầu Vồng. Ngày xưa, ở một vương quốc xa xôi, "
                 + "những chú thú cưng sống vui vẻ bên nhau.";
         int y = 4;
-        String[] sizes = {"18", "15", "13", "15s", "13s"};
+        String[] sizes = {"18", "15", "13", "15s", "13s", "15c", "13c"};
         for (int k = 0; k < sizes.length; k++) {
             BitmapFont f = new BitmapFont(new DataInputStream(new FileInputStream(dir + "/f" + sizes[k] + ".bin")));
             g.setColor(0xFFD700);

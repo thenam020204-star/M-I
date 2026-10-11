@@ -1,6 +1,6 @@
 # Tool Việt Hoá J2ME — NAM.P (cây sạch)
 
-Bộ font lấy **`f18.bin` làm chuẩn**; mọi cỡ nhỏ hơn được nén ra từ nó, mỗi cỡ có 2 biến thể (ảnh: `fonts_preview.png`):
+Bộ font lấy **`f18.bin` làm chuẩn**; mọi cỡ nhỏ hơn được nén ra từ nó, mỗi cỡ có 3 biến thể (ảnh: `fonts_preview.png`):
 
 | File | Cỡ | Kiểu | Chữ hoa | x-height | Rộng | Dấu cách | `"Trò chơi mới"` |
 |---|---|---|---|---|---|---|---|
@@ -9,10 +9,24 @@ Bộ font lấy **`f18.bin` làm chuẩn**; mọi cỡ nhỏ hơn được nén 
 | `f13.bin`  | 13 | có chân (nét f18)     | 7  | 5 | cố định 7 | 5 | 80 px |
 | `f15s.bin` | 15 | không chân, gọn       | 8  | 5 | theo nét  | 4 | 56 px |
 | `f13s.bin` | 13 | không chân, gọn       | 7  | 5 | theo nét  | 3 | 54 px |
+| `f15c.bin` | 15 | chân chọn lọc         | 8  | 5 | theo nét  | 4 | 58 px |
+| `f13c.bin` | 13 | chân chọn lọc         | 7  | 5 | theo nét  | 3 | 56 px |
+
+**Chân chọn lọc** = bản không chân, riêng vài chữ giữ chân vì đẹp hơn mà gần như không tốn chỗ:
+
+| Chữ | Chân | Lý do |
+|---|---|---|
+| `I` | mũ trên + đế dưới (rộng 3) | `I` trơn 1 cột trông y như `l`, `\|`; có chân là nhận ra ngay |
+| `i ı j l` | cờ trên-trái (rộng 2) | chữ nét đơn không bị "lọt thỏm" giữa chữ khác; `l` tách hẳn khỏi `I`, `1` |
+| `J` `1` `4` | cờ / đế nằm trong khung sẵn có | thêm nét mà không tăng độ rộng |
+| `A H K M N U V W X Y` | bỏ | chân hai bên tốn thêm 1–2 cột, ở 13px dính sang chữ cạnh |
+| `B D E F L P R` | bỏ | gai trái đẩy thân chữ sang phải 1 cột |
+| `n m h k u v w x y z b d p q` | bỏ | chân trong x-height 5 hàng làm chữ đặc, rộng thêm 2 cột |
+| gai của `C E G S T Z 2 7` | bỏ | ở 7–8 hàng chỉ làm rối chữ |
 
 ```
-fonts/            f18.bin (gốc) + f15/f13 (có chân) + f15s/f13s (không chân)
-fontgen/          build_fonts.py (sinh f15/f13 từ f18), sans18.py (glyph không chân vẽ tay ở lưới 18px)
+fonts/            f18.bin (gốc) + f15/f13 (có chân) + f15s/f13s (không chân) + f15c/f13c (chân chọn lọc)
+fontgen/          build_fonts.py (sinh f15/f13 từ f18), sans18.py (glyph không chân + chân chọn lọc vẽ tay ở lưới 18px)
 java/             BitmapFont.java, BitmapFont.class (Java 1.3, preverify), build_class.sh, test/ (FontDemo + stubs)
 pixeltext_kit/    pixeltext/ (Python vẽ chữ pixel), examples/, selftest.py
 freej2me/         freej2me_plus.jar, freej2me_plus-lr.jar, Win32Pad.exe
@@ -26,7 +40,7 @@ Cả 5 file dùng chung charset 227 ký tự của f18.
 
 ## Cách sinh f15 / f13 (`fontgen/build_fonts.py`)
 ```
-python3 fontgen/build_fonts.py            # ghi lại fonts/f15.bin f13.bin f15s.bin f13s.bin
+python3 fontgen/build_fonts.py            # ghi lại fonts/f15 f13, f15s f13s, f15c f13c
 python3 fontgen/build_fonts.py --check18  # tự kiểm: ghép lại f18 từ chữ gốc + dấu -> 227/227 khớp f18.bin
 python3 fontgen/build_fonts.py --sheet    # in bảng ASCII mọi glyph vừa sinh
 ```
@@ -36,6 +50,7 @@ python3 fontgen/build_fonts.py --sheet    # in bảng ASCII mọi glyph vừa si
   được bỏ tự do trong thân chữ (10 hàng → 8 / 7). Vài chữ chọn tay trong `BASE_OVERRIDES`.
 - Chữ có dấu được **ghép lại**: chữ gốc đã nén + dấu sắc/huyền/hỏi/ngã/nặng, mũ, trăng, móc của f18,
   đặt theo bố cục từng cỡ (13px chữ hoa chỉ còn 4 hàng cho dấu nên dấu kép sát đầu chữ, dấu hỏi rút còn 2 hàng).
+- Bản **chân chọn lọc**: dùng chung glyph với bản không chân, thay riêng `SELECTIVE` trong `sans18.py`.
 - Bản **không chân**: glyph sans vẽ tay ở lưới 18px (`fontgen/sans18.py`), nén cùng thuật toán, cắt sát
   rồi cộng 1 cột cách; chữ số giữ cùng độ rộng để canh điểm số.
 - Muốn sửa glyph: sửa `sans18.py` / `BASE_OVERRIDES` rồi chạy lại script và `check_all.sh`
@@ -44,10 +59,11 @@ python3 fontgen/build_fonts.py --sheet    # in bảng ASCII mọi glyph vừa si
 ## Dùng trong game
 Chép `java/BitmapFont.class` vào gốc jar và các `fonts/*.bin` cần dùng vào `/font/` trong jar.
 ```java
-BitmapFont.setDefault(BitmapFont.SIZE_13, BitmapFont.SANS);   // 13px không chân (f13s.bin)
+BitmapFont.setDefault(BitmapFont.SIZE_13, BitmapFont.SANS);       // 13px không chân (f13s.bin)
+BitmapFont.setDefault(BitmapFont.SIZE_13, BitmapFont.SELECTIVE);  // 13px chân chọn lọc (f13c.bin)
 BitmapFont f = BitmapFont.get(BitmapFont.SIZE_15);             // 15px có chân (f15.bin)
 ```
-Cỡ khác được làm tròn về cỡ gần nhất (≥17 → 18, 14–16 → 15, ≤13 → 13); 18 chưa có bản không chân nên `SANS` ở 18 dùng f18.
+Cỡ khác được làm tròn về cỡ gần nhất (≥17 → 18, 14–16 → 15, ≤13 → 13); 18 chỉ có bản có chân nên `SANS` / `SELECTIVE` ở 18 dùng f18.
 Mã mẫu đầy đủ: comment đầu `BitmapFont.java`.
 
 ## Dùng pixeltext (vẽ chữ lên ảnh)
@@ -58,7 +74,7 @@ python3 -m pixeltext fit     --text "Trò chơi mới" --box 64x16
 python3 -m pixeltext patch   --image tab.png --box 6,4,70,17 --text "Nhiệm vụ" --size 13s --out tab_vi.png
 python3 selftest.py
 ```
-`--size` nhận `18`, `15`, `13`, `15s`, `13s` hoặc `all`. Font được tìm ở `../fonts` (hoặc biến môi trường `PIXELTEXT_FONTS`).
+`--size` nhận `18`, `15`, `13`, `15s`, `13s`, `15c`, `13c` hoặc `all`. Font được tìm ở `../fonts` (hoặc biến môi trường `PIXELTEXT_FONTS`).
 Hướng dẫn đầy đủ: `pixeltext_kit/README.md`.
 
 ## Biên dịch lại BitmapFont.class

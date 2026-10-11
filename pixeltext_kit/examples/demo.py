@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Vẽ thử chuỗi "Trò chơi mới" ở mọi font (18/15/13 có chân, 15s/13s không chân)."""
+"""Vẽ thử chuỗi "Trò chơi mới" ở mọi font (18/15/13 có chân, 15s/13s không chân, 15c/13c chân chọn lọc)."""
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pixeltext as pt

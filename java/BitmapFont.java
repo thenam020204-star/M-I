@@ -7,16 +7,18 @@ import javax.microedition.lcdui.Image;
 
 /**
  * Bo dieu khien font bitmap cho J2ME (CLDC 1.0, MIDP 2.0).
- * Co chu 18 / 15 / 13 px, moi co 2 bien the:
- *   co chan   (f18.bin f15.bin f13.bin)  - net cua f18, rong co dinh 7
- *   khong chan (f15s.bin f13s.bin)       - rong theo net, gon hon (18 chua co -> dung ban co chan)
+ * Co chu 18 / 15 / 13 px, 3 bien the:
+ *   SERIF     co chan        (f18.bin f15.bin f13.bin) - net cua f18, rong co dinh 7
+ *   SANS      khong chan     (f15s.bin f13s.bin)       - rong theo net, gon hon
+ *   SELECTIVE chan chon loc  (f15c.bin f13c.bin)       - nhu SANS, rieng I i j l J 1 4 giu chan
+ * 18px chi co ban co chan; SANS / SELECTIVE o 18 -> dung f18.
  *
  * Dinh dang file .bin (DataInputStream):
  *   UTF charset | byte height | byte width[n] | bit atlas (hang-truoc, LSB-first)
  * Atlas la mot dai ngang: glyph i nam o cot offset[i]..offset[i]+width[i]-1.
  *
  * Cach dung:
- *   BitmapFont.setDefault(BitmapFont.SIZE_13, BitmapFont.SANS);   // hoac setDefault(SIZE_13) = co chan
+ *   BitmapFont.setDefault(BitmapFont.SIZE_13, BitmapFont.SELECTIVE);   // hoac SANS, SERIF; setDefault(SIZE_13) = co chan
  *   BitmapFont f = BitmapFont.current();
  *   g.setColor(0xFFFFFF);
  *   f.drawString(g, "Xin chào", x, y, Graphics.TOP | Graphics.LEFT);
@@ -28,19 +30,21 @@ public final class BitmapFont {
     public static final int SIZE_15 = 15;
     public static final int SIZE_13 = 13;
 
-    /** Bien the: co chan (nhu f18) / khong chan (gon hon). */
-    public static final boolean SERIF = false;
-    public static final boolean SANS = true;
+    /** Bien the: co chan (nhu f18) / khong chan (gon hon) / chan chon loc. */
+    public static final int SERIF = 0;
+    public static final int SANS = 1;
+    public static final int SELECTIVE = 2;
 
-    /** Cac co chu co san; file: f<co>.bin (co chan), f<co>s.bin (khong chan). */
+    /** Cac co chu co san; file: f<co><hau to>.bin, hau to theo bien the: "" / "s" / "c". */
     private static final int[] SIZES = { SIZE_18, SIZE_15, SIZE_13 };
-    /** Co nao co ban khong chan. */
-    private static final boolean[] HAS_SANS = { false, true, true };
+    private static final String[] SUFFIX = { "", "s", "c" };
+    /** Co nao co ban SANS / SELECTIVE. */
+    private static final boolean[] HAS_STYLES = { false, true, true };
 
     /** Thu muc chua cac file font trong jar. */
     private static String resDir = "/font/";
 
-    private static final BitmapFont[] fonts = new BitmapFont[SIZES.length * 2];
+    private static final BitmapFont[] fonts = new BitmapFont[SIZES.length * 3];
     private static BitmapFont current;
 
     private static final int CACHE = 4;
@@ -74,21 +78,20 @@ public final class BitmapFont {
         resDir = dir;
     }
 
-    /** Lay font co chan theo co chu (18, 15, 13). Xem get(int, boolean). */
+    /** Lay font co chan theo co chu (18, 15, 13). Xem get(int, int). */
     public static BitmapFont get(int size) {
         return get(size, SERIF);
     }
 
     /**
-     * Lay font theo co chu (18, 15, 13) va bien the (SERIF / SANS); nap lan dau khi can.
-     * Co khac -> co gan nhat (>=17 -> 18, 14..16 -> 15, <=13 -> 13). SANS o co chua co -> co chan.
+     * Lay font theo co chu (18, 15, 13) va bien the (SERIF / SANS / SELECTIVE); nap lan dau khi can.
+     * Co khac -> co gan nhat (>=17 -> 18, 14..16 -> 15, <=13 -> 13). Bien the chua co -> co chan.
      * Tra ve null neu loi.
      */
-    public static synchronized BitmapFont get(int size, boolean sans) {
-        int i = slot(size, sans);
+    public static synchronized BitmapFont get(int size, int style) {
+        int i = slot(size, style);
         if (fonts[i] == null) {
-            int k = i % SIZES.length;
-            fonts[i] = load(resDir + "f" + SIZES[k] + (i >= SIZES.length ? "s" : "") + ".bin");
+            fonts[i] = load(resDir + "f" + SIZES[i % SIZES.length] + SUFFIX[i / SIZES.length] + ".bin");
         }
         return fonts[i];
     }
@@ -99,8 +102,8 @@ public final class BitmapFont {
     }
 
     /** Chon co chu + bien the mac dinh cho current(). */
-    public static void setDefault(int size, boolean sans) {
-        BitmapFont f = get(size, sans);
+    public static void setDefault(int size, int style) {
+        BitmapFont f = get(size, style);
         if (f != null) {
             current = f;
         }
@@ -114,18 +117,19 @@ public final class BitmapFont {
         return current;
     }
 
-    /** Giai phong font khong dung (ca hai bien the) de tiet kiem bo nho. */
+    /** Giai phong font khong dung (moi bien the) de tiet kiem bo nho. */
     public static synchronized void unload(int size) {
-        for (int v = 0; v < 2; v++) {
-            int i = slot(size, v == 1);
+        for (int v = 0; v < SUFFIX.length; v++) {
+            int i = slot(size, v);
             if (fonts[i] != null && fonts[i] == current) current = null;
             fonts[i] = null;
         }
     }
 
-    private static int slot(int size, boolean sans) {
+    private static int slot(int size, int style) {
         int k = size >= 17 ? 0 : size >= 14 ? 1 : 2;   // chi so trong SIZES
-        return sans && HAS_SANS[k] ? SIZES.length + k : k;
+        if (style < 0 || style >= SUFFIX.length || !HAS_STYLES[k]) style = SERIF;
+        return style * SIZES.length + k;
     }
 
     /** Nap font tu resource trong jar. */

@@ -86,3 +86,25 @@ SPACE = {18: 4, 15: 4, 13: 3}
 
 # Chu so dung chung mot do rong (de canh so diem), cac ky tu con lai rong theo net.
 TABULAR = '0123456789'
+
+# ---------------------------------------------------------------- CHAN CHON LOC (f<co>c.bin)
+# Nen la ban khong chan; chi nhung chu duoi day giu chan (danh gia o luoi 18px, so voi f18):
+#   giu  I        mu tren + de duoi (3 cot): I tron 1 cot de nham voi l | 1, chan lam ro chu
+#   giu  i ı j l  co tren-trai 1 cot: chu net don khong bi "lot tom", tach biet l / I / 1
+#   giu  J 1 4    chan nam gon trong khung san co (khong ton them cot)
+#   bo   A H K M N U V W X Y        chan hai ben ton them 1-2 cot, o 13px dinh sang chu ben canh
+#   bo   B D E F L P R              gai trai day than chu sang phai 1 cot
+#   bo   n m h k u v w x y z b d p q  chan trong x-height 5 hang lam chu dac, rong them 2 cot
+#   bo   gai cua C E G S T Z 2 7    o 7-8 hang chi lam roi chu
+SELECTIVE = {
+    'I': (5, "### .#. .#. .#. .#. .#. .#. .#. .#. ###"),
+    'J': (5, "..## ...# ...# ...# ...# ...# ...# #..# #..# .##."),
+    '1': (5, "..#.. .##.. #.#.. ..#.. ..#.. ..#.. ..#.. ..#.. ..#.. .###."),
+    '4': (5, "...#. ..##. .#.#. .#.#. #..#. #..#. ##### ...#. ...#. ..###"),
+    'i': (6, ".# .. .. ## .# .# .# .# .#"),
+    'ı': (9, "## .# .# .# .# .#"),
+    'j': (6, ".# .. .. ## .# .# .# .# .# .# .# #."),
+    'l': (5, "## .# .# .# .# .# .# .# .# .#"),
+}
+# cot dat dau cua chu goc (mac dinh: giua net) - chu co co lech trai thi dat dau tren than
+SELECTIVE_ANCHOR = {'ı': 1}

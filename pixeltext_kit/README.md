@@ -1,7 +1,7 @@
 # pixeltext — bộ công cụ vẽ chữ pixel tiếng Việt cho AI
 
-Vẽ chữ tiếng Việt có dấu bằng font bitmap `fontcus`, **3 cỡ 18 / 15 / 13 px, 2 biến thể**:
-`18` `15` `13` = có chân (nét của f18, rộng cố định 7) · `15s` `13s` = không chân (rộng theo nét, gọn hơn).
+Vẽ chữ tiếng Việt có dấu bằng font bitmap `fontcus`, **3 cỡ 18 / 15 / 13 px, 3 biến thể**:
+`18` `15` `13` = có chân (nét của f18, rộng cố định 7) · `15s` `13s` = không chân (rộng theo nét, gọn hơn) · `15c` `13c` = chân chọn lọc (như không chân, riêng `I i j l J 1 4` giữ chân).
 Đo trước khi vẽ, tự chọn cỡ vừa ô, xem bằng ASCII art, và vá chữ vào ảnh có sẵn mà giữ màu gốc.
 File font nằm ở `../fonts/f{cỡ}.bin` (vd. `f13s.bin`). Ở mọi chỗ nhận `size`, dùng `13` hoặc `'13s'`.
 
@@ -10,7 +10,7 @@ Yêu cầu: Python 3.8+, Pillow. Không cần cài đặt, `pixeltext/` nằm c�
 ```
 pixeltext/   container.py (đọc/ghi font.bin) · font.py · metrics.py · paint.py · cli.py
 examples/    demo.py, game_menu.py
-selftest.py  60 kiểm tra
+selftest.py  72 kiểm tra
 ```
 
 ## 1. Các cỡ font
@@ -22,10 +22,12 @@ selftest.py  60 kiểm tra
 | 13 | có chân | 13 | 7 | 5 | 10 | cố định 7 | 5 |
 | 15s | không chân | 15 | 8 | 5 | 12 | theo nét (2–7) | 4 |
 | 13s | không chân | 13 | 7 | 5 | 10 | theo nét (2–7) | 3 |
+| 15c | chân chọn lọc | 15 | 8 | 5 | 12 | theo nét (2–7) | 4 |
+| 13c | chân chọn lọc | 13 | 7 | 5 | 10 | theo nét (2–7) | 3 |
 
-Bề rộng `Trò chơi mới`: 80 px (18 / 15 / 13) · 56 px (15s) · 54 px (13s).
+Bề rộng `Trò chơi mới`: 80 px (18 / 15 / 13) · 56 px (15s) · 54 px (13s) · 58 px (15c) · 56 px (13c).
 Chữ hoa có dấu, `0`/`O`, `I`/`l`/`1` đều phân biệt được ở mọi font. Chỉ còn trùng glyph `,`/`‚` — luôn chạy `check` trước khi chốt chuỗi.
-`fit` ưu tiên: cỡ lớn hơn > khoảng cách chuẩn (metric) > có chân.
+`fit` ưu tiên: cỡ lớn hơn > khoảng cách chuẩn (metric) > có chân > chân chọn lọc > không chân.
 
 ---
 
@@ -43,7 +45,7 @@ python3 -m pixeltext show    --text "Trò chơi mới" --size 13s
 
 # cỡ nào lớn nhất mà vẫn lọt ô 64x16?
 python3 -m pixeltext fit     --text "Trò chơi mới" --box 64x16
-# -> {"size": "15s", "mode": "metric", "gap": 1, "w": 56, "h": 15, ...}
+# -> {"size": "15c", "mode": "metric", "gap": 1, "w": 58, "h": 15, ...}
 
 # xuất PNG
 python3 -m pixeltext draw    --text "Trò chơi mới" --size 13 --scale 4 \
@@ -136,14 +138,14 @@ bỏ qua viền) · `flat` (một màu cho cả khối).
 Nếu vẽ chữ để nhét vào bảng glyph 8×16 của engine J2ME (2bpp, đọc `w = (b0<<8)|b1`):
 **cột 7 phải để trống**. `b0` bị sign-extend nên nếu bit 15 bật thì engine vẽ thừa
 một cột đè lên ký tự kế tiếp. Mọi font ở đây rộng tối đa 7 px. Riêng bản có chân (18/15/13)
-giữ nguyên thiết kế f18: móc của `ơ ư Ơ Ư` (và gạch `đ`) chạm cột 7 — dùng bản `s` nếu cần cột 7 trống.
+giữ nguyên thiết kế f18: móc của `ơ ư Ơ Ư` (và gạch `đ`) chạm cột 7 — dùng bản `s` hoặc `c` nếu cần cột 7 trống.
 
 ---
 
 ## 6. Tự kiểm tra
 
 ```bash
-python3 selftest.py          # 60 assert: codec, metric, wrap, fit, render, patch
+python3 selftest.py          # 72 assert: codec, metric, wrap, fit, render, patch
 python3 examples/demo.py     # "Trò chơi mới" ở mọi cỡ + ASCII
 python3 examples/game_menu.py  # màn hình menu game 240x320 dựng ở mọi cỡ
 ```

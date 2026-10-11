@@ -6,7 +6,7 @@
   python3 -m pixeltext check    --text "Trò chơi mới ★"
   python3 -m pixeltext fit      --text "Trò chơi mới" --box 64x16
   python3 -m pixeltext wrap     --text "..." --width 200 --size 13s
-(--size: 18, 15, 13 = co chan; 15s, 13s = khong chan; all = tat ca)
+(--size: 18, 15, 13 = co chan; 15s, 13s = khong chan; 15c, 13c = chan chon loc; all = tat ca)
   python3 -m pixeltext draw     --text "..." --size 13 --scale 3 --out a.png
   python3 -m pixeltext compare  --text "..." --out cmp.png
   python3 -m pixeltext sheet    --size 13 --out sheet.png
@@ -70,7 +70,7 @@ def main(argv=None):
     p = sub.add_parser('fit', help='pick the biggest size/mode that fits a box')
     p.add_argument('--text', required=True)
     p.add_argument('--box', required=True, type=_box, help='WxH or x,y,W,H')
-    p.add_argument('--sizes', default='13s,13,15s,15,18')
+    p.add_argument('--sizes', default='13s,13c,13,15s,15c,15,18')
     p.add_argument('--scales', default='1')
     p.add_argument('--no-wrap', action='store_true')
     p.add_argument('--pad', type=int, default=0)
