@@ -13,7 +13,7 @@ for _s in (sys.stdout, sys.stdin):
 W = 'dp_work'
 P = lambda n: os.path.join(W, n)
 CJK = re.compile(r'[\u3000-\u303f\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff00-\uffef]')
-CODE0 = r'\\[nrt]|%\d*[sdfx]|\{\d+\}|\$\d+|\^\d|#[0-9A-Za-z]|</?[A-Za-z][^<>]{0,20}>|[|@~]'
+CODE0 = r'\\[nrt]|%\d*[sdfx]|\{\d+\}|\$\d+|\^\d|#[0-9A-Za-z]|</?[A-Za-z][^<>]{0,20}>|[|@]'
 NLE, TABE = '¶', '⇥'
 PR = re.compile(r'^(\s*[^\s#!=:][^=:]*?\s*[=:]\s*)(.*)$')
 HDR = dict(

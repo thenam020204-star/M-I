@@ -48,7 +48,7 @@ def main(jd, rd, outp):
             if not CJK.search(s): continue
             kind = {'az': 'vật phẩm: tên' if i % 2 == 0 else 'vật phẩm: mô tả',
                     'aB': 'trang bị: tên', 'ay': 'kỹ năng/thẻ: tên'}[sec]
-            lim = 10 if (sec != 'az' or i % 2 == 0) else ''
+            lim = 16 if (sec != "az" or i % 2 == 0) else ""
             mk('P:%s:%d' % (sec, i), 'l9.pro', '%s[%d]' % (sec, i), s, kind, lim)
     for f in sorted(glob.glob(os.path.join(jd, '*.class'))):
         fn = os.path.basename(f)
@@ -56,7 +56,9 @@ def main(jd, rd, outp):
         for ci, ui, s in c.strings():
             if not CJK.search(s): continue
             if fn == 'd.class' and s == '测': continue   # đơn vị đo bề rộng, xử lý riêng trong hook
-            lim = len(s) * 2 + 2 if len(s) <= 6 and '|' not in s else ''
+            lim = max(6, len(s) * 2 + 2) if len(s) <= 6 and "|" not in s else ""
+            if lim in (6, 8): lim += 4
+            elif lim in (12, 14): lim = 18
             mk('C:%s:%d' % (fn, ci), fn, 'cp%d' % ci, s, 'chuỗi UI trong %s' % fn, lim)
     with open(outp, 'w', encoding='utf-8') as fo:
         fo.write('id\tfile\tkhoa\tgoc\tdich\tghi chu\tgioi han\n')
