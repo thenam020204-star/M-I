@@ -23,8 +23,8 @@
 - [x] Kiểm kê, decompile, trích text (work/text_goc.tsv, 3637 dòng / 3618 duy nhất / 89k chữ Hán), roundtrip byte OK.
 - [x] Hook VH (font 15c, wrap theo từ, dsn) + khung thoại mới + splash VL — rebuild.sh PASS
 - [x] Dịch dp 3618/3618 (out/text_can_dich.tsv); dp check chỉ còn 33 'dài' ước lượng ở nhãn UI o.class -> soát bằng ảnh chụp
-- [ ] Ảnh có chữ (menu_*, al[2] "#跳过", em_000 bong bóng "是", title...)
-- [ ] Test các màn, bàn giao zip
+- [x] Ảnh có chữ: 29 ảnh (scripts/vh_images.py, toạ độ ô từ o.java); giữ logo tiêu đề/nhà phát hành/biển hiệu bản đồ
+- [x] Test FreeJ2ME các màn chính (out/shots), dp check OK 3618/3618, rebuild tái lập, bàn giao zip
 
 ## Lỗi đã gặp
 - run_emu.py của skill truyền sai thứ tự tham số FreeJ2ME -> dùng bản sửa từ dự án magioi.

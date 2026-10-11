@@ -1,1 +1,2 @@
 2387: gốc 血剑换女 (lỗi gõ) -> dịch Huyết Thủ Ngọc Nữ theo ngữ cảnh lưỡi hái
+Giới hạn ký tự ước lượng của 33 nhãn UI o.class được nới theo đo px thực (BitmapFont 15c) và soát ảnh chụp; riêng k=69 rút gọn 'Tâm pháp cao cấp' (ô 98px).
