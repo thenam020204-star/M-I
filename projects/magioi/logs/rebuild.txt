@@ -1,0 +1,19 @@
+menu_string.png 7
+menu_ingamestring.png 10
+menu_ingamestring.png 7
+ảnh res đã vá: 2
+packed 284 entries -> 31 res files
+đã nạp 1666 chuỗi 
+XMessage 1
+d 10
+h 25
+i 36
+j 4
+k 4
+ProGuard, version 7.4.2
+WARN VH.class: API mới so với bản gốc: java/lang/StringBuffer.append(C)Ljava/lang/StringBuffer; (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/lang/StringBuffer.setLength(I)V (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/util/Vector.copyInto([Ljava/lang/Object;)V (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: javax/microedition/lcdui/Graphics.fillTriangle(IIIIII)V (xác nhận máy đích có)
+RESULT: PASS
+OK -> out/MaGioiChienKy_VH.jar

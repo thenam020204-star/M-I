@@ -1,0 +1,17 @@
+Thêm: ['BitmapFont.class', 'VH.class', 'VL.class', 'font/f13c.bin', 'vh_logo.png']
+Xoá: []
+Đổi: ['XMessage.class', 'a.class', 'b.class', 'c.class', 'd.class', 'e.class', 'f.class', 'g.class', 'h.class', 'head_0.png', 'i.class', 'j.class', 'k.class', 'l.class', 'level-9', 'm.class', 'map0.map', 'map1.map', 'map12.map', 'map14.map', 'map15.map', 'map18.map', 'map19.map', 'map24.map', 'map25.map', 'map26.map', 'map3.map', 'map31.map', 'map33.map', 'map34.map', 'map35.map', 'map36.map', 'map37.map', 'map4.map', 'map44.map', 'map5.map', 'map6.map', 'map8.map', 'map9.map', 'res14', 'res15', 'res16', 'res17', 'res18', 'res19', 'res20', 'res21', 'res22', 'res23', 'res24', 'res25', 'res26', 'res27', 'res28', 'res29', 'res30']
+WARN BitmapFont.class: API mới so với bản gốc: java/io/DataInputStream.readFully([B)V (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/String.endsWith(Ljava/lang/String;)Z (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/String.indexOf(I)I (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/String.indexOf(II)I (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/String.valueOf(Ljava/lang/Object;)Ljava/lang/String; (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/lang/StringBuffer.<init>(Ljava/lang/String;)V (xác nhận máy đích có)
+WARN BitmapFont.class: API mới so với bản gốc: java/util/Vector.copyInto([Ljava/lang/Object;)V (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/lang/String.valueOf(Ljava/lang/Object;)Ljava/lang/String; (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/lang/StringBuffer.<init>(Ljava/lang/String;)V (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/lang/StringBuffer.append(C)Ljava/lang/StringBuffer; (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/lang/StringBuffer.setLength(I)V (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: java/util/Vector.copyInto([Ljava/lang/Object;)V (xác nhận máy đích có)
+WARN VH.class: API mới so với bản gốc: javax/microedition/lcdui/Graphics.fillTriangle(IIIIII)V (xác nhận máy đích có)
+RESULT: PASS

@@ -1,0 +1,11 @@
+MicroEdition-Configuration: CLDC-1.0
+MIDlet-Name: 魔界战纪-魔女奇缘
+MIDlet-Icon: /icon.png
+MIDlet-Vendor: LEVEL-9
+MIDlet-1: 魔界战纪-魔女奇缘, /icon.png, XMessage
+MIDlet-Version: 1.0.0
+MicroEdition-Profile: MIDP-1.0
+Media-Price: 免费下载
+MIDlet-Description: 角色扮演类；N73；一段人与魔之间缠绵悱恻的爱情故事
+MIDlet-Jar-URL: MaGioiChienKy_VH.jar
+MIDlet-Jar-Size: 557620
