@@ -1,0 +1,1 @@
+{"fmt": "tsv", "nl": "\n", "tail": true, "bom": false, "hdr": true, "cols": {"src": 3, "dst": 4, "ctx": 5, "lim": 6}, "file": "/home/user/M-I/work/text_goc.tsv", "lang": "en", "codes": "[&|$^{}\\\\]", "enc": "utf-8", "args": {"src": 3, "dst": 4, "ctx": 5, "lim": 6, "sheet": null, "enc": "utf-8"}}

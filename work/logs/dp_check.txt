@@ -1,0 +1,6 @@
+2806: thiếu glyph: ~
+thuật ngữ lệch: 4
+172: Potion→Thuốc hồi phục
+173: Potion→Thuốc hồi phục
+174: Potion→Thuốc hồi phục
+3743: Crusader→Thập Tự Quân

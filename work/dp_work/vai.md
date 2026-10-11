@@ -1,0 +1,16 @@
+# Vai & xưng hô (hiện đại, giữ tên riêng gốc)
+- Mã màu: | ^ $ { } & \ = đổi màu (giữ đúng vị trí, & = về trắng); ; = xuống dòng. KHÔNG dùng ; | $ ^ { } & \ trong câu thường.
+- Tên người nói trong [..]: tên riêng giữ nguyên ([Lucian]); vai chung dịch ([Guard]→[Lính gác], [Child]→[Bé], [Crew]→[Thủy thủ], [Man]→[Gã đàn ông], [Strange Man]→[Kẻ lạ mặt]).
+- Lucian: nam chính trẻ, xưng "tôi"; với người lớn tuổi: tôi–ông/bà/bác; ngang hàng: tôi–cậu/cô; kẻ thù: tôi–ngươi (khi tức: ta–ngươi).
+- Calmon: tinh linh (Elemental) đồng hành, kiêu ngạo: với Lucian ta–cậu; với kẻ khác ta–ngươi. Lucian gọi Calmon: tôi–cậu.
+- Arkley: ông già bí ẩn: ta–cậu/ngươi.
+- Aquila, Timoros, phản diện: ta–ngươi / bọn ngươi.
+- Dân làng/NPC với Lucian: tôi–cậu; trẻ con: em–anh; lính gác: tôi–cậu (hoặc ta–ngươi khi hống hách).
+- Hệ thống/UI: câu ngắn, không chủ ngữ.
+- CẬP NHẬT: Calmon là NỮ (tinh linh). Lucian↔Calmon: Lucian "tôi–cô", Calmon "ta–cậu".
+- Alpez: bạn thân cùng trại mồ côi (nữ, hay ghen với Calmon): Alpez↔Lucian "mình–cậu". "mother" = Mẹ (người nuôi dạy ở trại mồ côi).
+- Legolas: giáo phái/thế lực địch, giữ nguyên.
+- Thông báo nhiệm vụ: }Quest [X] completed!& → }Nhiệm vụ [X] hoàn thành!& ; accepted → đã nhận. Tên nhiệm vụ theo t/qm.tdf, t/qs.tdf.
+- '~' giữ nguyên trong bản dịch (font thiếu glyph; apply_text đổi ~ thành '!')
+- Clare = 'Mẹ' (chủ trại mồ côi, nuôi Lucian): Clare↔Lucian 'mẹ–con'. Cha: Ian (kiếm sĩ Sóng Băng), mẹ ruột: Lea (pháp sư đỏ).
+- Anthony/Alicia (lính đánh thuê) ↔ Lucian: "ta–ngươi", Lucian đáp "tôi–mấy người/các người".

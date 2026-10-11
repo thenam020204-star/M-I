@@ -1,3 +1,9 @@
-__pycache__/
-*.pyc
-java/build_tmp/
+*.zip
+work/tools/
+work/build/
+work/freej2me_system/
+work/rms/
+work/ref/
+work/jar/
+work/*.jar
+work/scripts/renamer/*.class

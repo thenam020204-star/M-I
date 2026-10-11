@@ -1,0 +1,23 @@
+class	goc	dich
+rpg/d	Would you like to revive?	Bạn có muốn hồi sinh không?
+rpg/d	Are you sure you want to quit?	Bạn có chắc muốn thoát?
+rpg/d	Your current class does not allow you to equip with this equipment.	Nghề hiện tại của bạn không thể trang bị món này.
+rpg/d	This combination does not require any elements.	Tổ hợp này không cần nguyên tố nào.
+rpg/d	Please select the combination book.	Hãy chọn sách tổ hợp.
+rpg/d	You do not have all the elements required for this combination.;You can force combine magic.;	Bạn không đủ nguyên tố cho tổ hợp này.;Bạn có thể ép kết hợp phép.;
+rpg/d	You has reached the highest level, can no longer raise	Bạn đã đạt cấp tối đa, không thể tăng thêm
+rpg/d	Level up! You have reached level 	Lên cấp! Bạn đã đạt cấp 
+rpg/d	You do not have enough gold.;	Bạn không đủ vàng.;
+rpg/d	 The fee for changing professions is 	 Phí đổi nghề là 
+rpg/d	 Gold. Continue?	 vàng. Tiếp tục?
+rpg/d	Gold	Vàng
+rpg/d	Press Any Key To Continue	Nhấn phím bất kỳ để tiếp tục
+rpg/d	Please play game in portrait mode.	Hãy chơi ở chế độ màn hình dọc.
+rpg/d	Do you want to continue? ;Your game will exit.	Bạn muốn tiếp tục? ;Game sẽ thoát.
+rpg/d	Refining Stones 	Đá tinh luyện 
+rpg/d	red stone	đá đỏ
+rpg/d	polishing powder	bột đánh bóng
+rpg/d	Amethyst	Thạch anh tím
+rpg/d	No	Không
+rpg/d#l	yes	Có
+j	Version: 	Phiên bản: 

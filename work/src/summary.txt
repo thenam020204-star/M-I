@@ -1,0 +1,54 @@
+Summary for clean.jar
+Decompiled with CFR 0.152
+
+
+rpg.e
+----------------------------
+
+a(java.lang.String )
+  Loose catch block
+
+
+df
+----------------------------
+
+c()
+  Unable to fully structure code
+
+
+v
+----------------------------
+
+a()
+  Unable to fully structure code
+
+
+o
+----------------------------
+
+a(byte[] )
+  Loose catch block
+
+
+ds
+----------------------------
+
+a(java.lang.String[] )
+  Loose catch block
+
+
+di
+----------------------------
+
+b(byte boolean )
+  Loose catch block
+c(byte )
+  Loose catch block
+
+
+a
+----------------------------
+
+a(javax.microedition.midlet.MIDlet )
+  Unable to fully structure code
+  Could not resolve type clashes

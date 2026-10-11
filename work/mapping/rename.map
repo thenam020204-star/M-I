@@ -1,0 +1,125 @@
+# Bang doi ten (go lam roi) - chi cac class lien quan viet hoa.  Ten cu + descriptor cu.
+# ===== Ve chu =====
+C ac TextRenderer
+C cm GameGraphics
+C ch TextTable
+C cg GameImage
+C rpg/e rpg/Resources
+# TextRenderer (ac) - giu dung chu ky, than ham viet lai
+F ac a Z colorCodesOn
+F ac a I lineHeight
+M ac a (Lcm;II[BI)V drawText
+M ac a (Lcm;IIII[B)V drawTextBox
+M ac a (Lcm;II[BII)V drawTextAligned
+M ac a (Lcm;IIII[BIII)V drawTextRange
+M ac a (Lcm;III[BIII)V drawTextCore
+M ac a ([BIII)I bytesForLines
+M ac a ([BII)I typeNextChar
+M ac a ([BI)I lineCount
+M ac a ([B)I textWidth
+M ac b ([BII)I lineWidthFrom
+M ac a ()V init
+# GameGraphics (cm): lop boc Graphics
+F cm a Ljavax/microedition/lcdui/Image; bufferImage
+F cm a Ljavax/microedition/lcdui/Graphics; bufferGraphics
+F cm a Lcm; buffer
+F cm b Ljavax/microedition/lcdui/Graphics; g
+P cm b Ljavax/microedition/lcdui/Graphics;
+F cm a I alphaMask
+P cm a I
+F cm b I color
+M cm a ()Lcm; getBuffer
+M cm a (Lcg;III)V drawImage
+M cm a (I)V setColor
+M cm a (III)V setColorRGB
+M cm a (IIII)V fillRect
+M cm b (IIII)V setClip
+M cm c (IIII)V clipRect
+M cm d (IIII)V drawRect
+M cm e (IIII)V drawLine
+M cm a (Ljava/lang/String;III)V drawString
+M cm b (I)V setAlpha
+M cm a ()I getClipX
+M cm b ()I getClipY
+M cm c ()I getClipWidth
+M cm d ()I getClipHeight
+M cm a (IIIIII)V fillTriangle
+# TextTable (ch): file /t/*.tdf
+F ch a [Ljava/lang/Object; entries
+F ch a S count
+M ch a (I)[B get
+M ch a (II)[[B get
+M ch a (III)[[B get
+M ch a (IIII)[[B get
+M ch a ([I)[[B get
+# GameImage (cg)
+M cg a ()Lcm; graphics
+M cg a ()I getWidth
+M cg b ()I getHeight
+# Resources (rpg/e)
+M rpg/e a (Ljava/lang/String;)[B readFile
+# ===== Kich ban map + hoi thoai =====
+C db ScriptRunner
+C cb ScriptCodeTable
+C m ScriptCursor
+C df MapScript
+F db a [[B strings
+M db a ([BI)I loadScript
+M db a (I)[B getString
+F df d [B dlgText
+F df c S dlgStart
+F df d S dlgPageLen
+F df e S dlgTyped
+F df f S dlgTextLen
+F df g S dlgPage
+F df h S dlgShownPage
+F df i S dlgNarration
+F df e B dlgPortrait
+F df f B dlgPortraitRight
+F df a Lcg; dlgImage
+P df d [B
+P df c S
+P df d S
+P df e S
+P df f S
+P df g S
+P df h S
+P df i S
+P df e B
+P df f B
+M df f ()V dialogNewPage
+M df a (IBB)V openDialog
+M df h ()Z dialogTypeStep
+M df a (Lcm;)V paint
+M df b (Lcm;)V clipAboveDialog
+M df a ([BI)V load
+# ===== Man hinh =====
+C rpg/a rpg/GameScreen
+F rpg/a a I width
+F rpg/a b I height
+F rpg/a c I centerX
+F rpg/a d I centerY
+F rpg/e f [Lcg; portraits
+F rpg/e o Lcg; nextIcon
+F db a Lcb; eventTable
+F db b Lcb; codeTable
+F db a Lcz; callStack
+F db a Lm; cursor
+P db a Lcb;
+P db b Lcb;
+P db a Lcz;
+P db a Lm;
+P db a [[B
+M db a ()V reset
+C cz ScriptCallStack
+F cz a I depth
+F cz a [Lm; frames
+# vat pham (as): ban ghi itm [u1 namelen][name][i32 price][u1 desclen][desc]
+C as Item
+F as a [B name
+F as b [B desc
+F as a I price
+M as a ([BI)I parseRecord
+M ba a ([BI)I parseRecord
+M bm a ([BI)I parseRecord
+M dv a ([BI)I parseRecord
