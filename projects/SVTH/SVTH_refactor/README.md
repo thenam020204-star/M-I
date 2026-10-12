@@ -1,18 +1,31 @@
-# SVTH_refactor — Sủng Vật Thiên Hạ: SFX (beep) + Debug Battle
+# SVTH_refactor — Sủng Vật Thiên Hạ: SFX + AI quái/sủng vật + Debug Battle
 
 Bản vá cho game J2ME **Sủng Vật Thiên Hạ – Đại Lục Thần Điểu** (NAM.P, CLDC-1.0 / MIDP-2.0, 114 class bị làm rối tên).
 Không dựng lại mã nguồn: dùng **hook bytecode (ASM) + class mới đọc được** (đường B của quy trình j2modp).
 
-## Hai JAR
+## JAR (1.8.0)
 
 | JAR | Dùng để | Có mã debug? |
 |---|---|---|
-| `dist/SVTH_SFX_renamed.jar` + `.jad` | **Bản phát hành chính (từ 1.6.0)**: game gốc + SFX đồng bộ animation, class/field/hàm mang tên có nghĩa | Không (mã Debug Battle không có trong JAR) |
-| `dist/SVTH_SFX_debug_renamed.jar` + `.jad` | Bản thử: thêm **Debug Battle / SFX Test Arena** | Có (`BuildFlags.DEBUG = true`, manifest `SFX-Debug: 1`) |
-| `dist/SVTH_SFX.jar` / `SVTH_SFX_debug.jar` + `.jad` | Cùng nội dung, giữ tên rối gốc (đối chiếu; `RENAME=0`) | Như bản tương ứng |
+| `dist/SVTH_SFX_renamed.jar` + `.jad` | **Bản phát hành chính**: game + SFX + **AI quái / sủng vật mới (phiên 8)**, font của người dùng | Không |
+| `dist/SVTH_SFX_debug_renamed.jar` + `.jad` | Bản thử: thêm **Debug Battle / SFX Test Arena** (+ `World.dbg$join` cho harness) | Có (`SFX-Debug: 1`) |
 
-Các bản cùng `MIDlet-Version: 1.7.0`, đều qua `Verify` (0 lỗi) và ProGuard `-microedition` (có StackMap). Từ phiên 6, **bản đã đặt tên là bản gốc chính**
-(người dùng xác nhận chạy ổn định); đảo tên lại bằng `mapping/inverse.map` thì giống hệt bản tên rối (release 969/0, debug 974/0).
+Từ phiên 8 dựng bằng `./build_s8.sh release|debug` **trên bản 1.7.0 đã đặt tên** (`base/`), không cần JAR gốc của game.
+Bản tên rối (`SVTH_SFX.jar`, `SVTH_SFX_debug.jar`) không dựng lại ở 1.8.0 và đã gỡ khỏi `dist/` (hook phiên 8 viết theo tên đã đặt; bản đặt tên là bản chính từ phiên 6; dựng lại 1.7.0 tên rối bằng `build_jar.sh RENAME=0` khi có JAR gốc).
+
+## AI quái và sủng vật (phiên 8 — `docs/ENEMY_AI.md`)
+
+* **Cấp quái bám cấp trung bình của các nhân vật chính** trong trận: gặp ngẫu nhiên = TB + 0..2, trận cốt truyện/phó bản/boss = TB + 3
+  (không thấp hơn cấp game thiết kế). Mọi chỉ số + EXP thưởng tính lại theo cấp mới.
+* **Chỉ số theo sức mạnh thật của đội**: HP/SPD có sàn theo đội (đội cần ~2.2 vòng đánh thường để thắng, boss ~3.5), ATK tính ngược từ
+  **ngân sách sát thương** — đòn mạnh nhất của quái ≈ 8 % HP một hero (boss 13 %), xét cả kỹ năng và tương khắc hệ thật của nó.
+* **Bộ kỹ năng ngẫu nhiên mỗi trận**: ngoài kỹ năng tự nhiên, mỗi quái nhận 1 + cấp/10 kỹ năng ngẫu nhiên (tối đa 7), khác nhau mỗi trận.
+* **AI chấm điểm mọi phương án** (đánh thường, từng kỹ năng, phòng thủ) theo công thức sát thương thật của game: kết liễu, dồn đòn, hợp kích,
+  khai thác tương khắc hệ, đánh né người đang phòng thủ, hồi máu đồng đội nguy kịch, không khống chế chồng; quyết định lại đúng lượt.
+* **Sủng vật đồng đội do AI điều khiển** — người chơi chỉ ra lệnh cho nhân vật chính. Pet có kỹ năng hồi máu cứu đồng đội < 30 % HP; pet
+  < 25 % HP không hồi được thì thủ tới cùng hoặc **rút lui** (còn sống, không gọi lại được trong trận); còn lại đánh như quái hoang dã,
+  phối hợp với mục tiêu của nhân vật chính.
+* Không đổi: trận hướng dẫn, trận bắt buộc thua. Chỉnh mọi thứ trong `ai/config.txt` ngay trong JAR (`docs/RESOURCES.md`).
 
 ## Khôi phục mã nguồn (Phiên 5)
 
@@ -59,7 +72,7 @@ Game gốc bị làm rối tên (114 class `a`, `ab`, `bn`…; field/hàm `a`, `
   menu → Hệ thống → Cài đặt nhạc / Cài đặt SFX. Ngoài ra `/sfx/config.txt` (`enabled`, `volume`, `maxvoices`, `pool`, `players`, `duck`, `duckhold`, `duckramp`, `critdelay`, `healdelay`) hoặc API
   `SFXManager.setEnabled/setVolume`; menu Debug Battle có hàng bật/tắt và âm lượng riêng.
 
-## Debug Battle (chỉ `SVTH_SFX_debug.jar`)
+## Debug Battle (chỉ `SVTH_SFX_debug_renamed.jar`)
 
 1. Ở màn cover/menu chính nhấn `#` → tạo ván mới, đưa Julie vào đội, dựng trận thật với 3 quái giả.
 2. Menu chồng lên trận (phím **lên/xuống** chọn hàng, **trái/phải** đổi giá trị, **OK** thực hiện):
@@ -89,6 +102,13 @@ Giới hạn debug: mục `kỹ năng không tung được` (bị động, khôn
 
 ## Dựng lại
 
+Phiên 8 (khuyên dùng, không cần JAR gốc):
+```
+cd SVTH_refactor
+./build_s8.sh release   # → dist/SVTH_SFX_renamed.jar + .jad  (VERSION=1.8.0)
+./build_s8.sh debug     # → dist/SVTH_SFX_debug_renamed.jar + .jad
+```
+Đường cũ (từ JAR gốc, chỉ dựng tới hết phiên 7 — chưa có AI phiên 8):
 ```
 cd SVTH_refactor
 ORIG=/đường/dẫn/JAR_gốc.jar ./build_jar.sh release   # → dist/SVTH_SFX_renamed.jar + .jad (RENAME=0 → dist/SVTH_SFX.jar)
@@ -100,5 +120,5 @@ JAR gốc **không** nằm trong repo (không phân phối lại tài nguyên ga
 
 ## Tài liệu
 
-`REFACTOR_LOG.md` (nhật ký phiên) · `docs/FLOWS_battle.md` · `docs/SFX_MAP.md` (hook, marker, sai lệch) ·
-`docs/RESOURCES.md` · `docs/AUDIO_ENGINE.md` (bộ phát âm thanh) · `docs/BINDIFF_session7.md` (khác biệt nhị phân so với 1.6.0; phiên 1–6 cũng còn) · `tools/README.md`.
+`REFACTOR_LOG.md` (nhật ký phiên) · `docs/ENEMY_AI.md` (AI quái/sủng vật, phiên 8) · `docs/FLOWS_battle.md` · `docs/SFX_MAP.md` (hook, marker, sai lệch) ·
+`docs/RESOURCES.md` · `docs/AUDIO_ENGINE.md` (bộ phát âm thanh) · `docs/BINDIFF_session8.md` (khác biệt nhị phân 1.7.0 → 1.8.0; các phiên trước cũng còn) · `tools/README.md`.

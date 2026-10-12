@@ -1,0 +1,129 @@
+# AI_TEST phiên 8 — số đo MicroEmulator 2.0.4 (harness MeRun, lệnh 'battle')
+
+Người chơi giả lập chỉ bấm OK = đánh thường mục tiêu mặc định (không kỹ năng, không vật phẩm, không hồi máu) — ca khó nhất.
+Hero: mô hình tools/sim/balance_sim.py hero(L) (10 điểm/cấp chia đều + trang bị theo cấp). Quinn (+ Julie qua World.dbg$join, bản debug).
+Kịch bản: tools/test/me/s8/bal_L{1,10,30,60}.txt (gen_balance.py), pets.txt (gen_pets.py), autotest.txt. Dòng 'nostart' (harness mất đồng bộ sau trận thua / nạp cảnh) bị loại.
+
+## 1.7.0 (bản gốc phiên 7, AI gốc)
+L1   n=2 thắng=2 thua=0  giây TB=11  HP thấp nhất trong đội: trung vị 100%, khoảng 62..100%
+L10  n=5 thắng=5 thua=0  giây TB=5  HP thấp nhất trong đội: trung vị 100%, khoảng 0..100%
+L30  n=5 thắng=5 thua=0  giây TB=21  HP thấp nhất trong đội: trung vị 77%, khoảng 19..93%
+L60  n=5 thắng=5 thua=0  giây TB=17  HP thấp nhất trong đội: trung vị 79%, khoảng 50..99%
+
+## 1.8.0 bản nháp 1 (sàn ATK theo đòn thường ×1.3, bộ kỹ năng ngẫu nhiên, HP ×1.15) — bị loại
+L1   n=1 thắng=0 thua=1  giây TB=12  HP thấp nhất trong đội: trung vị 0%, khoảng 0..0%
+L10  n=3 thắng=3 thua=0  giây TB=11  HP thấp nhất trong đội: trung vị 84%, khoảng 63..96%
+L30  n=1 thắng=0 thua=1  giây TB=15  HP thấp nhất trong đội: trung vị 0%, khoảng 0..0%
+L60  n=1 thắng=0 thua=1  giây TB=13  HP thấp nhất trong đội: trung vị 0%, khoảng 0..0%
+
+## 1.8.0 bản nháp 2 (ATK theo ngân sách 10 %/15 %, HP ×1.15, quái hồi máu khi < 65 %) — bị loại
+L1   n=2 thắng=2 thua=0  giây TB=24  HP thấp nhất trong đội: trung vị 67%, khoảng 51..67%
+L10  n=6 thắng=6 thua=0  giây TB=12  HP thấp nhất trong đội: trung vị 90%, khoảng 10..100%
+L30  n=6 thắng=6 thua=0  giây TB=35  HP thấp nhất trong đội: trung vị 74%, khoảng 47..84%
+L60  n=1 thắng=0 thua=1  giây TB=56  HP thấp nhất trong đội: trung vị 0%, khoảng 0..0%
+
+## 1.8.0 (cấu hình cuối, trước khi bỏ kỹ năng 8 khỏi kho ngẫu nhiên)
+L1   n=6 thắng=6 thua=0  giây TB=14  HP thấp nhất trong đội: trung vị 88%, khoảng 61..92%
+L10  n=4 thắng=3 thua=1  giây TB=14  HP thấp nhất trong đội: trung vị 86%, khoảng 0..92%
+L30  n=4 thắng=3 thua=1  giây TB=26  HP thấp nhất trong đội: trung vị 78%, khoảng 0..78%
+L60  n=1 thắng=0 thua=1  giây TB=24  HP thấp nhất trong đội: trung vị 0%, khoảng 0..0%
+
+## 1.8.0 cuối (đã bỏ kỹ năng 8 khỏi kho ngẫu nhiên)
+L30  n=4 thắng=4 thua=0  giây TB=38  HP thấp nhất trong đội: trung vị 69%, khoảng 65..77%
+L60  n=2 thắng=1 thua=1  giây TB=46  HP thấp nhất trong đội: trung vị 66%, khoảng 0..66%
+
+## Dòng chi tiết (cuối)
+```
+1.7.0 MERUN battle L1#1 result=win secs=18 heroes=1 minHpPct0=62 minHpPct1=-1 foes=33:2 87:1 33:1
+1.7.0 MERUN battle L1#2 result=win secs=4 heroes=1 minHpPct0=100 minHpPct1=-1 foes=35:1
+1.7.0 MERUN battle L10#1 result=win secs=7 heroes=1 minHpPct0=0 minHpPct1=-1 foes=
+1.7.0 MERUN battle L10#2 result=win secs=6 heroes=2 minHpPct0=100 minHpPct1=100 foes=42:9 41:10
+1.7.0 MERUN battle L10#3 result=win secs=6 heroes=2 minHpPct0=100 minHpPct1=100 foes=5:8
+1.7.0 MERUN battle L10#4 result=win secs=1 heroes=2 minHpPct0=100 minHpPct1=100 foes=42:8
+1.7.0 MERUN battle L10#5 result=win secs=5 heroes=3 minHpPct0=100 minHpPct1=100 foes=10:10
+1.7.0 MERUN battle L30#1 result=win secs=26 heroes=2 minHpPct0=77 minHpPct1=89 foes=111:31 11:29 19:31
+1.7.0 MERUN battle L30#2 result=win secs=21 heroes=2 minHpPct0=93 minHpPct1=99 foes=111:31 111:31
+1.7.0 MERUN battle L30#3 result=win secs=17 heroes=2 minHpPct0=100 minHpPct1=19 foes=16:31 31:31
+1.7.0 MERUN battle L30#4 result=win secs=16 heroes=2 minHpPct0=49 minHpPct1=96 foes=16:30 39:28
+1.7.0 MERUN battle L30#5 result=win secs=25 heroes=2 minHpPct0=82 minHpPct1=79 foes=16:31 19:29 75:30
+1.7.0 MERUN battle L60#1 result=win secs=16 heroes=2 minHpPct0=100 minHpPct1=90 foes=60:58 49:60 57:59
+1.7.0 MERUN battle L60#2 result=win secs=17 heroes=2 minHpPct0=99 minHpPct1=79 foes=85:61 57:61
+1.7.0 MERUN battle L60#3 result=win secs=19 heroes=2 minHpPct0=99 minHpPct1=100 foes=49:60 57:61 49:59
+1.7.0 MERUN battle L60#4 result=win secs=17 heroes=2 minHpPct0=85 minHpPct1=50 foes=60:61 85:59 57:61
+1.7.0 MERUN battle L60#5 result=win secs=16 heroes=2 minHpPct0=61 minHpPct1=100 foes=60:60 49:60
+1.8.0 MERUN battle L1#1 result=win secs=13 heroes=1 minHpPct0=92 minHpPct1=-1 foes=35:3
+1.8.0 MERUN battle L1#2 result=win secs=11 heroes=1 minHpPct0=85 minHpPct1=-1 foes=35:1 87:3
+1.8.0 MERUN battle L1#3 result=win secs=14 heroes=1 minHpPct0=89 minHpPct1=-1 foes=87:2
+1.8.0 MERUN battle L1#4 result=win secs=20 heroes=1 minHpPct0=61 minHpPct1=-1 foes=19:1 87:2 33:1
+1.8.0 MERUN battle L1#5 result=win secs=16 heroes=1 minHpPct0=74 minHpPct1=-1 foes=19:2 35:2
+1.8.0 MERUN battle L1#6 result=win secs=7 heroes=1 minHpPct0=88 minHpPct1=-1 foes=35:3
+1.8.0 MERUN battle L10#1 result=win secs=18 heroes=2 minHpPct0=86 minHpPct1=99 foes=41:12 10:12
+1.8.0 MERUN battle L10#2 result=win secs=11 heroes=2 minHpPct0=100 minHpPct1=92 foes=5:12
+1.8.0 MERUN battle L10#3 result=win secs=12 heroes=2 minHpPct0=23 minHpPct1=89 foes=9:11
+1.8.0 MERUN battle L10#4 result=lose secs=14 heroes=2 minHpPct0=0 minHpPct1=99 foes=41:10 42:10
+1.8.0 MERUN battle L30#1 result=win secs=45 heroes=2 minHpPct0=67 minHpPct1=52 foes=111:32 91:32 75:30
+1.8.0 MERUN battle L30#2 result=win secs=29 heroes=2 minHpPct0=78 minHpPct1=91 foes=11:32 16:32
+1.8.0 MERUN battle L30#3 result=win secs=20 heroes=2 minHpPct0=91 minHpPct1=78 foes=31:32 75:31
+1.8.0 MERUN battle L30#4 result=lose secs=11 heroes=2 minHpPct0=0 minHpPct1=99 foes=11:32 16:32
+1.8.0 MERUN battle L60#1 result=lose secs=24 heroes=2 minHpPct0=0 minHpPct1=69 foes=49:60 60:62 60:61
+1.8.0 MERUN battle L30#1 result=win secs=83 heroes=2 minHpPct0=69 minHpPct1=91 foes=16:32 71:32 111:32
+1.8.0 MERUN battle L30#2 result=win secs=25 heroes=2 minHpPct0=79 minHpPct1=77 foes=19:31 19:32
+1.8.0 MERUN battle L30#3 result=win secs=22 heroes=2 minHpPct0=84 minHpPct1=65 foes=71:32 111:31 91:32
+1.8.0 MERUN battle L30#4 result=win secs=22 heroes=2 minHpPct0=85 minHpPct1=68 foes=31:31 75:30
+1.8.0 MERUN battle L60#1 result=win secs=25 heroes=2 minHpPct0=69 minHpPct1=66 foes=85:62 92:62
+1.8.0 MERUN battle L60#2 result=lose secs=68 heroes=2 minHpPct0=0 minHpPct1=0 foes=92:61 57:61 85:61
+```
+
+## Sủng vật (bản phát hành 1.8.0, tools/test/me/s8/pets.txt; Quinn cấp 10 + Mộc Tinh Phong uid 1 có Trị Liệu (13) + Sói Phong uid 2)
+```
+MERUN CASE 1 quinn=100% healer=100% wolf=100%
+MERUN battle P1 result=win secs=18 heroes=3 minHpPct0=100 minHpPct1=34 foes=42:11 42:12 5:10
+MERUN probe GameData myPets[0] stats[1] = 1549
+MERUN probe GameData myPets[1] stats[1] = 1539
+MERUN probe GameData myPets[1] isFainted = false
+MERUN CASE 2 quinn=25% healer=100% wolf=100%
+AILOG pet slot=1 heal skill=13 lv=1 tgt=0 lowPct=24
+AILOG pet slot=1 heal skill=13 lv=1 tgt=0 lowPct=24
+AILOG pet slot=1 heal skill=13 lv=1 tgt=2 lowPct=19
+MERUN battle P2 result=win secs=21 heroes=3 minHpPct0=24 minHpPct1=39 foes=9:10 6:11
+MERUN probe GameData myPets[0] stats[1] = 619
+MERUN probe GameData myPets[1] stats[1] = 1
+MERUN probe GameData myPets[1] isFainted = false
+MERUN CASE 3 quinn=100% healer=100% wolf=15%
+AILOG pet slot=1 heal skill=13 lv=1 tgt=2 lowPct=14
+AILOG pet slot=2 defend hp=14% loyal=false healComing=true
+AILOG pet slot=1 heal skill=13 lv=1 tgt=2 lowPct=14
+MERUN battle P3 result=win secs=19 heroes=3 minHpPct0=98 minHpPct1=59 foes=5:12 10:11 41:12
+MERUN probe GameData myPets[0] stats[1] = 919
+MERUN probe GameData myPets[1] stats[1] = 547
+MERUN probe GameData myPets[1] isFainted = false
+MERUN CASE 4 quinn=100% healer=100% wolf=15%
+AILOG pet slot=1 heal skill=13 lv=1 tgt=2 lowPct=14
+AILOG pet slot=2 defend hp=14% loyal=false healComing=true
+AILOG pet slot=1 heal skill=13 lv=1 tgt=2 lowPct=14
+AILOG pet slot=1 heal skill=13 lv=1 tgt=2 lowPct=18
+AILOG pet slot=2 defend hp=18% loyal=false healComing=true
+AILOG pet slot=1 heal skill=13 lv=1 tgt=2 lowPct=18
+MERUN battle P4 result=win secs=17 heroes=3 minHpPct0=100 minHpPct1=30 foes=41:11 6:10
+MERUN probe GameData myPets[0] stats[1] = 1641
+MERUN probe GameData myPets[1] stats[1] = 546
+MERUN probe GameData myPets[1] isFainted = false
+MERUN CASE 5 quinn=100% healer=15% wolf=15%
+AILOG pet slot=1 heal skill=13 lv=1 tgt=1 lowPct=13
+AILOG pet slot=2 RETREAT uid=2 hp=218
+AILOG pet slot=1 heal skill=13 lv=1 tgt=1 lowPct=13
+AILOG pet slot=1 heal skill=13 lv=1 tgt=1 lowPct=2
+AILOG pet slot=1 heal skill=13 lv=1 tgt=1 lowPct=2
+MERUN battle P5 result=win secs=25 heroes=3 minHpPct0=88 minHpPct1=0 foes=6:10 10:10 6:10
+MERUN probe GameData myPets[0] stats[1] = 1
+MERUN probe GameData myPets[1] stats[1] = 1621
+MERUN probe GameData myPets[1] isFainted = false
+```
+Bản 1.7.0 cùng kịch bản: người chơi phải chọn lệnh cho cả 2 pet (bấm OK chọn đánh thường), không có dòng AILOG pet.
+
+## Debug Battle auto-test (bản debug 1.8.0, -Dai.enabled=0)
+```
+SFXTEST RESULT pass=114 fail=0 unreachable=9 total=112
+MERUN until DebugBattle.autoDone==true -> true
+MERUN probe DebugBattle autoDone = true
+```

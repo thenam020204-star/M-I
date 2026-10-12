@@ -62,6 +62,7 @@ wait 1500
 shot p1_b.png
 battle 180000 P1
 shot p1_end.png
+wait 9000
 probe GameData myPets[0] stats[1]
 probe GameData myPets[1] stats[1]
 probe GameData myPets[1] isFainted
@@ -95,6 +96,7 @@ wait 1500
 shot p2_b.png
 battle 180000 P2
 shot p2_end.png
+wait 9000
 probe GameData myPets[0] stats[1]
 probe GameData myPets[1] stats[1]
 probe GameData myPets[1] isFainted
@@ -128,6 +130,7 @@ wait 1500
 shot p3_b.png
 battle 180000 P3
 shot p3_end.png
+wait 9000
 probe GameData myPets[0] stats[1]
 probe GameData myPets[1] stats[1]
 probe GameData myPets[1] isFainted
@@ -161,6 +164,7 @@ wait 1500
 shot p4_b.png
 battle 180000 P4
 shot p4_end.png
+wait 9000
 probe GameData myPets[0] stats[1]
 probe GameData myPets[1] stats[1]
 probe GameData myPets[1] isFainted
@@ -194,6 +198,7 @@ wait 1500
 shot p5_b.png
 battle 180000 P5
 shot p5_end.png
+wait 9000
 probe GameData myPets[0] stats[1]
 probe GameData myPets[1] stats[1]
 probe GameData myPets[1] isFainted

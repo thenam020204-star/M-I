@@ -20,6 +20,6 @@ for b in range(n):
         for k, v in ((0, L), (4, hp), (10, hp), (3, hp), (7, atk), (12, atk), (8, de), (13, de), (9, spd), (14, spd), (5, 5000), (6, 5000), (11, 5000)):
             s.append('sets %s[%d] = i:%d' % (p, k, v))
     s += ['callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false', 'wait 2500', 'shot b%d_start.png' % (b + 1),
-          'battle 180000 L%d#%d' % (L, b + 1), 'shot b%d_end.png' % (b + 1)]
+          'battle 180000 L%d#%d' % (L, b + 1), 'shot b%d_end.png' % (b + 1), 'wait 9000']
 s += ['say DONE', 'quit']
 open(out, 'w').write('\n'.join(s) + '\n')

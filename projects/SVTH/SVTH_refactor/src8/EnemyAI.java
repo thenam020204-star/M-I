@@ -230,9 +230,10 @@ public final class EnemyAI {
         return r;
     }
 
-    /** Usable by enemies: every active skill except scout (39) and silence (16: low levels also silence the caster's side),
+    /** Usable by enemies: every active skill except scout (39), silence (16: low levels also silence the caster's side) and
+     *  8 (15% instant kill: on the leader it ends the battle at once — measured 3 quick defeats; natural holders keep it),
      *  plus the passives that work on enemies (7 counter, 29-32 element ATK bonus). */
-    private static final short[] POOL = {1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
+    private static final short[] POOL = {1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27,
             28, 33, 34, 7, 29, 30, 31, 32};
 
     /** Adds 1 + lv/skillStep (<= skillMax) random skills the enemy doesn't have yet; level 1 + lv/skillLvStep (<= the skill's max). */
@@ -444,7 +445,13 @@ public final class EnemyAI {
             for (int t = 10; t < 20 && t < a.length; t++) if (alive(a[t])) foes++;
             boolean loyal = me.partyUid % 3 == 0;               // personality: some pets never leave their master
             boolean leaderDanger = alive(a[0]) && a[0].hp * 100 / maxHp(a[0]) < 35;
-            if (!loyal && !leaderDanger && foes > 1 && GameUtil.randomRange(0, 100) < petFlee) {
+            boolean healComing = false;                          // an ally already plans to heal this pet this round
+            for (int o = 0; o < 10; o++) {
+                if (o == s || !alive(a[o])) continue;
+                int[] q = b.actionPlans[o];
+                if (q[1] == 4 && (q[3] == 14 || (q[3] == 13 && q[2] == s))) healComing = true;
+            }
+            if (!loyal && !leaderDanger && !healComing && foes > 1 && GameUtil.randomRange(0, 100) < petFlee) {
                 retreat(b, s);
                 return s;
             }
@@ -453,12 +460,14 @@ public final class EnemyAI {
                 lastStand = append(lastStand, me.partyUid);
                 toast(me.name + (leaderDanger ? " liều chết bảo vệ chủ nhân!" : " quyết thủ tới cùng!"));
             }
-            if (log) System.out.println("AILOG pet slot=" + s + " defend hp=" + myPct + "% loyal=" + loyal);
+            if (log) System.out.println("AILOG pet slot=" + s + " defend hp=" + myPct + "% loyal=" + loyal + " healComing=" + healComing);
             return s;
         }
         // 3. otherwise fight like a wild enemy (same scoring), against the enemies
+        int keep1 = plan[1];
         plan[1] = -1;
-        decide(b, s, true);
+        decide(b, s, commandTime);
+        if (!commandTime && plan[1] == -1) { plan[1] = keep1; return plan[2]; }
         if (plan[1] == -1) { plan[0] = s; plan[1] = 2; return s; }   // nothing to do: guard
         return plan[2] >= 0 ? plan[2] : s;
     }
@@ -661,7 +670,7 @@ public final class EnemyAI {
             case 5:  d = mitigate(b, f, (atk * (110 + lv * 10) / 100) * (200 + adv) / 100 - f.defense, rs) * hitPct(me, f, -20) / 100; break;
             case 6:  d = mitigate(b, f, atk * (200 + adv) / 100, rs); extra = -60; break;                              // ignores DEF, lowers own DEF
             case 8:  d = mitigate(b, f, (atk * (140 + lv * 10) / 100) * (200 + adv) / 100 - f.defense, rs) * hitPct(me, f, 0) / 100;
-                     extra = 90; break;                                                                               // + 15% instant kill
+                     extra = enemySide && f.slot == 0 ? -300 : 90; break;   // + 15% instant kill; never gamble the leader's life (= instant defeat)
             case 18: d = mitigate(b, f, atk * (125 + lv * 5) / 100 - f.defense, rs) * hitPct(me, f, 0) / 100; break;
             case 20: case 22: case 24: case 26: {
                 int e = elemAdv(id, f.elements);

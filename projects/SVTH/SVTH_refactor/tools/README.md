@@ -76,7 +76,8 @@ Tên tệp phải đúng như `build_jar.sh` tham chiếu (ví dụ `asm-9.7.jar
 | `src/Patch8.java` | ASM trên `Battle` (tên đã đặt): nới 3 field private → package; hook `EnemyAI.adjustLevel/onEnemiesCreated/planRound/onTurn`; kiểm khẳng định (5 lời gọi `GameUtil.a`, 1 vòng lập kế hoạch pha 2, 3 `putfield actingSlot`, local 0 không bị gán lại) |
 | `sim/balance_sim.py` | Mô phỏng chỉ số hero (team.bin + 10 điểm/cấp + trang bị theo cấp) vs quái (stardata) theo cấp; `--new` áp sàn bản nháp; `--fight` Monte-Carlo thô. Dùng để định hướng, **số đo cuối lấy từ emulator** |
 | `test/me/gen_balance.py` | Sinh kịch bản MeRun đo cân bằng: đặt chỉ số hero cấp L, bảng quái của cảnh, N trận gặp ngẫu nhiên (Julie vào đội bằng `World.dbg$join` → cần bản **debug**) |
-| `test/me/s8/bal_L{1,10,30,60}.txt`, `autotest.txt` | Kịch bản đã sinh; `autotest.txt` chạy Debug Battle auto-test (`DebugBattle.startAuto`) |
+| `test/me/gen_pets.py` | Sinh `s8/pets.txt`: Quinn cấp 10 + 2 sủng vật (`GameData.addPet`, có/không kỹ năng hồi máu), 5 ca máu thấp — chạy được trên bản phát hành |
+| `test/me/s8/bal_L{1,10,30,60}.txt`, `pets.txt`, `autotest.txt` | Kịch bản đã sinh; `autotest.txt` chạy Debug Battle auto-test (`DebugBattle.startAuto`) |
 | `me/MeRun.java` | Thêm lệnh `sets <Lớp> <đường dẫn có [i]> = <i:/z:/s:/S:/B:/I:>` (gán field tĩnh/instance/phần tử mảng) và `battle <timeout> <nhãn>` (bấm OK tới hết trận, in `result=win/lose secs heroes minHpPct0/1 foes=role:cấp`) |
 
 Cờ JVM cho harness: `-Dai.log=1` (dòng `AILOG`: cấp, kỹ năng ngẫu nhiên, chỉ số trước→sau, kế hoạch mỗi vòng/lượt), `-Dai.enabled=0` (tắt AI để so).

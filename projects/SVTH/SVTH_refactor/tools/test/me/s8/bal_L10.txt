@@ -45,6 +45,7 @@ wait 2500
 shot b1_start.png
 battle 180000 L10#1
 shot b1_end.png
+wait 9000
 calls World dbg$join i:2
 wait 300
 sets GameData party[0] stats[0] = i:10
@@ -78,6 +79,7 @@ wait 2500
 shot b2_start.png
 battle 180000 L10#2
 shot b2_end.png
+wait 9000
 calls World dbg$join i:2
 wait 300
 sets GameData party[0] stats[0] = i:10
@@ -111,6 +113,7 @@ wait 2500
 shot b3_start.png
 battle 180000 L10#3
 shot b3_end.png
+wait 9000
 calls World dbg$join i:2
 wait 300
 sets GameData party[0] stats[0] = i:10
@@ -144,6 +147,7 @@ wait 2500
 shot b4_start.png
 battle 180000 L10#4
 shot b4_end.png
+wait 9000
 calls World dbg$join i:2
 wait 300
 sets GameData party[0] stats[0] = i:10
@@ -177,6 +181,7 @@ wait 2500
 shot b5_start.png
 battle 180000 L10#5
 shot b5_end.png
+wait 9000
 calls World dbg$join i:2
 wait 300
 sets GameData party[0] stats[0] = i:10
@@ -210,5 +215,6 @@ wait 2500
 shot b6_start.png
 battle 180000 L10#6
 shot b6_end.png
+wait 9000
 say DONE
 quit

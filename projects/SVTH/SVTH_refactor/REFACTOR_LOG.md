@@ -1,5 +1,117 @@
 # REFACTOR_LOG — Sủng Vật Thiên Hạ – Đại Lục Thần Điểu
 
+## Phiên 8 — 2026-10-12 (UTC+7): AI quái mạnh và thông minh hơn, cấp/chỉ số quái bám cấp TB đội, bộ kỹ năng ngẫu nhiên, sủng vật do AI điều khiển
+
+**Yêu cầu (3 lượt trong phiên):**
+1. "Mod a.i quái mạnh hơn và thông minh hơn, và cấp độ, chỉ số của quái luôn bám theo cấp trung bình của cả đội hero" — kèm `res.jar` ("Mod bản này").
+2. "Cấp phát cho quái ngoài tự nhiên 1 bộ skill khác nhau mỗi trận đánh, 10 cấp tăng thêm 1 skill, tối đa 1 quái có thể có 7 skill ngẫu nhiên mỗi trận".
+3. "Rebuild hệ thống 2 pet đồng đội … người chơi chỉ có thể điều khiển hành động của nhân vật chính, 2 pet còn lại sẽ được a.i điều khiển … nếu có kĩ năng heal
+   mà có đồng đội thấp hơn 30% máu chúng sẽ ưu tiên dùng, khi máu bản thân pet quá thấp và nếu ko có skill heal chúng sẽ tự thủ tới chết hoặc tự động rút lui …
+   không thể gọi nó ra lại trong trận hiện tại, chế độ tấn công giống a.i quái hoang dã. Bạn tự mở rộng thêm cho sinh động".
+
+**Cách hiểu (giả định):**
+* "cả đội hero" = các **nhân vật chính** trong trận (`partyUid == 0`: Quinn, Julie…), không tính sủng vật (`pets=1` để tính cả). "Luôn bám theo" áp cho mọi trận
+  trừ trận hướng dẫn và trận bắt buộc thua; trận cốt truyện/boss không xuống thấp hơn cấp game thiết kế (`bossfloor=1`, tắt được).
+* "chỉ số bám theo" = ngoài việc game tính chỉ số từ cấp mới, còn **sàn/ngân sách theo sức mạnh thật của đội** (đo được: ở cùng cấp quái gốc gần như vô hại).
+* "ngoài tự nhiên" = **ngoài kỹ năng tự nhiên** của loài (bảng `petdata`): mỗi quái mỗi trận thêm `1 + cấp/10` kỹ năng ngẫu nhiên, tối đa 7. Áp cho mọi quái
+  (`randboss=0` → chỉ quái gặp ngẫu nhiên ngoài bản đồ — cách hiểu khác "quái ngoài tự nhiên = quái hoang dã").
+* "2 pet đồng đội" = sủng vật xuất chiến ở ô 1, 2. Nhân vật chính khác (Julie) vẫn do người chơi điều khiển. "Rút lui" = rời trận **còn sống**.
+
+**Bản build:** `dist/SVTH_SFX_renamed.jar` **v1.8.0** (1 947 352 B, 972 entry) + `.jad`; `dist/SVTH_SFX_debug_renamed.jar` v1.8.0 (1 964 802 B). Preverified CLDC 1.0 / MIDP 2.0,
+class 45.3 — `Verify` 0 lỗi trước và sau ProGuard, StackMap đủ (127 class bản phát hành, 132 bản debug).
+**Nền:** `res.jar` người dùng gửi = `SVTH_SFX_renamed.jar` 1.7.0 + **2 chỉnh sửa tay**: `font.bin` (đổi) và `f18.bin` (thêm; = `fonts/f15c.bin` của repo) — 968/970 entry
+giống md5 bản 1.7.0. Đã đưa vào `res/` (commit riêng) và lưu `base/SVTH_SFX_renamed_1.7.0_user.jar`. JAR gốc của game không có trong phiên → phiên 8 dựng **trên bản 1.7.0
+đã đặt tên** (`build_s8.sh`, đường B: hook bytecode + class mới), không qua `build_jar.sh`.
+
+### 1. Hạng mục đã xử lý
+
+| # | Yêu cầu | Kết quả |
+|---|---|---|
+| 1 | Cấp quái bám cấp TB đội | `EnemyAI.adjustLevel` (hook trước lời gọi tính chỉ số đầu tiên của `Battle.createEnemyActors`): gặp ngẫu nhiên = TB + 0..2, trận script = TB + 3 (≥ cấp thiết kế). Game tự tính HP/MP/ATK/DEF/SPD/EXP thưởng từ cấp mới. Log: `AILOG level … orig=28 avg=30 -> 32` |
+| 2 | Chỉ số quái mạnh hơn, bám đội | `onEnemiesCreated`: HP ×1.05 + sàn (đội cần ~2.2 vòng đánh thường, boss 3.5), SPD ≥ 70 % đội, DEF ≤ 45 % của 2×ATK đội, **ATK tính ngược từ ngân sách sát thương**: đòn mạnh nhất của quái (kỹ năng + tương khắc hệ thật) ≈ 8 % HP hero (boss 13 %). Trước: ở cùng cấp quái đánh thường chỉ gây 10 (tối thiểu) |
+| 3 | AI thông minh hơn | Chấm điểm mọi phương án theo công thức thật của `dealDamage`/`applySkill`: kết liễu, dồn đòn không đánh thừa, hợp kích (cùng mục tiêu, tốc độ ±150), tương khắc hệ, né người phòng thủ, ưu tiên kẻ gây sát thương lớn/hồi máu, hồi máu đồng đội < 50 %, khống chế không chồng + chống khoá đội, phòng thủ khi < 30 % HP, chi phí MP; **quyết định lại đúng lượt** theo HP/trạng thái hiện tại. Gốc: mục tiêu ngẫu nhiên, 50 % kỹ năng ngẫu nhiên |
+| 4 | Bộ kỹ năng ngẫu nhiên mỗi trận | `assignSkills`: +`1 + cấp/10` kỹ năng (≤ 7), không trùng, cấp kỹ năng `1 + cấp/20`, ≤ 1 kỹ năng hỗ trợ (cấp ≤ 2), kho trừ 39/16/8. Log: `AILOG skills slot=10 role=49 lv=60 +7 34:4 2:4 33:4 19:4 18:4 9:4 31:p` |
+| 5 | Pet do AI điều khiển | `petGate` (hook đầu `tick`/`handleKey`): khi menu hỏi lệnh cho sủng vật, AI trả lời và gọi `confirmCommand()` của game (cầu nối `ai$confirm`). Cấp cứu đồng đội < 30 % nếu có kỹ năng hồi; < 25 % HP không hồi được → thủ tới cùng (trung thành / chủ nguy / còn 1 quái / sắp được hồi) hoặc 60 % **rút lui** (rời trận còn sống, không gọi lại được trong trận); còn lại đánh như quái hoang dã + kết liễu/hợp kích theo mục tiêu của nhân vật chính; quyết định lại đúng lượt; thông báo ngắn ("X cấp cứu Y!", "X bị thương nặng, rút lui khỏi trận!", "X liều chết bảo vệ chủ nhân!") |
+| 6 | Chỉnh không cần build | `ai/config.txt` trong JAR (24 khoá, `docs/RESOURCES.md`); cờ harness `-Dai.log=1`, `-Dai.enabled=0` |
+
+#### 1a. Điều chỉnh sau khi đo (mỗi bước có số đo — `docs/AI_TEST_session8.txt`)
+| Bản | Vấn đề đo được | Sửa |
+|---|---|---|
+| nháp 1 | Sàn ATK theo đòn thường: Quinn cấp 1 một mình và đội cấp 30/60 bị diệt trong 1–2 vòng — kỹ năng nhân `2×ATK` **trước** khi trừ DEF + tương khắc hệ (+50 %) làm đòn mạnh nhất gấp 5–10 lần dự tính | ATK theo **ngân sách** đòn mạnh nhất của chính quái |
+| nháp 2 | Cấp 60: quái có hồi máu toàn đội cấp 4 dùng mỗi lượt + khống chế liên hoàn → bế tắc ~60 s rồi thua | ≤ 1 kỹ năng hỗ trợ cấp ≤ 2; hồi khi < 50 %; khống chế giảm 70 % khi đã có hero bị khống chế hoặc còn 1 hero |
+| cuối−1 | 3/3 trận thua nhanh nhất (11–24 s) do kỹ năng 8 (15 % giết ngay) nhắm leader → thua tức thì | Bỏ 8 khỏi kho ngẫu nhiên; AI không dùng 8 lên leader |
+| AI pet | Sói 14 % HP rút lui dù pet hồi máu đã định cứu nó cùng vòng | Có đồng đội định hồi cho mình → ở lại thủ (`healComing=true` trong log) |
+
+**Số đo (người chơi giả lập chỉ bấm đánh thường — không kỹ năng/vật phẩm/hồi máu):**
+
+| Cấp đội | 1.7.0 | 1.8.0 cuối |
+|---|---|---|
+| 1 (Quinn một mình, 1–3 quái) | 2/2 thắng, HP thấp nhất 62–100 % | 6/6 thắng, 61–92 % (trung vị 88 %) |
+| 10 (Quinn + Julie) | 5/5 thắng, trung vị 100 % | 3/4 thắng, trung vị 86 % (trận thua do kỹ năng 8 — đã sửa sau đó) |
+| 30 | 5/5 thắng, trung vị 77 %, ~21 s | 4/4 thắng, 65–77 % (trung vị 69 %), ~38 s |
+| 60 | 5/5 thắng, trung vị 79 %, ~17 s | 1/2 thắng (66 %), 1 thua sau 68 s |
+
+Sủng vật (bản phát hành, 5 ca): đủ máu thắng; Quinn 24 % → pet hồi máu cứu ngay (3 lần); sói 14–18 % + pet hồi đã định cứu → sói thủ, được hồi; cả hai pet ~15 % →
+pet hồi tự cứu, sói **rút lui** (sau trận còn 218 HP, `isFainted=false`); 5/5 thắng. Bản 1.7.0: người chơi phải chọn lệnh cho cả 2 pet.
+
+**Pipeline kiểm tra (bản cuối):**
+
+| Bước | Kết quả |
+|---|---|
+| ECJ `-1.3 -target 1.1` + Peephole | 0 lỗi |
+| `Verify` trước / sau ProGuard `-microedition` (`--require-stackmap`) | 0 lỗi cả 2 bản; không float/double, không `ldc` class |
+| Patch8 khẳng định | 5 lời gọi `GameUtil.a`, đúng 1 vòng lập kế hoạch pha 2 (thoát sau `goto`), 3 `putfield actingSlot`, local 0 không bị gán lại, `confirmCommand` tồn tại |
+| BinDiff 1.7.0 (`res.jar`) → 1.8.0 (`docs/BINDIFF_session8.md`) | khác duy nhất `Battle.class` (+`ai$confirm`, `createEnemyActors` +5 lệnh, `tick` +10, `handleKey` +2 — không lệnh gốc nào đổi), `MANIFEST.MF`; thêm `EnemyAI.class`, `ai/config.txt`; 968 entry còn lại (cả font của bạn) giống hệt |
+| Quét cấp phát | `new` trong `EnemyAI` trên đường chạy trận chỉ ở nhánh log (`log=1`), `catch`, sự kiện hiếm (thông báo/rút lui/lọc danh sách); còn lại lúc tạo trận / đọc cấu hình |
+| MicroEmulator: smoke bản phát hành (trận script 3 quái) | chạy hết, 0 ngoại lệ từ mã game |
+| MicroEmulator: 4 mức cấp × nhiều trận, cũ và mới | bảng trên; 0 dòng `AILOG error` trong mọi lượt |
+| MicroEmulator: kịch bản sủng vật (bản phát hành) | 5/5 ca đúng hành vi |
+| Debug Battle auto-test (bản debug 1.8.0, `-Dai.enabled=0`) | **pass 114 / fail 0** (`unreachable=9`, `autoDone=true`) — như 1.7.0: SFX/hook phiên 1–7 không đổi |
+| J2ME Loader / máy thật | ⚠️ chưa chạy |
+
+### 2. Các file đã chỉnh sửa / tạo mới
+* Mới: `src8/EnemyAI.java`, `tools/src/Patch8.java`, `build_s8.sh`, `res/ai/config.txt`, `res/font.bin` + `res/f18.bin` (của người dùng), `base/*.jar` (nền 1.7.0),
+  `tools/sim/balance_sim.py`, `tools/test/me/gen_balance.py`, `tools/test/me/gen_pets.py`, `tools/test/me/s8/*.txt`, `docs/ENEMY_AI.md`, `docs/AI_TEST_session8.txt`, `docs/BINDIFF_session8.md`.
+* Sửa: `tools/me/MeRun.java` (lệnh `sets`, `battle`, `probe` có chỉ số mảng), `docs/FLOWS_battle.md` (§7), `docs/RESOURCES.md`, `README.md`, `tools/README.md`, `.gitignore`.
+* Gỡ: `dist/SVTH_SFX.jar`, `dist/SVTH_SFX_debug.jar` (+ `.jad`) — bản tên rối 1.7.0, không dựng lại ở 1.8.0.
+
+### 3. Class đổi tên / thêm / xoá
+* Thêm `EnemyAI`. Không đổi tên/xoá class nào.
+
+### 4. Method / field (so bytecode với 1.7.0)
+* `Battle`: `+ ai$confirm()V` (cầu nối `invokespecial confirmCommand`); hook trong `createEnemyActors()V`, `tick()V`, `handleKey(I)Z`.
+* `Battle` field `actionPlans [[I`, `actingSlot I`, `enemyCount B`, `commandSlot I`, `targetCursor I`: `private` → package (chỉ field; không đổi descriptor; mọi truy cập cũ vẫn trong `Battle`).
+
+### 5. Biến quan trọng mới (`EnemyAI`)
+| Biến | Ý nghĩa |
+|---|---|
+| `projDmg[20]`, `ccPlanned[20]` | sát thương / khống chế đã định trên từng ô trong vòng (chống đánh thừa, không khống chế chồng) |
+| `fLo/fHi/aLo/aHi`, `enemySide` | phe của người đang quyết định (quái hoặc sủng vật) |
+| `ccLock` | đã có hero bị khống chế / còn 1 hero → hạn chế khống chế |
+| `retreated[]`, `petBattle`, `lastStand[]` | uid sủng vật đã rút lui trong trận (chặn gọi lại), trận hiện tại, pet đã báo "quyết thủ" |
+| khoá cấu hình | xem `docs/RESOURCES.md` / `res/ai/config.txt` |
+
+### 6. Luồng thực thi cập nhật
+`docs/FLOWS_battle.md` §7 (tạo quái → `adjustLevel`/`onEnemiesCreated`; pha 0 chọn lệnh → `petGate`; pha 2 → `planRound`; mỗi lượt → `onTurn`), `docs/ENEMY_AI.md` (chi tiết).
+
+### 7. Tài nguyên đã chuyển đổi
+| File | Trước | Sau | Lý do |
+|---|---|---|---|
+| `font.bin`, `f18.bin` | trong `res.jar` của người dùng | `res/` | giữ chỉnh sửa tay qua các bản dựng |
+| `ai/config.txt` | — | mới, ASCII | chỉnh AI trong JAR |
+
+### 8. Vấn đề còn tồn đọng
+* ⚠️ Chưa chạy J2ME Loader / máy thật. Đo cân bằng dùng chỉ số hero **mô hình** (10 điểm/cấp chia đều + trang bị theo cấp) và người chơi chỉ đánh thường — số trận nhỏ
+  (harness mất đồng bộ sau trận thua: dòng `nostart`). Cấp cao (60) với người chơi chỉ bấm đánh thường thua 1/2 trận: **cần chơi thật để chỉnh** `maxhit`/`rounds`/`hpmul` trong `ai/config.txt`.
+* ⚠️ Đổi gameplay đáng kể (theo yêu cầu): quái mạnh hơn rõ (trận dài hơn ~2×, mất nhiều máu hơn), EXP thưởng theo cấp quái mới (bám TB đội), pet không còn do người chơi điều khiển. Đảo lại từng phần bằng `ai/config.txt` (`ai=0`, `scale=0`, `randskill=0`, `petai=0`, `enabled=0`).
+* ⚠️ Sủng vật rút lui: không nhận EXP của trận; thanh máu ô đó vẫn có thể hiện trên bảng trạng thái (chưa kiểm hình từng khung).
+* ⚠️ Lỗi chữ có sẵn: `TextBlock.parseColorTags` ném `StringIndexOutOfBounds` (đã được `try/catch` của game bắt) với một dòng thoại có `>` mà không có `<` — gặp khi harness bấm qua hội thoại sau trận thua; không do phiên 8.
+* ⏸ Quái vẫn không bao giờ chí mạng (mã gốc chỉ xét `actingSlot < 9`). ⏸ Đòn thường SFX chưa đặt sớm (từ phiên 6).
+
+### 9. Kế hoạch tiếp theo
+* Người dùng chơi thử (máy/J2ME Loader nào) và báo độ khó ở các mốc cấp; chỉnh `ai/config.txt` theo cảm nhận.
+* Có thể thêm: quái biết chí mạng, menu "Chiến thuật" cho sủng vật (tấn công / phòng thủ / hồi máu ưu tiên), hiển thị ô sủng vật đã rút lui.
+
 ## Phiên 7 — 2026-10-10 (UTC+7): SKILL_1 kêu lại khi pet hành động; viết lại bộ phát SFX theo chuẩn engine hiện đại
 
 **Yêu cầu:** "Vẫn lỗi, nhân vật quinn dùng skill lên địch -> phát skill 01.wav, kết thúc hành động, pet hành động - wav skill 01 phát lại thêm phát nữa, kiểm tra lại, dc thì đập cái class đó đi xây lại chuẩn game aaa hiện đại đi, tham khảo tài liệu mạng".

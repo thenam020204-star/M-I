@@ -26,7 +26,7 @@ for n, (qp, p0, p1) in enumerate(cases):
           'say CASE %d quinn=%d%% healer=%d%% wolf=%d%%' % (n + 1, qp, p0, p1),
           'callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false', 'wait 4000', 'shot p%d_a.png' % (n + 1),
           'key -5', 'wait 700', 'key -5', 'wait 1500', 'shot p%d_b.png' % (n + 1),
-          'battle 180000 P%d' % (n + 1), 'shot p%d_end.png' % (n + 1),
+          'battle 180000 P%d' % (n + 1), 'shot p%d_end.png' % (n + 1), 'wait 9000',
           'probe GameData myPets[0] stats[1]', 'probe GameData myPets[1] stats[1]', 'probe GameData myPets[1] isFainted']
 s += ['say DONE', 'quit']
 open(out, 'w').write('\n'.join(s) + '\n')

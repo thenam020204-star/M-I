@@ -60,7 +60,7 @@ Ngoài kỹ năng tự nhiên (bảng `petdata`), **mỗi quái, mỗi trận** 
 * Số kỹ năng thêm = `1 + cấp/10` (`skillstep`), tối đa **7** (`skillmax`): cấp 1–9 → 1, cấp 10–19 → 2, …, cấp ≥ 60 → 7.
 * Không trùng kỹ năng đã có. Cấp kỹ năng = `1 + cấp_quái/20` (`skilllvstep`), không vượt số cấp có giá MP thật của kỹ năng
   (kỹ năng 9–12 chỉ có 5 cấp; 33 chỉ 5 dòng bảng độc).
-* Kho kỹ năng: mọi kỹ năng chủ động trừ 39 (trinh sát — chỉ người chơi) và 16 (cấm phép: cấp 1–5 cấm cả phe mình); thêm bị động
+* Kho kỹ năng: mọi kỹ năng chủ động trừ 39 (trinh sát — chỉ người chơi), 16 (cấm phép: cấp 1–5 cấm cả phe mình) và 8 (15 % giết ngay — nhắm leader là thua trận tức thì; đo thật: 3/3 trận thua nhanh nhất đều do kỹ năng này; quái có sẵn kỹ năng 8 vẫn giữ, nhưng AI không dùng nó lên leader); thêm bị động
   có tác dụng với quái: 7 (phản kích → `hasCounter`), 29–32 (cường kích nguyên tố → cộng ATK theo hệ).
 * Tối đa **1 kỹ năng hỗ trợ** ngẫu nhiên (2, 13, 14, 15, 17) mỗi quái, cấp ≤ 2 — đo thật: quái cấp 60 có hồi máu toàn đội cấp 4 dùng mỗi lượt
   (hồi ~30 %/lần cho cả 3 quái) làm trận bế tắc và đội thua sau ~60 s.
@@ -106,7 +106,7 @@ Thứ tự quyết định của sủng vật:
 1. **Cấp cứu**: có kỹ năng hồi máu (13 / 14) đủ MP và có đồng đội (kể cả chính nó) dưới **30 %** HP (`petheal`) → hồi máu ngay
    (14 nếu ≥ 2 người nguy kịch, không thì 13 vào người thấp máu nhất). Thông báo "X cấp cứu Y!".
 2. **Máu bản thân < 25 %** (`petlow`) và không hồi được:
-   * sủng vật "trung thành" (`uid % 3 == 0`), hoặc chủ nhân (slot 0) < 35 % HP, hoặc chỉ còn 1 quái → **thủ tới cùng** (lệnh phòng thủ
+   * sủng vật "trung thành" (`uid % 3 == 0`), hoặc chủ nhân (slot 0) < 35 % HP, hoặc chỉ còn 1 quái, hoặc **đồng đội đã định hồi máu cho nó** trong vòng này → **thủ tới cùng** (lệnh phòng thủ
      mỗi vòng; game giảm sát thương /5 và hồi 80 % máu đã mất cho người phòng thủ mỗi khi có kỹ năng được dùng). Thông báo một lần
      "X liều chết bảo vệ chủ nhân!" / "X quyết thủ tới cùng!".
    * còn lại: 60 % (`petflee`) **rút lui**: rời trận còn sống (`isDead = true` để mọi vòng lặp của game bỏ qua — lượt, mục tiêu, menu;
