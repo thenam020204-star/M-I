@@ -1,0 +1,8 @@
+d5c1f4e 2026-10-10 SVTH 1.3.0: tach SFX khoi nhac, dong menu 'Cai dat SFX', bo hop thoai hoi nhac, tai lieu + BINDIFF_session3
+711322f 2026-10-10 SVTH 1.3.0 (WIP): tai lieu menu SFX, huong dan MeRun
+78cde4d 2026-10-10 SVTH 1.3.0 (WIP): tach SFX khoi nhac, dong menu 'Cai dat SFX', bo hop thoai hoi nhac
+dd9d097 2026-10-10 SVTH: GIT_LOG_session2
+fe41704 2026-10-10 SVTH 1.2.0: SFX theo cong tac nhac (at.b), 27 file wav im lang gan san, tai lieu
+813a41c 2026-10-10 SVTH: REFACTOR_LOG commits, GIT_LOG
+61b55f1 2026-10-10 SVTH debug: thoat debug = thoat ung dung (tranh ro trang thai tinh), cap nhat tai lieu
+789a85c 2026-10-10 SVTH: tools/README library list

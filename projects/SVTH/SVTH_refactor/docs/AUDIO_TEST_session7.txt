@@ -1,0 +1,64 @@
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+preload: players=37 warm=26 created=37
+PASS preload (session 7): mọi tiếng có Player (≥ 27), giữ ấm đúng warmMax = 26  [players=37 warm=26]
+PASS độ trễ post→start: trung vị < 3 ms, p95 < 10 ms  [median=131us p95=2952us max=5045us]
+PASS không stop()/phát đè khi lặp lại cùng tiếng  [stop=0]
+PASS 3 HIT cùng giọng cùng một lúc: gộp làm 1 tiếng (gap 40 ms), không start đè  [starts=1]
+PASS 3 HIT cách 45 ms (tiếng 70 ms chồng nhau): kêu đủ 3, ≥ 2 Player khác nhau, không start đè  [starts=3 distinct=3 pool=3]
+PASS 5 loại khác nhau cùng lúc: cả 5 start trong 40 ms  [starts=5]
+PASS 7 MISS cách 42 ms (tiếng 90 ms, bể ≤ 3): không stop, không start đè, phát ≥ 3  [starts=7 stops=0]
+PASS SKILL gọi lại khi tiếng cũ còn kêu: bỏ qua (solo), không chồng, không cắt  [starts=1]
+PASS flushAll() không dừng tiếng đang phát  [stops=0]
+PASS stopAll() (tạm dừng) mới dừng tiếng đang phát  [stops=1]
+PASS 300 sự kiện ngẫu nhiên: 0 stop, 0 start đè  [stops=0 starts=153]
+PASS không start() lên Player còn đang phát  [startWhilePlaying=0]
+PASS SFX phát → nhạc hạ xuống 45% (80→36) ngay sau khi tiếng bắt đầu  [vol calls=1 first=36 afterStart=25us]
+PASS hết tiếng + 200 ms giữ → nhạc trả về 80 từng bước, không giật xuống  [levels=[36, 46, 57, 68, 80]]
+PASS thời điểm bắt đầu trả nhạc ≥ hết tiếng + hold(200)  [restoreStart-soundEnd=201ms]
+PASS chuỗi 6 tiếng cách 100 ms: nhạc cuối cùng về 80  [calls=10 final=80]
+PASS SFX đến giữa lúc trả nhạc → hạ lại về 36 ngay  [last=36 calls=5]
+PASS nhạc đang tắt (at.b=false): không đụng âm lượng nhạc  [calls=0]
+PASS âm lượng nhạc = 0: không đụng  [calls=0]
+PASS duck=100 (tắt hạ nhạc): không đụng  [calls=0]
+PASS không có nhạc (Main.music=null): không lỗi, SFX vẫn phát
+PASS stopAll() trả nhạc về mức đầy ngay  [last=80]
+---- summary
+TEST RESULT pass=22 fail=0
+PASS createPlayer lỗi sau 30 Player: bể dừng ở ≤ 30, không ngoại lệ, vẫn phát  [players=30 created=30 starts=12 lastError=javax.microedition.media.MediaException: fake: out of players]
+TEST RESULT(cap) pass=1 fail=0
+PASS totalMax=29: tổng Player SFX không vượt 29  [players=29]
+TEST RESULT(total) pass=1 fail=0
+lat=0 preload players=37 created=37 fromFile(SKILL,1)=true dur(SKILL,1)=1006 dur(HIT,2)=871
+  buff cast: starts=1
+PASS lat=0: buff (SKILL tung + SKILL marker khi tiếng đầu còn kêu) chỉ kêu 1 lần/lần tung  [starts=3/3 lần tung]
+PASS lat=0: chuỗi HIT dài chồng nhau: mọi HIT đều kêu, post→start ≤ 15 ms (không tạo Player lúc phát, không hẹn muộn)  [missing=0 maxLate=0ms avg=0ms createsDuringPlay=1]
+PASS lat=0: không tua (setMediaTime) Player còn đang kêu  [rewindWhilePlaying=0 rewinds=1827]
+PASS lat=0: không start() lên Player còn đang kêu  [startWhilePlaying=0]
+PASS lat=0: không stop() (không cắt tiếng)  [stops=0]
+TEST RESULT(lat0) pass=5 fail=0 players=40 created=40
+lat=150 preload players=37 created=37 fromFile(SKILL,1)=true dur(SKILL,1)=1006 dur(HIT,2)=871
+  buff cast: starts=1
+PASS lat=150: buff (SKILL tung + SKILL marker khi tiếng đầu còn kêu) chỉ kêu 1 lần/lần tung  [starts=3/3 lần tung]
+PASS lat=150: chuỗi HIT dài chồng nhau: mọi HIT đều kêu, post→start ≤ 15 ms (không tạo Player lúc phát, không hẹn muộn)  [missing=0 maxLate=0ms avg=0ms createsDuringPlay=1]
+PASS lat=150: không tua (setMediaTime) Player còn đang kêu  [rewindWhilePlaying=0 rewinds=2043]
+PASS lat=150: không start() lên Player còn đang kêu  [startWhilePlaying=0]
+PASS lat=150: không stop() (không cắt tiếng)  [stops=0]
+TEST RESULT(lat150) pass=5 fail=0 players=40 created=40
+lat=300 preload players=37 created=37 fromFile(SKILL,1)=true dur(SKILL,1)=1006 dur(HIT,2)=871
+  buff cast: starts=1
+PASS lat=300: buff (SKILL tung + SKILL marker khi tiếng đầu còn kêu) chỉ kêu 1 lần/lần tung  [starts=3/3 lần tung]
+PASS lat=300: chuỗi HIT dài chồng nhau: mọi HIT đều kêu, post→start ≤ 15 ms (không tạo Player lúc phát, không hẹn muộn)  [missing=0 maxLate=0ms avg=0ms createsDuringPlay=1]
+PASS lat=300: không tua (setMediaTime) Player còn đang kêu  [rewindWhilePlaying=0 rewinds=2048]
+PASS lat=300: không start() lên Player còn đang kêu  [startWhilePlaying=0]
+PASS lat=300: không stop() (không cắt tiếng)  [stops=0]
+TEST RESULT(lat300) pass=5 fail=0 players=40 created=40
+j2mel preload: players=37 warm=26 primed=26 created=37
+PASS j2mel: mọi tiếng thật không phải prepare lúc phát (Player đã được làm ấm)  [prepareTrongStart=0/48]
+PASS j2mel: mọi tiếng thật bắt đầu ở vị trí 0, không đè Player đang kêu  [khongTu0=0 de=0]
+PASS j2mel: không mất tiếng nào (trừ marker buff khi cast còn kêu), post→start ≤ 15 ms  [lost=0/51 maxLate=0ms]
+PASS j2mel: buff (cast + marker khi tiếng cast còn kêu) chỉ kêu 1 lần  [markerKeu=0]
+PASS j2mel: SKILL giọng 0 của sủng vật và của quái gần nhau: cả hai kêu (giới hạn theo actor)  [keu=6/6]
+PASS j2mel: không tua Player đang kêu, không stop()  [rewindWhilePlaying=0 stopWhilePlaying=0]
+TEST RESULT(j2mel) pass=6 fail=0 players=38 warm=26 primed=75 coldStarts=0 created=38
+exit=0

@@ -1,0 +1,289 @@
+# part_core.map — cụm lõi: da at ct cq cu cg b bv cc k h   (Main, vh, fontcus đã đọc được, giữ nguyên)
+# Bằng chứng: khoá cấu hình trong /bin/config.txt, /bin/myConfig.txt, /jzy.bin, /bin/key.txt; chuỗi hiển thị; nơi gọi.
+
+# ---- da  (Canvas + vòng lặp game) ----
+C da GameCanvas HIGH                                  # extends Canvas implements Runnable, run() = vòng lặp ~60 fps, paint() chuyển theo trạng thái
+F da.a_da instance HIGH                               # singleton da.a_da = this trong constructor
+F da.a_B screenState HIGH                             # paint(): switch 0 trống,1 hỏi nhạc,2 logo,3 cover,4 game,6 chạy trên ĐT,7 tạm dừng
+F da.a_S frameCounter HIGH                            # run(): ++ mỗi khung, quay về 0 ở 127
+F da.b_Z loopRunning HIGH                             # while(b_Z) trong run(); a() đặt true, b() đặt false
+F da.a_Z paused HIGH                                  # hideNotify=true / showNotify=false; run() ngủ 2s khi true
+F da.c_Z threadAlive HIGH                             # đặt true khi start Thread, false khi run() thoát
+F da.a_Thread gameThread HIGH                         # new Thread(this) trong a()
+F da.a_J frameStartMs HIGH                            # currentTimeMillis đầu khung
+F da.b_J frameEndMs HIGH                              # sau repaint+serviceRepaints
+F da.c_J frameAfterSleepMs MED                        # sau khi ngủ bù
+F da.d_J fps HIGH                                     # 1000/(c_J-a_J), vẽ chữ "FPS:" ở chế độ debug
+F da.d_S frameIntervalMs HIGH                         # =16, Thread.sleep(d_S-(b_J-a_J))
+F da.a_av logoScreen MED                              # paint case 2 -> a_av.a(g); lớp av hiển thị logo
+F da.a_bs titleScreen MED                             # paint case 3 -> a_bs.a(g); lớp bs là menu bìa (Chơi mới/Chơi tiếp)
+F da.a_cd world HIGH                                  # paint case 4 -> a_cd.a(g); thế giới game
+F da.a_Random random HIGH                             # Random seed currentTimeMillis
+F da.b_S screenWidth HIGH                             # getWidth() trả b_S, khởi tạo super.getWidth()
+F da.c_S screenHeight HIGH                            # getHeight() trả c_S
+F da.a_Display display HIGH                           # setCurrent(...)
+F da.a_String toastText HIGH                          # a(String,int): thông báo, vẽ trong paint
+F da.d_Z toastActive HIGH                             # đặt true trong a(String,int); khoá keyPressed khi true
+F da.a_I toastFrames HIGH                             # bộ đếm lùi mỗi paint
+M da.a(Displayable) setDisplayable HIGH               # a_Display.setCurrent(d)
+M da.a() startLoop HIGH                               # b_Z=true, tạo Thread, setCurrent(this)
+M da.b() stopLoop HIGH                                # b_Z=false
+M da.a(String,int) showToast HIGH                     # hộp thoại ngắn, N khung (vd. "Số vật phẩm đã đạt giới hạn 99",10)
+
+# ---- at  (cấu hình thiết bị đọc từ /bin/config.txt) ----
+C at DeviceConfig HIGH                                # a() đọc /bin/config.txt bằng cg.a_String/cg.b_Z
+M at.a() load HIGH                                    # đọc toàn bộ khoá cấu hình
+F at.a_B cutMapImg HIGH                               # khoá "cutMapImg"
+F at.b_B cutAvImg HIGH                                # khoá "cutAvImg"
+F at.c_B cutImg HIGH                                  # khoá "cutImg"; cg.drawFrame rẽ nhánh cắt ảnh theo nó
+F at.a_Z allowMusic HIGH                              # khoá "allowMusic"
+F at.b_Z playMusic HIGH                               # khoá "playMusic" rồi ghi đè = allowMusic; cờ bật/tắt nhạc (Patch.java đọc at.b)
+F at.c_Z notUseMusicClose HIGH                        # khoá "notUseMusicClose"; MusicPlayer.release bỏ close() khi true
+F at.d_Z allowDebug HIGH                              # khoá "alowDebug"
+F at.e_Z debugMode HIGH                               # khoá "debug"; GameCanvas.paint vẽ bộ nhớ + FPS
+F at.a_String modelName HIGH                          # khoá "model", so sánh với "N7610","L6"...
+F at.a_AS screenSize HIGH                             # khoá "screenSize"; at.a_AS[0]=rộng,[1]=cao
+F at.e_B rmsCount HIGH                                # khoá "rmsCount" (mặc định 3)
+F at.a_AString crackClassNames MED                    # khoá "crack"; c.b() Class.forName từng tên để phát hiện bản crack
+F at.o_Z useGlassMirror HIGH                          # khoá "useGlassMirror"
+F at.p_Z useAlphaMirror HIGH                          # khoá "useAlphaMirror"
+F at.q_Z useMoonicNetPay HIGH                         # khoá "useMoonicNetPay"; df.java rẽ nhánh thanh toán
+F at.r_Z useCarmarkCache HIGH                         # khoá "useCarmarkCache"
+F at.s_Z fillMapBackColor HIGH                        # khoá "fillMapBackColor"
+F at.i_Z cacheTxt HIGH                                # khoá "cacheTxt"; cg.loadText dùng cc.loadText khi true
+F at.g_B cacheTxtGroup HIGH                           # khoá "cacheTxtGroup"
+F at.j_Z cacheMap HIGH                                # khoá "cacheMap"
+F at.h_B cacheMapGroup HIGH                           # khoá "cacheMapGroup"
+F at.k_Z cacheAv HIGH                                 # khoá "cacheAv"
+F at.i_B cacheAvGroup HIGH                            # khoá "cacheAvGroup"
+F at.l_Z cacheMusic HIGH                              # khoá "cacheMusic"; MusicPlayer.load đọc qua cc khi true
+F at.j_B cacheMusicGroup HIGH                         # khoá "cacheMusicGroup"
+F at.m_Z needCopyRight HIGH                           # khoá "needCopyRight"; c.a_Z() kiểm tra bản quyền khi true
+F at.n_Z useImgColorTable HIGH                        # khoá "useImgColorTable"
+F at.f_Z unloadBeforeBattle HIGH                      # khoá "unloadBeforeBattle"
+F at.g_Z moreSleep HIGH                               # khoá "moreSleep"
+F at.d_B defaultVolume MED                            # =80; da gán o.g_B = at.d_B khi vào game (âm lượng mặc định)
+
+# ---- ct  (cài đặt riêng /bin/myConfig.txt) ----
+C ct GameSettings HIGH                                # a() đọc /bin/myConfig.txt
+M ct.a() load HIGH                                    # đọc myConfig.txt
+F ct.a_AString firstLoadFiles HIGH                    # khoá "Firstload"; Main.firstload nạp từ danh sách này
+F ct.a_B skipNeedle MED                               # khoá "skipNeedle"
+F ct.a_String titleMusic HIGH                         # khoá "TitlesMusic"
+F ct.b_B goodOrBad MED                                # khoá "goodorbad"; k.drawPanel vẽ khung đặc khi ==1 (máy yếu), trong suốt khi khác
+F ct.a_S maxItemTypes MED                             # khoá "goodsMaxNum" (mặc định 36)
+F ct.c_B maxPetCount HIGH                             # khoá "maxPetNumber" (mặc định 5)
+
+# ---- cq  (cấu hình kênh phát hành /jzy.bin + JAD) ----
+C cq ChannelConfig HIGH                               # Main.startApp gán tất cả từ /jzy.bin
+F cq.a_AString logoFiles HIGH                         # khoá "logo"; av.a_AString = cq.a_AString
+F cq.a_AI logoBgColors HIGH                           # khoá "logoBgColor"
+F cq.a_AS logoTimes HIGH                              # khoá "logoTime"
+F cq.a_String aboutText HIGH                          # đoạn "aboutus:".."aboutusEnd" (bs wrap 170 px)
+F cq.b_String smsPrice HIGH                           # khoá "smsPrice"
+F cq.c_String smsMessage HIGH                         # khoá "smsMsg"; df.java vẽ chữ
+F cq.d_String channelId HIGH                          # khoá "channelId" (JAD "cid" ghi đè nếu dài 2)
+F cq.e_String gameId HIGH                             # khoá "gameId"; truyền cg.a_I(gameId) cho bk.a
+F cq.a_Z isKemu HIGH                                  # khoá "isKemu"; c.a_Z() kiểm tra crack khi true
+F cq.b_Z isFree HIGH                                  # khoá "isFree"
+F cq.c_Z isBbx HIGH                                   # khoá "isBbx"; bn.java:2990 rẽ nhánh
+F cq.d_Z useFreeCode HIGH                             # JAD "useFreeCode"
+F cq.f_String addMenuText HIGH                        # khoá "addMenu"; bs thêm mục menu
+F cq.g_String addMenuLink HIGH                        # khoá "addMenuLink"; Main.platformRequest(link)
+F cq.h_String cpId HIGH                               # khoá "cpId"
+
+# ---- cu  (gói tài nguyên "jzy" cắt thành nhiều phần) ----
+C cu PackFile HIGH                                    # đọc đầu "jzy"+ver, bảng entry, ghép byte từ các tệp phần
+M cu.a_Z(String) loadIndex HIGH                       # Main gọi cu.a_Z("/00"); đọc đầu "jzy", số entry, bảng
+M cu.a_AB(String) readEntry HIGH                      # ghép dữ liệu qua các tệp phần b_String+"/"+a_String+n
+M cu.b(String) hasEntry HIGH                          # tìm tên trong bảng entry
+F cu.a_String partNamePrefix MED                      # readUTF từ đầu tệp; tên tệp phần = dir/prefix+số
+F cu.b_String packDir HIGH                            # var0.substring(0, lastIndexOf('/'))
+F cu.a_I entryCount HIGH                              # readInt số entry
+F cu.a_AString entryNames HIGH                        # readUTF mỗi entry; so khớp tên tệp
+F cu.a_AI entrySizes HIGH                             # readInt; số byte còn phải đọc
+F cu.a_AS entryFirstPart HIGH                         # readByte; chỉ số tệp phần đầu tiên
+F cu.b_AI entryOffsets HIGH                           # readInt; offset trong tệp phần đầu
+F cu.a_Object classAnchor HIGH                        # new Object().getClass().getResourceAsStream
+
+# ---- b  (bản đồ phím) ----
+C b KeyMap HIGH                                       # đọc /bin/key.txt, chuẩn hoá mã phím
+M b.a() loadKeyConfig HIGH                            # khoá u,d,l,r,ok,sl,sr,number:,star,pound
+M b.a(int) normalizeKey HIGH                          # mã máy -> 1 lên,6 xuống,2 trái,5 phải,8 OK,42 *,35 #
+F b.a_S softLeftKey HIGH                              # =998; trả về từ normalizeKey cho phím mềm trái
+F b.b_S softRightKey HIGH                             # =999
+F b.a_AS softLeftCodes HIGH                           # khoá "sl", mặc định {-6}
+F b.b_AS softRightCodes HIGH                          # khoá "sr", mặc định {-7}
+F b.c_AS upCodes HIGH                                 # khoá "u", mặc định {-1}
+F b.d_AS downCodes HIGH                               # khoá "d", mặc định {-2}
+F b.e_AS leftCodes HIGH                               # khoá "l", mặc định {-3}
+F b.f_AS rightCodes HIGH                              # khoá "r", mặc định {-4}
+F b.g_AS okCodes HIGH                                 # khoá "ok", mặc định {-5}
+F b.a_AAS digitCodes HIGH                             # khoá "number:" 0..9, mặc định {48..57}
+F b.h_AS starCodes HIGH                               # khoá "star", mặc định {42}
+F b.i_AS poundCodes HIGH                              # khoá "pound", mặc định {35}
+
+# ---- bv  (phát nhạc nền qua MMAPI) ----
+C bv MusicPlayer HIGH                                 # Player + VolumeControl, midi/wav/amr, lặp vô hạn
+F bv.a_Player player HIGH                             # Manager.createPlayer
+F bv.a_VolumeControl volumeControl HIGH               # getControl("VolumeControl")
+F bv.a_B volume HIGH                                  # mặc định 100; setLevel
+F bv.a_String fileName HIGH                           # đường dẫn đang nạp
+M bv.a(String) load HIGH                              # createPlayer theo đuôi .mid/.wav/.amr, realize, setLoopCount(-1), prefetch
+M bv.a(int) setLoopCount HIGH                         # Player.setLoopCount
+M bv.b(int) setVolume HIGH                            # VolumeControl.setLevel
+M bv.a() start HIGH                                   # Player.start
+M bv.b() stop HIGH                                    # Player.stop
+M bv.c() release HIGH                                 # deallocate, close (trừ notUseMusicClose), gc, sleep 20ms
+
+# ---- cc  (bộ đệm ảnh / hoạt ảnh / byte / chữ, thả theo nhóm) ----
+C cc ResourceCache HIGH                               # các mảng song song tên + dữ liệu + nhóm; at.cache*Group chọn nhóm
+M cc.a(int) releaseGroup HIGH                         # gỡ mọi mục có nhóm == var0 (k.a_V gọi cc.a(1), cc.a(0))
+M cc.a() clearAll HIGH                                # null mọi bảng, cg.a() xoá cache cắt ảnh
+M cc.a(String,String,String[],String[],int[],int[],int,boolean,boolean,int) getAnimation HIGH  # tìm/tạo co theo đường dẫn, thêm vào bảng
+M cc.a(String) loadImage HIGH                         # = a_Image(path,0)
+M cc.a_Image(String,int) loadImage HIGH               # tìm theo tên trong b_AString, nếu không có thì cg.a_Image rồi thêm vào bảng nhóm var1
+M cc.b(String,int) createImageUncached MED            # Image.createImage(a_AB(path,2)); dùng cho /pic/number05.gf
+M cc.a_AB(String,int) loadBytes HIGH                  # sao chép byte từ bộ đệm hoặc cg.a_AB/cg.b_AB rồi thêm vào bảng
+M cc.a(String,boolean,int) loadText HIGH              # tìm/đọc văn bản .txt/.bin giải mã (+10 hoặc khoá cg.a_AB)
+F cc.a_Aco animCache HIGH                             # bảng co (hoạt ảnh)
+F cc.a_AString animCachePaths HIGH                    # tên song song với a_Aco
+F cc.a_AB animCacheGroups HIGH                        # nhóm song song với a_Aco; releaseGroup so sánh
+F cc.a_AImage imageCache HIGH                         # bảng Image
+F cc.b_AString imageCachePaths HIGH                   # tên song song với a_AImage
+F cc.b_AB imageCacheGroups HIGH                       # nhóm song song với a_AImage
+F cc.a_I imageCachePixels MED                         # cộng w*h mỗi ảnh mới (theo dõi bộ nhớ)
+F cc.a_AAB bytesCache HIGH                            # byte đã đọc
+F cc.c_AString bytesCachePaths HIGH                   # tên song song
+F cc.c_AB bytesCacheGroups HIGH                       # nhóm song song
+F cc.e_AString textCachePaths HIGH                    # tên văn bản đã nạp
+F cc.d_AString textCacheValues HIGH                   # nội dung văn bản đã nạp
+
+# ---- cg  (tiện ích: mảng, văn bản cấu hình, tài nguyên, vẽ chữ/số) ----
+C cg Utils HIGH                                       # ~80 hàm tĩnh dùng khắp game
+F cg.a_Font defaultFont HIGH                          # Font.getFont(0,0,8): face/style/size mặc định, truyền setFont mọi paint
+F cg.a_S fontWidthMM MED                              # vh.stringWidth(font,"MM")
+F cg.b_S lineHeight HIGH                              # vh.getHeight(font); dùng xếp dòng khắp nơi
+F cg.a_AB configKey HIGH                              # {7}: byte trừ khi giải mã tệp .bin
+F cg.b_AB gfKey HIGH                                  # {7,3,8,...}: cộng vào mỗi byte thứ 10 của .gf
+F cg.c_AB pngHeader HIGH                              # 89 50 4E 47 0D 0A 1A 0A + IHDR: ghép trước dữ liệu .gf
+F cg.a_Hashtable imageSliceCache HIGH                 # Image -> Image[] các ô đã cắt
+F cg.a_Vector existingResources HIGH                  # đường dẫn đã xác nhận tồn tại
+F cg.b_Vector missingResources HIGH                   # đường dẫn đã xác nhận không tồn tại
+F cg.a_Object classAnchor HIGH                        # getClass().getResourceAsStream
+# -- nối thêm phần tử --
+M cg.a(boolean[],boolean) append HIGH                 # tạo mảng dài hơn 1, chép, gán phần tử cuối
+M cg.a_AB(byte[],int) append HIGH                     # như trên
+M cg.a(byte[][],byte[]) append HIGH                   # như trên
+M cg.a_AI(int[],int) append HIGH                      # như trên
+M cg.a(int[][],int[]) append HIGH                     # như trên
+M cg.a_AS(short[],int) append HIGH                    # như trên
+M cg.a_AS(short[],short[]) appendAll HIGH             # nối cả mảng var1 vào cuối var0
+M cg.a(short[][],short[]) append HIGH                 # như trên
+M cg.a(String[],String) append HIGH                   # như trên
+M cg.a(String[][],String[]) append HIGH               # như trên
+# -- chứa / xoá phần tử --
+M cg.a_Z(byte[],int) contains HIGH                    # duyệt tuyến tính
+M cg.a_Z(int[],int) contains HIGH                     # duyệt tuyến tính
+M cg.a_Z(short[],int) contains HIGH                   # duyệt tuyến tính
+M cg.b(byte[],int) removeValue HIGH                   # tìm phần tử == var1 rồi gọi removeAt
+M cg.b(int[],int) removeValue HIGH                    # như trên
+M cg.b(short[],int) removeValue HIGH                  # như trên
+M cg.c(byte[],int) removeAt HIGH                      # dịch trái, trả mảng ngắn hơn 1 (null nếu còn 1 phần tử)
+M cg.a(byte[][],int) removeAt HIGH                    # như trên
+M cg.c(int[],int) removeAt HIGH                       # như trên
+M cg.c(short[],int) removeAt HIGH                     # như trên
+M cg.a(short[][],int) removeAt HIGH                   # như trên
+M cg.a(String[],int) removeAt HIGH                    # như trên
+# -- hình học --
+M cg.a(int,int,int,int,int,int,int,int) rectsOverlap HIGH  # x1<x2+w2 && y1<y2+h2 && x1+w1>x2 && y1+h1>y2
+M cg.a_Z(short[],short[]) rectsOverlap HIGH           # cùng công thức, hình chữ nhật dạng short[4]
+# -- ảnh / tài nguyên --
+M cg.a() clearImageSliceCache HIGH                    # a_Hashtable.clear()
+M cg.a_Z(String,String) isSameImagePath HIGH          # coi .png và .gf cùng tên là một
+M cg.c_Z(String) resourceExists HIGH                  # getResourceAsStream + cache a_Vector/b_Vector
+M cg.a_Z(String) imageExists HIGH                     # thử .png<->.gf, cả trong cu pack
+M cg.a_AB(String,boolean) readResource HIGH           # thử path, /pub/<tên>, rồi gói cu nếu var1
+M cg.a_AB(String) readResource HIGH                   # = a_AB(path,true)
+M cg.c_AB(String) readGfAsPng HIGH                    # giải mã .gf: +gfKey mỗi 10 byte, ghép pngHeader
+M cg.a(byte[]) createImage HIGH                       # Image.createImage(bytes,0,len)
+M cg.a_Image(String) loadImage HIGH                   # b_AB(path) rồi createImage
+M cg.b_AB(String) loadImageBytes HIGH                 # rẽ nhánh .png/.gf/.jpg, thử đổi đuôi
+M cg.a(Graphics,Image,int,int,int,int,int,int,int) drawFrame HIGH  # cắt ô (w,h) theo chỉ số khung, vẽ tại (x,y,anchor); có cache ô khi cutImg!=0
+M cg.a(Graphics,int,int,int,Image,int,int,int) drawNumber HIGH      # vẽ số bằng dải ảnh chữ số, ký tự 10 là dấu
+M cg.a(int) digitCount HIGH                           # String.valueOf(n).length()
+# -- vẽ chữ --
+M cg.a(Graphics,String,int,int,int,int,int) drawOutlinedText HIGH   # viền 4 hướng màu var5, chữ màu var4
+M cg.b(Graphics,String,int,int,int,int,int) drawOutlinedText8 HIGH  # viền 8 hướng
+M cg.a(String,int) wrapText HIGH                      # = vh.wrap
+M cg.a(String,String,int) splitAndWrap HIGH           # tách theo dấu phân cách rồi wrap từng đoạn
+# -- văn bản cấu hình kiểu "khoá=giá trị" --
+M cg.a_String(String) loadConfigText HIGH             # = a_String(path, !allowDebug)
+M cg.a_String(String,boolean) loadText HIGH           # đọc .txt/.bin, giải mã byte (trừ configKey hoặc +10), UTF-8; cache cc khi cacheTxt
+M cg.a_String(String,String) getValue HIGH            # dòng bắt đầu "khoá=" -> phần sau
+M cg.a(String,String,String) substringBetween HIGH    # đoạn giữa hai dấu mốc
+M cg.b_AString(String,String) split HIGH              # tách theo dấu phân cách, bỏ phần rỗng
+M cg.a_AString(String,String) getStringArray HIGH     # split(getValue(text,key), ",")
+M cg.a_AString(String,String,String,String) getStringBlock HIGH     # khối giữa hai mốc, mỗi dòng tách bởi "\r\n"
+M cg.a_AString(String,String,String,String,String) getStringBlock HIGH
+M cg.a_AAString(String,String,String,String) getStringTable HIGH    # mảng 2 chiều theo dòng và dấu phân cách ","
+M cg.a_AAString(String,String,String,String,String) getStringTable HIGH
+M cg.a_AAS(String,String,String,String) getShortTable HIGH          # như trên nhưng short[][]
+M cg.a_AB(String,String) getByteArray HIGH            # b_AB(getValue,",")
+M cg.a_AAB(String,String,String,String) getByteTable HIGH
+M cg.a_AI(String,String) getIntArray HIGH             # b_AI(getValue,",")
+M cg.a_AS(String,String) getShortArray HIGH           # b_AS(getValue,",")
+M cg.a_B(String,String) getByte HIGH                  # a_B(getValue)
+M cg.a_I(String,String) getInt HIGH                   # a_I(getValue)
+M cg.a_S(String,String) getShort HIGH                 # a_S(getValue)
+M cg.b_Z(String,String) getBool HIGH                  # b_Z(getValue) : "1" -> true
+M cg.b_AB(String,String) parseByteArray HIGH          # tách theo dấu phân cách rồi parse
+M cg.b_AI(String,String) parseIntArray HIGH
+M cg.b_AS(String,String) parseShortArray HIGH
+M cg.b_Z(String) parseBool HIGH                       # a_I(s)==1
+M cg.a_B(String) parseByte HIGH
+M cg.a_I(String) parseInt HIGH
+M cg.a_S(String) parseShort HIGH
+
+# ---- k  (tiện ích game: ngẫu nhiên, khung/hộp UI, bảng màu quái, cuộn chữ) ----
+C k GameUtil MED                                      # tập hợp hàm tĩnh lẫn lộn; không có trạng thái lõi
+F k.a_Random random HIGH                              # Random lazy trong k.a(int,int)
+F k.a_Image scrollArrowImage HIGH                     # nạp /pic/arrowhead.gf
+F k.b_Image scrollThumbImage HIGH                     # nạp /pic/arrow1.gf
+F k.c_Image panelImage MED                            # Image.createRGBImage cho khung mờ (drawPanel)
+F k.a_B scrollLine HIGH                               # dòng đầu tiên trong cuộn chữ
+F k.a_I scrollTick HIGH                               # đếm khung; sau 10 thì bắt đầu cuộn
+F k.b_B scrollOffset HIGH                             # offset pixel +6 mỗi 3 khung, về 0 khi qua 1 dòng
+F k.a_Z scrollMoving HIGH                             # true khi đang trượt
+F k.b_I marqueeX HIGH                                 # vị trí x chữ chạy ngang
+M k.a_V() freeImageCaches HIGH                        # cc.a(1), cc.a(0), System.gc()
+M k.a(String,String,String) replaceAll MED            # thay chuỗi (bỏ qua 1 ký tự sau mỗi lần thay: lỗi nhỏ)
+M k.a(byte[]) sortBytes HIGH                          # bubble sort
+M k.a(bl) isInTeam MED                                # duyệt o.a_Abl (đội hình) so sánh tham chiếu
+M k.a(String[],String) parseShortRows HIGH            # mỗi phần tử -> cg.b_AS(s, delim|",")
+M k.a(int,int) randomRange HIGH                       # base + |rand| % range
+M k.b(int,int) randomBetween HIGH                     # [min,max] gồm cả hai đầu (a(min, max-min+1))
+M k.a(int,int,int) pickTwoDistinct MED                # lấy ngẫu nhiên 2 giá trị khác nhau từ 0..n
+M k.a(int[],int) pickRandomExcept MED                 # bỏ var1 rồi chọn ngẫu nhiên một phần tử
+M k.a(Graphics,String[],int,int,int,int,int,int,int[],boolean) drawScrollingText HIGH  # cuộn dọc từng dòng, clip, màu theo dòng
+M k.b() resetScroll HIGH                              # đặt 0 các biến cuộn
+M k.a(String[][],String[]) append HIGH                # nối phần tử cuối
+M k.a(short[][][],short[][]) append HIGH              # nối phần tử cuối
+M k.a(int[]) maxValue HIGH                            # lớn nhất, -1 nếu null
+M k.a(Graphics,Image,Image,int,int,int,int,int,int) drawScrollBar HIGH  # thanh cuộn: arrowhead + mũi tên theo vị trí
+M k.a(String,String,String,String,String) getShortList MED  # khối giữa hai mốc -> khoá -> tách -> short[]
+M k.a(Graphics,String,int) drawMarquee MED            # chữ chạy ngang, quay lại khi ra khỏi màn
+M k.a(Graphics,String,int,int) drawMessageBox HIGH    # hộp thoại nền chữ trắng giữa màn
+M k.a(Graphics,int,int,int,int,int,int,int,boolean) drawPanel HIGH   # khung mờ; ct.goodOrBad==1 -> khung đặc
+M k.c() clearPanelImages HIGH                         # null ảnh khung/mũi tên (trừ vài máy Nokia)
+M k.a_Image(int,int,int,int) createTranslucentImage HIGH  # createRGBImage(buffer alpha 216)
+M k.a(Graphics,String,int,int,int,int) drawBoldText HIGH  # vẽ chữ 2 lần lệch 1px
+M k.a(short,short,short) addDungeonPortal MED         # thêm cổng "Dịch chuyển phó bản" -> map var2 ("换场景")
+M k.a(Graphics,bx,int,int,boolean,int) drawAnimation MED  # đặt vị trí + setAction + vẽ, nhấp nháy theo da.frameCounter
+M k.a(int,boolean) loadBattleAnimation MED            # "/ft/N.av" kèm bảng màu quái; N=(id/4 làm tròn lên)
+
+# ---- h  (lớp rỗng) ----
+C h RankEntry LOW                                     # lớp rỗng; an.java khởi tạo new h() trong nhánh parse "uid/age/nickName/score" (bảng xếp hạng)
+
+# ---- vh (bổ sung: field duy nhất còn là 1 chữ cái) ----
+F vh.H_I fontHeight HIGH                              # vh.getHeight(Font) trả H_I (=15); dùng neo toạ độ chữ trong drawString

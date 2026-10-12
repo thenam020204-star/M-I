@@ -1,0 +1,779 @@
+# part_sdk.map — cụm sdk: SDK mạng/cổng QQ "mbox" nhúng (Tencent sngame / 3g.qq.com), trình duyệt trang WAP-kiểu thẻ,
+# HTTP + hàng đợi, mã hoá (TEA/IDEA/MD5/Base64), lớp phủ cộng đồng QQ (bk), menu dịch vụ trả phí (df), luồng thanh toán SMS (ch) + payServer.do.
+# Bằng chứng: restored/raw/<lớp>.java; người gọi ngoài cụm: ab/bs/da (bk), bn/o/ab/ae/cd/ci (df), bn (w.a_e).
+# LƯU Ý: gợi ý trong brief "z = cookie jar", "bk = form nhập" không khớp mã -> đặt tên theo mã (xem docs/rename_notes/sdk.md).
+# Nhóm cx.a(int,String) thuộc cụm khác: KHÔNG đặt tên ch.a(int,String) / df.a(int,String).
+
+# ---- PortalClient (u) ----
+C u PortalClient HIGH  # ngữ cảnh SDK: MIDlet/Display/Displayable game, RMS "mboxclient", header Q-UA "SN2010-<platform>/4", tạo ac
+F u.a_RecordStore store HIGH  # RecordStore.openRecordStore("mboxclient")
+F u.b_String qua HIGH  # "SN2010-"+microedition.platform+"/4"; gửi header "Q-UA" (ap)
+F u.c_String screenSize HIGH  # a_I+"X"+b_I; header "screen"
+F u.d_String bigFontSize HIGH  # cỡ chữ "Quốc" font SIZE_LARGE(16); header "bigchar"
+F u.e_String midFontSize HIGH  # font size 0 (MEDIUM); header "midchar"
+F u.f_String smallFontSize HIGH  # font size 8 (SMALL); header "smlchar"
+F u.a_I screenWidth HIGH  # cw truyền da.b_S; ai.e_I = a_u.a_I
+F u.b_I screenHeight HIGH  # da.c_S; ai.f_I = a_u.b_I
+F u.a_Z hasPointer HIGH  # ai ctor: a_u.a_Z = hasPointerEvents()
+F u.a_Hashtable settings HIGH  # khoá _uid/_sid/_a8/_server/_vertify*; lưu RMS qua ak.a(Hashtable)
+F u.a_Display display HIGH  # Display của MIDlet; setCurrent(canvas/TextBox)
+F u.a_Displayable gameScreen HIGH  # Displayable game (da) để quay về khi đóng cổng
+F u.a_MIDlet midlet HIGH  # platformRequest / notifyDestroyed
+F u.c_I leftSoftKeyCode HIGH  # ai.keyPressed: ==c_I -> -506 (phím mềm trái); cw truyền b.a_AS[0]
+F u.d_I rightSoftKeyCode HIGH  # ==d_I -> -507; b.b_AS[0]
+F u.e_I gameId HIGH  # cg.a_I(cq.e_String) (Main: "gameId"); ghi offset 19 của gói ak
+F u.g_I platformId LOW  # hằng 888888; ak: ==888888 chọn URL sngame, ghi offset 11 gói tin
+F u.a_ai canvas HIGH  # new ac(this); hiển thị bằng display.setCurrent
+F u.a_v listener HIGH  # PortalListener nhận kết quả (bk)
+F u.h_I pendingCommand MED  # lệnh đang mở (a(int,int)); ac.d() nút OK gửi lại b_V(a_u.h_I) sau đăng nhập
+F u.b_Z isPortalShown HIGH  # true khi setCurrent(canvas) (a_V()), false ở ai.g(); an dùng để quyết định vẽ trang
+M u.a_String() getQua HIGH  # trả b_String
+M u.b() getScreenSize HIGH  # trả c_String
+M u.c() getBigFontSize HIGH  # trả d_String
+M u.d() getMidFontSize HIGH  # trả e_String
+M u.e() getSmallFontSize HIGH  # trả f_String
+M u.a_Z() isLoggedIn HIGH  # settings "_uid" khác rỗng
+M u.a_V() showPortal HIGH  # setCurrent(canvas), khởi thread repaint, an.a_V() khởi hàng đợi
+M u.a(byte[]) saveSettings HIGH  # setRecord(1,...) vào "mboxclient"
+M u.a_RecordStore() openStore HIGH  # mở/khởi tạo "mboxclient" với record rỗng
+M u.a_Hashtable() loadSettings HIGH  # đọc record 1: short n, (byte len,key)(short len,value); mặc định _vCInterval=5...
+M u.a_AB() readSettingsRecord HIGH  # getRecord(1), null nếu rỗng
+M u.a(byte[],int) decodeUtf HIGH  # ghép 2 byte độ dài + readUTF
+M u.a(int,DataInputStream) readBytes HIGH  # đọc n byte
+M u.a(int,int) openPortal HIGH  # kiểm 17 loginInput/18 verify qua a_I(int), hiện canvas, ac.b_V(cmd)
+M u.a_I(int) checkPrecondition MED  # 17: thiếu _uid/_sid -> cần đăng nhập; 18: đếm _vertifyValue theo ngày; -1 = không cần
+M u.a_V(int) sendCommand HIGH  # an.a_V(); an.a(cmd) — gửi lệnh không hiện trang (cw.a(2005) xếp hạng)
+M u.a(int,String,int,int,String,String,String) uploadScore HIGH  # an.a(...) lệnh 2100 "invoke/uploadData.m"
+M u.a_ac() getBrowser HIGH  # (ac) a_ai
+M u.a_ai() getCanvas HIGH  # a_ai
+M u.a_cb() getUserProfile HIGH  # an.a_cb()
+
+# ---- PortalApi (cw) ----
+C cw PortalApi HIGH  # mặt tiền mỏng bọc u (PortalClient); bk dùng: mở trang, gửi lệnh, tải điểm, lấy hồ sơ
+F cw.a_u client HIGH  # new u(..., 888888, ...)
+M cw.a(int,int) openPage HIGH  # u.a(1, cmd) — tham số đầu bị bỏ qua
+M cw.a(int) sendCommand HIGH  # u.a_V(cmd)
+M cw.a(int,String,int,int,String,String,String) uploadScore HIGH  # u.a(score,...) -> uploadData.m
+M cw.a() getUserProfile HIGH  # u.a_cb()
+
+# ---- PortalListener (v) ----
+C v PortalListener HIGH  # interface a(int cmd, by result); u.a_v; bk cài đặt
+M v.a(int,by) onPortalResult HIGH  # an.a(Hashtable[]) tag "return": a_v.a(id, by(code,msg)); u.a(...) báo 1/2 khi huỷ
+
+# ---- PortalResult (by) ----
+C by PortalResult HIGH  # (code, subCode bỏ, msg) từ tag "return" (an)
+F by.a_I code HIGH  # an: a(var28,"code",-1)
+F by.a_String message HIGH  # "msg"
+M by.a_I() getCode HIGH  # bk: ==0 thành công, -1 chưa đăng nhập
+M by.a_String() getMessage HIGH  # bk lưu thông báo
+
+# ---- QQUserProfile (cb) ----
+C cb QQUserProfile HIGH  # struct id=7: nickName, score, level; bk vẽ "Tên QQ","Cấp","Điểm cao nhất"
+F cb.a_String nickName HIGH  # "nickName"
+F cb.a_I score HIGH  # "score" -> "Điểm cao nhất"
+F cb.b_I level HIGH  # "level" -> "Cấp"
+
+# ---- LeaderboardEntry (dg) ----
+C dg LeaderboardEntry HIGH  # struct id=9 uid/nickName/score (an); bk.a(String) dùng cho "Bảng xếp hạng"
+F dg.a_String uid HIGH  # "uid"; an khử trùng theo uid
+F dg.b_String nickName HIGH  # "nickName"; cột "Tên"
+F dg.a_I score HIGH  # "score"; cột "Điểm"
+
+# ---- PortalCanvasBase (ai) ----
+C ai PortalCanvasBase HIGH  # abstract Canvas+Runnable+CommandListener của UI cổng: khung, phím mềm, hộp thoại, thanh tiến trình
+F ai.a_Z isMenuOpen HIGH  # ac: vẽ/điều khiển menu "1.Trang chủ..6.Về trò chơi"
+F ai.f_Z isDialogOpen HIGH  # a(String,int) bật; b(Graphics) vẽ "Gợi ý : "
+F ai.b_Z isLogoutPending HIGH  # ac đặt khi hỏi "đăng xuất"; a() -> an.a(102) logout.m
+F ai.c_Z isEmbeddedMode LOW  # true -> thoát thì quay về game (setCurrent gameScreen), false -> notifyDestroyed; ac luôn true
+F ai.b_AString dialogLines HIGH  # ad.a(text,font,w-20)
+F ai.d_Z isRunning HIGH  # vòng run() và cổng paint
+F ai.a_u client HIGH  # PortalClient
+F ai.a_an manager HIGH  # new an(u)
+F ai.b_Vector pageImages HIGH  # ảnh decode từ tag img (az Base64); t/ac lấy theo id-1
+F ai.d_I mode HIGH  # a_V(int): 0 yêu cầu đăng nhập, 1 duyệt trang
+F ai.e_I screenWidth HIGH  # = a_u.a_I
+F ai.f_I screenHeight HIGH  # = a_u.b_I
+F ai.a_Font font HIGH  # Font.getFont(0,0,8) SMALL
+F ai.g_I keyCode HIGH  # keyPressed -> -501..-507 (lên/xuống/trái/phải/OK/mềm trái/mềm phải), -9999 = không có
+F ai.h_I gameAction HIGH  # getGameAction(g_I)
+F ai.g_Z isPointerPressed HIGH  # pointerPressed
+F ai.a_I pointerX HIGH  # pointerPressed x
+F ai.b_I pointerY HIGH  # pointerPressed y
+F ai.i_I headerHeight HIGH  # = k_I; vùng đầu
+F ai.j_I footerHeight HIGH  # = k_I+10; thanh phím mềm
+F ai.k_I lineHeight HIGH  # font height + 2
+F ai.a_String cancelLabel HIGH  # "Hủy" khi đang tải
+F ai.a_AString softKeyLabels HIGH  # "Có","Không","Đăng nhập",...,"Trở về"; [10]/[11] nút tuỳ biến lv=1/2
+F ai.a_B leftSoftKey HIGH  # chỉ số softKeyLabels vẽ bên trái
+F ai.b_B rightSoftKey HIGH  # bên phải
+F ai.c_B prevLeftSoftKey HIGH  # a(byte,byte) lưu cũ
+F ai.d_B prevRightSoftKey HIGH  # a(byte,byte) lưu cũ
+F ai.b_AI footerGradient MED  # a(12,...) vẽ trong a(Graphics,int,int,int)
+F ai.c_AI footerEdgeGradient MED  # chấm hai mép thanh
+F ai.d_AI progressGradient HIGH  # thanh "Đang kết nối...%"
+F ai.e_AI dialogGradient HIGH  # nền hộp "Gợi ý"
+F ai.a_AI highlightGradient HIGH  # ac vẽ dòng menu đang chọn
+F ai.f_AI bodyGradient HIGH  # nền vùng nội dung
+F ai.a_TextBox textBox HIGH  # TextBox "Hãy nhập" cho input lv!=0
+F ai.a_Command okCommand HIGH  # Command "OK"
+F ai.b_Command backCommand HIGH  # Command "Trở về"
+F ai.a_Thread repaintThread HIGH  # new Thread(ai) trong u.a_V
+F ai.e_Z isInitialized HIGH  # ac.f() chỉ chạy một lần
+M ai.a(boolean) initMetrics HIGH  # tính kích thước màn, chiều cao dòng, các dải gradient
+M ai.f() initialize HIGH  # abstract; ac.f(): Vector, error.png, kích thước cuộn
+M ai.a(v) setListener HIGH  # a_an.a_v = listener
+M ai.a(Graphics) drawContent HIGH  # abstract, paint() gọi giữa khung
+M ai.a(Graphics,int,int,int) drawBar HIGH  # dải ngang (đầu/chân) với gradient
+M ai.a(Graphics,int,int,int,int,int[]) fillGradient HIGH  # vẽ từng dòng màu theo mảng
+M ai.a(byte,byte) setSoftKeys HIGH  # lưu cũ, đặt trái/phải
+M ai.a_V(int) setMode HIGH  # abstract; ac: 0 "phải đăng nhập", 1 duyệt
+M ai.a(Graphics,String,int,int,int,int,int) drawOutlinedText HIGH  # bóng 6177536 + chữ 16770602
+M ai.a(int,int,int) makeGradient HIGH  # nội suy RGB n bước
+M ai.a() processKey HIGH  # paint gọi: hộp thoại (Có/Không thoát/đăng xuất) hoặc d()
+M ai.d() handleKey HIGH  # abstract; ac xử lý -501..-507
+M ai.b() clearPointer HIGH  # g_Z=false, x=y=-1
+M ai.e() closePortal HIGH  # abstract; ac.e(): lưu settings, giải phóng
+M ai.b(String) showMessage HIGH  # abstract; ac -> a_V(String) trang thông báo
+M ai.a(String,int) showConfirm HIGH  # setSoftKeys(Có,Không), dialogLines, isDialogOpen
+M ai.b(Graphics) drawDialog HIGH  # hộp "Gợi ý : "
+M ai.a(int,int,int,int,int,int) isInSoftKeyArea MED  # hit-test 25px cho chạm phím mềm
+M ai.g() releaseResources HIGH  # d_Z=false, xoá vector/mảng
+
+# ---- PortalBrowser (ac) ----
+C ac PortalBrowser HIGH  # Canvas duyệt trang cổng: dựng widget từ tag, cuộn, focus link, menu "1.Trang chủ..6.Về trò chơi", lịch sử 5 trang
+F ac.a_I focusedLinkIndex HIGH  # so với ag.d_I (linkIndex) để tô focus; dùng index vào c_Vector
+F ac.l_I focusedWidgetIndex HIGH  # = b_I(a_I) chỉ số trong a_Vector
+F ac.B_I activeInputIndex HIGH  # widget input (r) đang sửa; b_Z(): B_I==l_I
+F ac.m_I menuIndex HIGH  # dòng menu b_AString
+F ac.n_I scrollBarW HIGH  # =5
+F ac.o_I scrollBarH HIGH  # chiều cao rãnh
+F ac.p_I scrollBarX HIGH  # e_I - n_I - 1
+F ac.q_I scrollBarY HIGH  # headerHeight+1
+F ac.r_I thumbW HIGH  # n_I - 2
+F ac.s_I thumbH HIGH  # tỉ lệ viewHeight/contentHeight
+F ac.t_I scrollY HIGH  # ag.k_I = ag.j_I - t_I
+F ac.u_I cursorY HIGH  # y dòng đang dựng; a_aq lưu theo dòng
+F ac.v_I lineMaxHeight HIGH  # cao nhất trong dòng hiện tại
+F ac.b_I contentWidth HIGH  # e_I - n_I - 2; vượt -> xuống dòng
+F ac.c_I cursorX HIGH  # x đang dựng; an tag "blank" cộng pixel
+F ac.w_I viewHeight HIGH  # f_I - header - footer
+F ac.x_I currentLine HIGH  # ++ ở a_V() newLine; truyền làm ag.e_I
+F ac.y_I firstVisibleLine MED  # cuộn lên/xuống theo dòng
+F ac.z_I lastVisibleLine MED  # dòng cuối còn thấy (addWidget)
+F ac.A_I historyIndex HIGH  # vị trí trong d_Vector (Tiến/Trở về)
+F ac.f_Z showScrollBar HIGH  # u_I > w_I
+F ac.g_Z isEditing HIGH  # input đang bật bàn phím
+F ac.a_Vector widgets HIGH  # ag[] của trang
+F ac.c_Vector links HIGH  # al (href/cache/addField) theo linkIndex
+F ac.d_Vector history HIGH  # aa (tối đa 5)
+F ac.a_al currentRequest HIGH  # ak.a(al,...) gán; "Làm mới" gửi lại
+F ac.a_aq lineYs HIGH  # aq: y của từng dòng (a_V)
+F ac.a_Image errorImage HIGH  # "/com/tencent/mbox/error.png" khi thiếu ảnh
+F ac.h_Z hasLeftButton HIGH  # button lv=1 -> phím mềm trái nhãn [10]
+F ac.i_Z hasRightButton HIGH  # button lv=2 -> phím mềm phải nhãn [11]
+F ac.b_al leftButtonRequest HIGH  # al của nút lv=1
+F ac.c_al rightButtonRequest HIGH  # al của nút lv=2
+F ac.b_AString menuItems HIGH  # "1.Trang chủ","2.Làm mới","3.Tiến","4.Trợ giúp","5.Đăng xuất","6.Về trò chơi"
+F ac.C_I menuBorderColor MED  # drawRect viền trong menu
+F ac.D_I menuBgColor HIGH  # fillRect nền menu
+F ac.E_I menuTextColor HIGH  # màu dòng thường
+F ac.F_I menuSelTextColor HIGH  # màu dòng chọn
+F ac.j_Z isLoggedIn HIGH  # u.a_Z(); menu "5.Đăng xuất" vs "5.Đăng nhập QQ"
+M ac.a_V(String) showMessagePage HIGH  # dựng trang tag br... + a "value" (null -> "Không có dữ liệu")
+M ac.a_Ar(String) findInputs HIGH  # tách '&' và tìm r có tên tương ứng
+M ac.a(String,String,String) addLink HIGH  # al(href, cache, addField) vào links
+M ac.a(String,String,String,int) setSoftKeyLink HIGH  # al cho nút lv 1/2
+M ac.a(ag) addWidget HIGH  # thêm widget, cập nhật lastVisibleLine
+M ac.a(Hashtable) addButton HIGH  # tag "button" (q), lv 0/1/2
+M ac.b(Hashtable) addInput HIGH  # tag "input": name/prompt/len/size/imp/lv -> r
+M ac.c(Hashtable) addImage HIGH  # tag "img": href/id/align/valign -> t
+M ac.d(Hashtable) addText HIGH  # tag "a": value/href/size/style/color/space, tự xuống dòng
+M ac.a(String,boolean,int,int,int,int) addTextWidget HIGH  # new am(...), tiến cursorX
+M ac.a_V() newLine HIGH  # tag "br": cursorX=5, lineYs.add, cursorY += lineMaxHeight+1
+M ac.b_V() finishLayout HIGH  # sau khi dựng trang: bật thanh cuộn nếu cao hơn view
+M ac.e(Hashtable) addPartLine HIGH  # tag "partline" -> ah
+M ac.a(Hashtable[]) onPageLoaded HIGH  # đẩy aa vào lịch sử (tối đa 5), đặt phím mềm
+M ac.a_Z() canGoBack HIGH  # historyIndex > 0
+M ac.c() clearPage HIGH  # xoá widget/link, đặt lại cuộn
+M ac.b_V(int) requestCommand HIGH  # "Đang kết nối..." + an.a(cmd)
+M ac.a_I(int) findNextFocusLine MED  # hướng 0/1/2/3/5 tìm dòng widget link kế
+M ac.b_I(int) widgetIndexOfLink HIGH  # widget có d_I == linkIndex
+M ac.a(int,int) lineY MED  # lineYs.get(line)
+M ac.c_I(int) linkIndexAtLine HIGH  # linkIndex của widget link đầu tiên trên dòng
+M ac.c_V(int) moveFocusUp HIGH  # -501/-503 (lên/trái), cuộn lên
+M ac.d(int) moveFocusDown HIGH  # -502/-504 (xuống/phải), cuộn xuống
+M ac.h() applyScroll HIGH  # t_I = lineY(firstVisibleLine); ag.k_I
+M ac.i() updateFocus HIGH  # đặt activeInputIndex nếu focus là input
+M ac.b_Z() isInputFocused HIGH  # B_I>=0 && B_I==l_I
+
+# ---- PortalManager (an) ----
+C an PortalManager HIGH  # bảng lệnh -> URL (index.m, login.m, invoke/uploadData.m...), dựng trang từ thẻ, tiến trình tải, phiên _uid/_sid/_a8
+F an.a_v listener HIGH  # ai.a(v); gọi a_v.a(id, by)
+F an.a_I loadState HIGH  # 1 = đang tải (vẽ "Đang kết nối...%"), 0 xong
+F an.b_I progressPercent HIGH  # 0..100
+F an.c_I progressTick HIGH  # tăng chậm tới 40%
+F an.a_Z isResponseReceived HIGH  # b(Hashtable[]) / a(String) đặt true
+F an.d_I waitTicks HIGH  # >300 -> "Hết thời gian kết nối"
+F an.a_Vector structRecords HIGH  # cb/h/dg từ tag "struct"
+F an.a_cb userProfile HIGH  # id 7 cuối cùng
+F an.b_Vector leaderboard HIGH  # id 9, khử trùng uid, tối đa 50
+F an.a_ak protocol HIGH  # new ak(u,this)
+F an.a_u client HIGH  # PortalClient
+M an.a_V() startNetwork HIGH  # ak.a() -> ap.a() khởi worker
+M an.b() stopNetwork HIGH  # ak.c() -> ap.b()
+M an.c() cancelRequest HIGH  # ak.b() -> ap.c()
+M an.a(Hashtable[]) renderPage HIGH  # switch theo ag.a_AString: a/input/button/cache/br/img/return/partline/blank/redirect/struct
+M an.b(Hashtable[]) onPageReceived HIGH  # isResponseReceived=true, ac.a(Hashtable[])
+M an.a(Hashtable,String) getString HIGH  # get hoặc ""
+M an.a(Hashtable,String,int) getInt HIGH  # parseInt hoặc mặc định
+M an.d() tickProgress HIGH  # paint gọi; tăng %; timeout 300
+M an.e() beginLoading HIGH  # a_I=1, b_I=0...
+M an.a(String) onError HIGH  # showMessage(msg) hoặc dừng
+M an.a(al,int) setCommandUrl HIGH  # 1 pay.m?_type=1, 10 index.m, 17 loginInput.m, 2100 uploadData.m...
+M an.a(int) sendCommand HIGH  # al cho lệnh + session params, ak.a(al,null)
+M an.a(al,r[]) request HIGH  # gửi nếu href khác rỗng
+M an.a(al) addSessionParams HIGH  # _uid/_sid/_a8
+M an.a(int,String,int,int,String,String,String) uploadScore HIGH  # 2100: _score,_oppUin,_oppScore,_winner,_dataKey,_dataValue,_extInfo
+M an.a(int,by) storeResultData HIGH  # 7 -> userProfile, 9 -> leaderboard
+M an.a_cb() getUserProfile HIGH  # trả a_cb
+M an.f() clearUserData HIGH  # a_cb=null, leaderboard rỗng
+
+# ---- PortalProtocol (ak) ----
+C ak PortalProtocol HIGH  # implements p: dựng gói nhị phân + mã TEA khoá "TT@Game911&007**", parse phản hồi bằng z
+F ak.a_ap queue HIGH  # new ap(u)
+F ak.a_an manager HIGH  # an
+F ak.a_u client HIGH  # u
+M ak.a() start HIGH  # ap.a()
+M ak.a(af) onRequestDone HIGH  # p.a: parse -> an.a/an.b
+M ak.b(af) onRequestFailed HIGH  # p.b: an.a(errorMessage)
+M ak.a(byte[]) parsePage HIGH  # UTF-8 -> z -> Hashtable[] {"type": tên thẻ, thuộc tính}
+M ak.a(al,r[]) sendRequest HIGH  # href "http..." -> platformRequest; khác: gộp cache/input, POST/GET tới af.a_String/af.b_String + href
+M ak.b() cancel HIGH  # ap.c()
+M ak.c() stop HIGH  # ap.b()
+M ak.a(al) buildPacket HIGH  # 0x02, len, 100, 4, platformId, f_I, gameId, tag, _uuid, 0, version, body, 0x03 -> aj TEA
+M ak.a(byte[],int,long) putInt32 HIGH  # big-endian 4 byte
+M ak.a(byte[],int,short) putInt16 HIGH  # big-endian 2 byte
+M ak.a(byte[],int) getInt16 HIGH  # đọc short big-endian (an "return")
+M ak.a(Hashtable) serializeMap HIGH  # short n, (byte len key)(short len value) UTF-8; cũng lưu RMS
+M ak.a(int[],String) dumpArray HIGH  # System.out "name={...}"
+M ak.a(short[][],String) dumpArray HIGH  # debug in mảng 2 chiều
+M ak.a(String[],String) dumpArray HIGH  # debug
+
+# ---- HttpRequestListener (p) ----
+C p HttpRequestListener HIGH  # interface a(af)/b(af); ap gọi a khi OK, b khi lỗi
+M p.a(af) onRequestDone HIGH  # ap: !var9 -> var4.a(var3)
+M p.b(af) onRequestFailed HIGH  # ap: var9 -> var4.b(var3)
+
+# ---- HttpRequestQueue (ap) ----
+C ap HttpRequestQueue HIGH  # Vector af (tối đa 20) + worker s; HttpConnection với header Q-UA/screen/..., proxy CMWAP 10.0.0.172, redirect, giới hạn 400KB
+F ap.a_s worker HIGH  # new s(this)
+F ap.a_Z isRunning HIGH  # vòng worker
+F ap.b_Z useCmwapProxy HIGH  # true -> "http://10.0.0.172:80"+path + X-Online-Host; tự đảo khi lỗi
+F ap.a_Vector queue HIGH  # af chờ
+F ap.a_I maxQueueSize HIGH  # 20
+F ap.a_u client HIGH  # lấy header Q-UA...
+F ap.a_AI lock HIGH  # int[0] làm monitor wait/notifyAll
+M ap.a(af) enqueue HIGH  # addElement + notifyAll
+M ap.a() start HIGH  # tạo và start s
+M ap.b() stop HIGH  # isRunning=false, xoá queue
+M ap.c() cancelAll HIGH  # xoá queue, worker.isCancelled=true
+M ap.a_Z(ap) isRunningOf HIGH  # accessor tĩnh cho s
+M ap.a_AI(ap) lockOf HIGH  # accessor
+M ap.a_Vector(ap) queueOf HIGH  # accessor
+M ap.a(ap,af,s) execute HIGH  # thực hiện HTTP, thông điệp lỗi tiếng Việt, gọi listener
+
+# ---- HttpWorker (s) ----
+C s HttpWorker HIGH  # Thread: chờ queue, lấy af, ap.a(ap,af,this)
+F s.a_Z isCancelled HIGH  # ap.c() đặt true; ap.execute bỏ kết quả
+F s.a_ap queue HIGH  # ap
+
+# ---- HttpRequest (af) ----
+C af HttpRequest HIGH  # url, method GET/POST, body/response bytes, listener p, thông báo lỗi
+F af.a_String portalServerUrl HIGH  # "http://mbsvrt.3g.qq.com/"; ghi đè bởi cache "_server"
+F af.b_String sngameServerUrl HIGH  # "http://sngame.3g.qq.com/sngame/" khi platformId==888888
+F af.c_String sngameServerUrl2 LOW  # cùng giá trị; không thấy đọc
+F af.a_I priority MED  # =5; s: thread prio 5 và a_I()==1 thì chờ
+F af.d_String url HIGH  # Connector.open
+F af.a_AB data HIGH  # body POST / dữ liệu phản hồi (af tạm trong ap.execute)
+F af.a_p listener HIGH  # p
+F af.e_String method HIGH  # "GET"/"POST"
+F af.f_String errorMessage HIGH  # ap.execute đặt thông báo lỗi
+F af.a_J bytesReceived HIGH  # cộng dồn, giới hạn 409600
+M af.a(String) setUrl HIGH  # redirect Location
+M af.a_String() getMethod HIGH  # setRequestMethod
+M af.b(String) setMethod HIGH  # "GET"/"POST"
+M af.b() getUrl HIGH  # Connector.open
+M af.a_p() getListener HIGH  # p
+M af.a_AB() getData HIGH  # bản sao
+M af.a(byte[]) setData HIGH  # bản sao
+M af.c() getErrorMessage HIGH  # ak.b(af)
+M af.c(String) setErrorMessage HIGH  # ap.execute
+M af.a_I() getPriority MED  # s
+
+# ---- MarkupParser (z) ----
+C z MarkupParser HIGH  # máy trạng thái <tag a="v">, bỏ <!-- -->, <?..?>, bỏ thẻ "tml"; KHÔNG phải cookie jar
+F z.a_Z isParsing LOW  # đặt true khi parse, không đọc lại
+F z.b_Z isReentered LOW  # đặt nếu parse lồng; không đọc
+F z.a_Vector tags HIGH  # ay
+M z.a() tagCount HIGH  # size
+M z.a(int) tagAt HIGH  # elementAt
+M z.a(String) parse HIGH  # tách thẻ + thuộc tính
+
+# ---- MarkupTag (ay) ----
+C ay MarkupTag HIGH  # tên thẻ + Vector thuộc tính (ar)
+F ay.a_String name HIGH  # ak: put("type", a_String)
+F ay.a_Vector attributes HIGH  # ar
+M ay.a(ar) addAttribute HIGH  # addElement
+
+# ---- MarkupAttribute (ar) ----
+C ar MarkupAttribute HIGH  # cặp name=value
+F ar.a_String name HIGH  # trước '='
+F ar.b_String value HIGH  # trong nháy
+M ar.a(String) setValue HIGH  # z gán
+M ar.a() getName HIGH  # ak put key
+M ar.b() getValue HIGH  # ak put value
+
+# ---- IntList (aq) ----
+C aq IntList HIGH  # mảng int tự tăng 30
+F aq.a_AI values HIGH  # dữ liệu
+F aq.a_I count HIGH  # số phần tử
+M aq.a_V(int) add HIGH  # mở rộng +30
+M aq.a_I(int) get HIGH  # values[i]
+M aq.a_I() size HIGH  # count
+M aq.a_V() clear HIGH  # count=0
+
+# ---- PageSnapshot (aa) ----
+C aa PageSnapshot HIGH  # Hashtable[] một trang, lưu trong lịch sử ac.d_Vector (Tiến/Trở về)
+F aa.a_AHashtable elements HIGH  # an.a(var.a_AHashtable) dựng lại
+
+# ---- PageRequest (al) ----
+C al PageRequest HIGH  # link/yêu cầu: href, tham số, tên ô input gửi kèm (addField), khoá cache gửi kèm
+F al.a_Z isRedirect HIGH  # tag "redirect" đặt true; ac không lưu lịch sử
+F al.a_AString cacheKeys HIGH  # a(String) = ad.a(split '&'); ak lấy giá trị từ settings
+F al.a_String inputFields HIGH  # "addField"; ac.a_Ar(...) tìm r
+F al.a_S protocolVersion LOW  # =1, ghi short vào gói ak sau _uuid
+F al.a_Hashtable params HIGH  # thân POST (serializeMap)
+F al.b_String href HIGH  # "href"/URL lệnh (an.a(al,int))
+M al.a(String) setCacheKeys HIGH  # tách '&'
+
+# ---- PortalTextUtil (ad) ----
+C ad PortalTextUtil HIGH  # tiện ích chuỗi cho cổng: '*', cắt theo độ rộng, tách '&', ngắt dòng
+M ad.a(int) maskString HIGH  # n dấu '*' (ô mật khẩu)
+M ad.a(String,int,Font) clipToWidth HIGH  # lấy tiền tố vừa chiều rộng
+M ad.a(String) splitAmpersand HIGH  # tách theo '&'
+M ad.a(String,Font,int) wrapText HIGH  # ngắt dòng theo chiều rộng
+M ad.a(String[],int) resizeArray HIGH  # cắt/nới mảng
+
+# ---- PageWidget (ag) ----
+C ag PageWidget HIGH  # abstract widget trang; a_B = chỉ số trong a_AString (tên thẻ)
+F ag.a_AString TAG_NAMES HIGH  # "a","input","button","cache","br","img","tab","return","partline","blank","redirect","struct"
+F ag.b_Z isLink HIGH  # có href / chọn được; d_I=-1 nếu không
+F ag.d_I linkIndex HIGH  # = links.size(); so với ac.a_I để focus
+F ag.e_I lineIndex HIGH  # ac.x_I; t dùng ac.a_aq
+F ag.a_B type HIGH  # 0 a,1 input,2 button,5 img,8 partline
+F ag.f_I w HIGH  # a(x,y,w,h)
+F ag.g_I h HIGH  # a(x,y,w,h)
+F ag.h_I x HIGH  # bố cục
+F ag.i_I y HIGH  # bố cục
+F ag.j_I contentTop HIGH  # = headerHeight + 2
+F ag.k_I drawOffsetY HIGH  # = contentTop - scrollY
+F ag.l_I drawX HIGH  # x khi vẽ
+F ag.m_I drawY HIGH  # y + drawOffsetY
+F ag.n_I textColor HIGH  # am thường / ah
+F ag.o_I linkFocusColor HIGH  # am focus
+F ag.p_I linkColor HIGH  # am link không focus
+F ag.q_I inputBorderColor HIGH  # r không focus
+F ag.r_I inputFocusBorderColor HIGH  # r focus
+F ag.s_I inputBgColor HIGH  # r không focus
+F ag.t_I inputFocusBgColor HIGH  # r focus không sửa
+F ag.u_I inputTextColor HIGH  # r không focus
+F ag.v_I inputFocusTextColor HIGH  # r focus
+F ag.w_I buttonTextColor HIGH  # q thường
+F ag.x_I buttonFocusTextColor HIGH  # q focus
+F ag.y_I imageFocusColor HIGH  # t viền/gạch focus
+M ag.a(int,int,int,int) setBounds HIGH  # x,y,w,h
+M ag.b(int,int) setPosition HIGH  # x,y
+M ag.a(Graphics) draw HIGH  # abstract; ac vẽ từng widget
+
+# ---- PageTextWidget (am) ----
+C am PageTextWidget HIGH  # thẻ "a" (type 0): chữ/link có màu, style, cỡ
+F am.a_I fontStyle HIGH  # Font.getFont(0, a_I, b_I)
+F am.b_I fontSize HIGH  # 8/16/0
+F am.c_I color HIGH  # -16777216 = mặc định
+F am.a_String text HIGH  # chữ
+M am.a(int,int,int) setStyle HIGH  # color, style, size -> đo w/h
+M am.b(Graphics) applyStyle HIGH  # setColor/setFont
+
+# ---- PageInputWidget (r) ----
+C r PageInputWidget HIGH  # thẻ "input" (type 1): ô nhập, bàn phím đa nhấn (w) hoặc TextBox; mật khẩu -> MD5
+F r.a_w keypad HIGH  # new w(constraints,maxLen,u) khi inputMode==0
+F r.a_I maxLength HIGH  # "len"; TextBox.setMaxSize
+F r.b_I constraints HIGH  # "imp" -> TextField constraints (65536 PASSWORD, 2 NUMERIC...)
+F r.c_I inputMode HIGH  # "lv": 0 bàn phím trong trang, khác -> TextBox
+F r.z_I textWidth HIGH  # stringWidth(displayText)
+F r.a_String prompt HIGH  # "prompt"; TextBox.setTitle
+F r.b_String fieldName HIGH  # "name"; ak gửi params
+F r.a_Z isEditing HIGH  # ac bật bằng OK
+F r.c_String displayText HIGH  # chữ hiển thị ('*' nếu mật khẩu)
+F r.d_String value HIGH  # giá trị thật
+F r.A_I charWidth HIGH  # charWidth('a')
+M r.a(String,String) setPromptAndName HIGH  # prompt, name
+M r.b(Graphics) drawEditor HIGH  # con trỏ + bảng ký hiệu w
+M r.a(int,int) handleKey HIGH  # chuyển cho w khi đang sửa
+M r.a(String) setText HIGH  # cập nhật value/displayText
+M r.a_String() getValue HIGH  # mật khẩu -> n.a_String (MD5 hex)
+M r.a_Z() isSymbolPickerOpen HIGH  # w.a_Z()
+M r.b() getPrompt HIGH  # a_String
+M r.c() getFieldName HIGH  # b_String
+
+# ---- PageButtonWidget (q) ----
+C q PageButtonWidget HIGH  # thẻ "button" (type 2): khung bo tròn + nhãn
+F q.a_String label HIGH  # value
+M q.a(String) setLabel HIGH  # ac.a(Hashtable)
+
+# ---- PageImageWidget (t) ----
+C t PageImageWidget HIGH  # thẻ "img" (type 5): ảnh từ pageImages hoặc error.png, căn lề
+F t.a_I imageId HIGH  # 1-based vào ai.b_Vector
+F t.b_I align HIGH  # "align" 2 giữa, 3 phải
+F t.c_I valign HIGH  # "valign" 2 giữa, 3 dưới
+M t.a(int,int,int) setImage HIGH  # id, align, valign
+
+# ---- PageSeparatorWidget (ah) ----
+C ah PageSeparatorWidget HIGH  # thẻ "partline" (type 8): lặp chuỗi mẫu hoặc 2 đường kẻ
+F ah.a_String patternText HIGH  # value lặp theo chiều rộng
+F ah.a_I rowHeight HIGH  # "height"
+F ah.b_I lineThickness MED  # lineHeight nếu có chữ, 2 nếu kẻ
+F ah.c_I color HIGH  # "color"
+M ah.a(String,int,int,int) setup HIGH  # value, space, height, color
+
+# ---- MultiTapInput (w) ----
+C w MultiTapInput HIGH  # bàn phím đa nhấn T9 (2=abc...), '#' đổi 123/abc/ABC, '*' bảng "Chọn ký hiệu:"
+F w.a_String text HIGH  # chuỗi đã nhập
+F w.a_I inputType HIGH  # 0 tự do, 2 số; 65536(PASSWORD) -> 0
+F w.b_I tapIndex HIGH  # lần nhấn trên cùng phím
+F w.c_I currentKey HIGH  # hàng a_AAC
+F w.d_I commitTimer HIGH  # 16/14 đếm lùi, ==1 thì chốt ký tự
+F w.e_I caseMode HIGH  # 0 "123", 1 "abc", 2 "ABC"
+F w.a_Z isSymbolPickerOpen HIGH  # phím '*' (42)
+F w.f_I symbolIndex HIGH  # ô chọn trong bảng ký hiệu
+F w.g_I symbolCols HIGH  # số cột bảng
+F w.h_I symbolRows HIGH  # số hàng bảng
+F w.a_AAC keyChars HIGH  # {'2','2','a','b','c'}...
+F w.a_AC symbols HIGH  # bảng ký hiệu
+F w.b_String selectLabel HIGH  # "Chọn"
+F w.c_String cancelLabel HIGH  # "Hủy"
+F w.i_I maxLength HIGH  # giới hạn độ dài
+F w.a_u client HIGH  # lấy kích thước màn
+M w.a_String() getText HIGH  # a_String
+M w.a_Z() isSymbolPickerOpen HIGH  # a_Z
+M w.a_Z(int,int) handleKey HIGH  # keyCode, action
+M w.b(int,int) handleTapKey HIGH  # '#', xoá (-8/-12), phím số
+M w.a_V() tick HIGH  # đếm lùi commitTimer
+M w.b() commitPending HIGH  # thêm ký tự đang chờ
+M w.a_C() pendingChar HIGH  # ký tự hiện tại theo caseMode
+M w.a_C(int,int) keyCharAt HIGH  # a_AAC[k][i+1]
+M w.a(Graphics,int,int,int) drawCursor HIGH  # nháy + chỉ báo 123/abc/ABC
+M w.a(Graphics) drawSymbolPicker HIGH  # "Chọn ký hiệu:"
+M w.a_I() getCommitTimer HIGH  # r: ==1 -> setText
+M w.a_e() newBattleActor MED  # factory tĩnh lạc chỗ: return new e(); bn gán a_Ae[i]
+
+# ---- QQTeaCipher (aj) ----
+C aj QQTeaCipher HIGH  # TEA kiểu QQ: delta 2654435769(0x9E3779B9), 16 vòng, đệm rand&0xF8|pad + 2 salt + 7 byte 0, CBC kiểu QQ
+F aj.a_AB plainBlock HIGH  # khối 8 byte đang điền
+F aj.b_AB prevPlainBlock HIGH  # khối trước (XOR)
+F aj.c_AB output HIGH  # bản mã
+F aj.a_I outPos HIGH  # vị trí ghi
+F aj.b_I prevOutPos HIGH  # khối mã trước
+F aj.c_I blockPos HIGH  # vị trí trong khối / số đệm
+F aj.d_I padCount HIGH  # đếm salt/0
+F aj.d_AB key HIGH  # khoá 16 byte
+F aj.a_Z isFirstBlock HIGH  # XOR với 0 cho khối đầu
+F aj.a_Random random HIGH  # đệm ngẫu nhiên
+M aj.a(byte[],int) readUInt32 HIGH  # big-endian
+M aj.a(byte[],byte[]) encrypt HIGH  # ak: new aj().a(packet, key)
+M aj.a(byte[]) encipherBlock HIGH  # 16 vòng TEA
+M aj.a() encryptNextBlock HIGH  # XOR + encipher + XOR prev
+
+# ---- IdeaCipher (bq) ----
+C bq IdeaCipher HIGH  # IDEA: 52 subkey, nhân mod 65537, khoá nghịch đảo (giải mã), đầu vào hex ("Length Not Double Num")
+F bq.a_AB key HIGH  # a_AB(String) đặt
+M bq.a_AB(String) setKey HIGH  # cắt/đệm '0' tới 16 ký tự
+M bq.a_String(String) decryptHex HIGH  # giải mã chuỗi hex, bỏ 6 ký tự cuối
+M bq.a_I(byte[],int) readUInt16 HIGH  # big-endian
+M bq.a(int,byte[],int) writeUInt16 HIGH  # big-endian
+M bq.a(int,int) mulMod HIGH  # nhân mod 65537 (0 = 65536)
+M bq.a_AI(byte[]) expandKey HIGH  # 52 subkey, xoay 25 bit
+M bq.a(int) mulInverse HIGH  # nghịch đảo nhân mod 65537 (Euclid)
+M bq.a_AB(byte[],int) pad HIGH  # đệm kiểu PKCS (giá trị = số byte đệm)
+M bq.a(byte[],byte[],boolean) cryptBlocks HIGH  # 8 vòng + output transform
+M bq.a_AB(byte[]) hexToBytes HIGH  # 2 ký tự hex -> byte
+
+# ---- Md5 (n) ----
+C n Md5 HIGH  # MD5 (RFC1321 port): IV 1732584193..., bảng shift {7,12,17,22}..., byte[] -> hex HOA; r dùng băm mật khẩu
+F n.a_AAI shifts HIGH  # {7,12,17,22},{5,9,14,20},{4,11,16,23},{6,10,15,21}
+F n.a_AB PADDING HIGH  # 0x80, 0...
+F n.a_AJ state HIGH  # A,B,C,D
+F n.b_AJ bitCount HIGH  # số bit
+F n.b_AB buffer HIGH  # khối 64 byte
+F n.c_AB digest HIGH  # 16 byte
+M n.a() reset HIGH  # IV
+M n.a(long,long,long,long,long,long,long) ff HIGH  # (b&c)|(~b&d)
+M n.b(long,long,long,long,long,long,long) gg HIGH  # (b&d)|(c&~d)
+M n.c(long,long,long,long,long,long,long) hh HIGH  # b^c^d
+M n.d(long,long,long,long,long,long,long) ii HIGH  # c^(b|~d)
+M n.a(byte[],int) update HIGH  # md5Update
+M n.a(byte[],byte[],int,int,int) copyBytes HIGH  # memcpy
+M n.a_V(byte[]) transform HIGH  # 64 bước
+M n.a(byte[],long[],int) encode HIGH  # little-endian
+M n.a(byte) toUnsigned HIGH  # b & 255
+M n.a_String(byte[]) hexDigest HIGH  # r.getValue: MD5 hex HOA
+
+# ---- Md5Text (br) ----
+C br Md5Text HIGH  # MD5 thứ hai (kiểu JS safe_add): chuỗi -> hex thường; a dùng kiểm tra giá trị JAD
+F br.a_String HEX_CHARS HIGH  # "0123456789abcdef"
+M br.a(int) wordToHex HIGH  # little-endian
+M br.a(int,int) safeAdd HIGH  # cộng 32 bit tách bit dấu
+M br.a(int,int,int,int,int,int) cmn HIGH  # rotl(a+q+x+t,s)+b
+M br.a(int,int,int,int,int,int,int) ff HIGH  # (b&c)|(~b&d)
+M br.b(int,int,int,int,int,int,int) gg HIGH  # (b&d)|(c&~d)
+M br.c(int,int,int,int,int,int,int) hh HIGH  # b^c^d
+M br.d(int,int,int,int,int,int,int) ii HIGH  # c^(b|~d)
+M br.a(String) md5Hex HIGH  # hằng -680876936...
+
+# ---- Base64Decoder (az) ----
+C az Base64Decoder HIGH  # bảng 43->62, 47->63, '=' kết thúc; an giải ảnh thẻ img
+F az.a_AB DECODE_TABLE HIGH  # ASCII -> 6 bit
+M az.a(String) decode HIGH  # Image.createImage(az.a(value))
+
+# ---- QQCommunityOverlay (bk) ----
+C bk QQCommunityOverlay HIGH  # lớp phủ "Cộng đồng QQ": hồ sơ QQ, "Bảng xếp hạng", tải điểm; ab/bs/da gọi; KHÔNG phải form nhập
+F bk.a_B viewType HIGH  # 0 none, 1 hồ sơ, 2 xếp hạng, 3 tải điểm
+F bk.b_B VIEW_NONE HIGH  # 0
+F bk.c_B VIEW_PROFILE HIGH  # 1 "Tên QQ/Cấp/Điểm cao nhất"
+F bk.d_B VIEW_RANKING HIGH  # 2 "Bảng xếp hạng"
+F bk.e_B VIEW_UPLOAD HIGH  # 3 tải điểm
+F bk.f_B status HIGH  # 0 idle, 1 tải, 2 chưa đăng nhập, 3 xong, 4 hết giờ, 5 tải lên lỗi
+F bk.g_B STATUS_IDLE HIGH  # 0
+F bk.h_B STATUS_LOADING HIGH  # "Đang đọc dữ liệu"
+F bk.i_B STATUS_NOT_LOGGED_IN HIGH  # "Chưa đăng nhập, đăng nhập ngay?"
+F bk.j_B STATUS_DONE HIGH  # kết quả code 0
+F bk.k_B STATUS_TIMEOUT HIGH  # "Hết thời gian lấy dữ liệu" (>10s)
+F bk.l_B STATUS_UPLOAD_FAILED HIGH  # "Tải lên thất bại, thử lại?"
+F bk.a_S screenWidth HIGH  # da.b_S
+F bk.b_S screenHeight HIGH  # da.c_S
+F bk.a_Z swapSoftKeys HIGH  # đảo vị trí nhãn/vùng chạm phím mềm
+F bk.c_S textWidth HIGH  # 4/5 chiều rộng để ngắt dòng
+F bk.a_I uploadedScore HIGH  # thử lại a_V(a_I)
+F bk.b_I rankColW HIGH  # cột "Hạng"
+F bk.c_I nameColW HIGH  # cột "Tên"
+F bk.d_I scoreColW HIGH  # cột "Điểm"
+F bk.e_I tableWidthWanted MED  # tổng 3 cột
+F bk.f_I tableWidth HIGH  # min(e_I, c_S)
+F bk.g_I tableX HIGH  # căn giữa
+F bk.h_I rowCount HIGH  # số dòng hiển thị
+F bk.i_I tableY HIGH  # y tiêu đề cột
+F bk.a_cb userProfile HIGH  # cw.a()
+F bk.a_Adg leaderboard HIGH  # a(String) parse "|#|" và "|"
+F bk.a_J requestStartTime HIGH  # timeout 10000ms
+F bk.a_String message HIGH  # thông báo tải điểm
+F bk.a_bk instance HIGH  # singleton
+F bk.a_cw api HIGH  # new cw(...)
+F bk.a_AB nameScrollX HIGH  # cuộn tên dài
+F bk.b_AB nameScrollPause HIGH  # dừng 30 nhịp
+F bk.a_StringBuffer loadingDots HIGH  # "." -> "....."
+M bk.b_Z(int) onKey HIGH  # phím mềm theo status; true = đã xử lý
+M bk.a(int,by) onPortalResult HIGH  # v; 7 hồ sơ, 12 xếp hạng (chuỗi), 3 thông báo
+M bk.b_V(int) openPage HIGH  # cw.a(1, cmd)
+M bk.c() reset HIGH  # về idle
+M bk.a(Graphics,String,int,int) drawWrappedText HIGH  # cg.a(text, c_S), căn đáy
+M bk.a(String) parseLeaderboard HIGH  # "score|name|#|..."
+M bk.b(Graphics) drawLeaderboard HIGH  # "Bảng xếp hạng","Hạng","Tên","Điểm"
+M bk.c(Graphics) drawYesNo HIGH  # "Có","Không"
+M bk.a(Graphics,String,String) drawSoftKeyLabels HIGH  # trái/phải theo swapSoftKeys
+M bk.a(MIDlet,Display,Displayable,short,short,boolean,int,int) init HIGH  # ab/bs: tạo bk + cw(gameId,120)
+M bk.a(Graphics) drawOverlay HIGH  # da.paint gọi; nền ô cờ + nội dung theo status
+M bk.a_Z(int) handleKey HIGH  # da.keyPressed: !bk.a_Z(b.a(k))
+M bk.a(int,int) handlePointer HIGH  # da.pointerPressed; luôn trả false (lỗi)
+M bk.a() openHomePage HIGH  # bs: b_V(10) index.m
+M bk.b() showRanking HIGH  # bs: cw.a(2005) getRankData _type=3
+M bk.a_V(int) uploadScore HIGH  # ab: bk.a_V(o.c_I); "Điểm hiện tại của bạn là 0"
+
+# ---- SmsFeeConfig (a) ----
+C a SmsFeeConfig HIGH  # đọc JAD ChannelFirst/Second, Term, QQ, FreeCode/Dest, SmsCode1/2, SmsDest1/2, FeeMode, DoCode/Dest, /cpid.txt; MÃ CHẾT (không ai new a)
+F a.a_Hashtable cpidTable HIGH  # cpid -> Vector{code,dest} từ /cpid.txt
+F a.a_AAString smsCodes HIGH  # SmsCode1/2 tách ';' (mặc định "62","63"/"JG")
+F a.b_AAString smsDests HIGH  # SmsDest1/2 (mặc định 106662267...)
+F a.c_AAString doCodes HIGH  # DoCode
+F a.d_AAString doDests HIGH  # DoDest
+F a.a_String channelFirst HIGH  # "Fr" / ChannelFirst
+F a.b_String channelSecond HIGH  # "Sec" / ChannelSecond
+F a.c_String terminal HIGH  # "N7610" / Term
+F a.d_String freeCode HIGH  # "299" / FreeCode
+F a.e_String freeDest HIGH  # "10661700299" / FreeDest
+F a.f_String interChannel HIGH  # "Idx" / InterChannel
+F a.g_String qq HIGH  # "0" / QQ
+F a.a_AI logoLinkReco HIGH  # LogoLinkReco (3 số)
+F a.a_I feeMode HIGH  # FeeMode
+F a.a_AAI smsCodeUseCounts HIGH  # a(int) chọn code ít dùng nhất
+M a.a(String,String) split HIGH  # " split. aStr == null"
+M a.a_String(String) decryptJadValue HIGH  # IDEA "a4s3d5f1" + kiểm MD5 32 ký tự cuối
+M a.a_I(String) parseInt HIGH  # Integer.parseInt an toàn
+M a.a(byte[]) utf8String HIGH  # new String(..,"utf-8")
+M a.a(int,String) getCpidEntry HIGH  # Vector theo cpid
+M a.a_V() loadCpidList HIGH  # "/cpid.txt" "cpid=..,code=..,dest=.."
+M a.a(MIDlet) loadJadProperties HIGH  # getAppProperty(...)
+M a.a(int) pickSmsCode HIGH  # code/dest ít dùng nhất của nhóm 1/2
+M a.a_String() getChannelFirst HIGH  # a_String
+M a.b() getChannelSecond HIGH  # b_String
+M a.c() getTerminal HIGH  # c_String
+M a.a_AString() getFreeCodeDest HIGH  # {d_String,e_String}
+M a.d() getInterChannel HIGH  # f_String
+M a.e() getQQ HIGH  # g_String
+M a.a_I() getFeeMode HIGH  # a_I
+M a.a(int,int) getDoCodeDest HIGH  # DoCode/DoDest hoặc cpid
+M a.b(int,int) getCpidCodeDest HIGH  # a(idx, String(cpid))
+
+# ---- PayServerRequest (aw) ----
+C aw PayServerRequest HIGH  # abstract: POST nhị phân tới "http://wap.moonic.cn/payServer.do" (hoặc proxy 10.0.0.172), timeout bt
+F aw.a_String host HIGH  # "wap.moonic.cn"; X-Online-Host
+F aw.b_String proxyUrl HIGH  # "http://10.0.0.172:80/payServer.do"
+F aw.c_String directUrl HIGH  # "http://"+host+"/payServer.do"
+F aw.a_y connection HIGH  # new y(this)
+F aw.a_Z isWaiting HIGH  # bt chạy khi true; y đặt false khi xong
+M aw.a(int,int,String) onPayResponse HIGH  # abstract (cmd, status 0 ok/1 từ chối/2 lỗi mạng/3 khác, msg)
+M aw.a(String,String,int) sendRequest HIGH  # short 12 + UTF gid + UTF cid + short; khởi y và bt
+M aw.a() getDirectUrl HIGH  # c_String
+M aw.b() getProxyUrl HIGH  # b_String
+M aw.c() getHost HIGH  # a_String
+
+# ---- PayServerConnection (y) ----
+C y PayServerConnection HIGH  # Runnable: POST tới payServer.do (thử trực tiếp rồi proxy), đọc short cmd, byte ok, UTF msg
+F y.a_HttpConnection http HIGH  # Connector.open
+F y.a_I commandId HIGH  # =12
+F y.a_aw callback HIGH  # nhận a(cmd,status,msg)
+F y.a_AB body HIGH  # gói gửi
+F y.b_aw owner HIGH  # đặt owner.isWaiting=false
+M y.a(boolean,String,String,String) openConnection HIGH  # POST, header User-Agent/X-Online-Host
+
+# ---- PayServerTimeout (bt) ----
+C bt PayServerTimeout HIGH  # Runnable: 20000ms -> "Hết thời gian kết nối"
+F bt.a_J startTime HIGH  # currentTimeMillis lúc gửi
+F bt.b_J timeoutMs HIGH  # 20000
+F bt.a_aw request HIGH  # aw
+
+# ---- LotteryRequest (f) ----
+C f LotteryRequest HIGH  # aw cho ch: cmd 12 -> "lotteryResult","lotteryMsg","needBuyAmount","handselAmount"
+F f.a_I amount LOW  # luôn 0; truyền ch.a_Z(ch,int) (số tiền tính số tin)
+F f.a_ch flow HIGH  # ch
+
+# ---- SmsPaymentFlow (ch) ----
+C ch SmsPaymentFlow HIGH  # màn "Thông tin thanh toán": bốc thăm ưu đãi (payServer), tra vùng theo SMSC, gửi SMS (bh), RMS lotteryDate/handselRecord/sendtimes/onegateinfo; KHÔNG được khởi tạo
+F ch.a_B payMode MED  # =2 khi bắt đầu; ==1 thì ghép tiền tố + nội dung
+F ch.a_String productDesc HIGH  # mô tả hàng hiển thị đầu trang
+F ch.a_S screenWidth HIGH  # 240; a(int,int)
+F ch.b_S screenHeight HIGH  # 320
+F ch.a_AString smsPrefixes HIGH  # "precmd" trong gate
+F ch.b_AString smsNumbers HIGH  # "number"
+F ch.c_AString smsMessages HIGH  # "msg"; số phần tử = số tin cần gửi
+F ch.b_B sentCount HIGH  # "Đã gửi N tin"
+F ch.b_String gameIdProp HIGH  # JAD "gid" (mặc định "100")
+F ch.c_String channelIdProp HIGH  # JAD "cid" ("18")
+F ch.d_String productIdProp HIGH  # JAD "pid" ("01")
+F ch.c_B state HIGH  # 1 mời bốc thăm, 3 đang lấy, 6 xác nhận SMS, 7 đang gửi, 9 thành công, 10/11 lỗi, 12 không SIM, 13 miễn phí
+F ch.a_Z lotteryWon HIGH  # "lotteryResult"
+F ch.e_String lotteryMsg HIGH  # "lotteryMsg"
+F ch.f_String msgLotteryPending HIGH  # "Lấy ưu đãi chưa xong..."
+F ch.g_String msgLotteryFailed HIGH  # "Lấy ưu đãi qua mạng thất bại..."
+F ch.h_String msgRetryFailed HIGH  # "Thử lại thất bại..."
+F ch.i_String msgPaymentIncomplete HIGH  # "Bạn chưa hoàn tất thanh toán..."
+F ch.j_String msgSuccess HIGH  # "Chúc mừng bạn mua thành công..."
+F ch.a_cx resultListener HIGH  # a(0,"") thành công, a(1,"Người dùng hủy...")
+F ch.d_AString smsContents HIGH  # tham số 1 của a(String[],...)
+F ch.a_AB scrollOffsets HIGH  # dòng cuộn theo state (14)
+F ch.c_S visibleLines HIGH  # (cao - 62)/cg.b_S
+F ch.e_AString wrappedLines HIGH  # cg.a(text,"\n",w)
+F ch.a_I retryCount HIGH  # >0 -> msgRetryFailed
+F ch.a_f lotteryRequest HIGH  # new f(this)
+F ch.b_I textColor HIGH  # 16777215
+F ch.d_I disabledColor HIGH  # 7368816 mũi tên/OK mờ
+F ch.b_Z showScrollHint HIGH  # "Hãy cuộn xuống đọc hết rồi mới bấm OK"
+F ch.k_String scrollHint HIGH  # chuỗi trên
+F ch.f_AString scrollHintLines HIGH  # cg.a(k_String,..)
+F ch.l_String productId HIGH  # khoá đếm số tin đã gửi (sendtimes)
+F ch.g_AString sentProductIds HIGH  # RMS "sendtimes"
+F ch.b_AB sentCounts HIGH  # RMS "sendtimes"
+F ch.m_String GATE_STORE HIGH  # "onegateinfo"
+F ch.n_String SENDTIMES_STORE HIGH  # "sendtimes"
+F ch.a_Image topbarLogo HIGH  # /ui/topbar_logo.gf
+F ch.b_Image topbarBack HIGH  # /ui/topbar_back.gf
+F ch.c_Image topbarUrl HIGH  # /ui/topbar_url.gf
+F ch.d_Image bottomBack HIGH  # /ui/bottom_back.gf
+F ch.d_B topBarHeight HIGH  # topbarBack h+2 hoặc 31
+F ch.o_String gateInfo HIGH  # khối gateN từ /ui/gate.bin hoặc RMS/lottery
+F ch.a_AAString smscAreaTable HIGH  # {"Bắc Kinh","1380010"}... tỉnh -> tiền tố SMSC
+F ch.p_String smscNumber HIGH  # wireless.messaging.sms.smsc
+F ch.q_String areaName HIGH  # tỉnh/"Telecom"/"Không rõ"
+F ch.e_I needBuyAmount HIGH  # "needBuyAmount"
+F ch.f_I handselAmount HIGH  # "handselAmount" (tặng)
+F ch.g_I boughtCount HIGH  # đã mua (handselRecord)
+F ch.h_I handselCount HIGH  # đã nhận tặng
+M ch.a_Z() detectArea HIGH  # "Xác định vùng của máy"
+M ch.b_Z() isLotteryToday HIGH  # RMS "lotteryDate" == hôm nay
+M ch.a_Z(int) loadGate HIGH  # RMS onegateinfo / /ui/gate.bin; precmd/number/msg/price
+M ch.a_I(String) getSentCount HIGH  # sendtimes[productId]
+M ch.a_V(int) handleKey HIGH  # df: a_ch.a_V(key)
+M ch.a(Graphics) draw HIGH  # "Thông tin thanh toán"
+M ch.a(Graphics,String,boolean) drawScrollText HIGH  # ngắt dòng + mũi tên cuộn
+M ch.a_V() loadHandselRecord HIGH  # RMS "handselRecord"
+M ch.b_V() loadSendTimes HIGH  # RMS "sendtimes"
+M ch.c() saveHandselRecord HIGH  # RMS "handselRecord"
+M ch.a(String,int) saveSentCount HIGH  # RMS "sendtimes"
+M ch.a(int,int) setScreenSize HIGH  # a_S/b_S
+M ch.a(String,String,String,String,String,cx) startPayment HIGH  # bọc 1 tin
+M ch.a(String[],String[],String[],String,String,cx) startPayments HIGH  # state 6 hoặc 12 (không SIM)
+M ch.a_V(String) setGateInfo HIGH  # f: ghi o_String
+M ch.a_Z(ch,int) loadGateOf HIGH  # accessor cho f
+M ch.a_String(ch) productIdOf HIGH  # accessor
+M ch.a_I(ch,String) sentCountOf HIGH  # accessor
+M ch.a(ch,byte) setSentCountOf HIGH  # accessor
+M ch.a_V(ch) saveGateInfo HIGH  # RMS "onegateinfo"
+M ch.a_String() getGateInfo HIGH  # o_String
+M ch.a(ch,boolean) setLotteryWon HIGH  # accessor
+M ch.a_V(ch,String) setLotteryMsg HIGH  # accessor
+M ch.a_Z(ch) isLotteryWon HIGH  # accessor
+M ch.a_V(ch,int) setNeedBuyAmount HIGH  # accessor
+M ch.b(ch,int) setHandselAmount HIGH  # accessor
+M ch.c(ch,int) resetBoughtCount HIGH  # gán 0, bỏ qua tham số
+M ch.d(ch,int) resetHandselCount HIGH  # gán 0, bỏ qua tham số
+M ch.b(ch) saveLotteryDate HIGH  # RMS "lotteryDate" y/m/d
+M ch.c(ch) saveHandselRecordOf HIGH  # accessor c()
+M ch.a(byte) setState HIGH  # c_B
+
+# ---- PaidServiceMenu (df) ----
+C df PaidServiceMenu HIGH  # "Dịch vụ ưu đãi": 'Vô Song Bí Kỹ','Tiệm Bí Bảo','Siêu trang bị','Nhận thưởng'; /bin/smsmenu.bin; mua KHÔNG qua SMS
+F df.a_B page HIGH  # 0 menu chính,1 danh sách,2 xác nhận,3 thành công,5 chọn cách trả,7 ch,8 thưởng 12 tệ
+F df.a_AI itemFeatureIds HIGH  # cột 0 smsLib: 1 vàng,2 EXP x4,3 +5 cấp,4 biến thân,5 lễ bao; 6 bản chính,7 hồi phục,8 hạ gục (bn)
+F df.c_AString confirmNotes HIGH  # khối "sureNote:"
+F df.d_AString itemNames HIGH  # cột 1 smsLib
+F df.e_AString successMessages HIGH  # cột 2 smsLib
+F df.a_Z rewardClaimed HIGH  # "Nhận thưởng" 12 tệ; o lưu
+F df.b_B itemIndex HIGH  # bn ghi df.a_AI[a_df.b_B]
+F df.d_B mainMenuIndex HIGH  # f_AString
+F df.e_B payMethodIndex HIGH  # "Thanh toán qua ĐT","Trả bằng Xu Tiêu Dao"
+F df.a_ch smsFlow HIGH  # ch, không bao giờ gán (null)
+F df.a_dc textBox HIGH  # dc (TextBlock)
+F df.f_AString mainMenuItems HIGH  # 'Vô Song Bí Kỹ','Tiệm Bí Bảo','Siêu trang bị','Nhận thưởng'
+F df.a_a smsFeeConfig MED  # kiểu a; không bao giờ gán
+F df.b_Z hasLuckyPack HIGH  # id 5 "Siêu Lễ Bao": ab:1686 bỏ giới hạn cấp trang bị, bn rơi đồ x2, o:2689 không mất vàng
+F df.c_B expMultiplier HIGH  # id 2 -> 4; bn: "x EXP", var3 *= c_B
+F df.c_Z hasTransform HIGH  # id 4 "Ma pháp biến thân" (bay)
+F df.d_Z isFullVersion HIGH  # id 6 "Kích hoạt bản chính hãng"; bn/ci chặn cốt truyện khi false
+F df.a_I totalSpent HIGH  # tệ đã tiêu (+2/+4); >=12 nhận thưởng; o lưu
+F df.b_I pendingFeatureId HIGH  # b(int) đặt, a() áp dụng
+M df.a(String) open HIGH  # df.a("/bin/smsmenu.bin"): smsLib/sureNote, cd.b_B=7
+M df.a(Graphics) draw HIGH  # "Dịch vụ ưu đãi"
+M df.a(int) handleKey HIGH  # cd gọi a_df.a(key)
+M df.b(int) purchase HIGH  # ae/bn gọi b(6/7/8); gọi thẳng this.a(0,null) = thành công
+M df.a() applyFeature HIGH  # 1 +8888 vàng,2 EXP x4,3 +5 cấp,4 biến thân,5 lễ bao,6 bản chính,7 hồi phục,8 hạ gục; o.b(o.r_String) lưu
+M df.b() close HIGH  # dọn mảng, cd.b_B = 1 hoặc 5
+M df.a(int,int) handlePointer HIGH  # i.a(x,y) -> nút mềm

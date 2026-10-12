@@ -1,0 +1,70 @@
+# map.txt — sinh bởi tools/gen_sfx_map.py (sửa tay được; chỉ NỐI THÊM, không đổi nghĩa cột)
+# role <roleId> <biến thể>   0=quái/sủng vật 1=Quinn(thương) 2=Julie(súng)
+role 1 1
+role 2 2
+role 3 2
+role 39 2
+role 40 2
+
+# skill <id> <lớp> <nguyên tố> <số nhịp>   lớp: P=vật lý E=nguyên tố/ánh sáng H=hồi máu B=trạng thái/buff D=hút máu X=không có hiệu ứng (bị động)
+#   nguyên tố: F=Hỏa W=Thủy E=Địa A=Phong -=không; số nhịp: 1 hoặc M (nhiều nhịp: 2+(cấp-1)/4, theo bn.a(e,int,int) skill 4)
+skill 1 P - 1   # Lôi Đình Nhất Kích  [gongji1.av]
+skill 2 B - 1   # Dẫn Nhi Bất Phát  [buff1.av]
+skill 3 P - 1   # Toàn Đạn Công Kích  [gongji1.av]
+skill 4 P - M   # Linh Đạn Liên Kích  [gongji1.av]
+skill 5 P - 1   # Nhất Kích Tất Sát  [gongji2.av]
+skill 6 P - 1   # Bối Thủy Nhất Chiến  [gongji2.av]
+skill 7 X - 1   # Phản Kích  [gongji1.av]
+skill 8 P - 1   # Thủ Hộ Chi Kiếm  [jian1.av]
+skill 9 B - 1   # Kịch Độc Mê Vụ  [du.av]
+skill 10 B - 1   # Tinh Thần Khi Trá  [hunluan.av]
+skill 11 B - 1   # Huyễn Vựng Thuật  [xuanyun1.av]
+skill 12 B - 1   # Cường Huyễn Vựng  [xuanyun1.av]
+skill 13 H - 1   # Trị Liệu Thuật  [zhiyu.av]
+skill 14 H - 1   # Thần Ân Quảng Trạch  [zhiyu.av]
+skill 15 B - 1   # Chúc Phúc Chi Âm  [zhufu.av]
+skill 16 B - 1   # Thiên Địa Mạc Ngôn  [fengying.av]
+skill 17 B - 1   # Chiến Ý Cao Ngang  [buff2.av]
+skill 18 E - 1   # Thần Quang  [guang1.av]
+skill 19 E - 1   # Thiên Nộ Thần Phạt  [guang2.av]
+skill 20 E A 1   # Phong  [feng1.av]
+skill 21 E A 1   # Phong Chi Thương  [feng1.av]
+skill 22 E E 1   # Bàn Thạch  [di1.av]
+skill 23 E E 1   # Quần Tinh Vẫn Lạc  [di1.av]
+skill 24 E F 1   # Hỏa Phán  [huo1.av]
+skill 25 E F 1   # Thiên Triệu Nghiệp Hỏa  [huo1.av]
+skill 26 E W 1   # Thủy Thiết  [shui1.av]
+skill 27 E W 1   # Thượng Thiện Nhược Thủy  [shui1.av]
+skill 28 D - 1   # Sinh Mệnh Hấp Thủ  [xixue.av]
+skill 29 X - 1   # Địa Cường Kích  [-1]
+skill 30 X - 1   # Phong Cường Kích  [-1]
+skill 31 X - 1   # Hỏa Cường Kích  [-1]
+skill 32 X - 1   # Thủy Cường Kích  [-1]
+skill 33 P - 1   # Độc Thích Kích  [gongji2.av]
+skill 34 P - 1   # Hỗn Loạn Kích  [gongji2.av]
+skill 35 X - 1   # Sở Trường Chỉ Huy  [-1]
+skill 36 X - 1   # Ý Chí Kiên Định  [-1]
+skill 37 X - 1   # Động Sát Lực  [-1]
+skill 38 X - 1   # Đại Thiểm Tị  [-1]
+skill 39 B - 1   # Trinh sát  [zhencha.av]
+
+# effect <file.av> <frame va chạm,...>   (heuristic: frame có diện tích tile lớn nhất của anim 0)
+effect buff1.av 2   # 12 frame, đỉnh diện tích
+effect buff2.av 7   # 18 frame, đỉnh diện tích
+effect di1.av 20   # 25 frame, đỉnh diện tích
+effect du.av 7   # 17 frame, đỉnh diện tích
+effect feng1.av 14   # 19 frame, đỉnh diện tích
+effect fengying.av 21   # 28 frame, đỉnh diện tích
+effect gongji1.av 2   # 4 frame, đỉnh diện tích
+effect gongji2.av 2   # 4 frame, đỉnh diện tích
+effect guang1.av 11   # 19 frame, đỉnh diện tích
+effect guang2.av 19   # 43 frame, đỉnh diện tích
+effect hunluan.av 14   # 24 frame, đỉnh diện tích
+effect huo1.av 5   # 10 frame, đỉnh diện tích
+effect jian1.av 15   # 31 frame, đỉnh diện tích
+effect shui1.av 10   # 14 frame, đỉnh diện tích
+effect xixue.av 3   # 12 frame, đỉnh diện tích
+effect xuanyun1.av 8   # 16 frame, đỉnh diện tích
+effect zhencha.av 1   # 13 frame, đỉnh diện tích
+effect zhiyu.av 4   # 12 frame, đỉnh diện tích
+effect zhufu.av 6   # 13 frame, đỉnh diện tích

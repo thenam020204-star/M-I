@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+SVTH_refactor/tools/lib/cfr-*.jar
+SVTH_refactor/tools/lib/vineflower-*.jar
+SVTH_refactor/work/
+build/
+.class
+*.class
+!tools/me/dev240.jar
+
+# session 8
+tools/lib/
+work/
+build/

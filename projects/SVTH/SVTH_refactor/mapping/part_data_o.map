@@ -1,0 +1,227 @@
+# part_data_o.map — cụm "data_o": chỉ class o (GameData) — dữ liệu toàn cục, bảng /bin/*.bin, túi đồ, đội, sủng vật, nhiệm vụ, cờ sự kiện, lưu/nạp RMS.
+# Ghi chú chi tiết (bảng cột sn/mazefile/item, thứ tự bản ghi RMS): docs/rename_notes/data_o.md
+
+# ---- GameData (o) ----
+C o GameData HIGH  # debug string "GameData.myPet[j].onlyId" (o.java:1331)
+
+# -- cảnh hiện tại (/bin/sn.bin "data:" cột 0..12) --
+F o.a_S startSceneId HIGH  # sn.bin khoá "default"; cd.a_V(): a_V(o.a_S) khi bắt đầu game
+F o.b_S currentSceneId HIGH  # cd.a_V(int) gán; "/bin/s"+o.b_S+"e.txt", sceneChange "S"+b_S+"A:"; lưu RMS
+F o.k_B sceneKind HIGH  # sn cột 3: 1 cảnh thường, khác (2) = phó bản/mê cung (cột 2 = id fuben)
+F o.a_String sceneMapName HIGH  # sn cột 2 hoặc map ngẫu nhiên từ mazefile "maze:"; cd: "/map/"+a_String+".map"
+F o.f_String buildingFileId HIGH  # = id cảnh hoặc mazefile maze cột 2; cd: "/building/s"+f_String+"sp.dat"
+F o.b_String sceneName HIGH  # sn cột 1 (+ số tầng phó bản); cd vẽ góc trên trái; ô lưu i_AString
+F o.c_String sceneMusic HIGH  # sn cột 4; cd.m(): "/music/"+c_String+".mid"
+F o.a_AS sceneEnemyIds HIGH  # sn cột 5 "19,33,35"; bn.java:874 chọn ngẫu nhiên địch
+F o.a_AB sceneEnemyCountRange HIGH  # sn cột 6 "1,3"; bn: a_B=enemyCount random [0..1]; bl: null = không gặp quái
+F o.d_String sceneEnemyLevelRange HIGH  # sn cột 7 "25,30"; bn.java:931 cấp địch ngẫu nhiên
+F o.b_AS townReturnPoint HIGH  # sn cột 8 "cảnh,điểm"; "Cuộn hồi thành": cd.c_S=b_AS[1]; a_V(b_AS[0])
+F o.a_AString recolorImageNames MED  # sn cột 9; cd.p(): a_ca.a(name+".gf", màu gốc, màu mới) (đổi palette)
+F o.b_AString recolorSpecs MED  # sn cột 10 "bảng,hàng"; tra "tablename" sn.bin + colorTable
+F o.c_B rideFlags HIGH  # sn cột 11 (=3): 0/2 chặn thú cưỡi, 0/1 chặn biến thân "Hiện không thể dùng ..." (bit0 cưỡi, bit1 biến thân)
+F o.b_B battleBackground HIGH  # sn cột 12; "File Sn thiếu loại cảnh chiến đấu"; bn: "/ftmap/"+b_B+".jpg"
+F o.e_String colorTableText HIGH  # cg.a_String("/bin/colorTable.bin"); cd.o()/p(), k.java:247 "enemy"+n+":"
+F o.q_String sceneChangeText HIGH  # cache "/bin/sceneChange.bin" (cd/ci: "S<n>P:", "S<n>A:", "Connect:")
+
+# -- phó bản / mê cung (/bin/mazefile.bin "fuben:", "maze:", "mazepos:") --
+F o.d_Z isInDungeon HIGH  # true sau khi nạp cảnh sceneKind!=1; cd/ci: điểm vào mê cung, 换场景 đổi tầng
+F o.s_String dungeonName HIGH  # fuben cột 1; cd: s_String+" [Phó bản]"
+F o.h_B dungeonGateMode MED  # fuben cột 2 (1/2): 1 chỉ 1 cổng tiến (k_AString[1]), 2 hai cổng lùi/tiến (ci.java:157)
+F o.i_B dungeonFloorCount HIGH  # fuben cột 4 (5,6,8); ci: j_B >= i_B -> ra cảnh m_AString[1]
+F o.j_B dungeonFloor HIGH  # tầng hiện tại: ci 换场景 ++ / 换场景2 --; vào từ điểm 2 = i_B; nối vào sceneName
+F o.m_AString dungeonLinkScenes HIGH  # fuben cột 5 "41,67": [0] cảnh lối ra ngoài (thua/nạp save), [1] cảnh cuối (67 boss)
+F o.c_AAS dungeonBosses HIGH  # fuben cột 6 "id,cấp|..."; ci: 副本战斗 khi b_S==67, cấp -1 = cấp nhân vật+5
+F o.q_AS dungeonBossPos HIGH  # fuben cột 7 "133,133"; ci vùng 副本战 (x-80,y-24,160,48), cd đặt sprite boss
+F o.r_AS dungeonExitPos MED  # fuben cột 8 "280,126"; ae.java:372 k.a(r_AS[0],r_AS[1],m_AString[0]) sau khi nhận thưởng
+F o.n_AString dungeonRewards HIGH  # fuben cột 9 "loại,id,số,tỉ lệ|..."; loại 5 = EXP (ae/cd/bn)
+F o.h_AAString mazeTable HIGH  # mazefile.bin "maze:".."mazeEnd" (danh sách map, building id, chỉ số mazepos)
+F o.j_AString mazeEntryPoints HIGH  # 2 điểm "x,y,hướng" chọn ngẫu nhiên từ "mazepos:"; cd đặt nhân vật
+F o.k_AString mazeGatePoints HIGH  # 2 điểm "x,y" cổng; ci tạo vùng "换场景1/2", cd vẽ sdt1/sdt2.gf
+
+# -- bảng dữ liệu tĩnh --
+F o.f_AAString sceneTable HIGH  # sn.bin "data:".."dataEnd"
+F o.g_AAString roleTable HIGH  # role.bin "role:".."roleEnd" (id, tên, anim, chân dung)
+F o.d_AAString partyRoleTable HIGH  # team.bin "role:".."roleEnd" (chỉ số gốc nhân vật đội); bn cột 2 anim chiến đấu
+F o.a_AAString itemTable HIGH  # item.bin "item".."itemend"; ae lấy cột 1 tên
+F o.b_AAString skillTable HIGH  # skill.bin "skill:".."skillend" (bn, d nạp)
+F o.c_AAString equipTable HIGH  # equip.bin "equip".."equipend" (ck, ae, d(int,int))
+F o.e_AAString questTable HIGH  # task.bin "task".."taskend" (a_bp, cd vẽ nhiệm vụ)
+F o.c_AString roleNames HIGH  # role.bin cột 1; cf tên người nói; [0] tên nhân vật chính lưu RMS (đổi tên)
+F o.d_AString rolePortraits HIGH  # role.bin cột 3 "/face/1.av" ("-1" -> ""); cf chân dung
+F o.e_AString roleAnimPaths HIGH  # role.bin cột 2 "/av/chr1.av"; a_bl(int), cd tạo sprite
+F o.g_String mountAnimPath HIGH  # role.bin "roleRunBodys" (/av/long1.av); ae: thú cưỡi
+F o.h_String flyAnimPath HIGH  # role.bin "roleFlyBody"; bl/ci đổi long1/long2 khi bay
+F o.i_String boatAnimPath HIGH  # = "/av/boat.av"; ae.java:481 lên thuyền
+F o.j_String battleMusic HIGH  # sn.bin "battleMusic:" khoá "inbattle"; bn.a_V(0)
+F o.k_String victoryMusic HIGH  # khoá "win"
+F o.l_String defeatMusic HIGH  # khoá "lose"
+F o.l_AString loadingTips HIGH  # about.bin "tips:".."tipsEnd"; cd/bn/bs vẽ khi tải
+F o.f_B tipIndex HIGH  # random k.a(0, l_AString.length); l_AString[f_B]
+
+# -- vật phẩm (item.bin cột 0..11) --
+F o.e_AS itemIds HIGH  # item cột 0; d_I(id) tra chỉ số
+F o.f_AString itemNames HIGH  # item cột 1 "Thuốc hồi HP"...; so chuỗi trong useItem*
+F o.o_AString itemIconNames HIGH  # item cột 2; e(): "/icon/"+name+".gf"
+F o.f_AS itemTypes HIGH  # item cột 3: 1 dùng,3 nhiệm vụ,4 đặc biệt,5 đá khảm,6 gen; as.j() chia túi
+F o.g_AS itemBattleUsable HIGH  # item cột 5; bn.j(): chỉ vật phẩm ==1 dùng trong trận
+F o.u_AS itemConsumable MED  # item cột 7; ==1 -> c(id,1) trừ sau khi dùng
+F o.g_AString itemDescriptions HIGH  # item cột 8 "Hồi 1000 HP"; as/bn khung mô tả
+F o.h_AS itemBuyPrices HIGH  # item cột 9; ab: o.a_I -= h_AS*số lượng "Mua "
+F o.i_AS itemSellPrices HIGH  # item cột 10; ab.java:475 o.a_I += i_AS*số lượng
+F o.h_AString itemStatBonus HIGH  # item cột 11 "chỉ số,giá trị" (đá khảm "3,40", gen "8,4"); a(cv,String)
+F o.a_AImage itemIcons HIGH  # e(): cc.a_Image("/icon/"+o_AString[i]+".gf")
+
+# -- đội hình, nhân vật, sủng vật --
+F o.e_S heroId HIGH  # sn.bin "heroId"; ci 主角ID/改变主角; cv.a_B == e_S = pet của nhân vật chính
+F o.a_Abl party HIGH  # đội trên bản đồ, [0] nhân vật chính; c(bl) thêm, f_V(int) bớt
+F o.b_AB partyRoleIds HIGH  # id vai trong đội (c(bl) thêm h_S); lưu RMS; a_V(String) dựng lại đội
+F o.b_Abl sceneNpcs MED  # cd.a_Abl() reset rồi b(bl) thêm vai của cảnh; cd vẽ dấu nhiệm vụ trên đầu (so h_S với task cột 9)
+F o.a_Aao roleRecords HIGH  # ao[]: bản lưu chỉ số/kỹ năng/trang bị/vị trí vai; ghi RMS ("roleDatas[i].equip==null")
+F o.a_Aau petRecords HIGH  # au[]: bản lưu pet; "mypetdatas[i].id ... petName"
+F o.a_Acv myPets HIGH  # "GameData.myPet[j].onlyId"
+F o.v_AS myPetSpeciesIds HIGH  # song song b_AI; a_V(String): a_V(v_AS[i], b_AI[i]) dựng lại pet
+F o.b_AI myPetUids HIGH  # onlyId (cv.b_I): uid mới = max+1; song song v_AS
+F o.p_AS discoveredPetIds HIGH  # đồ giám: thêm khi có pet (a_V(int,int)) / gặp trong trận (bn:4072); as 'Mới nhất'
+F o.a_AZ newPetFlags MED  # boolean[140]; a_V(int,int) đặt [id-1]=true, ab/as xoá khi xem trong đồ giám
+F o.c_AS removedRoleIds HIGH  # cd.d(int) thêm (清除BOSS/敌人), cd.b_V(int) bỏ (复活角色); cd không tạo lại vai này
+F o.l_B followDistance MED  # =15; a_V(byte): khoảng cách bám theo (đơn vị bước)
+F o.d_B followStepGap MED  # ceil(l_B/tốc độ); c(): đồng đội i đứng ở vết a_AAS[(i)*d_B-1]; bl: kích thước vết
+
+# -- túi đồ, tiền, điểm --
+F o.a_AAS bagItems HIGH  # {itemId, số lượng}; "Túi đồ đã đầy", tối đa 99 "Số vật phẩm đã tối đa"; team.bin "item:"
+F o.b_AAS equipBagIds HIGH  # [6 loại ô][] id trang bị trong túi; team.bin "bag:" (Vũ khí/Mũ/Áo/Giày/Dây chuyền/Nhẫn)
+F o.a_AAck equipBag HIGH  # [6][] ck song song b_AAS (as.equipBagIndex)
+F o.a_I money HIGH  # team.bin "money"; "Nhận vàng+"; âm -> 99999 khi lưu
+F o.c_I score HIGH  # +5 mỗi nhiệm vụ, bn +2 khi thắng; bk.uploadScore "Điểm hiện tại"
+F o.b_I statMultiplier HIGH  # df "Nhận thưởng" (trang 8) đặt =2; bn nhân ATK/DEF/SPD actor phe ta; lưu RMS
+F o.g_B musicVolume HIGH  # da: = at.defaultVolume; ab +/-10 (0..100), playMusic(..., g_B); lưu bản ghi SMS
+
+# -- cốt truyện, sự kiện, nhiệm vụ --
+F o.a_B storyPhase HIGH  # ci 增加阶段/更新阶段; cd vẽ "phase:"; bj.phase; ci.a(file, a_B)
+F o.a_AI eventFlags HIGH  # id sự kiện đã xảy ra; b_V thêm, a_V(int) bỏ, b_Z(int) kiểm; "ID sự kiện đã xảy ra"
+F o.d_AS openedChestIds HIGH  # ax/ae: rương đã mở; lưu RMS
+F o.a_Abp activeQuests HIGH  # bp[] dựng bởi a_bp; as danh sách nhiệm vụ
+F o.n_AS activeQuestIds HIGH  # id nhiệm vụ đang nhận (song song a_Abp/m_AS); ci 有任务/无任务
+F o.m_AS questDoneFlags HIGH  # song song n_AS; cd.java:1044 đặt 1 khi đạt mục tiêu; a_bp -> bp.a_Z
+F o.o_AS finishedQuestIds HIGH  # thêm trong a(short,boolean) khi bp.b_B==0 (không lặp lại); cd không cho nhận lại
+F o.d_S reviveSceneId HIGH  # sn.bin "liveBackScene" (//Cảnh hồi sinh); ci 改复活点; bn thua -> a_V(d_S)
+F o.e_B revivePoint HIGH  # sn.bin "liveBackPos" (//Vị trí hồi sinh); bn: cd.c_S = e_B
+F o.b_Z isEndingPending MED  # ci 游戏结局1 đặt true; cd vẽ e() và phím tiếp theo -> o.f() + showCover
+F o.a_Z isRestoringSave HIGH  # c(String) đặt true khi nạp xong; cd dùng vị trí đã lưu (ao.a_S/b_S) rồi xoá
+
+# -- lưu game RMS --
+F o.m_String saveIndexStore HIGH  # "cwzw3save": 3 ô tóm tắt; a_Z(byte) ghi, a_Z() đọc
+F o.n_String saveSlot1Store HIGH  # "cwzw3_save1" ("Tiến độ 1")
+F o.o_String saveSlot2Store HIGH  # "cwzw3_save2" ("Tiến độ 2")
+F o.p_String saveSlot3Store HIGH  # "cwzw3_save3" ("Tiến độ 3")
+F o.r_String purchaseStore HIGH  # "cwzw3SmsSave": cờ dịch vụ df + âm lượng; Main a_Z, df b(String)
+F o.c_Z hasSaveIndex HIGH  # ab/bs: đặt true khi thấy RecordStore m_String rồi a_Z(); as/bs mới vẽ ô lưu
+F o.c_AB slotUsed HIGH  # ô 0..2: 1 = có dữ liệu (ghi 1 khi lưu); ab/as/bs chỉ vẽ/nạp ô ==1
+F o.i_AString slotSceneNames HIGH  # = sceneName lúc lưu; bs/as vẽ
+F o.j_AS slotHeroIds HIGH  # = heroId; bs/ab "/av/chr"+j_AS+".av"
+F o.k_AS slotHeroLevels HIGH  # = a_Abl[0].a_AI[0] (cấp); bs vẽ số
+F o.l_AS slotYears HIGH  # Calendar GMT+8 get(1)
+F o.d_AB slotMonths HIGH  # get(2)+1
+F o.e_AB slotDays HIGH  # get(5)
+F o.f_AB slotHours HIGH  # get(11)
+F o.g_AB slotMinutes HIGH  # get(12)
+F o.h_AB slotSeconds HIGH  # get(13); ghi/đọc nhưng không ai vẽ
+
+# ---- hàm: khởi tạo / nạp bảng ----
+M o.a_V() initNewGame HIGH  # cd.a_V(): reset cờ đồ giám, thêm nhân vật heroId, team.bin "item:"/"bag:"/"money"
+M o.b() loadStaticTables HIGH  # Main.java:63 khởi động: sn.bin nhạc trận/default/heroId/hồi sinh, role.bin tên/anim/chân dung, about.bin tips
+M o.f() resetGameData HIGH  # xoá đội/pet/túi/sự kiện/bảng cache; ab trước showCover / trước nạp "Tiến độ n", cd sau kết thúc
+M o.a_Z(int) loadSceneInfo HIGH  # tra sn.bin "data:" theo id; phó bản đọc mazefile; "Dữ liệu cảnh không tồn tại"
+M o.d() loadItemTable HIGH  # item.bin -> itemIds/itemNames/itemTypes/...
+M o.e() loadItemIcons HIGH  # "/icon/"+itemIconNames[i]+".gf"
+
+# -- tra cứu chỉ số --
+M o.d_I(int) findItemIndex HIGH  # vị trí id trong itemIds, -1 nếu không có
+M o.c_I(int) findSkillIndex HIGH  # vị trí id trong d.a_AS (bảng kỹ năng)
+M o.e_I(int) findQuestIndex HIGH  # hàng questTable có cột 0 == id
+M o.f_I(int) findEquipIndex HIGH  # vị trí id trong ck.a_AS (bảng trang bị)
+M o.a_ao(int) findRoleRecord HIGH  # roleRecords có a_B == roleId
+M o.a(int,int,boolean) rollBiasedHalf MED  # random [min,max]: true -> 2/3 nửa trên, false -> 2/3 nửa dưới; tăng trưởng pet theo chỉ số gốc; k.java:565
+
+# -- sự kiện --
+M o.a_V(int) removeEventFlag HIGH  # cg.b remove from a_AI; ci 恢复事件 (ci.java:419), ci.java:135 xoá 6701
+M o.b_V(int) addEventFlag HIGH  # "Thêm id ... sự kiện"; ci 去除事件 (ci.java:417), kết thúc script
+M o.b_Z(int) hasEventFlag HIGH  # cg.a_Z(eventFlags, id); ci 已发生事件
+
+# -- đội hình / vai --
+M o.a_bl(int) createRoleSprite HIGH  # reads /bin/role.bin, new bl
+M o.a(bl) loadRoleData MED  # team.bin "role:" hoặc roleRecords: chỉ số, kỹ năng, trang bị; "Nhân vật ... lấy từ dữ liệu bộ nhớ/văn bản"
+M o.c(bl) addPartyMember HIGH  # nối vào party, nạp dữ liệu nếu chưa có, thêm h_S vào partyRoleIds; ci 加入队伍, k đổi nhân vật chính
+M o.b(bl) addSceneNpc MED  # nối vào sceneNpcs (cd.java:531 khi dựng vai của cảnh)
+M o.f_V(int) removePartyMember HIGH  # ci 离开队伍: bỏ vai khỏi party và partyRoleIds, đặt lại vị trí
+M o.c(bl[]) keepLeaderOnly MED  # a_Abl = {var0[0]}; bn gọi sau trận (đội trận có thêm pet)
+M o.d(bl) refreshRoleStats MED  # a_AI[10..20] = getter của bl (gồm trang bị); kẹp HP/MP hiện tại
+M o.a(bl[]) storeRoleRecords HIGH  # chép chỉ số/kỹ năng/trang bị của vai trong team.bin vào roleRecords
+M o.a_V(byte) updateFollowSpacing MED  # followStepGap = ceil(15/tốc độ); bl gọi với c_B (bước)
+M o.c() placeFollowers MED  # đặt đồng đội 1.. lên vết di chuyển của nhân vật chính (cd.java:448)
+M o.a_Abl() buildBattleParty MED  # thêm sprite pet xuất chiến vào party, trả tối đa 4 vai d_Z; cd -> bn.a_Abl
+
+# -- sủng vật --
+M o.a_V(int,int) addPet HIGH  # new cv(speciesId, uid|-1), petdata, ghi đồ giám; ci 载入宠物, "Nhận sủng vật"
+M o.b(cv) loadPetData MED  # petRecords theo uid hoặc petdata.bin/stardata (random chỉ số + tăng trưởng)
+M o.a_bl(cv) createPetSprite HIGH  # bl từ cv: chép cấp/HP/MP/ATK/DEF/SPD/EXP, h_S=loài, c_S=uid
+M o.a_Acv() getReservePets MED  # pet của heroId, chưa xuất chiến (a_Z false), còn HP, !b_Z; bn danh sách gọi pet
+M o.a(cv[]) storePetRecords HIGH  # chép pet vào petRecords (theo uid b_I)
+M o.b(bl[]) syncPetsFromBattle HIGH  # "Cập nhật dữ liệu chiến đấu": chép chỉ số bl (trừ [0]) về cv cùng uid
+M o.a_V(cv) growPetStats MED  # cộng tăng trưởng mỗi cấp a_AI[3/6/8/10/12] vào HPmax/MPmax/ATK/DEF/SPD; cd.a(cv[]) lên cấp
+M o.e(bl) growPetSpriteStats MED  # như trên cho sprite pet trong trận (tìm cv theo uid c_S); bn lên cấp
+M o.a(cv,String) applyPetStatBonus HIGH  # "chỉ số,giá trị|..." cộng vào cv.a_AI; ab cấy gen (itemStatBonus)
+M o.d_V(int) removePetRecord MED  # xoá petRecords theo uid; ab (as.q_B==3) thả pet / đổi pet lấy vật phẩm, luôn đi cùng e_V
+M o.e_V(int) removePet HIGH  # xoá myPets theo uid + myPetSpeciesIds/myPetUids; ci/cd 移除宠物, ab thả pet
+M o.d_Z(int) hasPetSpecies MED  # pet của heroId có loài == id; ci/cd điều kiện 有宠物
+
+# -- kỹ năng --
+M o.a_Ad(cv,int) buildPetSkills MED  # d[] từ cv.a_AS (new d(id,1,4))
+M o.a_Ad(bl,int) buildRoleSkills MED  # d[] từ bl.a_AS (new d(id,1,h_S))
+M o.a(d[],d) appendSkill HIGH  # nối phần tử vào mảng d[]
+M o.a(cv,int,int) learnPetSkill HIGH  # ab học kỹ năng cho pet (trả d.d_AS vàng); bỏ qua tham số cấp
+M o.a(bl,int,int) learnRoleSkill HIGH  # ci 获取技能 id,cấp; ab học kỹ năng nhân vật
+M o.a_V(bl,int) forgetRoleSkill HIGH  # ci 扣除技能: bỏ id khỏi a_AS và a_Ad
+M o.a_Z(bl,int) hasSkill HIGH  # a_Ad có a_S == id; ci 有技能/无技能, cd
+
+# -- vật phẩm / trang bị --
+M o.a_I(int) countBagSlotsInGroup MED  # số ô túi cùng nhóm loại (1 / 2+5 / 3+4) với itemId; so ct.maxItemTypes
+M o.b(int,int) addItem HIGH  # "Túi đồ đã đầy", "Số vật phẩm đã tối đa" (99)
+M o.c(int,int) removeItem HIGH  # trừ số lượng, xoá ô <=0; ci 扣除道具
+M o.b_I(int) getItemCount HIGH  # tổng số lượng id trong bagItems; ci 道具数量
+M o.a_AAB() getGeneItems HIGH  # {id,số} các vật phẩm loại 6 trong túi; as.implantMaterials
+M o.a_V(cv,int) useItemOnPet HIGH  # "Thuốc hồi HP"... "HP +1000", sách cộng chỉ số pet
+M o.b(bl,int) useItemOnRole HIGH  # như trên cho nhân vật + "Vé số sủng vật", "Cuộn hồi thành"
+M o.a(e,int) useItemInBattle HIGH  # bn.java:4276; thuốc/thịt/"Cola vạn năng" lên actor
+M o.b(e,int) healActorHp HIGH  # e.m_I += n, kẹp a_AI[10]
+M o.c(e,int) healActorMp HIGH  # e.n_I += n, kẹp a_AI[11]
+M o.c(bl,int) healRoleHp HIGH  # bl.a_AI[3] += n, kẹp [10]
+M o.d(bl,int) healRoleMp HIGH  # bl.a_AI[5] += n, kẹp [11]
+M o.b(cv,int) healPetHp HIGH  # cv.a_AI[1] += n, kẹp [2]
+M o.c(cv,int) healPetMp HIGH  # cv.a_AI[4] += n, kẹp [5]
+M o.d(int,int) addEquip HIGH  # equip.bin cột 2 = loại ô; "Túi đồ đã đầy"; ci 获取装备
+M o.c_V(int) removeEquip HIGH  # ci 扣除装备: bỏ id khỏi equipBagIds/equipBag (ô theo ck.b_AS)
+M o.c_Z(int) hasEquip HIGH  # id có trong equipBagIds; ci 有装备/无装备
+M o.a(short[],int) createEquips MED  # ck[] từ danh sách id (id<=0 -> null); "Trang bị của tinh linh này là null"
+M o.a(ck[],int) removeEquipAt HIGH  # xoá phần tử chỉ số i (mảng 1 phần tử -> null)
+M o.a(ck[],ck) appendEquip HIGH  # nối phần tử vào mảng ck[]
+
+# -- nhiệm vụ --
+M o.a_bp(int,int) createQuest HIGH  # bp từ task.bin; tham số 2 = chỉ số trong questDoneFlags (-1 = mới)
+M o.b(bp) appendQuest HIGH  # nối vào activeQuests
+M o.a(short) acceptQuest HIGH  # ci 加入任务, ae: thêm id vào activeQuestIds + questDoneFlags 0
+M o.a(short,boolean) finishQuest HIGH  # trao thưởng "Nhận ..." (loại 1 vật phẩm,2 trang bị,3 vàng,4 pet,5 EXP), score+=5; ci 移除任务 = nộp nhiệm vụ (s*e.txt), hoàn thành nhiệm vụ ngẫu nhiên
+M o.g(int) removeQuestById HIGH  # tìm activeQuests theo id rồi a(bp)
+M o.a(bp) removeQuest HIGH  # xoá bp khỏi activeQuests (ab huỷ nhiệm vụ)
+
+# -- thua trận --
+M o.g() applyDefeatPenalty HIGH  # ci 失败处理: mất nửa vàng (trừ khi df.hasLuckyPack), hồi đầy HP/MP đội
+
+# -- lưu / nạp --
+M o.a_V(String) loadGame HIGH  # "Tiến độ 1/2/3" -> c(store); dựng lại đội, nhiệm vụ, pet
+M o.c(String) readSaveRecord HIGH  # đọc RecordStore ô lưu: pha, cảnh, sự kiện, túi, vai, pet...; đặt isRestoringSave
+M o.b(byte) saveGame HIGH  # ghi RecordStore cwzw3_save1..3 (+ purchaseStore); ci 游戏存档, ab "Lưu thành công"
+M o.a_Z(byte) saveSlotSummary HIGH  # cập nhật ô tóm tắt (cảnh, hero, cấp, giờ GMT+8) và ghi cwzw3save
+M o.a_Z() loadSlotSummaries HIGH  # đọc cwzw3save vào slotUsed/slotSceneNames/...
+M o.a_Z(String) loadPurchaseState HIGH  # đọc cwzw3SmsSave: df tên/cờ/tiền đã tiêu + musicVolume; Main.java:64
+M o.b(String) savePurchaseState HIGH  # ghi cwzw3SmsSave; df sau khi mua

@@ -1,0 +1,17 @@
+wait 3000
+show
+wait 1500
+probe at b:boolean
+key -5
+wait 3000
+probe at b:boolean
+key -7
+wait 5000
+probe at b:boolean
+key -5
+wait 14000
+probe at b:boolean
+key -7
+wait 2000
+probe at b:boolean
+quit

@@ -1,0 +1,442 @@
+# part_world.map — cụm "world": khám phá bản đồ, script sự kiện, tile map, lớp đối tượng cảnh, hội thoại, hiệu ứng chuyển cảnh.
+# Lớp: cd ci ca bj ax ae cf cl bb j. Ghi chú chi tiết: docs/rename_notes/world.md
+
+# ---- World (cd) ----
+C cd World HIGH  # da.a_cd; loads /map/<name>.map, /building/s*sp.dat, /bin/s<N>e.txt; owns ca/bj/ci/bn/cf
+F cd.a_B worldState HIGH  # 1 loading (b()), 2 running, 3 game-over/ending text; 0 after leaving
+F cd.b_B mode HIGH  # 1 field 2 dialog(cf) 3 msgbox 4 menu(as) 5 battle(bn) 6 close-up anim(cr) 7 sms(df) 8 dungeon loot 9 quest 10 order.jpg
+F cd.c_B questDialogPage MED  # mode 9: 1 = "Mô tả nhiệm vụ", else "Phần thưởng"; ae sets 2
+F cd.i_B loadTargetPercent HIGH  # set 10/20/50/90/100 during c(); loading bar
+F cd.j_B loadShownPercent HIGH  # increments toward i_B; bar x = 15+(w-30)*j_B/100
+F cd.a_S mapWidth HIGH  # = ca.b_S() (pixel width); camera clamp i_S <= a_S-screenW
+F cd.b_S mapHeight HIGH  # = ca.a_S() (pixel height)
+F cd.i_S cameraX HIGH  # follows player d_S - screenW/2, clamped
+F cd.j_S cameraY HIGH  # follows player e_S - screenH/2
+F cd.b_I mapOffsetX HIGH  # (screenW-mapWidth)/2 when map narrower than screen
+F cd.c_I mapOffsetY HIGH  # (screenH-mapHeight)/2
+F cd.a_ca tileMap HIGH  # new ca(); a_Z("/map/"+name+".map")
+F cd.a_bj sceneLayer HIGH  # bj: buildings + actors (cz[])
+F cd.a_cf dialogBox HIGH  # cf; mode 2
+F cd.a_bn battle HIGH  # new bn(); mode 5
+F cd.a_ax nearbyChest MED  # bl.a_ax(player) result; opened by OK in ae
+F cd.a_as menu HIGH  # as; mode 4
+F cd.a_bb screenWipe HIGH  # bb transition on map enter
+F cd.a_bl dialogSpeaker MED  # set by cf.e() = a_bl(speakerId); cleared in k()
+F cd.c_bl scratchRole LOW  # new bl() created lazily, never read
+F cd.d_bl roleBeingRemoved HIGH  # d(int): blinks l_B times then bj.c(d_bl)
+F cd.b_bl nearbyNpc HIGH  # bl.a_bl(player); its name drawn top-right; ae talks to it
+F cd.a_cr closeUpAnim MED  # cr; 特写动画 opcode, mode 6
+F cd.a_cl storyCrawl HIGH  # cl; 绘画章节 opcode
+F cd.a_ci script HIGH  # ci; /bin/s<N>e.txt events
+F cd.a_dc textLayout MED  # dc used for msgbox/quest text
+F cd.a_Abi rainDrops HIGH  # 100 bi lines; 开始下雨
+F cd.a_df smsMenu MED  # df (smsmenu.bin), mode 7
+F cd.d_String pendingMapName HIGH  # o.a_String copied before loading
+F cd.a_Z loadFinished HIGH  # set by j thread after c()
+F cd.w_Z isSameMapReload MED  # a_String==d_String && c_S<0: keep roles/script
+F cd.c_S entryPointIndex HIGH  # 换场景 arg 3; index into sceneChange S<n>P list
+F cd.b_Z nearChest HIGH  # a_ax != null
+F cd.c_Z nearNpc HIGH  # b_bl != null
+F cd.a_AString messageLines HIGH  # mode 3 box, "Nhấn OK để tiếp tục"; 提示信息
+F cd.d_B messageScroll HIGH  # first visible line, ae up/down
+F cd.e_B endingId HIGH  # 游戏结局 arg; "end"+e_B+"Story:"
+F cd.d_Z isShaking HIGH  # 场景抖动 / 场景抖动停
+F cd.k_B shakeOffsetY HIGH  # 4 every 4th frame while d_Z
+F cd.e_String endingStoryText MED  # story.bin "end<N>Story:" raw text
+F cd.c_AString endingLines HIGH  # wrapped ending text
+F cd.d_I endingTextY HIGH  # scroll y of ending text
+F cd.e_I creditsY HIGH  # y of "Đội ngũ phát triển" credits
+F cd.e_Z isResting HIGH  # "Nghỉ ngơi một chút"; 休息/高级休息
+F cd.f_B restFrames HIGH  # 30 frames of rest screen
+F cd.f_Z battlePending HIGH  # set in a(short[]x3); bl stops moving while true
+F cd.a_AS battleEnemyIds MED  # "id|lvl|n" field 0 -> bn.b_AS
+F cd.b_AS battleEnemyLevels MED  # field 1 -> bn.c_AS
+F cd.c_AS battleEnemyCounts LOW  # field 2 (always 1 in scripts) -> bn.a_AS
+F cd.g_B flashCounter HIGH  # countdown of i_Z / battle flash x_Z
+F cd.x_Z battleFlashing HIGH  # white flash then new bn()
+F cd.y_Z isRemovingRole HIGH  # blink and remove d_bl
+F cd.l_B removeBlinkCount HIGH  # 10 blinks
+F cd.a_String currentMapName HIGH  # compared with d_String
+F cd.z_Z endScreenDone HIGH  # credits finished / defeat text shown -> key returns to cover
+F cd.g_Z playerControlEnabled HIGH  # gates direction keys; false while script runs
+F cd.h_Z fieldHudEnabled HIGH  # sms icon + touch buttons; key/touch input gate
+F cd.f_I enterFrames MED  # counts 10 frames of A_Z
+F cd.A_Z isEnteringMap HIGH  # tanshe.av appear effect, then h_Z=true
+F cd.B_Z endingTextDone HIGH  # switch from ending text to credits
+F cd.b_Image debugDigitsImage MED  # /pic/number01.gf, phase display when at.e_Z
+F cd.c_Image boxCornerImage MED  # /pic/jiao1.gf corners of msgbox
+F cd.d_S messageVisibleLines HIGH  # 3 lines in msgbox
+F cd.i_Z isScreenFlashing HIGH  # 屏幕闪烁
+F cd.j_Z letterboxOpening HIGH  # 上下拉屏 bars grow l_S -> h_S
+F cd.k_Z letterboxClosing HIGH  # 恢复拉屏
+F cd.a_I crawlSpeed HIGH  # cl: scroll step / typing period; OK key changes it
+F cd.l_Z storyCrawlActive HIGH  # cl drawn; "Bỏ qua" skip
+F cd.m_Z isRaining HIGH  # 开始下雨 / 结束下雨
+F cd.n_Z levelUpEffect HIGH  # set in a(bl) on level up, douqi.av on player
+F cd.b_bx levelUpAnim HIGH  # /skill/douqi.av
+F cd.c_bx enterMapAnim HIGH  # /ft/tanshe.av
+F cd.d_Image mazeGateImage1 LOW  # /map/pics/sdt1.gf at o.k_AString[0] (random maze 2 exits)
+F cd.e_Image mazeGateImage2 LOW  # /map/pics/sdt2.gf at o.k_AString[1]
+F cd.d_bx smsIconAnim HIGH  # /av/sms.av bottom corner
+F cd.e_bx loadingAnim HIGH  # /av/long2.av on loading bar
+F cd.o_Z useSecondEntry MED  # 换场景2 in random maze: spawn at j_AString[1]
+F cd.b_String chosenOption HIGH  # cf.b_AString[selected]; 选择了 compares it
+F cd.a_bx portalAnim HIGH  # /map/pics/fazheng.av set by k (开启副本); 是否开启 tests it
+F cd.f_bx questAvailableMarker MED  # /pic/task/task1.av above quest NPC
+F cd.g_bx questActiveMarker MED  # task2.av: quest taken, not done
+F cd.h_bx questDoneMarker MED  # task3.av: quest done (bp.a_Z)
+F cd.e_S portalX HIGH  # set with a_bx by k
+F cd.f_S portalY HIGH
+F cd.p_Z isDungeonBattle HIGH  # 副本战斗; bn -> loot mode 8
+F cd.q_Z isNormalBattle HIGH  # 战斗
+F cd.a_AI dungeonLoot HIGH  # bn: {type,id,count,chance}; type 1 item 2 equip 3 gold 4 pet
+F cd.b_AString lootNotices HIGH  # "Nhận ..." strings -> ticker
+F cd.f_Image goldIcon HIGH  # /pic/D10.gf "Vàng"
+F cd.g_Image softKeyImage MED  # /pic/D23.gf two halves for accept/cancel
+F cd.h_Image expIcon HIGH  # /icon/13.gf "EXP"
+F cd.r_Z isTutorialBattle HIGH  # 教学战斗
+F cd.s_Z isTransforming HIGH  # /av/bianxing.av then ae.b(h_B)
+F cd.i_bx transformAnim HIGH  # /av/bianxing.av
+F cd.h_B transformKind MED  # 0 fly (ae.b), 1 mount (touch 4), 2 boat (scene 1)
+F cd.g_S shownQuestId HIGH  # 显示任务 arg -> task.bin row
+F cd.i_Image orderImage HIGH  # /pic/order.jpg mode 10 (短信购买 99)
+F cd.c_String lootPetName HIGH  # petdata.bin name for loot type 4
+F cd.t_Z cameraReturning HIGH  # 还原焦点: undo pan offsets h_I/i_I
+F cd.g_I panTravelled HIGH  # pixels panned so far, compared to m_S*at.f_B
+F cd.h_I panOffsetX HIGH  # accumulated camera pan x
+F cd.i_I panOffsetY HIGH
+F cd.j_I dragStartX MED  # pointer press map x (debug rect)
+F cd.k_I dragStartY MED
+F cd.l_I dragCurX MED  # pointer drag/release map x
+F cd.m_I dragCurY MED
+F cd.C_Z tickerPaused HIGH  # 1 s pause per line
+F cd.a_J tickerPauseStart HIGH  # currentTimeMillis
+F cd.n_B tickerLine HIGH  # next pause line
+F cd.D_Z tickerActive HIGH  # bottom scrolling notice
+F cd.d_AString tickerLines HIGH  # a(String[])
+F cd.k_S tickerScroll HIGH
+F cd.h_S letterboxTarget HIGH  # 上下拉屏 arg
+F cd.l_S letterboxSize HIGH  # bars height = l_S<<2
+F cd.u_Z blindsClosing HIGH  # 黑屏: 6 black stripes grow
+F cd.v_Z blindsOpening HIGH  # 恢复黑屏
+F cd.n_I blindsWidth HIGH
+F cd.E_Z cameraPanning HIGH  # 切换焦点
+F cd.m_S panSteps HIGH  # 切换焦点 arg 2
+F cd.o_B panDirection HIGH  # 0 down 1 up 2 left 3 right
+F cd.F_Z whiteFlashOn HIGH  # fills screen white
+F cd.a_AAI paletteFromColors MED  # sn.bin colour table column 1 -> bj recolour
+F cd.b_AAI paletteToColors MED  # sn.bin selected column
+M cd.a_V() startGame HIGH  # Main new/continue: o.a_V() then a_V(o.a_S)
+M cd.a(String) loadSaveSlot HIGH  # "Tiến độ 1/2" -> o.a_V(String) then scene
+M cd.a_V(int) changeScene HIGH  # 换场景 / bn respawn; sets o.b_S then b()
+M cd.b() beginLoading HIGH  # a_B=1, new j(this)
+M cd.c() loadScene HIGH  # run by j thread: map, buildings, chests, roles, script
+M cd.a_Abl() buildSceneRoles HIGH  # party + /bin/s<N>r.bin roles; "returnRoles"
+M cd.a_Aax() loadChests HIGH  # /bin/box.bin -> ax[]
+M cd.a(Graphics) updateAndDraw HIGH  # da paint for state 4: logic tick + b(Graphics)
+M cd.b_V(int) reviveRole MED  # 复活角色: remove id from o.c_AS
+M cd.a(boolean) triggerRandomEncounter HIGH  # bl countdown -> a(null,null,null)
+M cd.a_bl(int) findRoleById LOW  # bl.a_bl(int); used by cf for speaker
+M cd.b(Graphics) drawWorld HIGH  # per-mode rendering
+M cd.c(Graphics) drawDungeonLoot HIGH  # "[Phó bản]" "Chiến lợi phẩm"
+M cd.d(Graphics) drawDebugOverlay HIGH  # only at.e_Z: collision/event rects
+M cd.c(int) handleKey HIGH  # da key dispatch for state 4
+M cd.a(int,int) onPointerPress HIGH  # da.pointerPressed; touch buttons i.a(x,y)
+M cd.b(int,int) onPointerRelease HIGH  # da.pointerReleased
+M cd.c(int,int) onPointerDrag HIGH  # da.pointerDragged
+M cd.d() reloadOrPlayMusic MED  # at.f_Z ? b() : m()
+M cd.a(String[]) showTicker HIGH
+M cd.a(int,int,int,int,int) startStoryCrawl HIGH  # 绘画章节 storyId,x,y,h,mode
+M cd.e() releaseResources HIGH  # "clearResource()"
+M cd.a(String[],int) startDialog HIGH  # 对话: lines, NPC turns to player
+M cd.b_bl(int) findSceneRole HIGH  # a_bj actors with h_S == id
+M cd.a(bl,int,int,int,int,int) moveRole HIGH  # 走动: dir 0-3 by dist, else to x,y
+M cd.a(String,int,int,int) playCloseUpAnim HIGH  # 特写动画 path,x,y,mode
+M cd.d(int,int) startCameraPan HIGH  # 切换焦点 dir,steps
+M cd.a_Z(int) leaderHasSkill MED  # 无技能; o.a_Abl[0].a_AS contains id
+M cd.f() loadEndingStory HIGH  # story.bin end<N>Story
+M cd.g() resetSceneNpcs LOW  # bl.g_V() on every non-party NPC
+M cd.h() openPetDepot MED  # 寄宠物 / 取宠物
+M cd.i() openBestiary MED  # 进入图鉴 -> as.o_B = 8
+M cd.a(String,int,int) openShop HIGH  # "技能学习" "买道具" "买装备"
+M cd.b(String[],int) startScriptBattle HIGH  # 战斗 args "id|lvl|n"
+M cd.a(short[],short[],short[]) beginBattle HIGH  # flash x_Z then bn
+M cd.j() stopMusic HIGH  # Main.music stop/close
+M cd.d(int) removeRole HIGH  # 清除BOSS / 清除敌人
+M cd.k() closeDialog HIGH
+M cd.l() returnFromBattle HIGH  # bn end paths; revives HP, mode 1
+M cd.a(cv[]) levelUpPets HIGH  # exp>=next -> level+1, next=l^3/2+l^2
+M cd.a(bl) checkLevelUp HIGH  # same formula, sets n_Z
+M cd.m() playSceneMusic HIGH  # /music/<o.c_String>.mid
+M cd.e(Graphics) drawEnding HIGH  # ending text + credits
+M cd.o() loadPaletteTables MED  # /bin/sn.bin colour tables for buildings
+M cd.p() recolorTilesets MED  # ca.a(name.gf, from, to)
+M cd.n() startRain HIGH  # 开始下雨
+
+# ---- ScriptEngine (ci) ----
+C ci ScriptEngine HIGH  # parses /bin/s<N>e.txt events, executes Chinese opcode lines
+F ci.a_Z isRunning HIGH  # set in a(bz), cleared in d(); blocks input
+F ci.a_Abz events HIGH  # bz[] from eventAmount/eventN
+F ci.c_bz lastAreaEvent HIGH  # avoids re-trigger while standing in area
+F ci.d_bz areaEventHit HIGH  # auto event overlapping player rect
+F ci.a_bz currentEvent HIGH  # executing event
+F ci.e_Z allowRetrigger MED  # set by 瞬移
+F ci.b_Z hasManualEvent HIGH  # non-auto event under player; OK starts b_bz
+F ci.b_bz manualEvent HIGH
+F ci.a_B battleResult HIGH  # bn: 0 lost, 1 escaped, 2 won (战斗失败/逃跑/胜利)
+F ci.a_S continuousLeft HIGH  # 连续执行 N: lines that do not pause
+F ci.b_S continuousPending HIGH  # async actions to wait for (a(>=2))
+F ci.f_Z lastCondition HIGH  # result of last test; 继承条件, {
+F ci.b_B lineCondition HIGH  # 0 none 1 true 2 false for current line
+F ci.c_Z isMustLoseBattle HIGH  # 必败战斗; bn checks
+F ci.d_Z isExecuting HIGH  # a_V() steps only when true
+F ci.c_S lineIndex HIGH  # program counter
+F ci.d_S lastExecutedLine HIGH
+F ci.g_Z inComment HIGH  # /* ... */
+F ci.a_AS blockConditions HIGH  # pairs (depth, cond) for { }
+F ci.e_S blockDepth HIGH
+F ci.a_I randomValue HIGH  # 随机数; '@' in dialog text
+F ci.f_S randomQuestId HIGH  # 随机任务 pick; 显示任务 default
+F ci.a_AAS randomQuestPools HIGH  # ids 37..50, chosen by 随机任务 arg
+M ci.a(boolean) pushBlockCondition HIGH
+M ci.c() popBlockCondition HIGH
+M ci.a_Z() isBlockActive HIGH  # all enclosing blocks true
+M ci.a(String,int) loadEvents HIGH  # file, phase
+M ci.a(short[]) checkAutoEvents HIGH  # player rect vs auto events
+M ci.b(bz) triggerAutoEvent MED
+M ci.a(bz) startEvent HIGH
+M ci.d() endEvent HIGH  # 结束脚本
+M ci.a_V() step HIGH  # called every 4th frame from cd
+M ci.a(String[],int) executeLine HIGH  # opcode dispatch
+M ci.a(int) advance HIGH  # 0 next, 1 pause/continue, >=2 async done
+
+# ---- TileMap (ca) ----
+C ca TileMap HIGH  # /map/*.map parser + tile layers + collision rects
+F ca.a_S viewX HIGH  # set by a(int,int,int,int)
+F ca.b_S viewY HIGH
+F ca.c_S viewW HIGH
+F ca.d_S viewH HIGH
+F ca.e_S mapWidth HIGH  # header short, clamp a_S <= e_S - w
+F ca.f_S mapHeight HIGH
+F ca.a_B tileW HIGH  # header byte
+F ca.b_B tileH HIGH
+F ca.a_AString tilesetNames HIGH  # readUTF list
+F ca.a_AImage tilesetImages HIGH
+F ca.a_AB tileImageIndex HIGH  # per tile def
+F ca.a_AS tileSrcX HIGH
+F ca.b_AS tileSrcY HIGH
+F ca.c_AS tileSrcW HIGH
+F ca.d_AS tileSrcH HIGH
+F ca.b_AB tileTransform HIGH  # drawRegion transform
+F ca.b_AImage tileImages HIGH  # pre-cut per tile (at.a_B 1/2)
+F ca.a_AAB layerCols HIGH  # per layer cell x
+F ca.b_AAB layerRows HIGH
+F ca.a_AAS layerTiles HIGH
+F ca.c_AB layerEncoding HIGH  # 0 list 1 dense 2 fill
+F ca.c_B backgroundLayerCount HIGH  # <0 all background; "hậu cảnh"/"tiền cảnh"
+F ca.e_AS blockX HIGH  # collision rects
+F ca.f_AS blockY HIGH
+F ca.g_AS blockW HIGH
+F ca.h_AS blockH HIGH
+F ca.d_AB blockType HIGH  # 1 solid (a(short[],int)), debug red/blue
+F ca.a_String imageDir HIGH
+F ca.b_String mapPath HIGH
+F ca.c_AAB tilesetBytes HIGH  # raw bytes before createImage
+F ca.a_I backgroundColor HIGH
+F ca.a_Image bufferImage HIGH  # scroll buffer
+F ca.a_Graphics bufferGraphics HIGH
+F ca.a_Z useScrollBuffer MED
+F ca.b_Z bufferReady HIGH
+F ca.g_S bufferOriginX HIGH
+F ca.h_S bufferOriginY HIGH
+F ca.i_S bufferW HIGH
+F ca.j_S bufferH HIGH
+F ca.k_S bufferCols HIGH
+F ca.l_S bufferRows HIGH
+F ca.m_S bufferMargin HIGH  # 2 tiles
+F ca.c_Z useGridAccel HIGH  # "tăng tốc ma trận"
+F ca.a_AAAS backgroundGrid HIGH  # [layer][row][col] tile+1
+F ca.b_AAAS foregroundGrid HIGH
+F ca.d_B mapFormat HIGH  # 1 sparse layers, 2 encoded layers + bg colour
+M ca.a(String,int[],int[]) recolorTileset HIGH  # be.a palette swap
+M ca.a(short[],int) hitsBlock HIGH  # type 1 rects vs player rects
+M ca.a(int) isLayerTileAligned MED  # needed for grid accel
+M ca.a_V() clear HIGH
+M ca.b_V() releaseImages HIGH
+M ca.b(int,int,int,int) redrawBufferColumns MED
+M ca.c(int,int,int,int) redrawBufferRows MED
+M ca.c() createImages HIGH
+M ca.a_V(String) setImageDir HIGH
+M ca.a(byte[]) parseMap HIGH
+M ca.a_S() getMapHeight HIGH
+M ca.b_S() getMapWidth HIGH
+M ca.a(String[],String[],String,int) loadTilesetBytes HIGH  # cc.a_AB(dir+name)
+M ca.a(Graphics,int,int) drawBackground HIGH
+M ca.a(Graphics,int,int,short[]) drawBackgroundArea HIGH
+M ca.a(Graphics) drawDebugBlocks HIGH
+M ca.b(Graphics,int,int) drawForeground HIGH
+M ca.a(Graphics,short[],int,int,short[]) drawLayers HIGH
+M ca.a_Z(String) loadMap HIGH  # "Không tìm thấy tệp"
+M ca.a(int,int,int,int) setViewport HIGH
+
+# ---- SceneLayer (bj) ----
+C bj SceneLayer HIGH  # /building/s*sp.dat buildings + y-sorted actors (cz[])
+F bj.a_bj instance LOW  # set in ctor, never read
+F bj.a_S viewX HIGH
+F bj.b_S viewY HIGH
+F bj.c_S viewW HIGH
+F bj.d_S viewH HIGH
+F bj.a_Ac buildings HIGH  # c (image or anim)
+F bj.a_Acz actors HIGH  # roles, chests; y-sorted
+F bj.a_AAS midPlacements HIGH  # {res,x,y} drawn between actors by y
+F bj.b_AAS groundPlacements HIGH  # drawn before actors
+F bj.c_AAS topPlacements HIGH  # drawn after tile foreground
+F bj.b_Acz skyActors HIGH  # flying player (bl adds, ae removes)
+F bj.c_Acz groundActors LOW  # drawn before mid; never filled
+F bj.a_String imageDir HIGH
+F bj.b_String animDir HIGH
+F bj.a_AString resourceNames HIGH
+F bj.d_AAS resourceRects MED  # per resource shorts -> c ctor
+F bj.a_I phase HIGH  # o.a_B
+F bj.a_AI occurredEvents HIGH  # o.a_AI
+F bj.a_AAI midEventConds HIGH  # +id must have happened, -id must not
+F bj.b_AAI groundEventConds HIGH
+F bj.c_AAI topEventConds HIGH
+F bj.e_AAS midPhases HIGH  # visible only in listed phases
+F bj.f_AAS groundPhases HIGH
+F bj.g_AAS topPhases HIGH
+F bj.a_AZ midVisible HIGH
+F bj.b_AZ groundVisible HIGH
+F bj.c_AZ topVisible HIGH
+M bj.a(cz) addActor HIGH
+M bj.a(short[],cz,int) collides HIGH
+M bj.a(short[],cz[],int) collidesExcept HIGH
+M bj.a() clearBuildings HIGH
+M bj.b() compactActors HIGH  # sort + trim trailing nulls
+M bj.a_V(String,String,String) loadBuildings HIGH
+M bj.a(String,String,String,String[],String[],String[],int[][],int[][],int,int) loadBuildingsRecolored HIGH  # be.a palette swap
+M bj.a_Z(String,String,String) readBuildingFile HIGH
+M bj.a_Z(int) isMidVisible HIGH
+M bj.a(Graphics,int,int) drawMiddle HIGH
+M bj.a(Graphics) drawDebugRects HIGH
+M bj.b(Graphics,int,int) drawSkyActors HIGH
+M bj.c(Graphics,int,int) drawTop HIGH
+M bj.c() animateBuildings HIGH
+M bj.b(cz) removeSkyActor HIGH
+M bj.c(cz) removeActor HIGH
+M bj.a_V(int) setPhase HIGH
+M bj.a(int[]) setOccurredEvents HIGH
+M bj.a(int,int,int,int) setViewport HIGH
+M bj.d() sortAllActors HIGH
+M bj.a(cz[]) sortByY HIGH  # shell sort on e_S
+M bj.e() computeVisibility HIGH
+
+# ---- TreasureChest (ax) ----
+C ax TreasureChest HIGH  # /bin/box.bin rows, /av/box.av, box1.av, "Rương đã mở"
+F ax.a_bx anim HIGH
+F ax.a_S chestId HIGH  # box col 1; o.d_AS opened list
+F ax.d_B column6 LOW  # box col 6 (always 0), never read
+F ax.a_B openFrame HIGH  # 1 opened, 0 closed; anim frame
+F ax.b_S gold HIGH  # box col 7, "Nhận vàng"
+F ax.a_AAS items HIGH  # col 8 "id,count|..."
+F ax.b_AAS equips HIGH  # col 9
+F ax.b_B chestKind HIGH  # col 3: 1 needs item 19 "Chìa vạn năng"
+F ax.c_B alreadyOpened HIGH  # "Rương đã mở"
+F ax.a_AS drawRect MED  # returned by a_AS()
+F ax.b_AS hitRect MED  # used by a_AS(int)
+M ax.a_V(int) setColumn6 LOW  # stores d_B only
+
+# ---- FieldInput (ae) ----
+C ae FieldInput MED  # world key dispatcher: talk, chests, events, dialog/choice, loot, quest
+F ae.a_bl talkTarget HIGH  # NPC whose s<N>c.bin role script is run
+M ae.a(int) handleKey HIGH  # cd.c(int) for modes other than 4/5/6/7
+M ae.a() openMainMenu HIGH  # new as, mode 4
+M ae.b() startFlyTransform MED  # "Chưa mở biến thân bay!"
+M ae.b(int) applyTransform MED  # 0 fly/land, 1 mount, 2 boat
+
+# ---- DialogBox (cf) ----
+C cf DialogBox HIGH  # 对话 speech bubble + 对话中选择 choice list
+F cf.a_dc layout HIGH
+F cf.a_Z isVisible HIGH
+F cf.a_AString lines HIGH  # dialog entries
+F cf.a_B lineIndex HIGH
+F cf.a_String speakerName HIGH  # o.c_AString[id-1]
+F cf.b_AString choices HIGH  # 对话中选择 args
+F cf.b_B selectedChoice HIGH
+F cf.a_S choiceScroll HIGH
+F cf.c_B boxMode HIGH  # modeTalk(0) / modeChoice(1)
+F cf.d_B modeTalk HIGH  # 0
+F cf.e_B modeChoice HIGH  # 1
+F cf.c_S boxWidth HIGH  # screenW - d_S
+F cf.f_B linesPerPage HIGH  # 3
+F cf.d_S boxMargin HIGH  # 4
+F cf.g_B lastLine HIGH
+F cf.h_B visibleLines HIGH
+F cf.i_B firstVisibleLine HIGH
+F cf.j_B typingLine HIGH
+F cf.k_B typingChar HIGH
+F cf.a_bl speaker HIGH  # NPC turned back after dialog
+F cf.l_B lineHeight HIGH  # font height >= 16
+F cf.e_S speakerId HIGH  # "$id." prefix
+F cf.m_B portraitFrame HIGH  # "N$" prefix, 0..6
+F cf.b_S choiceRows HIGH  # 3
+F cf.a_Image tailImage LOW  # btpc.gf load result discarded; always null
+F cf.b_Image arrowImage HIGH  # /pic/arrow.gf
+F cf.c_Image portraitImage HIGH  # o.d_AString not .av
+F cf.d_Image cornerImage LOW  # jiao1.gf load discarded; always null
+F cf.e_Image cornerImage2 LOW  # jiao2.gf load discarded; always null
+F cf.a_I speakerHeight LOW  # bl.i_S
+F cf.b_Z dockBottom MED  # always true
+F cf.a_bx portraitAnim HIGH  # .av portrait
+F cf.b_I boxX HIGH
+F cf.c_I boxY HIGH
+F cf.d_I tailSide MED  # 1/2
+F cf.e_I tailOffset MED
+F cf.c_Z tailOnTop MED
+F cf.d_Z isTyping HIGH
+M cf.a_V() closeDialog HIGH
+M cf.b() scrollUp HIGH  # key up
+M cf.c() scrollDown HIGH  # key down / OK
+M cf.a_Z() isTextComplete HIGH
+M cf.d() computeBoxWidth HIGH
+M cf.e() layoutLine HIGH  # parses N$id. prefix, '@'
+M cf.a(Graphics) draw HIGH
+M cf.f() nextLine HIGH
+
+# ---- StoryCrawl (cl) ----
+C cl StoryCrawl HIGH  # /bin/story.bin "Story<N>:"; "Bỏ qua"
+F cl.a_String rawText HIGH
+F cl.a_AString lines HIGH
+F cl.b_S clipH HIGH
+F cl.c_S endY HIGH
+F cl.d_S x HIGH
+F cl.e_S y HIGH
+F cl.f_S scrollY HIGH
+F cl.a_S style HIGH  # 1 scroll-up, else typewriter
+F cl.a_B lineIndex HIGH
+F cl.b_B charIndex HIGH
+F cl.a_Z showPreviousLines MED
+F cl.g_S typeScrollY MED
+F cl.h_S visibleLines HIGH  # 4
+M cl.a(Graphics) draw HIGH
+M cl.a(int,int,int,int,int) begin HIGH  # storyId,x,y,h,style
+
+# ---- ScreenWipe (bb) ----
+C bb ScreenWipe HIGH  # map-enter transition, sets cd.g_Z
+F bb.b_B wipeType HIGH  # 0 stripes, 1 grid
+F bb.c_B typeStripes LOW  # 0, unused
+F bb.d_B typeGrid HIGH  # 1
+F bb.a_B typeCount HIGH  # 2 -> random type
+F bb.a_Z isRevealing HIGH
+F bb.b_Z isCovering MED  # never set true
+F bb.a_I progress HIGH
+F bb.b_I cellSize HIGH  # 30
+M bb.a(int) setType HIGH
+M bb.a_V() begin HIGH
+M bb.a_Z() isActive HIGH
+M bb.a(Graphics) draw HIGH
+
+# ---- SceneLoader (j) ----
+C j SceneLoader HIGH  # Runnable: cd.c() then cd.a_Z = true
+F j.a_Thread thread HIGH
+F j.a_cd world HIGH

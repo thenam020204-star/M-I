@@ -1,0 +1,9 @@
+MIDlet-Name: Sủng Vật Thiên Hạ – Đại Lục Thần Điểu
+MIDlet-Version: 1.7.0
+MIDlet-Vendor: NAM.P
+MIDlet-1: Sủng Vật Thiên Hạ – Đại Lục Thần Điểu,/icon.png,Main
+MicroEdition-Configuration: CLDC-1.0
+MicroEdition-Profile: MIDP-2.0
+SFX-Debug: 1
+MIDlet-Jar-URL: SVTH_SFX_debug_renamed.jar
+MIDlet-Jar-Size: 1945431

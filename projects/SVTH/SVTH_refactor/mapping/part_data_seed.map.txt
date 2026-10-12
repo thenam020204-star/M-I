@@ -1,0 +1,15 @@
+# calibration
+C o GameData HIGH  # debug string "GameData.myPet[j].onlyId"
+C bl RoleSprite MED  # extends cz; map actor (hero/NPC/pet), stats a_AI[21]
+F o.a_Acv myPets HIGH  # "GameData.myPet[j].onlyId"
+M o.a_bl(int) createRoleSprite HIGH  # reads /bin/role.bin, new bl
+M o.a_bl(cv) createPetSprite MED  # bl from cv
+M o.a_V(int,int) addPet MED  # new cv, petdata
+M o.a_V(int) removeEventFlag MED  # cg.b remove from a_AI
+M o.b_V(int) addEventFlag MED  # "Thêm id ... sự kiện"
+F bl.b_I actionRepeat MED  # 播放动作 arg3
+M bl.b_I() getAttack MED  # a_AI[7]+equip atk
+M bl.a(int,int,int) moveTo MED  # target x,y,dir
+F bl.a_I encounterSteps MED  # random encounter counter
+M c.a_AS() getBounds MED  # bounds rect
+M i.a(Graphics) draw MED  # draw soft buttons
