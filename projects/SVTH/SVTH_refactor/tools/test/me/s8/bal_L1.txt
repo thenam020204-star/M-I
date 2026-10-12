@@ -26,8 +26,10 @@ sets GameData party[0] stats[5] = i:5000
 sets GameData party[0] stats[6] = i:5000
 sets GameData party[0] stats[11] = i:5000
 callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
-battle 240000 L1#1
-shot b1.png
+wait 2500
+shot b1_start.png
+battle 180000 L1#1
+shot b1_end.png
 sets GameData party[0] stats[0] = i:1
 sets GameData party[0] stats[4] = i:800
 sets GameData party[0] stats[10] = i:800
@@ -42,7 +44,10 @@ sets GameData party[0] stats[5] = i:5000
 sets GameData party[0] stats[6] = i:5000
 sets GameData party[0] stats[11] = i:5000
 callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
-battle 240000 L1#2
+wait 2500
+shot b2_start.png
+battle 180000 L1#2
+shot b2_end.png
 sets GameData party[0] stats[0] = i:1
 sets GameData party[0] stats[4] = i:800
 sets GameData party[0] stats[10] = i:800
@@ -57,7 +62,10 @@ sets GameData party[0] stats[5] = i:5000
 sets GameData party[0] stats[6] = i:5000
 sets GameData party[0] stats[11] = i:5000
 callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
-battle 240000 L1#3
+wait 2500
+shot b3_start.png
+battle 180000 L1#3
+shot b3_end.png
 sets GameData party[0] stats[0] = i:1
 sets GameData party[0] stats[4] = i:800
 sets GameData party[0] stats[10] = i:800
@@ -72,7 +80,10 @@ sets GameData party[0] stats[5] = i:5000
 sets GameData party[0] stats[6] = i:5000
 sets GameData party[0] stats[11] = i:5000
 callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
-battle 240000 L1#4
+wait 2500
+shot b4_start.png
+battle 180000 L1#4
+shot b4_end.png
 sets GameData party[0] stats[0] = i:1
 sets GameData party[0] stats[4] = i:800
 sets GameData party[0] stats[10] = i:800
@@ -87,6 +98,27 @@ sets GameData party[0] stats[5] = i:5000
 sets GameData party[0] stats[6] = i:5000
 sets GameData party[0] stats[11] = i:5000
 callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
-battle 240000 L1#5
+wait 2500
+shot b5_start.png
+battle 180000 L1#5
+shot b5_end.png
+sets GameData party[0] stats[0] = i:1
+sets GameData party[0] stats[4] = i:800
+sets GameData party[0] stats[10] = i:800
+sets GameData party[0] stats[3] = i:800
+sets GameData party[0] stats[7] = i:375
+sets GameData party[0] stats[12] = i:375
+sets GameData party[0] stats[8] = i:417
+sets GameData party[0] stats[13] = i:417
+sets GameData party[0] stats[9] = i:150
+sets GameData party[0] stats[14] = i:150
+sets GameData party[0] stats[5] = i:5000
+sets GameData party[0] stats[6] = i:5000
+sets GameData party[0] stats[11] = i:5000
+callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
+wait 2500
+shot b6_start.png
+battle 180000 L1#6
+shot b6_end.png
 say DONE
 quit

@@ -1,0 +1,12 @@
+wait 3000
+show
+wait 1500
+key -5
+wait 3000
+key -7
+wait 4000
+calls DebugBattle startAuto
+until DebugBattle autoDone true 2400000
+probe DebugBattle autoDone
+say DONE
+quit

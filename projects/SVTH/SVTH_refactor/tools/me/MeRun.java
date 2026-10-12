@@ -97,8 +97,13 @@ public class MeRun {
                         break; }
                     case "probe": {
                         Class<?> c = cl.loadClass(w[1]);
-                        Object o = field(c, null, w[2], true);
-                        for (int i = 3; i < w.length && o != null; i++) o = field(o.getClass(), o, w[i], false);
+                        Object o = null;
+                        for (int i = 2; i < w.length; i++) {      // session 8: "x[3]" indexes arrays
+                            String p = w[i]; int bk = p.indexOf((char) 91);
+                            String nm = bk < 0 ? p : p.substring(0, bk);
+                            o = i == 2 ? field(c, null, nm, true) : (o == null ? null : field(o.getClass(), o, nm, false));
+                            if (bk >= 0 && o != null) o = java.lang.reflect.Array.get(o, Integer.parseInt(p.substring(bk + 1, p.indexOf((char) 93))));
+                        }
                         System.out.println("MERUN probe " + ln.substring(6) + " = " + o); break; }
                     case "callm": {           // callm <Lớp> <trườngTĩnh> [<trường>...] -- <hàm> [args typed: i:1 z:true s:text S:a;b;c]
                         int sep = Arrays.asList(w).indexOf("--");
@@ -143,7 +148,9 @@ public class MeRun {
                             if (bt != null && mode == 5) {
                                 Object[] act = (Object[]) field(bt.getClass(), bt, "actors", false);
                                 int ph = ((Number) field(bt.getClass(), bt, "phase", false)).intValue();
-                                if (act != null && act[0] != null) {
+                                boolean foesIn = false;
+                                if (act != null) for (int i = 10; i < act.length; i++) if (act[i] != null) foesIn = true;
+                                if (act != null && act[0] != null && foesIn) {
                                     if (!started) {
                                         started = true; t0b = System.currentTimeMillis(); StringBuilder sb = new StringBuilder();
                                         for (int i = 10; i < act.length; i++) if (act[i] != null) { int[] st = (int[]) field(act[i].getClass(), act[i], "stats", false); sb.append(field(act[i].getClass(), act[i], "roleId", false)).append(':').append(st[0]).append(' '); }

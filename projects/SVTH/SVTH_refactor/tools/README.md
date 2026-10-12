@@ -67,3 +67,16 @@ Trong repo có sẵn; **gói zip bàn giao không kèm** (không phân phối l�
 (+ `proguard-core:9.1.1`, `gson:2.9.1`, `kotlin-stdlib:1.8.21`, `log4j-api|log4j-core:2.17.2`),
 `org.microemu:microemulator|microemu-cldc|microemu-midp|midpapi20|cldcapi10:2.0.4`, và (tuỳ chọn, đọc mã) `org.vineflower:vineflower:1.10.1`, `cfr:0.152`.
 Tên tệp phải đúng như `build_jar.sh` tham chiếu (ví dụ `asm-9.7.jar`, `ecj-3.26.0.jar`).
+
+## Phiên 8 — AI quái
+
+| Tệp | Việc |
+|---|---|
+| `../build_s8.sh [release\|debug]` | Dựng **trên bản 1.7.0 đã đặt tên** (`base/`, không cần JAR gốc): `Patch8` → ECJ `src8/` → `Peephole` → `pack.py` (+ `res/`) → `Verify` → ProGuard → `Verify --require-stackmap` → JAD. `VERSION` (mặc định 1.8.0), `BASE` |
+| `src/Patch8.java` | ASM trên `Battle` (tên đã đặt): nới 3 field private → package; hook `EnemyAI.adjustLevel/onEnemiesCreated/planRound/onTurn`; kiểm khẳng định (5 lời gọi `GameUtil.a`, 1 vòng lập kế hoạch pha 2, 3 `putfield actingSlot`, local 0 không bị gán lại) |
+| `sim/balance_sim.py` | Mô phỏng chỉ số hero (team.bin + 10 điểm/cấp + trang bị theo cấp) vs quái (stardata) theo cấp; `--new` áp sàn bản nháp; `--fight` Monte-Carlo thô. Dùng để định hướng, **số đo cuối lấy từ emulator** |
+| `test/me/gen_balance.py` | Sinh kịch bản MeRun đo cân bằng: đặt chỉ số hero cấp L, bảng quái của cảnh, N trận gặp ngẫu nhiên (Julie vào đội bằng `World.dbg$join` → cần bản **debug**) |
+| `test/me/s8/bal_L{1,10,30,60}.txt`, `autotest.txt` | Kịch bản đã sinh; `autotest.txt` chạy Debug Battle auto-test (`DebugBattle.startAuto`) |
+| `me/MeRun.java` | Thêm lệnh `sets <Lớp> <đường dẫn có [i]> = <i:/z:/s:/S:/B:/I:>` (gán field tĩnh/instance/phần tử mảng) và `battle <timeout> <nhãn>` (bấm OK tới hết trận, in `result=win/lose secs heroes minHpPct0/1 foes=role:cấp`) |
+
+Cờ JVM cho harness: `-Dai.log=1` (dòng `AILOG`: cấp, kỹ năng ngẫu nhiên, chỉ số trước→sau, kế hoạch mỗi vòng/lượt), `-Dai.enabled=0` (tắt AI để so).

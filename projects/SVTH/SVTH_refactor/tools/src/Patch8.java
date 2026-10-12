@@ -13,6 +13,8 @@ import java.util.zip.*;
  *                                 before each RETURN                              -> EnemyAI.onEnemiesCreated(this)
  *   Battle.tick()V              : at the exit of the phase-2 enemy planning loop   -> EnemyAI.planRound(this)
  *                                 after each putfield actingSlot                   -> EnemyAI.onTurn(this)
+ *   Battle.tick()V / handleKey(I)Z entry                                          -> EnemyAI.petGate(this)  (pets are AI-controlled)
+ *   + public final void ai$confirm() { confirmCommand(); }  (bridge to the private method, invokespecial inside Battle)
  * Old CLDC StackMap attributes are dropped from rewritten classes (ProGuard -microedition recomputes them).
  */
 public class Patch8 {
@@ -31,8 +33,11 @@ public class Patch8 {
         widen(bn, "actionPlans", "[[I");
         widen(bn, "actingSlot", "I");
         widen(bn, "enemyCount", "B");
+        widen(bn, "commandSlot", "I");
+        widen(bn, "targetCursor", "I");
         patchCreateEnemies(bn);
         patchTick(bn);
+        patchPets(bn);
         int dropped = 0;
         for (MethodNode m : bn.methods) {
             if (m.attrs == null) continue;
@@ -76,6 +81,24 @@ public class Patch8 {
 
     static boolean isField(AbstractInsnNode n, int op, String owner, String name) {
         return n instanceof FieldInsnNode && n.getOpcode() == op && ((FieldInsnNode) n).owner.equals(owner) && ((FieldInsnNode) n).name.equals(name);
+    }
+
+    static void patchPets(ClassNode cn) {
+        method(cn, "confirmCommand", "()V");
+        for (String[] e : new String[][]{{"tick", "()V"}, {"handleKey", "(I)Z"}}) {
+            MethodNode m = method(cn, e[0], e[1]);
+            InsnList h = new InsnList();
+            h.add(new VarInsnNode(Opcodes.ALOAD, 0));
+            h.add(new MethodInsnNode(Opcodes.INVOKESTATIC, AI, "petGate", "(LBattle;)V", false));
+            m.instructions.insert(h);
+            report.add("  " + e[0] + e[1] + ": petGate(this) at entry");
+        }
+        MethodNode br = new MethodNode(Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL, "ai$confirm", "()V", null, null);
+        br.instructions.add(new VarInsnNode(Opcodes.ALOAD, 0));
+        br.instructions.add(new MethodInsnNode(Opcodes.INVOKESPECIAL, B, "confirmCommand", "()V", false));
+        br.instructions.add(new InsnNode(Opcodes.RETURN));
+        cn.methods.add(br);
+        report.add("  + Battle.ai$confirm()V -> confirmCommand()V");
     }
 
     static void patchCreateEnemies(ClassNode cn) {

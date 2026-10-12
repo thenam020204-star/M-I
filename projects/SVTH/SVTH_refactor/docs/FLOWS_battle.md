@@ -87,3 +87,25 @@ as.a(byte,byte) entry: SfxUi.page(): rời trang 3 → mode = 0
 ```
 
 Màn logo (`av`): hai chỗ `if (at.a) { hỏi nhạc }` đọc `getstatic at.a:Z`; hook thay bằng `SfxUi.skipPrompt()` — đặt `at.b = true; o.g = at.d` (như câu trả lời "Có" của game gốc) rồi trả `false` để đi thẳng `showCover()`. Máy `allowMusic = 0` giữ nguyên hành vi gốc.
+
+## 7. Quái: tạo, lập kế hoạch, hành động (phiên 8 — tên đã đặt, `Battle`)
+
+```
+Battle.loadResources → createPartyActors (slot 0..9) → createEnemyActors (slot 10..)
+   createEnemyActors, mỗi quái i: stats[0] = cấp (gốc: cảnh ±/script)  → [EnemyAI.adjustLevel: cấp = TB đội + 0..2 / +3 script]
+                                  GameUtil.a(petTable, starTable, …, cấp) ×5 → HP/MP/ATK/DEF/SPD; EXP = expFactor² × cấp; kỹ năng từ petdata
+   trước return                   → [EnemyAI.onEnemiesCreated: bộ kỹ năng ngẫu nhiên + HP/DEF/SPD hệ số/sàn + ATK theo ngân sách]
+tick() pha 2 (sau khi người chơi chọn lệnh): vòng for slot 10..: kế hoạch gốc (ngẫu nhiên) → [EnemyAI.planRound: thay bằng phương án tốt nhất]
+   rồi áp phòng thủ (lệnh 2) / vật phẩm (6), phase = 3 (hoặc 6), actingSlot = turnOrder[0][0] → [EnemyAI.onTurn]
+tick() pha 3: thực hiện kế hoạch của actingSlot (1 đánh thường + hợp kích nếu đồng đội cùng mục tiêu, 4 kỹ năng → applySkill),
+   turnIndex++, actingSlot = turnOrder[turnIndex][0] → [EnemyAI.onTurn: quái sắp đánh chọn lại theo trạng thái hiện tại]
+```
+
+Ghi chú / rủi ro (phiên 8):
+1. **Hồi máu khi phòng thủ** (`applySkill`, cuối hàm): mỗi khi *bất kỳ* kỹ năng nào được dùng, mọi actor đang phòng thủ có HP được đặt lại
+   `maxHP − (maxHP − HP)/5` (hồi 80 % máu đã mất) — dùng `stats[3]` (HP lúc vào trận) làm trần. Là cơ chế gốc; AI mới cho quái phòng thủ khi HP < 30 %. ⏸ *Giữ nguyên* (thiết kế).
+2. **Kỹ năng 33 cấp > 5** (`applySkill`): bảng độc chỉ 5 dòng → `ArrayIndexOutOfBounds`. Quái gốc tối đa cấp 2–4; phiên 8 chặn cấp kỹ năng 33 ≤ 5 khi cấp ngẫu nhiên. ⏸ mã gốc giữ nguyên.
+3. **Kỹ năng 9–12 cấp 6–10 giá MP = 0** (`skill.bin`): nếu một quái có cấp kỹ năng > 5 sẽ tung miễn phí. Phiên 8 chỉ cấp tới số cấp có giá MP > 0.
+4. **Sprite quái chỉ có 5 action**; kỹ năng phe mình (state 17) gọi `setAction(5)` — được bỏ qua an toàn (`AnimSprite.setAction` kiểm biên, `getActionFrameCount(5)` = 0). Đã có ở quái gốc dùng kỹ năng 13.
+5. **Quái không bao giờ chí mạng** (`isCrit` chỉ xét khi `actingSlot < 9`). ⏸ Giữ nguyên (không thuộc yêu cầu).
+6. **Kế hoạch lập ở đầu vòng, thực hiện theo tốc độ**: mã gốc nhắm theo HP lúc đầu vòng; mục tiêu chết thì `retargetIfDead` chọn ngẫu nhiên. Phiên 8: `onTurn` chọn lại đúng lượt. ✅
