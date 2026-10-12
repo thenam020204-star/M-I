@@ -1,0 +1,11 @@
+# Vai & xưng hô (Hán Việt nhẹ, tên Latin, giọng hài kiểu anime)
+- 主角/阿鲁鲁 = [N/] (mặc định Aruru): nam chính, con nuôi của Mẹ. Tự xưng "tôi"/"anh"(với em).
+- 母亲 Mẹ: triệu hồi sư, mẹ nuôi. Mẹ–con.
+- 父亲 Cha, 塔塔 Tata, 花子 Hanako: ác ma (bị biến), Tata & Hanako là em của nam chính: anh–em. Hanako ngây ngô.
+- 萨琳/萨林 Salin: công chúa ma giới, con gái Ma Vương Yuchun; kiêu kỳ: "ta – ngươi"; nam chính gọi "cô".
+- 丁克 Dink: ác ma hầu của Salin, tự xưng 偶 -> "tớ", gọi nam chính "[N/]-san", gọi Salin "điện hạ Salin"/"công chúa". Có 2 nhân cách.
+- 阿塔雷 Atare: "Anh hùng Hắc Ám", tự xưng 本大爷/本大人 -> "bổn đại gia", ngông, hài.
+- 魔王宇春 Ma Vương Yuchun: "ta – ngươi"; thuộc hạ gọi "Yuchun đại nhân".
+- 雪丸 Yukimaru (ninja phân thân), 团长 Đoàn trưởng, 艾蕾娜 Elena, 蘑菇老大 Đại ca Nấm, 导演 Đạo diễn (phá cách thứ 4).
+- Kẻ thù/người lạ: ta–ngươi; người bán hàng: "quý khách"/"cậu".
+- 桑 -> "-san", 殿 -> "-dono" khi gắn tên; 殿下 -> điện hạ; 大人 -> đại nhân.

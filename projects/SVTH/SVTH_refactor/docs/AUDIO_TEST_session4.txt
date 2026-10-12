@@ -1,0 +1,31 @@
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+preload: players=27 created=27
+PASS preload nạp 27 Player (1/tiếng)  [players=27]
+PASS độ trễ post→start: trung vị < 3 ms, p95 < 10 ms  [median=185us p95=422us max=1906us]
+PASS không stop()/phát đè khi lặp lại cùng tiếng  [stop=0]
+PASS 3 HIT đồng thời (bể chưa lớn): phát đủ, mỗi Player một lần, không start đè  [players=3 startWhilePlaying=0 pool=3]
+PASS 3 HIT đồng thời sau khi bể đã lớn: 3 Player khác nhau, cùng lúc (<5 ms)  [starts=3 distinct=3 spread=22us pool=3]
+PASS 5 loại khác nhau cùng lúc: cả 5 start trong 40 ms  [starts=5]
+PASS 7 MISS cùng lúc (bể tối đa 3): đợt đầu 3 tiếng, không stop  [starts=3 stops=0]
+PASS các MISS còn lại được hẹn phát lại khi Player rảnh (không cắt, không đè), tối đa 2 lượt hẹn  [starts=7 stops=0]
+PASS flushAll() không dừng tiếng đang phát  [stops=0]
+PASS stopAll() (tạm dừng) mới dừng tiếng đang phát  [stops=2]
+PASS 300 sự kiện ngẫu nhiên: 0 stop, 0 start đè  [stops=0 starts=158]
+PASS không start() lên Player còn đang phát  [startWhilePlaying=0]
+PASS SFX phát → nhạc hạ xuống 45% (80→36) ngay sau khi tiếng bắt đầu  [vol calls=1 first=36 afterStart=12us]
+PASS hết tiếng + 200 ms giữ → nhạc trả về 80 từng bước, không giật xuống  [levels=[36, 46, 57, 68, 80]]
+PASS thời điểm bắt đầu trả nhạc ≥ hết tiếng + hold(200)  [restoreStart-soundEnd=199ms]
+PASS chuỗi 6 tiếng cách 100 ms: nhạc cuối cùng về 80  [calls=10 final=80]
+PASS SFX đến giữa lúc trả nhạc → hạ lại về 36 ngay  [last=36 calls=5]
+PASS nhạc đang tắt (at.b=false): không đụng âm lượng nhạc  [calls=0]
+PASS âm lượng nhạc = 0: không đụng  [calls=0]
+PASS duck=100 (tắt hạ nhạc): không đụng  [calls=0]
+PASS không có nhạc (Main.music=null): không lỗi, SFX vẫn phát
+PASS stopAll() trả nhạc về mức đầy ngay  [last=80]
+---- summary
+TEST RESULT pass=22 fail=0
+PASS createPlayer lỗi sau 30 Player: bể dừng ở ≤ 30, không ngoại lệ, vẫn phát  [players=30 created=30 starts=24 lastError=javax.microedition.media.MediaException: fake: out of players]
+TEST RESULT(cap) pass=1 fail=0
+PASS totalMax=29: tổng Player SFX không vượt 29  [players=29]
+TEST RESULT(total) pass=1 fail=0

@@ -1,0 +1,55 @@
+# config.txt - AI va do manh cua quai (phien 8). Sua truc tiep trong JAR: ai/config.txt. Moi dong: khoa=so. Dong bat dau bang # bi bo qua.
+# enabled: 0 = tat toan bo (quai nhu game goc). ai: 0 = tat AI moi (giu cach chon hanh dong goc). scale: 0 = tat bam cap + tang chi so.
+enabled=1
+ai=1
+scale=1
+# jit: 1 = quai chon lai muc tieu/ky nang ngay luot cua no theo HP/trang thai hien tai (thong minh hon). 0 = chi lap ke hoach dau vong.
+jit=1
+# pets: 0 = cap trung binh chi tinh nhan vat chinh (Quinn, Julie...). 1 = tinh ca sung vat dang xuat chien.
+pets=0
+# Cap quai gap ngau nhien = cap TB doi + ngau nhien(lvmin..lvmax). Tran theo cot truyen/pho ban/boss = cap TB + bosslv.
+lvmin=0
+lvmax=2
+bosslv=3
+# bossfloor: 1 = tran cot truyen khong bao gio thap hon cap game thiet ke (boss cap 99/150 giu nguyen). 0 = luon bam cap TB.
+bossfloor=1
+lvcap=200
+# % nhan them tren chi so theo cap (100 = giu nguyen). atkmul nhan tren ATK tinh tu ngan sach maxhit/bosshit ben duoi.
+hpmul=105
+atkmul=100
+defmul=100
+spdmul=105
+# San chi so theo suc manh that cua doi (khong de quai yeu hon muc nay):
+# rounds: doi can khoang rounds/10 vong danh thuong de ha het quai (22 = 2.2 vong). bossrounds cho tran cot truyen.
+rounds=22
+bossrounds=35
+# maxhit: don manh nhat cua quai (ky nang manh nhat cua chinh no, tinh ca tuong khac he) ~ maxhit% HP toi da cua hero TB.
+#   ATK quai duoc tinh nguoc tu ngan sach nay (theo bo ky nang thuc te). bosshit cho tran cot truyen/boss.
+maxhit=8
+bosshit=13
+# spdfloor: toc do quai >= % toc do TB cua doi. defcap: DEF quai <= % cua 2 lan ATK TB cua doi (khong mien nhiem don thuong).
+spdfloor=70
+defcap=45
+# noise: % kha nang quai chon phuong an tot thu 2 (de kho doan). 0 = luon chon toi uu.
+noise=10
+# log: 1 = in dong AILOG (cap, chi so, ke hoach) ra stdout de kiem tra.
+log=0
+# Bo ky nang ngau nhien: ngoai ky nang tu nhien, moi tran moi quai nhan them 1 + cap/skillstep ky nang ngau nhien (khac nhau moi tran),
+# toi da skillmax ky nang ngau nhien. Cap ky nang = 1 + cap quai/skilllvstep (khong vuot cap toi da cua ky nang).
+randskill=1
+skillstep=10
+skillmax=7
+skilllvstep=20
+# randboss: 1 = ap dung ca quai cot truyen/pho ban/boss. 0 = chi quai gap ngau nhien ngoai ban do.
+randboss=1
+# ---- Sung vat (pet) do AI dieu khien: nguoi choi chi ra lenh cho nhan vat chinh ----
+# petai: 0 = nguoi choi tu ra lenh cho pet nhu game goc.
+petai=1
+# petheal: pet co ky nang hoi mau se uu tien hoi khi co dong doi duoi petheal% HP.
+petheal=30
+# petlow: HP pet duoi petlow% va khong co ky nang hoi -> tu thu toi chet hoac rut lui. petflee: % kha nang rut lui (pet "trung thanh" khong bao gio rut).
+# Pet da rut lui khong the goi ra lai trong tran hien tai.
+petlow=25
+petflee=60
+# pettalk: 1 = hien thong bao ngan (rut lui, quyet thu, cap cuu).
+pettalk=1

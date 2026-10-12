@@ -1,0 +1,206 @@
+wait 3000
+show
+wait 1500
+key -5
+wait 3000
+key -7
+wait 5000
+key -5
+wait 14000
+key -7
+wait 3000
+calls GameData addPet i:9 i:-1
+calls GameData addPet i:1 i:-1
+sets GameData myPets[0] isDeployed = z:true
+sets GameData myPets[0] isFainted = z:false
+sets GameData myPets[0] stats[0] = i:10
+sets GameData myPets[0] stats[2] = i:1457
+sets GameData myPets[0] stats[5] = i:3000
+sets GameData myPets[0] stats[4] = i:3000
+sets GameData myPets[0] stats[7] = i:445
+sets GameData myPets[0] stats[9] = i:545
+sets GameData myPets[0] stats[11] = i:337
+sets GameData myPets[1] isDeployed = z:true
+sets GameData myPets[1] isFainted = z:false
+sets GameData myPets[1] stats[0] = i:10
+sets GameData myPets[1] stats[2] = i:1457
+sets GameData myPets[1] stats[5] = i:3000
+sets GameData myPets[1] stats[4] = i:3000
+sets GameData myPets[1] stats[7] = i:445
+sets GameData myPets[1] stats[9] = i:545
+sets GameData myPets[1] stats[11] = i:337
+sets GameData sceneEnemyIds = S:5,6,9,10,41,42
+sets GameData sceneEnemyCountRange = B:2,3
+sets GameData sceneEnemyLevelRange = s:8,11
+sets GameData party[0] stats[0] = i:10
+sets GameData party[0] stats[4] = i:2082
+sets GameData party[0] stats[10] = i:2082
+sets GameData party[0] stats[3] = i:2082
+sets GameData party[0] stats[7] = i:637
+sets GameData party[0] stats[12] = i:637
+sets GameData party[0] stats[8] = i:779
+sets GameData party[0] stats[13] = i:779
+sets GameData party[0] stats[9] = i:375
+sets GameData party[0] stats[14] = i:375
+sets GameData party[0] stats[5] = i:5000
+sets GameData party[0] stats[6] = i:5000
+sets GameData party[0] stats[11] = i:5000
+sets GameData myPets[0] stats[1] = i:1457
+sets GameData myPets[1] stats[1] = i:1457
+sets GameData myPets[0] isFainted = z:false
+sets GameData myPets[1] isFainted = z:false
+sets GameData myPets[0] isDeployed = z:true
+sets GameData myPets[1] isDeployed = z:true
+say CASE 1 quinn=100% healer=100% wolf=100%
+callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
+wait 4000
+shot p1_a.png
+key -5
+wait 700
+key -5
+wait 1500
+shot p1_b.png
+battle 180000 P1
+shot p1_end.png
+wait 9000
+probe GameData myPets[0] stats[1]
+probe GameData myPets[1] stats[1]
+probe GameData myPets[1] isFainted
+sets GameData party[0] stats[0] = i:10
+sets GameData party[0] stats[4] = i:2082
+sets GameData party[0] stats[10] = i:2082
+sets GameData party[0] stats[3] = i:520
+sets GameData party[0] stats[7] = i:637
+sets GameData party[0] stats[12] = i:637
+sets GameData party[0] stats[8] = i:779
+sets GameData party[0] stats[13] = i:779
+sets GameData party[0] stats[9] = i:375
+sets GameData party[0] stats[14] = i:375
+sets GameData party[0] stats[5] = i:5000
+sets GameData party[0] stats[6] = i:5000
+sets GameData party[0] stats[11] = i:5000
+sets GameData myPets[0] stats[1] = i:1457
+sets GameData myPets[1] stats[1] = i:1457
+sets GameData myPets[0] isFainted = z:false
+sets GameData myPets[1] isFainted = z:false
+sets GameData myPets[0] isDeployed = z:true
+sets GameData myPets[1] isDeployed = z:true
+say CASE 2 quinn=25% healer=100% wolf=100%
+callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
+wait 4000
+shot p2_a.png
+key -5
+wait 700
+key -5
+wait 1500
+shot p2_b.png
+battle 180000 P2
+shot p2_end.png
+wait 9000
+probe GameData myPets[0] stats[1]
+probe GameData myPets[1] stats[1]
+probe GameData myPets[1] isFainted
+sets GameData party[0] stats[0] = i:10
+sets GameData party[0] stats[4] = i:2082
+sets GameData party[0] stats[10] = i:2082
+sets GameData party[0] stats[3] = i:2082
+sets GameData party[0] stats[7] = i:637
+sets GameData party[0] stats[12] = i:637
+sets GameData party[0] stats[8] = i:779
+sets GameData party[0] stats[13] = i:779
+sets GameData party[0] stats[9] = i:375
+sets GameData party[0] stats[14] = i:375
+sets GameData party[0] stats[5] = i:5000
+sets GameData party[0] stats[6] = i:5000
+sets GameData party[0] stats[11] = i:5000
+sets GameData myPets[0] stats[1] = i:1457
+sets GameData myPets[1] stats[1] = i:218
+sets GameData myPets[0] isFainted = z:false
+sets GameData myPets[1] isFainted = z:false
+sets GameData myPets[0] isDeployed = z:true
+sets GameData myPets[1] isDeployed = z:true
+say CASE 3 quinn=100% healer=100% wolf=15%
+callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
+wait 4000
+shot p3_a.png
+key -5
+wait 700
+key -5
+wait 1500
+shot p3_b.png
+battle 180000 P3
+shot p3_end.png
+wait 9000
+probe GameData myPets[0] stats[1]
+probe GameData myPets[1] stats[1]
+probe GameData myPets[1] isFainted
+sets GameData party[0] stats[0] = i:10
+sets GameData party[0] stats[4] = i:2082
+sets GameData party[0] stats[10] = i:2082
+sets GameData party[0] stats[3] = i:2082
+sets GameData party[0] stats[7] = i:637
+sets GameData party[0] stats[12] = i:637
+sets GameData party[0] stats[8] = i:779
+sets GameData party[0] stats[13] = i:779
+sets GameData party[0] stats[9] = i:375
+sets GameData party[0] stats[14] = i:375
+sets GameData party[0] stats[5] = i:5000
+sets GameData party[0] stats[6] = i:5000
+sets GameData party[0] stats[11] = i:5000
+sets GameData myPets[0] stats[1] = i:1457
+sets GameData myPets[1] stats[1] = i:218
+sets GameData myPets[0] isFainted = z:false
+sets GameData myPets[1] isFainted = z:false
+sets GameData myPets[0] isDeployed = z:true
+sets GameData myPets[1] isDeployed = z:true
+say CASE 4 quinn=100% healer=100% wolf=15%
+callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
+wait 4000
+shot p4_a.png
+key -5
+wait 700
+key -5
+wait 1500
+shot p4_b.png
+battle 180000 P4
+shot p4_end.png
+wait 9000
+probe GameData myPets[0] stats[1]
+probe GameData myPets[1] stats[1]
+probe GameData myPets[1] isFainted
+sets GameData party[0] stats[0] = i:10
+sets GameData party[0] stats[4] = i:2082
+sets GameData party[0] stats[10] = i:2082
+sets GameData party[0] stats[3] = i:2082
+sets GameData party[0] stats[7] = i:637
+sets GameData party[0] stats[12] = i:637
+sets GameData party[0] stats[8] = i:779
+sets GameData party[0] stats[13] = i:779
+sets GameData party[0] stats[9] = i:375
+sets GameData party[0] stats[14] = i:375
+sets GameData party[0] stats[5] = i:5000
+sets GameData party[0] stats[6] = i:5000
+sets GameData party[0] stats[11] = i:5000
+sets GameData myPets[0] stats[1] = i:218
+sets GameData myPets[1] stats[1] = i:218
+sets GameData myPets[0] isFainted = z:false
+sets GameData myPets[1] isFainted = z:false
+sets GameData myPets[0] isDeployed = z:true
+sets GameData myPets[1] isDeployed = z:true
+say CASE 5 quinn=100% healer=15% wolf=15%
+callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
+wait 4000
+shot p5_a.png
+key -5
+wait 700
+key -5
+wait 1500
+shot p5_b.png
+battle 180000 P5
+shot p5_end.png
+wait 9000
+probe GameData myPets[0] stats[1]
+probe GameData myPets[1] stats[1]
+probe GameData myPets[1] isFainted
+say DONE
+quit

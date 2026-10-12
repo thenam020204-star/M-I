@@ -1,0 +1,46 @@
+wait 3000
+show
+wait 1500
+key -5
+wait 3000
+key -7
+wait 4000
+key 35
+wait 25000
+shot m0.png
+keys -2 3 300
+key -5
+wait 9000
+shot m1.png
+key -2
+key -5
+wait 9000
+shot m2.png
+keys -2 5 300
+key -5
+shot m3.png
+probe SFXManager enabled
+key -5
+probe SFXManager enabled
+keys -2 2 300
+key -5
+wait 1500
+shot m4.png
+key -1
+key -1
+key -5
+wait 3000
+shot m5.png
+keys -1 20 100
+key -7
+wait 4000
+shot m6.png
+probe DebugBattle mode
+probe DebugBattle invincible
+probe DebugBattle forceHit
+probe DebugBattle forceHitMenu
+probe DebugBattle passive
+probe SFXManager enabled
+probe SFXManager injectFailure
+say EXIT-DONE
+quit

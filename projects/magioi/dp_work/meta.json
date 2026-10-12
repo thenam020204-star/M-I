@@ -1,0 +1,1 @@
+{"fmt": "tsv", "nl": "\n", "tail": true, "bom": false, "hdr": true, "cols": {"src": 3, "dst": 4, "ctx": 5, "lim": 6}, "file": "/home/user/M-I/projects/magioi/text_can_dich.tsv", "lang": "zh", "codes": "\\[C:[0-9A-Fa-f]{6}\\]|\\[/C\\]|\\[N/\\]", "enc": "utf-8", "args": {"src": null, "dst": null, "ctx": null, "lim": null, "sheet": null, "enc": "utf-8"}}

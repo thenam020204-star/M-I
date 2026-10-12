@@ -1,0 +1,26 @@
+wait 3000
+show
+wait 1500
+key -5
+wait 3000
+key -7
+wait 4000
+key 35
+wait 25000
+key -7
+wait 3000
+key -5
+wait 3000
+key -7
+wait 5000
+shot x0.png
+key -5
+wait 14000
+key -7
+wait 3000
+shot x1.png
+callm da a:da a:cd -- b S:133|5|1;133|5|1;133|5|1 i:0
+wait 9000
+shot x2.png
+probe DebugBattle mode
+quit

@@ -1,0 +1,39 @@
+wait 3000
+show
+wait 1500
+key -5
+wait 3000
+key -7
+wait 5000
+key -5
+wait 14000
+key -7
+wait 3000
+shot a0.png
+callm GameCanvas instance:GameCanvas world:World -- startScriptBattle S:133|5|1;133|5|1;133|5|1 i:0
+wait 9000
+shot a1.png
+key -5
+wait 1500
+shot a2.png
+key -5
+wait 1500
+key -5
+wait 9000
+shot a3.png
+key -5
+wait 1500
+key -5
+wait 9000
+shot a4.png
+key -5
+wait 1500
+key -5
+wait 9000
+shot a5.png
+probe SfxHooks preFired:int
+probe SfxHooks frameMs:int
+probe SfxHooks markEvents:int
+probe SFXManager lead:int
+say DONE
+quit

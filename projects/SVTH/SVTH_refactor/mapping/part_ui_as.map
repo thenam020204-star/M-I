@@ -1,0 +1,376 @@
+# part_ui_as.map — cụm ui_as: màn menu trong game (as) + các panel danh sách (bg và lớp con) + dc, cs
+# Bằng chứng: restored/raw/as.java, ab.java (xử lý phím của menu), cd.java/ci.java/ae.java (mở menu), Patch.java/SfxUi.java (as.o/as.p).
+# Giá trị as.o_B (menuPage): 1 thanh tab, 2 Trạng thái, 3 Sủng vật, 4 Kỹ năng, 5 Trang bị, 6 Túi đồ, 7 Nhiệm vụ, 8 Đồ giám, 9 Hệ thống
+#   (= chỉ số tab de.c() + 2, ab.java:41), 12 đổi hình dạng, 13 chọn đối tượng dùng vật phẩm, 14 tiệm kỹ năng, 15 tiệm đồ/trang bị.
+
+# ---- GameMenu (as) ----
+C as GameMenu HIGH  # tab 'Trạng thái','Sủng vật'...'Hệ thống' (de), paint dispatch theo as.o_B, cd.a_as
+F as.o_B menuPage HIGH  # 1 tab bar, 2..9 = tab index+2 (ab.java:41), 12/13/14/15 trang phụ; Patch/SfxUi 'as.o' group==9 hệ thống
+F as.p_B systemPage HIGH  # trang của tab Hệ thống: 0 menu,1 Lưu,2 Tải,3 âm lượng (SfxUi PAGE_VOLUME),4 'Trở về menu chính?',5 xác nhận ghi/tải,6 'Tải điểm QQ'
+F as.q_B petPage HIGH  # tab Sủng vật: 0 list,1 menu thao tác,2 Thuộc tính,3 'Chắc chắn thả',4 thông báo,5 Kỹ năng,7 Cấy,8 Tinh luyện (ab.g)
+F as.t_B equipPage HIGH  # tab Trang bị: 0 ô trang bị,1 túi trang bị,2 menu Thay/Tháo/Bỏ/Khảm,3 khảm đá quý (ab.f)
+F as.w_B questPage HIGH  # tab Nhiệm vụ: 0 chọn chính/phụ tuyến,1 list chính,2 list phụ,3 chi tiết,4 menu Xem/Bỏ,5 'Xóa nhiệm vụ đang chọn?' (ab.e)
+F as.z_B dexPage HIGH  # tab Đồ giám: 0 danh sách,1 chi tiết pet,2 hợp thành (ab.d, 'Đang hợp thành')
+F as.v_B bagPage HIGH  # tab Túi đồ: 0 chọn loại,1 lưới,2 menu Dùng/Bán/Bỏ,3 bán (số lượng+giá),4 bỏ (số lượng)
+F as.x_B skillPage HIGH  # tab Kỹ năng: 0 danh sách,1 mô tả kỹ năng (ab.a_V o_B==4)
+F as.s_B petSkillPage MED  # q_B==5: 0 danh sách kỹ năng pet,1 mô tả
+F as.A_B skillShopPage HIGH  # o_B 14 'Tiệm kỹ năng': 0 list,1 chọn người học,2 'Xác nhận học kỹ năng'
+F as.B_B shopPage HIGH  # o_B 15: 0 list,1 hộp số lượng mua (ab.c)
+F as.u_B socketResult MED  # 0 đang chọn đá, 1 hiện 'Chúc mừng‚khảm trang bị thành công'
+F as.y_B shopType HIGH  # 0 itemShop,1 equipShop,2 skillShop (as.b(int) /bin/shop.bin)
+F as.D_B saveConfirmMode HIGH  # 1 xác nhận ghi đè (Lưu), 2 xác nhận tải; quay lại p_B = D_B
+F as.a_B petActionIndex HIGH  # con trỏ menu thao tác pet (e_AString[a_B])
+F as.b_B equipSlotIndex HIGH  # 0..5 ô 'Vũ khí','Mũ','Áo','Giày','Dây chuyền','Nhẫn', 6..11 món bộ trang bị
+F as.a_S equipBagIndex HIGH  # con trỏ trong lưới trang bị cùng loại o.a_AAck[b_B][a_S]
+F as.c_B equipBagScrollRow HIGH  # hàng cuộn lưới trang bị (a_S - c_B*f_S)
+F as.d_B equipActionIndex HIGH  # con trỏ d_AString 'Thay','Tháo','Bỏ','Khảm'
+F as.e_B bagTabIndex HIGH  # 0 'Vật phẩm',1 'Nguyên liệu',2 'Khác' (j_AString)
+F as.f_B bagScrollRow HIGH  # hàng cuộn lưới túi đồ
+F as.g_B bagItemIndex HIGH  # ô đang chọn a_AAAS[e_B][g_B]
+F as.h_B bagActionIndex HIGH  # con trỏ c_AString 'Dùng','Bán','Bỏ'
+F as.i_B questTabIndex HIGH  # 0 'NV chính tuyến',1 'NV phụ tuyến'
+F as.k_B questActionIndex HIGH  # menu {15 'Xem',16 'Bỏ'} của nhiệm vụ phụ
+F as.l_B saveSlotIndex HIGH  # ô ghi đang chọn (< at.e_B), o.a_Z(l_B)
+F as.m_B useTargetIndex HIGH  # o_B 13: 0 nhân vật chính, 1.. pet a_Acv[m_B-1]
+F as.n_B useTargetScroll HIGH  # dòng đầu danh sách o_B 13
+F as.C_B useTargetRows MED  # số dòng hiển thị o_B 13 (= chiều cao/2 dòng chữ)
+F as.a_I dexPetIndex HIGH  # = petId-1, chỉ số dòng petdata đang xem
+F as.a_AString systemMenuRows HIGH  # 'Dịch vụ ưu đãi','Lưu game','Tải game','Cài đặt nhạc'...; Patch hook putstatic as.a:[String
+F as.a_bl hero HIGH  # = o.a_Abl[0] nhân vật chính (ae/cd gán)
+F as.a_Acv pets HIGH  # = k.a_Acv() danh sách sủng vật; 'Không có sủng vật'
+F as.c_I skillLearnerType MED  # cd.a('技能学习',shop,type): 1/2 nhân vật, 4 pet; 'Nghề này không thể học kỹ năng này'
+F as.l_I learnerRows MED  # số dòng hiển thị danh sách người học (d(Graphics))
+F as.m_I learnerIndex HIGH  # người học đang chọn (a_Acv[m_I] khi c_I==4)
+F as.n_I learnerScroll HIGH  # dòng đầu danh sách người học
+F as.k_I buyCount HIGH  # số lượng mua 1..99 ('Mua '+tên+k_I)
+F as.a_AS shopItemIds HIGH  # id hàng của tiệm, đọc từ /bin/shop.bin itemShopN/equipShopN/skillShopN
+F as.a_AAS gems HIGH  # [itemId,count] đá quý khảm được ('Không có đá quý để chọn')
+F as.d_I gemIndex HIGH  # con trỏ danh sách đá quý
+F as.e_I gemScroll HIGH  # dòng đầu danh sách đá quý
+F as.f_I gemRows HIGH  # số dòng đá quý hiển thị (=3)
+F as.g_I selectedGemId HIGH  # id đá quý đã chọn để khảm (o.c(g_I,1) khi khảm)
+F as.g_Z socketPending HIGH  # đã bấm khảm, chờ 1000ms rồi áp dụng
+F as.a_J socketStartTime HIGH  # System.currentTimeMillis() lúc bấm khảm
+F as.a_AAString petData HIGH  # bảng /bin/petdata.bin (petdata..end, tab)
+F as.g_AString dexNames HIGH  # tên pet theo đồ giám, '???' nếu chưa phát hiện
+F as.a_AB dexElements HIGH  # 4 chữ số nguyên tố cột 2 petdata ('a'=10), vẽ quanh vòng nguyên tố
+F as.b_AB dexStatStars MED  # 5 giá trị cột 4,6,8,10,12 petdata, vẽ bằng star.gf (nửa sao)
+F as.b_S heroSkillCount HIGH  # = a_bl.a_Ad.length; 0 -> quay về thanh tab
+F as.b_AString questNames MED  # tên nhiệm vụ gom lại khi dựng list (ab xoá phần tử khi bỏ NV)
+F as.c_S bagCols HIGH  # lưới túi đồ 7 cột (25px)
+F as.d_S bagRows HIGH  # lưới túi đồ 5 hàng
+F as.a_AAAS bagItems HIGH  # [loại 0..2][i][itemId,count] dựng bởi j() theo o.f_AS
+F as.c_AString bagActionNames HIGH  # {'Dùng','Bán','Bỏ'} / {'Bán','Bỏ'}
+F as.b_AI bagActionIds HIGH  # chỉ số nhãn trong actionLabels {13,14,12}
+F as.d_AString equipActionNames HIGH  # {'Thay','Tháo','Bỏ','Khảm'}...
+F as.c_AI equipActionIds HIGH  # {10,9,12,11}
+F as.e_AString petActionNames HIGH  # {'Thuộc tính','Kỹ năng','Xuất chiến'/'Nghỉ','Thả','Đổi tên','Cấy','Tinh luyện'}
+F as.d_AI petActionIds HIGH  # {0,1,2,4,5,6,7}, [2]=2/3 Xuất chiến/Nghỉ
+F as.e_S bagQuantity HIGH  # số lượng bán/bỏ (1..count)
+F as.f_S gridCols HIGH  # lưới trang bị/nguyên liệu cấy 6 cột (26px)
+F as.g_S gridRows HIGH  # lưới 2 hàng
+F as.b_AS setItemIds HIGH  # 6 id trang bị bộ theo nghề (a_bl.h_S), 'DEF+300 (2 món)'
+F as.q_I setPiecesWorn HIGH  # số món bộ đang mặc (>=2/4/6 kích hoạt thưởng)
+F as.b_String petMessage MED  # thông báo q_B==4 ('Số sủng vật xuất chiến đã đủ!...')
+F as.a_String confirmText HIGH  # 'Xác nhận ghi đè bản lưu hiện tại?' / 'Xác nhận tải...' (p_B==5)
+F as.d_bx elementWheelAnim MED  # /pic/D01.av vẽ giữa các số nguyên tố (drawElements)
+F as.b_Abx setGlowAnims HIGH  # 6 x /pic/equipstar/tbss.av, hiện trên món bộ đang mặc
+F as.c_bx previewAnim HIGH  # hoạt hình nhân vật ('...s.av') hoặc pet (k.a(id)) đang xem
+F as.a_Abx saveSlotAnims HIGH  # /av/chr<j>.av cho mỗi bản lưu (ab.e)
+F as.a_bx petAnim HIGH  # hoạt hình pet đang chọn trong list (k.a(a_Acv[..].a_I))
+F as.b_bx speakerAnim HIGH  # /pic/D41.av biểu tượng loa trang âm lượng (Patch: as.b:bx, sfx$icon)
+F as.e_bx dexFilterCursorAnim MED  # /pic/D24.av vẽ trên tab lọc đồ giám b_I
+F as.f_bx heroFigureAnim HIGH  # /ft/chr<h_S>.av hình nhân vật ở tab Trang bị
+F as.g_bx implantFxLeft HIGH  # /pic/uiav/D28.av hiệu ứng cấy ô 0
+F as.h_bx implantFxRight HIGH  # D28.av lật (a_Z=true) hiệu ứng cấy ô 1
+F as.a_dc textBox HIGH  # dc dùng chung vẽ mô tả
+F as.a_bf sideQuestList HIGH  # bf: nhiệm vụ loại 2/3 (phụ tuyến)
+F as.a_cy mainQuestList HIGH  # cy: nhiệm vụ loại 1 (chính tuyến)
+F as.a_cs questDetail HIGH  # cs 'Mô tả nhiệm vụ'/'Thưởng nhiệm vụ'
+F as.a_de tabBar HIGH  # de 8 tab
+F as.a_db fusionMaterialList HIGH  # db nguyên liệu hợp thành (m())
+F as.a_bc formList HIGH  # bc o_B 12 'Sẽ đổi thành hình dạng sau'
+F as.b_bc dexAllList HIGH  # filter 2 'Tất cả' (140 pet, '???')
+F as.c_bc dexElementList HIGH  # filter 1 'Nguyên tố' (pet có nguyên tố >5)
+F as.d_bc dexFoundList HIGH  # filter 0 'Mới nhất' (pet đã phát hiện o.p_AS)
+F as.b_AAS fusionRecipe HIGH  # [itemId,count] cột 19 petdata, ak.a(...,'Hợp thành')
+F as.i_I dexPetId HIGH  # pet id đang xem; o.a_V(i_I,-1) thêm pet khi hợp thành xong
+F as.a_AI tabBarBounds HIGH  # = a_de.a() {x,y,w,h}, gốc toạ độ mọi trang
+F as.a_ab skillShopList HIGH  # ab của o_B 14
+F as.b_ab shopList HIGH  # ab của o_B 15
+F as.c_ab systemMenuList HIGH  # ab dòng menu Hệ thống (p())
+F as.d_ab heroSkillList HIGH  # ab kỹ năng nhân vật (o())
+F as.e_ab petSkillList HIGH  # ab kỹ năng pet (q_B 5)
+F as.a_l petList HIGH  # l danh sách sủng vật
+F as.b_l partyList MED  # l danh sách o.a_Abl (g() khi c_I!=4); không thấy được vẽ
+F as.a_ck shopEquip HIGH  # ck tạo từ id món đang chọn ở tiệm trang bị
+F as.r_B implantStep HIGH  # q_B 7: 0 chọn ô,1 chọn nguyên liệu,2 'Cấy ghép thành công'
+F as.r_I implantScrollRow HIGH  # hàng cuộn lưới nguyên liệu cấy
+F as.s_I implantMaterialIndex HIGH  # con trỏ nguyên liệu cấy (<18)
+F as.t_I implantSlot HIGH  # ô cấy 0/1 (a_AAB[t_I])
+F as.a_AAB implantMaterials HIGH  # = o.a_AAB() [itemId,count]; 'Tạm không có nguyên liệu để cấy'
+F as.c_Z showImplantFxLeft HIGH  # bật g_bx khi cấy ô 0
+F as.d_Z showImplantFxRight HIGH  # bật h_bx khi cấy ô 1
+F as.u_I geneSlotCount HIGH  # 1 + số ô đã cấy (q_B 2 Thuộc tính)
+F as.v_I geneIndex HIGH  # con trỏ ô gen ở trang Thuộc tính pet
+F as.w_I statRowIndex HIGH  # tab Trạng thái: hàng thuộc tính đang cộng điểm (0..3)
+F as.e_AI pendingStatPoints HIGH  # điểm cộng tạm cho 4 thuộc tính (trừ a_bl.a_AI[16])
+F as.f_AI pendingStatBonus HIGH  # chỉ số tăng xem trước (+= a_bl.a_AAB[w_I][i])
+F as.a_Z isDexFromScript HIGH  # ci '进入图鉴' mở thẳng đồ giám; Về -> đóng menu, ci.a(5)
+F as.b_Z isStatsFromScript HIGH  # ci '属性加点' mở thẳng tab Trạng thái; Về -> đóng menu
+F as.e_Z isFusionDone HIGH  # o_I >= 100
+F as.f_Z isFusing HIGH  # đang chạy thanh 'Đang hợp thành'
+F as.o_I fusionProgress HIGH  # 0..100, +5 mỗi khung
+F as.p_I questIndex HIGH  # chỉ số o.a_Abp đang xem chi tiết
+F as.E_I softKeyFrame MED  # khung ảnh D06 cho nhãn phím mềm trái (c(int))
+F as.E_B cursorBob HIGH  # 3 px mỗi 12 khung (da.a_S%12) làm mũi tên nhún
+F as.h_Z isToastVisible HIGH  # hộp thông báo a(String,int)
+F as.c_String toastText HIGH  # nội dung thông báo
+F as.F_I toastTimer HIGH  # số khung còn hiện
+F as.x_I screenW HIGH  # = at.a_AS[0]; Patch đọc as.x
+F as.y_I screenH HIGH  # = at.a_AS[1]; Patch đọc as.y
+F as.z_I previewPage HIGH  # trang vẽ thử khi đứng ở thanh tab (o_B==1), a(byte)
+F as.A_I contentW HIGH  # 193 = rộng thanh tab/vùng nội dung
+F as.B_I topPanelH HIGH  # a(int,int): chiều cao khung trên -2
+F as.C_I bottomPanelH HIGH  # a(int,int): chiều cao khung dưới -2
+F as.D_I frameW HIGH  # 191 rộng khung viền
+F as.h_I footerH HIGH  # 28 dải phím mềm cuối
+F as.j_I bodyH HIGH  # 200 tổng chiều cao 2 khung (a(90, j_I-90))
+F as.f_AString actionLabels HIGH  # 'Thuộc tính','Kỹ năng','Xuất chiến','Nghỉ','Thả',... chỉ số dùng bởi *ActionIds
+F as.h_AString dexFilterNames HIGH  # 'Mới nhất','Nguyên tố','Tất cả'
+F as.i_AString questTabNames HIGH  # 'NV chính tuyến','NV phụ tuyến'
+F as.j_AString bagTabNames HIGH  # 'Vật phẩm','Nguyên liệu','Khác'
+F as.a_Image cursorArrow HIGH  # /pic/arrow.gf, vẽ vùng 15x15 ở dòng chọn
+F as.c_Image coinIcon MED  # /pic/D10.gf cạnh tổng giá ở hộp số lượng (cs dùng D10 cho thưởng vàng)
+F as.D_Image footerCoinIcon MED  # /pic/D10.gf cạnh số vàng o.a_I ở chân menu
+F as.d_Image digits HIGH  # /pic/number01.gf font số 6x7 (cg.a(...,6,7,...))
+F as.e_Image equipSlotLabels MED  # /pic/partInfo.gf 6 khung theo ô trang bị b_B
+F as.f_Image starImg HIGH  # /pic/star.gf, drawStars
+F as.g_Image questTabsImg MED  # /pic/taskNameArr1.gf tab NV chưa chọn
+F as.i_Image questTabsSelImg MED  # /pic/taskNameArr.gf tab NV đang chọn
+F as.h_Image geneLabelImg MED  # /pic/tzjy.gf (bị null), thay bằng chữ 'Gen đặc trưng:'
+F as.j_Image questDoneImg MED  # /pic/D15.gf 2 khung theo o.a_Abp[].a_Z
+F as.k_Image bagTabsImg MED  # /pic/goodsPc.gf tab túi đồ thường
+F as.l_Image bagTabsSelImg MED  # /pic/goodsPc1.gf tab túi đồ đang chọn
+F as.m_Image setLabelImg MED  # /pic/taoz.gf (套装), khung theo nghề h_S cạnh 6 món bộ
+F as.n_Image implantBoxBg MED  # k.a_Image(190,90,..) nền lưới nguyên liệu cấy
+F as.o_Image dexHeaderImg MED  # /pic/tjitem.gf thay chữ 'Đã phát hiện:'
+F as.p_Image topPanelBg HIGH  # k.a_Image(193,top,..) trong a(int,int)
+F as.q_Image bottomPanelBg HIGH  # k.a_Image(193,bottom,..)
+F as.r_Image footerBg HIGH  # k.a_Image(193,30,..) dải phím mềm
+F as.s_Image elementIcons MED  # /pic/D02.gf 4 phần tư cạnh 4 số nguyên tố pet
+F as.t_Image leftRightArrows HIGH  # /pic/D11.gf 2 nửa trái/phải (âm lượng, số lượng)
+F as.u_Image confirmCancelImg MED  # /pic/D23.gf 2 nửa ở góc hộp 'Xác nhận học kỹ năng'
+F as.v_Image statBarsImg HIGH  # /pic/D05.gf 4 dải, vẽ theo tỉ lệ cur/max
+F as.w_Image systemTitleImg MED  # /pic/setup.gf (bị null) -> chữ 'Chọn bản ghi'/'Âm lượng'
+F as.x_Image softKeyImg MED  # /pic/D06.gf 3 khung nhãn phím mềm ở chân menu
+F as.y_Image attrIcons HIGH  # /pic/D13.gf 10 biểu tượng thuộc tính (HP,MP,...)
+F as.z_Image proficiencyImg MED  # /pic/shulian.gf (熟练) trước số độ thành thạo kỹ năng
+F as.A_Image freePointsImg MED  # /pic/D07.gf trước a_bl.a_AI[16] (điểm tự do)
+F as.B_Image levelImg MED  # /pic/D08.gf sau số cấp
+F as.C_Image classNameImg MED  # /pic/D09.gf khung = nghề h_S-1 (fallback a_bl.a_String)
+F as.E_Image dexArrowsImg MED  # /pic/D20.gf 2 nửa trái/phải ở hàng lọc đồ giám
+F as.F_Image dexFilterImg MED  # /pic/D21.gf 3 khung = h_AString
+F as.G_Image statSelectImg LOW  # /pic/number02.gf vẽ nguyên ảnh ở hàng w_I khi cộng điểm
+F as.H_Image goldDigits MED  # /pic/number03.gf số 6x8: tiền vàng chân menu, cột giá tiệm
+F as.I_Image plusDigits HIGH  # /pic/number04.gf số tăng (var>0)
+F as.J_Image minusDigits HIGH  # /pic/number05.gf số giảm (var<0, Math.abs)
+F as.a_AImage actionMenuImgs MED  # imgmenu1/imgmenu2.gf (bị null) nhãn menu thao tác thường/chọn
+M as.a(int,int) setPanelHeights HIGH  # B_I=top-2,C_I=bottom-2, tạo p_Image/q_Image
+M as.l() loadAnims HIGH  # nạp D01/tbss/D41/D24/D28.av
+M as.a(byte,byte) showPage HIGH  # o_B=tab, gán trang con theo tab; Patch hook SfxUi.page(as,group,page)
+M as.m() buildFusionMaterialList HIGH  # db từ b_AAS (o.b_I số đang có)
+M as.a() buildPetList HIGH  # l từ a_Acv
+M as.n() initEquipTab HIGH  # /ft/chr.av, bộ trang bị b_AS, đếm q_I
+M as.o() buildHeroSkillList HIGH  # d_ab từ a_bl.a_Ad
+M as.b() buildQuestLists HIGH  # cy (loại 1) + bf (loại 2/3) từ o.a_Abp
+M as.c() reloadBag HIGH  # o.d();o.e();j()
+M as.p() buildSystemMenu HIGH  # c_ab từ systemMenuRows; Patch hook menuRows
+M as.a(byte) showPreview HIGH  # z_I = trang đang trỏ trên thanh tab, chuẩn bị dữ liệu
+M as.a(int) loadDexPet HIGH  # đọc petdata dòng id: nguyên liệu 'Hợp thành', nguyên tố, sao
+M as.d() buildDexLists HIGH  # b_bc/c_bc/d_bc
+M as.b(int) loadShopStock HIGH  # /bin/shop.bin itemShop/equipShop/skillShop<n>
+M as.e() releaseData HIGH  # null các mảng tĩnh/list khi đóng menu (ab.a_Z)
+M as.f() resetListCursors HIGH  # chọn dòng 0 cho mọi list
+M as.g() buildLearnerList MED  # l pet (c_I==4) hoặc l party
+M as.h() releaseImages HIGH  # null p/q/r_Image, petData...
+M as.i() initPages HIGH  # dựng shop (o_B 14/15) + mọi list; gọi khi mở menu
+M as.a(Graphics) draw HIGH  # khung, chân, thanh tab, dispatch theo o_B/z_I, toast
+M as.b(Graphics) drawShop HIGH  # o_B 15 'Tên'/'Giá'
+M as.c(Graphics) drawSkillShop HIGH  # o_B 14 'Xác nhận học kỹ năng'
+M as.d(Graphics) drawLearnerList HIGH  # người học kỹ năng (c_I)
+M as.e(Graphics) drawUseTargetList HIGH  # o_B 13 nhân vật + pet
+M as.f(Graphics) drawDexTab HIGH  # 'Đã phát hiện:', 'Gen đặc trưng', 'Đang hợp thành'
+M as.a(Graphics,Image,int,int,int,int) drawStars HIGH  # n/2 sao đầy + 1 nửa
+M as.g(Graphics) drawSkillTab HIGH  # d_ab, độ thành thạo
+M as.h(Graphics) drawSystemTab HIGH  # 'Chọn bản ghi','Âm lượng','Trở về menu chính?'; Patch hook as.h(G)
+M as.i(Graphics) drawQuestTab HIGH  # 'Tên nhiệm vụ','Danh sách nhiệm vụ trống'
+M as.j(Graphics) drawBagTab HIGH  # 'Không có vật phẩm liên quan', lưới 7x5
+M as.j() buildBagItems HIGH  # chia o.a_AAS theo o.f_AS vào 3 loại
+M as.a(Graphics,int,int,int,int) drawSlotFrame HIGH  # ô vuông 20x20 viền 2 màu
+M as.k(Graphics) drawEquipTab HIGH  # 6 ô trang bị, bộ, so sánh chỉ số, khảm
+M as.a(Graphics,int,int,int,int[][]) drawStatBars HIGH  # 3 thanh D05 tỉ lệ cur/max + số cur/max
+M as.a(Graphics,int,int,int,int,int[]) drawStatValues MED  # 3 dòng biểu tượng D13 (khung 3..5) + số
+M as.k() resetImplant HIGH  # r_I/s_I/t_I/a_AAB/r_B = 0, reset D28.av
+M as.l(Graphics) drawPetTab HIGH  # 'Không có sủng vật','Chắc chắn thả sủng vật'...
+M as.a(Graphics,cv) drawPetAttributes HIGH  # q_B 2: 'Gen đặc trưng:', ô gen
+M as.m(Graphics) drawStatusTab HIGH  # tab Trạng thái, cộng điểm (o_B==2)
+M as.b(Graphics,int,int,int,int) drawHeroPortrait HIGH  # c_bx trong khung + nghề + cấp
+M as.a(Graphics,byte[]) drawElements HIGH  # 4 số nguyên tố quanh D01.av
+M as.c(int) setSoftKeyFrame MED  # E_I = khung D06
+M as.a(Graphics,boolean,int,int,int) drawQuantityDialog HIGH  # 'Số lượng:' qty/max, giá = đơn giá*qty
+M as.a(Graphics,int[],int,int,int,int,int,int) drawActionMenu HIGH  # hộp menu thao tác từ actionLabels
+M as.a(String,int) showToast HIGH  # c_String/F_I/h_Z; 'Không có sủng vật', 'Học thành công'...
+
+# ---- ListPanel (bg) ----
+C bg ListPanel HIGH  # lớp trừu tượng: Vector dòng, chọn/cuộn; ab.a(bg) gom nhiều cột
+F bg.a_I x HIGH  # a(int,int,int,int)
+F bg.b_I y HIGH  # a(int,int,int,int)
+F bg.c_I w HIGH  # a(int,int,int,int)
+F bg.d_I h HIGH  # a(int,int,int,int); i_I = h/j_I
+F bg.e_I innerW HIGH  # = w - 2*f_I
+F bg.f_I padX HIGH  # 4, lề trái chữ
+F bg.g_I selectedIndex HIGH  # e()/f() tăng/giảm, c() trả về
+F bg.h_I scrollTop HIGH  # dòng đầu hiển thị
+F bg.i_I visibleRows HIGH  # = h / rowHeight
+F bg.j_I rowHeight HIGH  # cg.b_S+4, c(int)
+F bg.k_I padY HIGH  # 2, lề trên
+F bg.a_Vector items HIGH  # các dòng (bu/cn/bd/bw/bm/Image/String)
+M bg.a(Graphics) draw HIGH  # abstract, ab gọi cho từng cột
+M bg.b() itemCount HIGH  # a_Vector.size()
+M bg.a_V() clear HIGH  # removeAllElements ở lớp con
+M bg.a(int) setSelectedIndex HIGH  # g_I = i (IndexOutOfBounds nếu vượt)
+M bg.e() selectNext HIGH  # g_I++, cuộn
+M bg.f() selectPrev HIGH  # g_I--, cuộn
+M bg.b(int) resetScroll HIGH  # h_I = 0 (bỏ qua tham số)
+M bg.a_AI() getBounds HIGH  # {x,y,w,h}
+M bg.c() getSelectedIndex HIGH  # return g_I; ab.b_I()
+M bg.c(int) setRowHeight HIGH  # j_I = v
+M bg.a(int,int,int,int) setBounds HIGH  # x,y,w,h, tính visibleRows
+
+# ---- DexListPanel (bc) ----
+C bc DexListPanel HIGH  # danh sách đồ giám phân trang '#  001' + tên pet (bu)
+F bc.l_I page HIGH  # trang hiện tại (1-based), c()/d_V()
+F bc.m_I pageCount HIGH  # b(): ceil(size/visibleRows)
+F bc.n_I cursorBob HIGH  # 3 px mỗi 12 khung
+F bc.a_Image cursorImg HIGH  # arrow.gf (a(Image,Image))
+F bc.b_Image digitsImg HIGH  # number01.gf vẽ 'trang/tổng'
+M bc.b() updatePageCount HIGH  # m_I = ceil(size / i_I)
+M bc.d_I() absoluteIndex HIGH  # g_I + (page-1)*visibleRows
+M bc.a_I() getSelectedPetId HIGH  # bu.a_I = pet id (k.a(id) anim)
+M bc.a_String() getSelectedName HIGH  # bu.a_String, '???' = chưa phát hiện
+M bc.c() nextPage HIGH  # l_I++ (phím phải ab.d)
+M bc.d_V() prevPage HIGH  # l_I-- (phím trái)
+M bc.a(int,String) addEntry HIGH  # new bu(id,name)
+M bc.a(Image,Image) setImages HIGH  # cursor + digits
+
+# ---- SideQuestListPanel (bf) ----
+C bf SideQuestListPanel HIGH  # list nhiệm vụ loại 2 'Thường'/3 'Công hội', dấu hoàn thành D15
+F bf.a_Image cursorImg HIGH  # mũi tên chọn (as gán a_Image)
+F bf.b_Image digitsImg MED  # number01.gf; chỉ để bật vẽ nhãn loại
+F bf.c_Image doneMarkImg HIGH  # /pic/D15.gf khung 0 = cn.a_Z (xong)
+F bf.l_I cursorBob HIGH  # nhún mũi tên
+M bf.a_String() getSelectedName HIGH  # cn.a_String
+M bf.a_I() getSelectedQuestIndex HIGH  # cn.a_I = chỉ số o.a_Abp
+M bf.a(int,int,String,boolean) addQuest HIGH  # (index,type,name,done)
+M bf.a(Graphics,int,int,int) drawQuestTypeTag HIGH  # '[Công hội]' (type 3) / '[Thường]'
+
+# ---- MainQuestListPanel (cy) ----
+C cy MainQuestListPanel HIGH  # list nhiệm vụ chính tuyến (bd), trạng thái 1 = đã nộp (xám)
+F cy.a_Image cursorImg HIGH  # mũi tên chọn
+F cy.l_I cursorBob HIGH  # nhún mũi tên
+M cy.a_String() getSelectedName HIGH  # bd.a_String()
+M cy.a_I() getSelectedStatus HIGH  # 1 -> 'Đã nộp nhiệm vụ hoàn thành!'
+M cy.a(int,int,String) addQuest HIGH  # (id(bỏ qua),status,name)
+
+# ---- MenuTabBar (de) ----
+C de MenuTabBar HIGH  # 8 tab 'Trạng thái'..'Hệ thống', D03 nền, xttb biểu tượng, D12 tiêu đề
+F de.a_Image barBg HIGH  # /pic/D03.gf (fallback vẽ hình chữ nhật)
+F de.b_Image tabIcons HIGH  # /pic/xttb.gf 8 khung (dd.b_I)
+F de.c_Image tabTitles HIGH  # /pic/D12.gf 8 khung tiêu đề (fallback a_AString)
+F de.d_Image tabUnderline MED  # /pic/tbbj.gf dưới tab đang chọn
+F de.e_Image arrowsImg HIGH  # /pic/D04.gf 2 nửa mũi tên trái/phải
+F de.f_Image selectTitleImg MED  # /pic/D46.gf (bị null) -> chữ 'Chọn'
+F de.a_Z isSelectMode HIGH  # a(boolean): chỉ hiện 'Chọn' (ci '进入图鉴')
+F de.b_Z hideArrows HIGH  # as.a(byte,byte): false khi o_B==1 (đang chọn tab)
+F de.l_I cursorBob HIGH  # nhún mũi tên
+F de.a_AString tabNames HIGH  # 'Trạng thái','Sủng vật','Kỹ năng','Trang bị','Túi đồ','Nhiệm vụ','Đồ giám','Hệ thống'
+M de.a(boolean) setSelectMode HIGH  # a_Z = true
+M de.a(int,int,int,int,int) setLayout HIGH  # x,y cố định w=193 h=28 tabW=27 5 tab
+M de.a(int,int) addTab HIGH  # new dd(tabId, iconFrame)
+
+# ---- MaterialListPanel (db) ----
+C db MaterialListPanel HIGH  # nguyên liệu hợp thành: icon, tên, 'có/cần' (bm)
+F db.a_Image cursorImg HIGH  # mũi tên chọn
+F db.b_Image digitsImg HIGH  # /pic/number01.gf số có/cần
+F db.l_I cursorBob HIGH  # nhún mũi tên
+M db.a(Image,String,int,int) addMaterial HIGH  # (icon,name,owned=o.b_I(id),required)
+
+# ---- PetListPanel (l) ----
+C l PetListPanel HIGH  # dòng: tên, '<cấp> cấp', 'Xuất chiến' (bw); dùng cho pet và party
+F l.a_Image cursorImg HIGH  # mũi tên chọn
+F l.b_Image deployedBadge MED  # /pic/D19.gf (bị null) -> chữ 'Xuất chiến'
+F l.l_I cursorBob HIGH  # nhún mũi tên
+M l.a(int,int,boolean,String,int) addEntry HIGH  # (petId,index,deployed,name,level)
+M l.a_I() getSelectedSlot HIGH  # bw.a_I = chỉ số trong a_Acv của dòng chọn
+
+# ---- IconListPanel (g) ----
+C g IconListPanel HIGH  # cột ảnh (icon kỹ năng/vật phẩm) với khung chọn
+F g.a_Z showSelection HIGH  # vẽ khung 'chọn' cho dòng g_I
+M g.a(Image) addIcon HIGH  # a_Vector.addElement(Image)
+
+# ---- TextListPanel (bo) ----
+C bo TextListPanel HIGH  # cột chữ (String) căn giữa, màu chọn/thường
+F bo.a_B style HIGH  # 0 màu đơn a_AI, 1 chữ viền a_AAI
+F bo.a_AI colors HIGH  # {chọn, thường}
+F bo.a_AAI outlineColors HIGH  # {{fg,viền} chọn, {fg,viền} thường}
+M bo.a(String) addText HIGH  # thêm dòng
+
+# ---- ValueListPanel (cp) ----
+C cp ValueListPanel MED  # cột chữ hoặc số vẽ bằng ảnh chữ số (giá tiệm, số lượng)
+F cp.a_B style HIGH  # 0 chữ, 1 số bằng ảnh a_Image
+F cp.l_I digitFrames HIGH  # số khung chữ số trong ảnh (10)
+F cp.a_Image digitsImg HIGH  # number03.gf ở tiệm
+F cp.a_Z showTimesPrefix HIGH  # vẽ 'x  ' trước số (bn: số lượng)
+M cp.a(String) addText HIGH  # thêm dòng
+
+# ---- TextBlock (dc) ----
+C dc TextBlock HIGH  # hộp chữ tự xuống dòng, thẻ màu <n>..</>; dùng ở as/bn/bs/cd/cf/df
+F dc.a_AS lineIds LOW  # chỉ số dòng (-1 khi text null), không thấy đọc
+F dc.a_AString lines HIGH  # dòng đã ngắt (cd đọc .length)
+F dc.b_AI lineColors HIGH  # màu mỗi dòng
+F dc.a_S x HIGH  # a(int,int,int,int,int)
+F dc.b_S y HIGH  # a(int,int,int,int,int)
+F dc.c_S w HIGH  # a(int,int,int,int,int)
+F dc.d_S h HIGH  # a(int,int,int,int,int)
+F dc.e_S visibleLines HIGH  # số dòng hiện
+F dc.a_AI tagColors HIGH  # {đỏ,lục,lam} cho thẻ <1>,<2>,<3>
+F dc.b_AString plainLines HIGH  # dòng đã bỏ thẻ (cf đọc)
+F dc.a_AAString colorSpans HIGH  # {dòng,đầu,cuối,màu} từ thẻ <màu>..</>
+M dc.a(String,int,String,int) addText HIGH  # (text,width,unused,color) ngắt dòng cg.a(text,width)
+M dc.a() clear HIGH  # null lines/colors
+M dc.a(int,int,int,int,int) setBounds HIGH  # x,y,w,h,visibleLines
+M dc.a(Graphics,dc,int,boolean,boolean) draw HIGH  # (g,src,firstLine,useScrollBox,centered)
+M dc.a(String,String,int) addTaggedText HIGH  # vh.wrapParts rồi parse thẻ màu (cf hội thoại)
+M dc.a(String,int) parseColorTags HIGH  # '<'..'>' ... '</>' -> colorSpans, plainLines
+M dc.a(Graphics,String,int,int,int,int) drawTaggedLine HIGH  # vẽ dòng + tô lại đoạn có thẻ màu
+
+# ---- QuestDetailBox (cs) ----
+C cs QuestDetailBox HIGH  # 'Mô tả nhiệm vụ' + 'Thưởng nhiệm vụ' (o.a_Abp[].b_String/e_String), cuộn
+F cs.d_I x HIGH  # ctor
+F cs.e_I y HIGH  # ctor cs(x,y,w,h)
+F cs.f_I w HIGH  # ctor cs(x,y,w,h)
+F cs.g_I h HIGH  # ctor cs(x,y,w,h)
+F cs.a_String title HIGH  # 'Mô tả nhiệm vụ'
+F cs.a_AString descLines HIGH  # mô tả ngắt dòng (w-20)
+F cs.b_String rewardTitle HIGH  # 'Thưởng nhiệm vụ'
+F cs.b_AString rewards HIGH  # 'loại,id,sl' tách '|': 1 vật phẩm,2 trang bị,3 vàng,5 EXP
+F cs.a_AI colors HIGH  # {fg,viền tiêu đề, fg,viền tiêu đề thưởng}
+F cs.h_I lineHeight HIGH  # cg.b_S+4
+F cs.a_I visibleLines HIGH  # h / lineHeight (ab cuộn)
+F cs.b_I totalLines HIGH  # mô tả + thưởng + 2
+F cs.c_I scrollLine HIGH  # ab phím lên/xuống
+F cs.a_Image expIcon HIGH  # /icon/13.gf cạnh 'EXP'
+F cs.b_Image goldIcon MED  # /pic/D10.gf thưởng loại 3
+M cs.a(String,String,String,String) setContent HIGH  # (title,desc,rewardTitle,rewards)
+M cs.a(Graphics) draw HIGH  # vẽ có clip và thanh cuộn

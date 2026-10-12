@@ -1,0 +1,117 @@
+SFXTEST PLAN cases=112 unreachable(passive/no-effect)=9 ids: 7 29 30 31 32 35 36 37 38 
+SFXTEST PASS case=1/112 hero=Quinn kind=0 skill=0 level=1 beats(exp/act)=3/3 HIT=3 MISS=0 CRIT=0 SKILL=0 dupSuppressed=4 ms=2479
+SFXTEST PASS case=2/112 hero=Quinn kind=1 skill=0 level=1 beats(exp/act)=3/3 HIT=0 MISS=3 CRIT=0 SKILL=0 dupSuppressed=4 ms=2532
+SFXTEST PASS case=3/112 hero=Quinn kind=2 skill=0 level=1 beats(exp/act)=3/3 HIT=3 MISS=0 CRIT=3 SKILL=0 dupSuppressed=4 ms=2499
+SFXTEST PASS case=4/112 hero=Quinn kind=5 skill=0 level=1 beats(exp/act)=3/3 HIT=3 MISS=0 CRIT=0 SKILL=0 dupSuppressed=4 ms=2481
+SFXTEST PASS case=5/112 hero=Quinn kind=6 skill=0 level=1 beats(exp/act)=3/3 HIT=3 MISS=0 CRIT=0 SKILL=0 dupSuppressed=4 ms=2479
+SFXTEST PASS case=6/112 hero=Quinn kind=7 skill=0 level=1 beats(exp/act)=2/2 HIT=2 MISS=0 CRIT=0 SKILL=0 dupSuppressed=2 ms=7361
+SFXTEST PASS case=7/112 hero=Quinn kind=7 skill=0 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=0 dupSuppressed=6 ms=4931
+SFXTEST PASS case=8/112 hero=Quinn kind=3 skill=1 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=3480
+SFXTEST PASS case=9/112 hero=Quinn kind=4 skill=1 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=3450
+SFXTEST PASS case=10/112 hero=Quinn kind=3 skill=2 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=3857
+SFXTEST PASS case=11/112 hero=Quinn kind=3 skill=3 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=3471
+SFXTEST PASS case=12/112 hero=Quinn kind=4 skill=3 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=3420
+SFXTEST PASS case=13/112 hero=Quinn kind=3 skill=4 level=1 beats(exp/act)=2/2 HIT=2 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=4965
+SFXTEST PASS case=14/112 hero=Quinn kind=3 skill=4 level=5 beats(exp/act)=3/3 HIT=3 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=6572
+SFXTEST PASS case=15/112 hero=Quinn kind=3 skill=4 level=9 beats(exp/act)=4/4 HIT=4 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=8086
+SFXTEST PASS case=16/112 hero=Quinn kind=4 skill=4 level=1 beats(exp/act)=2/2 HIT=0 MISS=2 CRIT=0 SKILL=1 dupSuppressed=0 ms=4952
+SFXTEST PASS case=17/112 hero=Quinn kind=3 skill=5 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=3485
+SFXTEST PASS case=18/112 hero=Quinn kind=4 skill=5 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=3468
+SFXTEST PASS case=19/112 hero=Quinn kind=3 skill=6 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=3422
+SFXTEST PASS case=20/112 hero=Quinn kind=3 skill=8 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=4734
+SFXTEST PASS case=21/112 hero=Quinn kind=4 skill=8 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=4737
+SFXTEST PASS case=22/112 hero=Quinn kind=3 skill=9 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=4099
+SFXTEST PASS case=23/112 hero=Quinn kind=3 skill=10 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=4443
+SFXTEST PASS case=24/112 hero=Quinn kind=3 skill=11 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=4053
+SFXTEST PASS case=25/112 hero=Quinn kind=3 skill=12 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=4063
+SFXTEST PASS case=26/112 hero=Quinn kind=3 skill=13 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=0 WIND=0 HEAL=1 dupSuppressed=0 ms=2196
+SFXTEST PASS case=27/112 hero=Quinn kind=3 skill=14 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=0 WIND=0 HEAL=1 dupSuppressed=0 ms=2164
+SFXTEST PASS case=28/112 hero=Quinn kind=3 skill=15 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=2192
+SFXTEST PASS case=29/112 hero=Quinn kind=3 skill=16 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=4638
+SFXTEST PASS case=30/112 hero=Quinn kind=3 skill=17 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=2474
+SFXTEST PASS case=31/112 hero=Quinn kind=3 skill=18 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=4185
+SFXTEST PASS case=32/112 hero=Quinn kind=4 skill=18 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=4156
+SFXTEST PASS case=33/112 hero=Quinn kind=3 skill=19 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=5292
+SFXTEST PASS case=34/112 hero=Quinn kind=4 skill=19 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=5350
+SFXTEST PASS case=35/112 hero=Quinn kind=3 skill=20 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=0 WIND=1 HEAL=0 dupSuppressed=0 ms=4204
+SFXTEST PASS case=36/112 hero=Quinn kind=4 skill=20 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=0 WIND=1 HEAL=0 dupSuppressed=0 ms=4232
+SFXTEST PASS case=37/112 hero=Quinn kind=3 skill=21 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=0 WIND=1 HEAL=0 dupSuppressed=0 ms=4194
+SFXTEST PASS case=38/112 hero=Quinn kind=4 skill=21 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=0 WIND=1 HEAL=0 dupSuppressed=0 ms=4175
+SFXTEST PASS case=39/112 hero=Quinn kind=3 skill=22 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=1 WIND=0 HEAL=0 dupSuppressed=0 ms=4460
+SFXTEST PASS case=40/112 hero=Quinn kind=4 skill=22 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=1 WIND=0 HEAL=0 dupSuppressed=0 ms=4478
+SFXTEST PASS case=41/112 hero=Quinn kind=3 skill=23 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=1 WIND=0 HEAL=0 dupSuppressed=0 ms=4440
+SFXTEST PASS case=42/112 hero=Quinn kind=4 skill=23 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=1 WIND=0 HEAL=0 dupSuppressed=0 ms=4444
+SFXTEST PASS case=43/112 hero=Quinn kind=3 skill=24 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=1 WATER=0 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=3747
+SFXTEST PASS case=44/112 hero=Quinn kind=4 skill=24 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=1 WATER=0 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=3716
+SFXTEST PASS case=45/112 hero=Quinn kind=3 skill=25 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=1 WATER=0 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=3756
+SFXTEST PASS case=46/112 hero=Quinn kind=4 skill=25 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=1 WATER=0 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=3737
+SFXTEST PASS case=47/112 hero=Quinn kind=3 skill=26 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=1 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=3965
+SFXTEST PASS case=48/112 hero=Quinn kind=4 skill=26 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=0 WATER=1 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=3957
+SFXTEST PASS case=49/112 hero=Quinn kind=3 skill=27 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=1 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=3958
+SFXTEST PASS case=50/112 hero=Quinn kind=4 skill=27 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=0 WATER=1 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=3950
+SFXTEST PASS case=51/112 hero=Quinn kind=3 skill=28 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=0 WIND=0 HEAL=1 dupSuppressed=0 ms=3862
+SFXTEST PASS case=52/112 hero=Quinn kind=4 skill=28 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=3838
+SFXTEST PASS case=53/112 hero=Quinn kind=3 skill=33 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=3452
+SFXTEST PASS case=54/112 hero=Quinn kind=4 skill=33 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=3470
+SFXTEST PASS case=55/112 hero=Quinn kind=3 skill=34 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=3467
+SFXTEST PASS case=56/112 hero=Quinn kind=4 skill=34 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=3422
+SFXTEST NOTE phim OK bam giup (man thong tin cua game, pha 5)
+SFXTEST PASS case=57/112 hero=Quinn kind=3 skill=39 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=3915
+SFXTEST PASS case=58/112 hero=Julie kind=0 skill=0 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=0 dupSuppressed=0 ms=1978
+SFXTEST PASS case=59/112 hero=Julie kind=1 skill=0 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=0 dupSuppressed=0 ms=1969
+SFXTEST PASS case=60/112 hero=Julie kind=2 skill=0 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=1 SKILL=0 dupSuppressed=0 ms=2003
+SFXTEST PASS case=61/112 hero=Julie kind=5 skill=0 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=0 dupSuppressed=0 ms=1994
+SFXTEST PASS case=62/112 hero=Julie kind=6 skill=0 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=0 dupSuppressed=0 ms=2004
+SFXTEST PASS case=63/112 hero=Julie kind=3 skill=1 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=1988
+SFXTEST PASS case=64/112 hero=Julie kind=4 skill=1 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=2000
+SFXTEST PASS case=65/112 hero=Julie kind=3 skill=2 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=2387
+SFXTEST PASS case=66/112 hero=Julie kind=3 skill=3 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=2004
+SFXTEST PASS case=67/112 hero=Julie kind=4 skill=3 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=2001
+SFXTEST PASS case=68/112 hero=Julie kind=3 skill=4 level=1 beats(exp/act)=2/2 HIT=2 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=3135
+SFXTEST PASS case=69/112 hero=Julie kind=3 skill=4 level=5 beats(exp/act)=3/3 HIT=3 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=4237
+SFXTEST PASS case=70/112 hero=Julie kind=3 skill=4 level=9 beats(exp/act)=4/4 HIT=4 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=5404
+SFXTEST PASS case=71/112 hero=Julie kind=4 skill=4 level=1 beats(exp/act)=2/2 HIT=0 MISS=2 CRIT=0 SKILL=1 dupSuppressed=0 ms=3168
+SFXTEST PASS case=72/112 hero=Julie kind=3 skill=5 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=1977
+SFXTEST PASS case=73/112 hero=Julie kind=4 skill=5 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=1969
+SFXTEST PASS case=74/112 hero=Julie kind=3 skill=6 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=1953
+SFXTEST PASS case=75/112 hero=Julie kind=3 skill=8 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=3272
+SFXTEST PASS case=76/112 hero=Julie kind=4 skill=8 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=3297
+SFXTEST PASS case=77/112 hero=Julie kind=3 skill=9 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=2588
+SFXTEST PASS case=78/112 hero=Julie kind=3 skill=10 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=2935
+SFXTEST PASS case=79/112 hero=Julie kind=3 skill=11 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=2533
+SFXTEST PASS case=80/112 hero=Julie kind=3 skill=12 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=2554
+SFXTEST PASS case=81/112 hero=Julie kind=3 skill=13 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=0 WIND=0 HEAL=1 dupSuppressed=0 ms=1719
+SFXTEST PASS case=82/112 hero=Julie kind=3 skill=14 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=0 WIND=0 HEAL=1 dupSuppressed=0 ms=1671
+SFXTEST PASS case=83/112 hero=Julie kind=3 skill=15 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=1747
+SFXTEST PASS case=84/112 hero=Julie kind=3 skill=16 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=3142
+SFXTEST PASS case=85/112 hero=Julie kind=3 skill=17 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=1999
+SFXTEST PASS case=86/112 hero=Julie kind=3 skill=18 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=2700
+SFXTEST PASS case=87/112 hero=Julie kind=4 skill=18 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=2682
+SFXTEST PASS case=88/112 hero=Julie kind=3 skill=19 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=3814
+SFXTEST PASS case=89/112 hero=Julie kind=4 skill=19 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=3814
+SFXTEST PASS case=90/112 hero=Julie kind=3 skill=20 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=0 WIND=1 HEAL=0 dupSuppressed=0 ms=2669
+SFXTEST PASS case=91/112 hero=Julie kind=4 skill=20 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=0 WIND=1 HEAL=0 dupSuppressed=0 ms=2704
+SFXTEST PASS case=92/112 hero=Julie kind=3 skill=21 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=0 WIND=1 HEAL=0 dupSuppressed=0 ms=2734
+SFXTEST PASS case=93/112 hero=Julie kind=4 skill=21 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=0 WIND=1 HEAL=0 dupSuppressed=0 ms=2694
+SFXTEST PASS case=94/112 hero=Julie kind=3 skill=22 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=1 WIND=0 HEAL=0 dupSuppressed=0 ms=2994
+SFXTEST PASS case=95/112 hero=Julie kind=4 skill=22 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=1 WIND=0 HEAL=0 dupSuppressed=0 ms=2997
+SFXTEST PASS case=96/112 hero=Julie kind=3 skill=23 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=1 WIND=0 HEAL=0 dupSuppressed=0 ms=2998
+SFXTEST PASS case=97/112 hero=Julie kind=4 skill=23 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=1 WIND=0 HEAL=0 dupSuppressed=0 ms=2988
+SFXTEST PASS case=98/112 hero=Julie kind=3 skill=24 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=1 WATER=0 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=2239
+SFXTEST PASS case=99/112 hero=Julie kind=4 skill=24 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=1 WATER=0 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=2245
+SFXTEST PASS case=100/112 hero=Julie kind=3 skill=25 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=1 WATER=0 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=2242
+SFXTEST PASS case=101/112 hero=Julie kind=4 skill=25 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=1 WATER=0 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=2239
+SFXTEST PASS case=102/112 hero=Julie kind=3 skill=26 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=1 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=2441
+SFXTEST PASS case=103/112 hero=Julie kind=4 skill=26 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=0 WATER=1 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=2485
+SFXTEST PASS case=104/112 hero=Julie kind=3 skill=27 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=1 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=2457
+SFXTEST PASS case=105/112 hero=Julie kind=4 skill=27 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 FIRE=0 WATER=1 EARTH=0 WIND=0 HEAL=0 dupSuppressed=0 ms=2438
+SFXTEST PASS case=106/112 hero=Julie kind=3 skill=28 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 FIRE=0 WATER=0 EARTH=0 WIND=0 HEAL=1 dupSuppressed=0 ms=2367
+SFXTEST PASS case=107/112 hero=Julie kind=4 skill=28 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=2354
+SFXTEST PASS case=108/112 hero=Julie kind=3 skill=33 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=1952
+SFXTEST PASS case=109/112 hero=Julie kind=4 skill=33 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=1967
+SFXTEST PASS case=110/112 hero=Julie kind=3 skill=34 level=1 beats(exp/act)=1/1 HIT=1 MISS=0 CRIT=0 SKILL=1 dupSuppressed=0 ms=1957
+SFXTEST PASS case=111/112 hero=Julie kind=4 skill=34 level=1 beats(exp/act)=1/1 HIT=0 MISS=1 CRIT=0 SKILL=1 dupSuppressed=0 ms=1959
+SFXTEST PASS case=112/112 hero=Julie kind=3 skill=39 level=1 beats(exp/act)=1/1 HIT=0 MISS=0 CRIT=0 SKILL=2 dupSuppressed=0 ms=2390
+SFXTEST PASS robustness flush queued=true flushedAfterPause=true
+SFXTEST PASS robustness flushActor keepOther=true removed=true
+SFXTEST RESULT pass=114 fail=0 unreachable=9 total=112

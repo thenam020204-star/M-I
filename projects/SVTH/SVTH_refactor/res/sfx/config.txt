@@ -1,0 +1,26 @@
+# config.txt - cai dat SFX (sua truc tiep trong JAR: sfx/config.txt). Moi dong: khoa=so. Dong bat dau bang # bi bo qua.
+# lead: bu do tre may (ms, 0..300). Tieng va cham cua ky nang duoc dat som hon frame va cham dung so ms nay.
+#   Tieng van tre so voi hinh -> tang (80, 100, 120...). Tieng den truoc hinh -> giam. 0 = phat dung luc frame va cham hien.
+lead=60
+# solo: 1 = SKILL/HEAL/nguyen to moi nhan vat chi keu 1 tieng mot luc (goi lai khi tieng cu con keu thi bo qua, khong chong, khong cat).
+solo=1
+# gap: HIT/MISS/CRIT cung giong start cach nhau duoi gap ms thi gop lam mot (ms).
+gap=40
+# trim: cat toi da bao nhieu ms im lang o dau file wav (chi trong bo nho, khong sua file). 0 = tat.
+trim=150
+# warm: so Player duoc "lam am" san (da prepare, phat la keu ngay). Moi Player am tren Android giu 1 AudioTrack; may cu loi tieng thi giam (16, 20).
+warm=26
+# prime: 1 = lam am Player (can cho J2ME Loader/Android). 0 = tat (may khong co VolumeControl nghe tieng "tach" khi vao tran).
+prime=1
+# pool: so Player toi da cho moi tieng (1..4). players: tong so Player SFX (chua cho nhac nen).
+pool=3
+players=40
+# volume: am luong SFX mac dinh (0..100). duck: % am luong nhac nen khi SFX phat (100 = khong ha nhac).
+volume=70
+duck=45
+duckhold=200
+duckramp=150
+# critdelay/healdelay: tre (ms) cua lop CRIT / HEAL so voi tieng chinh. May khong tron duoc nhieu tieng: critdelay=35, healdelay=60, pool=1.
+critdelay=0
+healdelay=0
+maxvoices=12

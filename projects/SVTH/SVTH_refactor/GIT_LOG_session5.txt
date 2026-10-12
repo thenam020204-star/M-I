@@ -1,0 +1,36 @@
+3064056 2026-10-10 Phiên 5: so ngoại lệ auto-test chuẩn vs đặt tên
+9c73b90 2026-10-10 Phiên 5: đánh dấu §3 là phát hiện chưa xác minh
+ab6b609 2026-10-10 Phiên 5: kết quả auto-test, GIT_LOG_session5
+2a359a7 2026-10-10 Phiên 5: REFACTOR_LOG (WIP, chờ kết quả auto-test)
+39ddfb5 2026-10-10 Phiên 5: ghi chú battle/sdk
+a649a61 2026-10-10 Phiên 5: bản dựng 1.5.0 (+ _renamed), mapping đầy đủ resolved/reverse/inverse, restored/src, roundtrip_check, kịch bản dịch, docs
+0f7a384 2026-10-10 Phiên 5: part_data_o (GameData) + ghi chú
+a2b25dc 2026-10-10 Phiên 5: part_data_cdi (Equip, Skill, Building, TouchSoftKeys)
+cb816ea 2026-10-10 Phiên 5: bản dựng đổi tên tạm (một phần mapping)
+6fe157d 2026-10-10 Phiên 5: tools/gen_rename_doc.py, docs/RENAME_MAP.md (tạm), Verify sửa nhận diện tên class bắt đầu bằng L
+be5cf3b 2026-10-10 Phiên 5: đưa seed data ra khỏi part_*.map
+f0b12f1 2026-10-10 Phiên 5: part_battle/data/sdk/world (một phần, đã qua kiểm tra)
+03693a4 2026-10-10 Phiên 5: ghi chú ui_as, part_world (WIP)
+2e4bd7d 2026-10-10 Phiên 5: thêm part_ui_ab/ui_as (WIP), build_jar.sh RENAME=1, VERSION 1.5.0
+4ea0a8a 2026-10-10 Phiên 5: bảng đặt tên cụm lõi (da at ct cq cu cg b bv cc k h)
+b62437e 2026-10-10 SVTH phien 5 (WIP): cong cu Remap (doi ten ASM, nhom override, kiem khu hoi), remap_check, restored/raw tham chieu
+d91870f 2026-10-10 SVTH: GIT_LOG_session4
+9faf530 2026-10-10 SVTH 1.4.0: SFX do tre thap, chong tieng khong cat, BgmDuck, bo test am thanh, tai lieu + BINDIFF_session4
+c1b1c0b 2026-10-10 SVTH 1.4.0 (WIP): SFX do tre thap, chong tieng khong cat, BgmDuck ha nhac nen khi SFX phat
+0a79a66 2026-10-10 SVTH: GIT_LOG_session3
+d5c1f4e 2026-10-10 SVTH 1.3.0: tach SFX khoi nhac, dong menu 'Cai dat SFX', bo hop thoai hoi nhac, tai lieu + BINDIFF_session3
+711322f 2026-10-10 SVTH 1.3.0 (WIP): tai lieu menu SFX, huong dan MeRun
+78cde4d 2026-10-10 SVTH 1.3.0 (WIP): tach SFX khoi nhac, dong menu 'Cai dat SFX', bo hop thoai hoi nhac
+dd9d097 2026-10-10 SVTH: GIT_LOG_session2
+fe41704 2026-10-10 SVTH 1.2.0: SFX theo cong tac nhac (at.b), 27 file wav im lang gan san, tai lieu
+813a41c 2026-10-10 SVTH: REFACTOR_LOG commits, GIT_LOG
+61b55f1 2026-10-10 SVTH debug: thoat debug = thoat ung dung (tranh ro trang thai tinh), cap nhat tai lieu
+789a85c 2026-10-10 SVTH: tools/README library list
+d7824d9 2026-10-10 SVTH: GIT_LOG_session1
+d7bf16a 2026-10-10 SVTH: REFACTOR_LOG, BINDIFF, SFXTEST results, screenshots, README limits
+720af66 2026-10-10 SVTH: Debug Battle / SFX Test Arena (debug JAR), auto-test, state-17 effects, enemy blow fix, docs
+2def9e7 2026-10-10 SVTH: SFX skeleton (beep) hooked into battle via ASM, build pipeline, MicroEmulator harness
+7494701 2026-10-10 SVTH_refactor: toolchain jars and .av parser/renderer tools
+8e51767 2026-09-29 Add files via upload
+951d4c8 2026-09-29 Add files via upload
+0ddc53a 2026-09-29 Initial commit

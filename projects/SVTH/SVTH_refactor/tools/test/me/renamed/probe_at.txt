@@ -1,0 +1,17 @@
+wait 3000
+show
+wait 1500
+probe DeviceConfig playMusic:boolean
+key -5
+wait 3000
+probe DeviceConfig playMusic:boolean
+key -7
+wait 5000
+probe DeviceConfig playMusic:boolean
+key -5
+wait 14000
+probe DeviceConfig playMusic:boolean
+key -7
+wait 2000
+probe DeviceConfig playMusic:boolean
+quit

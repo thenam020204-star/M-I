@@ -1,0 +1,212 @@
+# part_data_hold.map — cụm "data_hold": bl cv bz bw bp bu bi bm bd au ao cm cn cr dd
+# Thành viên của cz (x, y, roleId, kind, draw, getBounds...) thuộc part_battle.map — KHÔNG ghi lại ở đây.
+# Ghi chú chi tiết: docs/rename_notes/data_hold.md
+
+# ---- RoleSprite (bl) ----
+C bl RoleSprite MED  # extends cz; nhân vật trên bản đồ (hero/NPC/pet), tạo bởi o.a_bl(int) từ /bin/role.bin, stats a_AI[21]
+F bl.e_B statCount HIGH  # static =21; new int[bl.e_B] cho a_AI (o.a(bl), o.a_bl(cv), bn)
+F bl.b_B lastMoveDirection MED  # static; b_V() gán = d_B sau mỗi bước; cd khôi phục o.a_Abl[0].a_V(bl.b_B)
+F bl.a_B renderMode HIGH  # 0 = ảnh tĩnh (ctor Image), 1 = animation .av (ctor bx); a(Graphics)/a_AS(int) switch
+F bl.a_Image image HIGH  # ctor bl(Image): drawImage(a_Image, x, y, 33)
+F bl.a_bx animSprite HIGH  # ctor bl(bx); a(Graphics) vẽ a_bx tại d_S/e_S
+F bl.c_B moveSpeed HIGH  # mặc định 4; b_V() dịch d_S/e_S thêm c_B mỗi bước; biến thân chạy =5, NPC =1
+F bl.a_String name HIGH  # role.bin cột 1 (o.c_AString); bn/as hiển thị tên
+F bl.b_String facePath HIGH  # role.bin cột 3 "/face/1.av" (o.d_AString); ab nạp "<face>s.av"
+F bl.c_String battleSpritePath HIGH  # bn: o.d_AAString[id-1][2] = team.bin cột 2 "/ft/chr1.av", nạp làm sprite chiến đấu
+F bl.d_B direction HIGH  # 0 xuống(y+) 1 lên(y-) 2 trái(x-) 3 phải(x+); a_V(int) gán, b_V() di chuyển theo
+F bl.h_B savedDirection MED  # cd:2356 lưu d_B trước khi NPC quay mặt nói chuyện; ae:268 a_V(h_B) khôi phục
+F bl.a_AI stats HIGH  # int[21]: [0]lv [1]exp [2]expNext [3]hp [4]baseMaxHp [5]mp [6]baseMaxMp [7]baseAtk [8]baseDef [9]baseSpd [10..14]tổng maxHp/maxMp/atk/def/spd [16]điểm tự do [17..20]điểm thuộc tính
+F bl.f_B jobLevel HIGH  # ci 职业等级 so sánh o.a_Abl[0].f_B; 改变职业等级 f_B++
+F bl.a_AB elementValues MED  # team.bin cột 15 "0,0,10,0" (4 hệ); o.a_bl(cv) = cv.a_AB; bn chép vào actor
+F bl.a_AAB attrGrowth HIGH  # [4][5] team.bin cột 16..19; ab: cộng 1 điểm thuộc tính k -> stats HP/MP/ATK/DEF/SPD += a_AAB[k][i]
+F bl.g_B actorType MED  # 1 = hero id 1/2 (o.a(bl)), 2 = NPC/khác; cd: chỉ g_B==2 đi lang thang, g_B<=2 quay mặt khi nói
+F bl.a_S mapWidth LOW  # = cd.a_S (mapWidth) khi tạo/rời đội; chỉ ghi, không đọc
+F bl.b_S mapHeight LOW  # = cd.b_S (mapHeight); chỉ ghi, không đọc
+F bl.a_AAS followTrail HIGH  # [n][x,y,dir] d_V()/e_V() dựng; o.c() đặt đồng đội theo vết a_AAS[(k+1)*o.d_B-1]
+F bl.a_Z canWander HIGH  # s<N>r.bin khoá "walk"==1; o.c(bl) đặt false cho thành viên đội; g_V() chỉ bật khi a_Z
+F bl.b_Z isFlying HIGH  # i_V() bật, j_V() tắt "Kết thúc bay"; ae "Đang bay không thể nói chuyện"
+F bl.c_Z isRiding MED  # ae.b(int): kiểu 1 thú cưỡi (body o.g_String roleRunBodys, tốc độ 5) / 2 thuyền (tốc độ 2) bật c_Z; b_V() không gặp quái khi c_Z
+F bl.d_Z isCombatant MED  # true khi có trong team.bin hoặc là pet (o.a_bl(cv)); o.a_Abl() chỉ lấy d_Z vào trận
+F bl.a_Ad skills MED  # d[] dựng từ a_AS (o.a_Ad(bl,int)); o.a_Z(bl,id) tìm kỹ năng
+F bl.a_AS skillIds HIGH  # team.bin cột 13 / cv.a_AS; o.a(bl,int,int) thêm id + d mới
+F bl.b_AS equipIds HIGH  # team.bin cột 14 "0,0,0,0,0,0"; o.a(short[],int) -> ck[]
+F bl.a_Ack equips HIGH  # ck[6] trang bị; b_I()/c_I()... cộng chỉ số ck
+F bl.a_I encounterSteps MED  # seed; b_V(): random 100..199 bước rồi cd.a(false) gặp quái
+F bl.e_Z isWandering MED  # g_V() bật, f_V() tắt; cd gọi h_V() khi g_B==2 && e_Z && !h_Z
+F bl.f_Z noClip HIGH  # b_V(): khi f_Z chỉ kiểm biên bản đồ, bỏ va chạm; i_V() bật khi bay; ae phím 35 (debug) đảo
+F bl.c_AS footBox MED  # ctor Image: {-w/2,-8,w,8}; chỉ b(Graphics) vẽ debug
+F bl.d_AS bounds HIGH  # ctor: khung ảnh / bx.a_AS(); a_AS() trả về; f_S/g_S = d_AS[2]/[3]
+F bl.c_S petUid HIGH  # o.a_bl(cv): = cv.b_I; o.b(bl[]) so với "GameData.myPet[j].onlyId"
+F bl.g_Z isAnimating MED  # a(Graphics): g_Z && tick%2==0 -> a_bx.a(true) sang frame; ci 控制抖动 đảo g_Z
+F bl.j_S targetX HIGH  # a(int,int,int) moveTo; a_V() so d_S với j_S
+F bl.k_S targetY HIGH  # a(int,int,int) moveTo; a_V() so e_S với k_S
+F bl.j_B targetDirection HIGH  # moveTo var3; tới đích quay về j_B nếu 0..3 ("quay hướng")
+F bl.h_Z isMovingToTarget HIGH  # moveTo bật; a_V() tắt khi tới; cd mỗi tick gọi a_V() nếu h_Z
+F bl.i_Z isPlayingAction HIGH  # ci 播放动作 bật; cd gọi k() khi i_Z; k() tắt khi xong
+F bl.b_I actionRepeat MED  # seed; 播放动作 tham số 3 (mặc định 1), k() giảm dần
+F bl.c_I actionId HIGH  # 播放动作 tham số 2 = chỉ số anim; k() so frame với a_bx.a_I(c_I)
+F bl.d_I returnAction HIGH  # 播放动作 tham số 4; k() xong -> a_bx.a_V(d_I)
+F bl.e_AS stepBoxes MED  # b_V(): hộp va chạm a_AS(1) dịch trước một bước để thử va chạm
+F bl.a_J wanderLastTime HIGH  # h_V(): System.currentTimeMillis() lần đổi hướng trước
+F bl.b_J wanderInterval HIGH  # h_V(): 2000 rồi k.b(1000,4000) ms
+F bl.l_Z isWanderStepping HIGH  # h_V(): true -> b_V() mỗi tick; đổi ngẫu nhiên
+M bl.a_V(int) setDirection HIGH  # d_B = var1; animation a_bx.a_V(var1)
+M bl.a_V() updateMoveTo HIGH  # đi tới (j_S,k_S); xong: h_Z=false, quay j_B, ci.a(5) tiếp script
+M bl.b_V() stepForward HIGH  # dịch c_B theo d_B nếu không va chạm; đếm encounterSteps cho hero
+M bl.c_V() setIdleAnim MED  # nếu bx có 8 anim: anim 0..3 (đi) -> 4..7 (đứng)
+M bl.a(int,int,int) moveTo MED  # seed; target x,y,dir; h_Z=true
+M bl.d_V() initFollowTrail HIGH  # a_AAS = (số người-1)*o.d_B+1 điểm lùi sau lưng theo d_B
+M bl.e_V() resetFollowTrail MED  # giữ điểm đầu a_AAS[0], dựng lại vết từ vị trí hiện tại (o.f_V(int) rời đội)
+M bl.a_I() getSpeed HIGH  # a_AI[9] + ck.a_I() (ck "SPD+"); o.d(bl) -> a_AI[14]
+M bl.b_I() getAttack MED  # seed; a_AI[7] + ck.b_I() ("ATK+"); o.d(bl) -> a_AI[12]
+M bl.c_I() getDefense HIGH  # a_AI[8] + ck.c_I() ("DEF+"); -> a_AI[13]
+M bl.d_I() getMaxHp HIGH  # a_AI[4] + ck.d() ("HP+"); -> a_AI[10]
+M bl.j_I() getMaxMp HIGH  # a_AI[6] + ck.e() ("MP +"); -> a_AI[11]
+M bl.e_I() getFreePoints HIGH  # a_AI[16]; lên cấp "Nhận 10 điểm" +10
+M bl.f_I() getAttrPoints1 MED  # a_AI[17]; ab.java:143 a_AI[k+17] += điểm cộng vào thuộc tính k
+M bl.g_I() getAttrPoints2 MED  # a_AI[18]
+M bl.h_I() getAttrPoints3 MED  # a_AI[19]
+M bl.i_I() getAttrPoints4 MED  # a_AI[20]
+M bl.a(short[]) isBlocked HIGH  # va chạm tile (ca.a(...,1)), ra ngoài bản đồ, hoặc va actor khác (bj.a)
+M bl.f_V() stopWander HIGH  # e_Z = false
+M bl.g_V() resumeWander HIGH  # e_Z = true nếu a_Z
+M bl.h_V() updateWander HIGH  # hẹn giờ ngẫu nhiên đổi hướng / đứng, gọi b_V()
+M bl.i_V() startFlying HIGH  # nạp o.h_String (/av/long1|2.av, roleFlyBody), b_Z=f_Z=true
+M bl.j_V() land HIGH  # "Không thể hạ cánh tại đây" nếu va chạm; "Kết thúc bay"
+M bl.k() updateScriptAction HIGH  # phát anim c_I b_I lần rồi về d_I, ci.a(2)
+M bl.a_bl(bl) findTalkableNear HIGH  # quét bj actor kind 1 (k.a(bl) loại trừ) giao hộp va chạm nới 5px; cd.b_bl -> nói chuyện
+M bl.a_ax(bl) findChestAhead HIGH  # hộp phía trước theo d_B giao vật kind 12 (ax); cd.a_ax
+M bl.a_bl(int) findRoleOnMap HIGH  # actor kind 1 có h_S == roleId; cd.a_bl(int)
+
+# ---- PetInfo (cv) ----
+C cv PetInfo HIGH  # o.a_Acv "GameData.myPet[j]"; o.b(cv) đọc /bin/petdata.bin
+F cv.a_I petId HIGH  # petdata hàng a_I-1; "Sủng vật "+a_I; k.a(a_I,true) nạp sprite
+F cv.a_String name HIGH  # petdata cột 0; "Tìm thấy sủng vật "+a_String
+F cv.a_AI stats HIGH  # [0]lv [1]hp [2]maxHp [3]tăng hp [4]mp [5]maxMp [6]tăng mp [7..12] atk/def/spd + tăng [13]exp [14]expNext [15]=60
+F cv.a_Z isDeployed HIGH  # ab "Xuất chiến" -> true, "Nghỉ" -> false; o.a_Abl() chỉ lấy a_Z
+F cv.a_AB elementValues HIGH  # petdata cột 2 "3007": 4 chữ số (a=10) theo thứ tự Địa/Thủy/Hỏa/Phong; as/bn vẽ 4 hệ
+F cv.a_AS skillIds HIGH  # petdata cột 13 "5,1|20,2" lấy id đầu mỗi cặp; o.a(cv,int,int) thêm
+F cv.a_Ad skills MED  # d[]: new d(id,1,4) (o.a_Ad(cv,int))
+F cv.b_I uid HIGH  # "GameData.myPet[j].onlyId"; o.a_V(int,int) cấp k.a(b_AI)+1
+F cv.b_String dropSpec LOW  # petdata cột 19 "36,5|51,3" (id vật phẩm,số lượng); chỉ chép/lưu, không đọc
+F cv.b_AB refineItemIds HIGH  # petdata cột 18; ab "Tinh luyện": o.b(b_AB[0],1) rồi xoá pet
+F cv.b_Z isFainted MED  # bn: hp<=0 sau trận -> true; o.a_Acv() loại b_Z; cd hồi sinh -> false
+F cv.a_B ownerHeroId HIGH  # = o.e_S ("heroId" sn.bin); mọi lọc so a_B == o.e_S
+F cv.a_AAB implantSlots HIGH  # [2][2] "Cấy": [k][0]=đã cấy, [k][1]=id vật phẩm; "Số lần cấy sủng vật đã đạt giới hạn"
+
+# ---- PetSaveRecord (au) ----
+C au PetSaveRecord HIGH  # o.a_Aau: o.a(cv[]) chép từ cv, o.b(cv) "lấy từ dữ liệu bộ nhớ"; ghi RMS
+F au.a_I petId HIGH  # = cv.a_I
+F au.a_String name HIGH  # = cv.a_String
+F au.a_AI stats HIGH  # = cv.a_AI
+F au.a_Z isDeployed HIGH  # = cv.a_Z
+F au.a_AB elementValues HIGH  # = cv.a_AB
+F au.a_AS skillIds HIGH  # = cv.a_AS
+F au.a_Ad skills MED  # = cv.a_Ad
+F au.b_I uid HIGH  # khoá tìm kiếm: a_Aau[i].b_I == cv.b_I
+F au.b_String dropSpec LOW  # = cv.b_String
+F au.a_B ownerHeroId HIGH  # = cv.a_B
+F au.a_AAB implantSlots HIGH  # = cv.a_AAB
+
+# ---- RoleSaveRecord (ao) ----
+C ao RoleSaveRecord HIGH  # o.a_Aao: o.a(bl[]) chép từ hero, o.a(bl) "Nhân vật lấy từ dữ liệu bộ nhớ"; ghi RMS
+F ao.a_B roleId HIGH  # = bl.h_S; o.a_ao(int) tìm theo a_B
+F ao.a_AI stats HIGH  # = bl.a_AI
+F ao.a_AAB attrGrowth HIGH  # = bl.a_AAB
+F ao.a_AS skillIds HIGH  # = bl.a_AS
+F ao.a_Ad skills MED  # = bl.a_Ad
+F ao.b_AS equipIds HIGH  # = bl.b_AS
+F ao.a_Ack equips HIGH  # = bl.a_Ack
+F ao.a_S x HIGH  # = bl.d_S, writeShort; cd:371 khôi phục vị trí
+F ao.b_S y HIGH  # = bl.e_S
+F ao.b_B direction HIGH  # = bl.d_B
+F ao.a_AB elementValues HIGH  # = bl.a_AB
+F ao.c_B jobLevel HIGH  # = bl.f_B
+
+# ---- ScriptEvent (bz) ----
+C bz ScriptEvent HIGH  # ci.a(String,int) dựng từ /bin/s<N>e.bin event<k>: id/name/area/auto/loop/script; "执行事件:"+name
+F bz.a_S id HIGH  # khoá "id"; o.b_Z(id) đã xảy ra thì bỏ; xong (không loop) o.b_V(id)
+F bz.a_String name HIGH  # khoá "name"; "换场景k", "Dịch chuyển phó bản"
+F bz.a_AS area HIGH  # khoá "area" x,y,w,h; ci giao với hộp va chạm hero
+F bz.a_Z isAuto HIGH  # khoá "auto"; chỉ kích hoạt khi vào vùng nếu a_Z
+F bz.b_Z isLoop HIGH  # khoá "loop"; !b_Z && id>0 -> đánh dấu đã xảy ra
+F bz.a_AAString scriptLines HIGH  # "script:".."scriptEnd"; ci.a_V() chạy từng dòng
+F bz.a_bl speaker HIGH  # ae: NPC nói chuyện (s<N>c.bin role<id>); cd quay mặt NPC, cf.a_bl
+
+# ---- Quest (bp) ----
+C bp Quest HIGH  # o.a_bp(int,int) đọc /bin/task.bin; o.a_Abp
+F bp.a_S id HIGH  # task.bin cột 0
+F bp.a_String name HIGH  # cột 1; "“ name \" hoàn thành!"
+F bp.a_Z isCompleted HIGH  # cd đủ điều kiện -> true + m_AS=1 "hoàn thành"
+F bp.a_B type HIGH  # cột 3: 1 chính tuyến, 2 'Thường', 3 'Công hội' (as/bf)
+F bp.b_B repeatable MED  # cột 4 (=1 cho nhiệm vụ Công hội); ab: 1 -> menu Xem/Bỏ; o: chỉ ghi vào danh sách đã làm khi 0
+F bp.b_String description HIGH  # cột 5; as "Mô tả nhiệm vụ"
+F bp.c_String conditions HIGH  # cột 6 "有装备/道具数量/有宠物/有技能/已发生事件,..."
+F bp.d_String completionCost HIGH  # cột 7 "扣除道具/扣除装备/移除宠物,..."
+F bp.e_String reward HIGH  # cột 8; as "Thưởng nhiệm vụ"
+F bp.b_S turnInRoleId HIGH  # cột 10; cd:1410 vẽ dấu nhiệm vụ trên NPC có h_S == b_S
+
+# ---- PetListEntry (bw) ----
+C bw PetListEntry HIGH  # dòng của l (PetListPanel): new bw(petId,index,deployed,name,level)
+F bw.a_I slotIndex HIGH  # ctor var2; l.a_I() trả chỉ số trong a_Acv
+F bw.a_Z deployed HIGH  # ctor var3; l vẽ 'Xuất chiến'
+F bw.a_String name HIGH  # ctor var4; l vẽ tên
+F bw.b_I level HIGH  # ctor var5 = a_AI[0]; l vẽ '<cấp> cấp'
+M bw.a_I() getSlotIndex HIGH  # return a_I
+M bw.b() getLevel HIGH  # return b_I
+M bw.a_Z() isDeployed HIGH  # return a_Z
+
+# ---- DexEntry (bu) ----
+C bu DexEntry HIGH  # dòng của bc (DexListPanel): (petId, tên hoặc '???')
+F bu.a_I petId HIGH  # bc.a_I() getSelectedPetId
+F bu.a_String name HIGH  # bc.a_String()
+
+# ---- MaterialEntry (bm) ----
+C bm MaterialEntry HIGH  # dòng của db (MaterialListPanel): icon, tên, có/cần
+F bm.a_Image icon HIGH  # db vẽ drawImage
+F bm.a_String name HIGH  # tên nguyên liệu
+F bm.a_I ownedCount HIGH  # db.a(...) owned = o.b_I(id); vẽ trước '/'
+F bm.b_I requiredCount HIGH  # vẽ sau '/'
+
+# ---- MainQuestEntry (bd) ----
+C bd MainQuestEntry HIGH  # dòng của cy (MainQuestListPanel): new bd(id bỏ qua, status, name)
+F bd.a_String name HIGH  # cy.a_String()
+F bd.a_I status HIGH  # 1 = đã nộp (xám) — cy.a_I()
+M bd.a_String() getName HIGH  # return a_String
+M bd.a_I() getStatus HIGH  # return a_I
+
+# ---- SideQuestEntry (cn) ----
+C cn SideQuestEntry HIGH  # dòng của bf (SideQuestListPanel): (index, type, name, done)
+F cn.a_I questIndex HIGH  # bf.a_I() = chỉ số o.a_Abp
+F cn.b_I type HIGH  # bf.a(Graphics,type,...) '[Công hội]'/'[Thường]'
+F cn.a_String name HIGH  # bf vẽ tên
+F cn.a_Z isDone HIGH  # bf vẽ dấu D15 khung 0 khi xong
+
+# ---- MenuTab (dd) ----
+C dd MenuTab HIGH  # de.a(int,int) addTab: new dd(tabId, iconFrame)
+F dd.a_I tabId HIGH  # khung tiêu đề D12 / de.a_AString[a_I]
+F dd.b_I iconFrame HIGH  # khung trong /pic/xttb.gf (8 biểu tượng)
+
+# ---- RainDrop (bi) ----
+C bi RainDrop HIGH  # cd.a_Abi = 100 bi (开始下雨); vẽ drawLine trắng
+F bi.a_S x HIGH  # random 0..screenW+150; reset khi < -10
+F bi.b_S y HIGH  # -random % screenH; reset khi > screenH
+F bi.a_B dx HIGH  # -5 mỗi khung
+F bi.b_B dy HIGH  # 10 mỗi khung
+F bi.c_B lineDx HIGH  # -3: drawLine(x,y,x+c_B,y+d_B)
+F bi.d_B lineDy HIGH  # 6
+F bi.a_Random random HIGH  # static Random dùng cho y ban đầu
+
+# ---- TouchButton (cm) ----
+C cm TouchButton HIGH  # i.a(cm) thêm vùng chạm; i.a(int,int) hit-test; vẽ D23 (phím mềm) / 9.gf
+F cm.a_B buttonId HIGH  # 1 phím mềm trái, 2 phím mềm phải, 5 nút giữa (cd); bs/da xử lý theo a_B
+F cm.a_AS rect HIGH  # {x,y,26,26}; cg.a(rect..., px,py,0,0)
+
+# ---- CloseUpAnim (cr) ----
+C cr CloseUpAnim HIGH  # cd.a(String,int,int,int) 特写动画: cd.b_B = 6 phát .av rồi về chế độ 1
+F cr.a_bx anim HIGH  # new bx().a(a_String); cd vẽ và tăng frame
+F cr.a_Z isPlaying HIGH  # true khi bắt đầu; false khi xong -> ci.a(5)
+F cr.a_S x HIGH  # toạ độ màn hình (đã trừ camera)
+F cr.b_S y HIGH  # như trên
+F cr.a_String animPath HIGH  # đường dẫn .av
+F cr.a_I waitForKey HIGH  # 1: nền đen, "Nhấn phím bất kỳ để trở về" chờ phím; khác: tự kết thúc

@@ -1,0 +1,95 @@
+# part_data_cdi.map — cụm data_cdi: ck (trang bị + bảng /bin/equip.bin), d (kỹ năng + bảng /bin/skill.bin),
+# c (công trình/vật thể cảnh của bj: ảnh hoặc .av + hộp va chạm; kèm hàm kiểm tra bản quyền tĩnh), i (phím mềm cảm ứng trên màn hình).
+# Bằng chứng: restored/raw/{ck,d,c,i}.java + nơi dùng (ab, as, bn, bj, bs, cd, da, o, bl); dữ liệu: o2/bin/equip.txt, o2/bin/skill.txt.
+# Ghi chú chi tiết: docs/rename_notes/data_cdi.md
+
+# ---- Equip (ck) ----
+C ck Equip HIGH  # new ck(id) đọc /bin/equip.bin; "createEquip specialField logic err"; o.a_AAck = túi trang bị 6 ô, bl.a_Ack = đồ đang mặc
+# bảng tĩnh (cột equip.bin, tách bằng \t)
+F ck.a_AS ids HIGH  # cột 0 (id); o.f_I(id) tìm chỉ số trong mảng này
+F ck.a_AString names HIGH  # cột 1; "Mua "+ck.a_AString[..], "Nhận "+..., "Trang bị ... bộ [ ... ]"
+F ck.b_AS slotTypes HIGH  # cột 2 (1 vũ khí .. 6 nhẫn); o.c_V: ck.b_AS[id-1]-1 = ô túi o.b_AAS
+F ck.d_AString statRollSpecs HIGH  # cột 3 "loại,min,max|..." -> c_V() random cộng chỉ số (loại 1 HP..7 CRIT)
+F ck.e_AString iconNames HIGH  # cột 4; b_V(): "/icon/"+tên+".gf"
+F ck.b_AString allowedJobs HIGH  # cột 5 "0" hoặc "1,2"; ab: 0 hoặc ==bl.h_S mới mặc được, không thì "Nhân vật không phù hợp"
+F ck.c_AString descriptions HIGH  # cột 6 mô tả; as hiển thị dưới tên
+F ck.c_AS prices HIGH  # cột 7; ab: o.a_I < c_AS*k -> "Không đủ vàng", trừ vàng khi mua
+F ck.d_AS requiredLevels HIGH  # cột 9; a(ck): "Cấp yêu cầu "; ab so với bl.a_AI[0] (cấp)
+F ck.a_AImage icons HIGH  # b_V() nạp /icon/*.gf; Main giải phóng
+# instance
+F ck.a_S equipId HIGH  # ctor: chỉ số+1 trong bảng (= cột id); o.f_I(a_S); lưu/đọc RMS qua id
+F ck.a_B gemCount HIGH  # số lỗ đã khảm: "Hết lượt khảm" khi a_B>=m_S; as: a_B++ sau khi khảm; a(ck): "Lỗ a_B/m_S"
+F ck.m_S socketCount HIGH  # loại 6 trong statRollSpecs; ==0 -> "Trang bị này không thể khảm"
+F ck.b_S gemHp HIGH  # as khảm đá loại 1 cộng vào; d() = h_S+b_S (" HP+")
+F ck.c_S gemMp HIGH  # đá loại 2; e() (" MP +")
+F ck.d_S gemAttack HIGH  # đá loại 3; b_I() (" ATK+")
+F ck.e_S gemDefense HIGH  # đá loại 4; c_I() (" DEF+")
+F ck.f_S gemSpeed HIGH  # đá loại 5; a_I() (" SPD+")
+F ck.g_S gemCrit HIGH  # đá loại 6; bn cộng n_S+g_S vào chí mạng (" CRIT+")
+F ck.h_S hp HIGH  # c_V(): random loại 1
+F ck.i_S mp HIGH  # loại 2
+F ck.j_S attack HIGH  # loại 3 (vũ khí: "3,60,80")
+F ck.k_S defense HIGH  # loại 4 (mũ/áo/giày)
+F ck.l_S speed HIGH  # loại 5 (giày)
+F ck.n_S crit HIGH  # loại 7 (nhẫn)
+M ck.a_V() loadTable HIGH  # parse /bin/equip.bin "equip".."equipend" vào các mảng tĩnh
+M ck.b_V() loadIcons HIGH  # "/icon/"+e_AString[i]+".gf"
+M ck.c_V() rollStats HIGH  # random theo statRollSpecs (k.b(min,max)) vào h_S..n_S
+M ck.a(ck) describeStats HIGH  # " HP+".." CRIT+"," Lỗ ", " Cấp yêu cầu "
+M ck.a_I() getTotalSpeed HIGH  # f_S+l_S; bl cộng dồn (SPD)
+M ck.b_I() getTotalAttack HIGH  # d_S+j_S (ATK)
+M ck.c_I() getTotalDefense HIGH  # e_S+k_S (DEF)
+M ck.d() getTotalHp HIGH  # h_S+b_S (HP)
+M ck.e() getTotalMp HIGH  # i_S+c_S (MP)
+
+# ---- Skill (d) ----
+C d Skill HIGH  # new d(id,cấp,loại) đọc /bin/skill.bin "skill:".."skillend"; bl.a_Ad = kỹ năng đã học; " cấp"
+# bảng tĩnh (cột skill.bin)
+F d.a_AS ids HIGH  # cột 0; o.c_I(id) tìm chỉ số
+F d.a_AString names HIGH  # cột 1; bn vẽ tên kỹ năng khi dùng
+F d.b_AString iconNames HIGH  # cột 2; "/icon/"+b_AString[i]+".gf"
+F d.b_AS targetSides MED  # cột 4: 0 bản thân, 1 phe ta (bn AI chọn ô 10..20 của địch = phe mình), 2 địch, 3 bị động ("Phản Kích")
+F d.c_AS targetScopes MED  # cột 5: 1 đơn mục tiêu, 2 toàn nhóm (mô tả "cả nhóm", "toàn bộ phe ta")
+F d.a_AAS mpCostsPerLevel HIGH  # cột 6 (10 giá trị); bn: "Cấp này cần MP : " + a_AAS[skill][level]
+F d.c_AString descriptions HIGH  # cột 7 "[Vật lý] ..."
+F d.a_AAAS learnRules HIGH  # cột 9 "loại,cấp,cấpMax|...": [0]=nghề 1..3 / 4=sủng vật, [1]=cấp cần (as "Cấp:"), [2]=cấp tối đa (ctor -> b_B)
+F d.d_AS learnPrices HIGH  # cột 10; as "Cần vàng:"; ab trừ o.a_I khi học
+F d.a_AImage icons HIGH  # b() nạp /icon/*.gf; Main giải phóng
+# instance
+F d.a_S skillId HIGH  # ctor tham số 1; so với d.a_AS[...] trong ab
+F d.a_B level HIGH  # as: name+" "+a_B+" cấp"; bn tăng khi a_I>=b_I
+F d.a_I exp HIGH  # bn cộng kinh nghiệm kỹ năng sau khi dùng; lưu RMS readInt
+F d.b_I expToNext HIGH  # (level+1)^2*2 ở ctor và khi lên cấp (bn)
+F d.b_B maxLevel HIGH  # mặc định 10, lấy learnRules[..][2] theo loại; bn: chỉ cộng exp khi a_B<=b_B
+M d.a() loadTable HIGH  # parse /bin/skill.bin
+M d.b() loadIcons HIGH  # "/icon/"+b_AString[i]+".gf"
+
+# ---- Building (c) ----
+C c Building MED  # phần tử bj.a_Ac (part_world: "buildings"): ảnh .gf/.png hoặc anim .av (bx) + hình chữ nhật va chạm; còn chứa kiểm tra bản quyền tĩnh a_Z()
+F c.a_B kind HIGH  # 0 = ảnh (ctor Image), 1 = anim (ctor bx); switch trong draw/getBoxesAt
+F c.a_Image image HIGH  # drawImage(..., 33) anchor đáy-giữa
+F c.a_bx anim HIGH  # bx; draw đặt d_S/e_S rồi bx.a(g)
+F c.b_AS hitRects HIGH  # bj.d_AAS (resourceRects); bộ 4 x,y,w,h; vẽ đỏ trong b(..)
+F c.a_AS bounds HIGH  # ảnh: {-w/2,-h,w,h}; anim: co.a_AS() (getBounds)
+M c.a_AS() getBounds HIGH  # trả a_AS; bj dùng để cull theo viewport
+M c.a(Graphics,int,int) draw HIGH  # vẽ ảnh/anim tại x,y (bj drawMiddle/drawTop)
+M c.b(Graphics,int,int) drawDebugRects HIGH  # setColor(0xFF0000)+drawRect; bj.a(Graphics)=drawDebugRects
+M c.a(int,int,int) getBoxesAt HIGH  # hitRects dời theo x,y (anim: co.getBoxes); bj.collides dùng
+M c.a_V() nextFrame HIGH  # anim: bx.a(true); bj.animateBuildings
+M c.a_Z() isGenuineCopy HIGH  # at.needCopyRight; false nếu totalMemory==8000000 hoặc (cq.isKemu và có lớp crack); bs: false -> da.a_B=6 ("chạy trên máy thật")
+M c.b() noCrackClassFound HIGH  # Class.forName từng at.crackClassNames; true khi không tìm thấy lớp nào
+
+# ---- TouchSoftKeys (i) ----
+C i TouchSoftKeys HIGH  # danh sách nút cảm ứng cm (id 1 trái, 2 phải, 5 giữa); da/cd/bs/df pointerPressed gọi i.a(x,y)
+F i.a_Vector keys HIGH  # Vector<cm>; a(cm) thêm, a_V(byte) xoá
+F i.a_B drawingKeyId MED  # biến tạm trong draw: id nút đang vẽ
+F i.a_Image softKeyImage HIGH  # /pic/D23.gf, vẽ ở góc dưới trái/phải (khung 0/1)
+F i.b_Image centerKeyImage HIGH  # /pic/9.gf, nút id 5 giữa đáy khi cd.b_B==1 (máy cảm ứng E6/N5800...)
+M i.a(int) setSoftKeys HIGH  # 0 xoá hết, 1 chỉ nút trái, 2 chỉ nút phải, 3 cả hai
+M i.a(Graphics) draw HIGH  # vẽ các nút; E2/V8 đảo trái-phải
+M i.a() addLeftKey HIGH  # cm id 1, rect 26x26 góc dưới trái (E2/V8: phải)
+M i.b() addRightKey HIGH  # cm id 2, góc dưới phải (E2/V8: trái)
+M i.a_Z(byte) hasKey HIGH  # có cm với a_B==id; cd kiểm id 5
+M i.a_V(byte) removeKey HIGH  # removeElementAt theo id
+M i.a(cm) addKey HIGH  # addElement; cd thêm nút giữa id 5
+M i.a(int,int) hitTest HIGH  # cg.a(rect, x,y) -> cm bị chạm; pointerPressed

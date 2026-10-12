@@ -1,0 +1,19 @@
+wait 3000
+show
+wait 1500
+key -5
+wait 3000
+key -7
+wait 4000
+key 35
+wait 25000
+shot menu.png
+keys -2 5 300
+shot menu2.png
+key -5
+wait 20000
+shot run1.png
+until DebugBattle autoDone true 400000
+shot end.png
+say AUTO-DONE
+quit

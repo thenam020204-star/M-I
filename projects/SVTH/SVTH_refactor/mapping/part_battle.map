@@ -1,0 +1,381 @@
+# part_battle.map — cụm "battle": bn e bx co cz cj m be x
+# Định dạng: mapping/README.md. Ghi chú chi tiết: docs/rename_notes/battle.md
+
+# ---- Point (m) ----
+C m Point HIGH  # 2 int x,y; cj.a_m trả m(x,y); e.a_m/b_m/c_m là vị trí actor
+F m.a_I x HIGH  # cj.a_m: var5.a_I = x; so với c_m.a_I (toạ độ ngang)
+F m.b_I y HIGH  # cj.a_m: var5.b_I = y
+
+# ---- BattleMotion (cj) ----
+C cj BattleMotion MED  # helper tĩnh tính hướng + vận tốc fixed-point (x100000) cho actor chạy tới/về (bn.f state 6/14/15)
+M cj.a(int,int) directionTo HIGH  # from-to>0 → 2 (sang trái) ngược lại 3; dùng làm e.g_I
+M cj.a_m(int,int,int,int,int) step HIGH  # x∓vx/100000 theo hướng 2/3, y+vy/100000 → m mới (mỗi 3 tick)
+M cj.a_AI(int,int,int,int,int) velocity HIGH  # |dx|*100000/steps, dy*100000/steps; steps = số frame anim 2
+
+# ---- PngRecolor (be) ----
+C be PngRecolor HIGH  # tìm chunk PLTE ("50 4c 54 45") trong PNG, đổi màu palette, tính lại CRC32
+F be.a_AI crcTable HIGH  # bảng CRC32 đa thức 0xEDB88320 (-306674912)
+M be.a(byte[],int[],int[]) replaceColors HIGH  # thay màu palette from[i]→to[i] (to null-lấy phần tử cuối); co.a(String,int[],int[]) gọi
+M be.a(byte[],int) scaleBrightness HIGH  # nhân RGB palette *percent/100 (bn: D26.gf 50% làm icon tối)
+M be.a(byte[]) findPalette HIGH  # trả {offset dữ liệu PLTE, độ dài}; gặp IDAT trước → null
+M be.a(byte[],int,int) crc32 HIGH  # CRC32 chuẩn trên đoạn [off, off+len)
+
+# ---- BattleLoader (x) ----
+C x BattleLoader LOW  # Runnable gọi bn.a_Z() (nạp trận) rồi bn.a_Z=true; KHÔNG có 'new x(' nào trong game (mã chết)
+F x.a_Thread thread MED  # new Thread(this).start() trong constructor
+F x.a_bn battle HIGH  # bn được nạp
+
+# ---- SpriteBase (cz) ----
+C cz SpriteBase MED  # lớp trừu tượng chung bl (nhân vật bản đồ), ax (vật thể bản đồ), bx (sprite .av): vị trí, kích thước, hiện/ẩn, khung va chạm
+F cz.d_S x HIGH  # a(int,int) gán d_S=x; bx.draw dùng d_S làm toạ độ ngang
+F cz.e_S y HIGH  # a(int,int) gán e_S=y
+F cz.f_S width MED  # bl: = d_AS[2] (rộng ảnh); ax: 18
+F cz.g_S height MED  # bl: = d_AS[3] (cao ảnh); ax: 17
+F cz.j_Z isVisible HIGH  # bx.a(Graphics) chỉ vẽ khi j_Z; bn ẩn actor chết bằng a_bx.j_Z=false
+F cz.k_Z isSolid MED  # bj.a(...) chỉ xét va chạm với object j_Z && k_Z
+F cz.h_S roleId MED  # o.java:672 var1.h_S = role; o.e_AString[h_S-1]; bn: actor.d_I = bl.h_S
+F cz.i_B kind MED  # 1 = nhân vật/NPC (o.java:675, cd:462), 12 = ax vật thể (cd:635)
+F cz.i_S headHeight MED  # bl: chiều cao ảnh / hộp va chạm loại 2; cd vẽ biểu tượng trên đầu e_S - i_S
+M cz.a(int,int) setPosition HIGH  # d_S=x; e_S=y
+M cz.a(Graphics) draw HIGH  # abstract; bx/bl/ax vẽ sprite (gốc nhóm override)
+M cz.a_AS() getBounds MED  # abstract; bx: khung bao toàn animation (co.a_AS), bl: d_AS
+M cz.a_AS(int) getCollisionBoxes MED  # abstract; bx: hộp va chạm loại var1 tại frame hiện tại (co.a(...)); bj dùng a_AS(1) kiểm va chạm
+M cz.b(Graphics) drawDebugBoxes MED  # abstract; bx vẽ drawRect hộp loại 1/2/3 màu đỏ/xanh/tím
+
+# ---- AnimSprite (bx) ----
+C bx AnimSprite HIGH  # một instance animation .av (con trỏ anim+frame) trên AvAnimation; SFX_MAP: "bộ phát animation"
+F bx.a_co anim HIGH  # AvAnimation dữ liệu .av (cc.a(...) cache hoặc new co())
+F bx.a_S action HIGH  # chỉ số anim (Patch sfx$anim <- bx.a:S); a_V(int) đổi
+F bx.b_S frame HIGH  # frame trong anim (Patch sfx$frame <- c()); a(boolean) tăng
+F bx.a_Z isMirrored HIGH  # truyền làm cờ lật ngang cho co.draw/co.getBoxes; a_AS() đảo x khi a_Z
+M bx.a_I() getAction HIGH  # return a_S
+M bx.b() getActionCount HIGH  # co.a_I() = số anim (h_AAS.length)
+M bx.a(int,int,int) getBoxesAt HIGH  # co.a(action,frame,x,y,type,mirror) — hộp va chạm của anim/frame cho trước
+M bx.c() getFrame HIGH  # return b_S (Patch sfx$frame)
+M bx.d() getFrameCount HIGH  # số frame của anim hiện tại co.a(a_S)
+M bx.a_I(int) getActionFrameCount HIGH  # số frame của anim var1 (Patch sfx$frames <- bx.a(I)I)
+M bx.a(boolean) nextFrame HIGH  # b_S++ ; hết anim → về 0 nếu loop (hook onFrame trước RETURN)
+M bx.a(Graphics,boolean) drawFlipped MED  # co.a(...,flipX=var2, flipY=false)
+M bx.a(Graphics,int,int) drawAt HIGH  # vẽ tại (x,y) cho trước thay vì d_S/e_S
+M bx.a(String) load HIGH  # cc.a(path,...) nạp .av (Patch loaders[0]: sfx$name)
+M bx.a(String,int) loadInGroup MED  # như load nhưng nhóm cache var2 (cc.a(...,group)); cacheAvGroup
+M bx.a(String,String,String[],String[],int[],int[],int) loadRecolored MED  # .av + thư mục ảnh + đổi tên ảnh + đổi màu palette (be) ; bj dùng
+M bx.a_V(int) setAction HIGH  # đổi anim (kẹp frame); Patch: hook "đổi animation" bx.a(I)V
+M bx.b(int) setFrame HIGH  # b_S = var1 nếu hợp lệ; Patch hook bx.b(I)V
+
+# ---- AvAnimation (co) ----
+C co AvAnimation HIGH  # dữ liệu file .av: ảnh, tile, frame, hộp va chạm, anim; parser a(byte[]) (tools/avparse.py)
+F co.a_AString imageNames HIGH  # nImg x readUTF
+F co.b_AImage images HIGH  # ảnh gốc theo imageNames (loadImages)
+F co.c_AImage tileImages HIGH  # ảnh tile cắt sẵn (cutAvImg = at.b_B 1/2) trong b()
+F co.a_AS tileImage HIGH  # tile: chỉ số ảnh
+F co.b_AS tileX HIGH  # tile: x trong ảnh (drawRegion src x)
+F co.c_AS tileY HIGH  # tile: y
+F co.d_AS tileW HIGH  # tile: w
+F co.e_AS tileH HIGH  # tile: h
+F co.a_AB tileTransform HIGH  # tile: byte transform (drawRegion ^ flip)
+F co.a_AAS frameTileX HIGH  # frame: x từng tile
+F co.b_AAS frameTileY HIGH  # frame: y từng tile
+F co.c_AAS frameTileIds HIGH  # frame: chỉ số tile
+F co.d_AAS boxX HIGH  # hộp va chạm: x
+F co.e_AAS boxY HIGH  # hộp: y
+F co.f_AAS boxW HIGH  # hộp: w
+F co.g_AAS boxH HIGH  # hộp: h
+F co.a_AAB boxType HIGH  # hộp: loại (lọc theo var5 trong a(int,...,boolean))
+F co.h_AAS actionFrames HIGH  # anim → danh sách chỉ số frame (avparse 'anims')
+F co.c_B formatVersion HIGH  # =1; a(byte[]) đòi readByte()==c_B
+F co.a_String imageDir HIGH  # thư mục ảnh (a_V(String)); bj gán trực tiếp
+F co.b_String path HIGH  # đường dẫn .av; cc so khớp cache bằng b_String
+F co.a_B cutMode MED  # = at.b_B (cutAvImg) lúc cắt tile; cc nạp lại ảnh nếu khác at.b_B
+F co.f_AS boundsCache HIGH  # cache kết quả a_AS() {x,y,w,h}
+F co.a_Z flipX MED  # cờ lật ngang khi cắt tile (var2 += 2)
+F co.b_Z flipY MED  # cờ lật dọc khi cắt tile (var2++)
+F co.b_AAB imageBytes HIGH  # byte PNG thô để đổi màu (be) trước createImage
+F co.d_AImage altImages1 LOW  # chỉ đọc khi b_B==1; không bao giờ gán (mã chết)
+F co.a_AImage altImages2 LOW  # public, chỉ đọc khi b_B==2; không nơi nào gán (mã chết)
+F co.b_B imageSet LOW  # chọn bộ ảnh 0/1/2 khi vẽ; không nơi nào gán ≠0
+F co.c_String lastImageName MED  # tên ảnh tile đang vẽ, chỉ để in lỗi "Lỗi cắt khung‚tên ảnh="
+M co.a(String,int[],int[]) recolorImage HIGH  # tìm ảnh theo tên → be.a(bytes, from, to)
+M co.a_V() createImages HIGH  # Image.createImage(b_AAB[i]) rồi b_AAB=null, cutTiles()
+M co.b() cutTiles HIGH  # cắt tile thành Image riêng theo at.b_B (cutAvImg)
+M co.a_V(String) resolveImageDir HIGH  # null → thư mục của path; tương đối → nối; thêm '/'
+M co.a_I() getActionCount HIGH  # h_AAS.length
+M co.a(byte[]) parse HIGH  # parser .av (brief: co.a(byte[]); tools/avparse.py)
+M co.a(int) getFrameCount HIGH  # h_AAS[action].length
+M co.a_AS() getBounds HIGH  # min/max của mọi tile → {x,y,w,h}, cache f_AS
+M co.a(int,int,int,int,int,boolean) getBoxes HIGH  # hộp loại type (0=mọi) của action/frame, dời theo x,y, lật
+M co.a(String[],String[],int) loadImageBytes HIGH  # cc.a_AB(dir+tên) → b_AAB (đổi tên ảnh theo cặp)
+M co.a(String,String[],String[],int[],int[],int,boolean,boolean,int) loadImages HIGH  # chuỗi "Av loadImages không tìm thấy ảnh"
+M co.a(Graphics,int,int,int,int,boolean) draw HIGH  # vẽ action/frame tại x,y, lật ngang
+M co.a(Graphics,int,int,int,int,boolean,boolean) drawFlipped HIGH  # vẽ với flipX/flipY (anchor 8/4|32/16)
+M co.a_Z(String) load HIGH  # đọc file (cacheAv → cc.a_AB) rồi parse; "không tồn tại"
+
+# ---- BattleActor (e) ----
+C e BattleActor HIGH  # một ô chiến đấu bn.a[slot] (0–9 phe ta, 10–19 địch); FLOWS_battle/SFX_MAP
+F e.a_I slot HIGH  # Patch sfx$slot <- e.a:I ; bn.k: a_I = var1
+F e.b_I targetSlot HIGH  # Patch sfx$target <- e.b:I
+F e.c_I skillId HIGH  # bn: c_I = plan[3]; d.a_AString[c_I-1] tên kỹ năng; ==39 trinh sát
+F e.a_AB comboPartners MED  # hợp kích: slot các đồng đội cùng đánh một mục tiêu (bn.f phase 3, "Hợp kích")
+F e.d_I roleId HIGH  # Patch sfx$role <- e.d:I ; = bl.h_S / id petdata
+F e.a_S partyUid MED  # = bl.c_S; bn.t so khớp bl.c_S để chép chỉ số về đội
+F e.a_AI stats HIGH  # bảng chỉ số (Patch: [3]=HP thật, [10]=HP max); [0]lv [1]exp [2]expNext [5]MP [11]MPmax [12]ATK [13]DEF [14]SPD
+F e.b_S spriteW MED  # a_bx.a(0,0,0)[2] (rộng hộp frame 0)
+F e.c_S spriteH MED  # a_bx.a(0,0,0)[3]; số sát thương vẽ ở c_m.y - c_S
+F e.a_String name HIGH  # tên actor (bl.a_String / petdata[0]); " Bắt đầu tấn công"
+F e.e_I moveType MED  # 0 = chạy tới mục tiêu (anim 2 có >1 frame), 1 = ẩn rồi hiện (không anim chạy)
+F e.a_m attackPos HIGH  # điểm đứng đánh = bn.a_m(target, self); state 14 chạy tới a_m
+F e.f_I state HIGH  # Patch sfx$state <- e.f:I (0 rảnh,1/13 đánh,5 tung,6/14 chạy,10/17 hiệu ứng,2/15 về,128 chết)
+F e.a_Z showStatusIcon MED  # bn vẽ icon độc/hỗn loạn/choáng khi a_Z; xoá khi hết hiệu ứng (bn.a_Z(e))
+F e.b_AB targets HIGH  # Patch sfx$targets <- e.b:[B ; mục tiêu kỹ năng
+F e.c_AB hitFrames HIGH  # Patch sfx$hitFrames <- e.c:[B ; team.txt "frame=7,12,20"
+F e.b_Z isPresent HIGH  # Patch sfx$visible <- e.b:Z ; bn.l: địch ẩn (a_AS[i]==0) → false
+F e.c_Z effectDone MED  # bn.a(Graphics,byte[]): mọi bx hiệu ứng kỹ năng chạy xong → true
+F e.d_Z resultShown MED  # sau khi hiện xong số sát thương (s_I hết bảng) → true
+F e.e_Z castIntroDone MED  # ảnh chân dung b_bx tung chiêu đã chạy xong (bn.a(Graphics) f_I==5) / bỏ qua
+F e.f_Z isDead HIGH  # Patch sfx$dead <- e.f:Z ; HP<=0 → f_Z=true, f_I=128
+F e.g_Z blowFlag HIGH  # Patch onBlow: putfield e.g:Z = một nhịp trúng của đòn thường; điều khiển c_bx actEffect
+F e.h_Z hasArrived MED  # state 15: về tới c_m → true; a_V() đặt false
+F e.i_Z inCombo MED  # hợp kích: bn đặt i_Z=true cho các thành viên; vẽ "Hợp kích"
+F e.j_Z hasCounter HIGH  # có kỹ năng 7 Phản Kích (bn.k/l: a_AS[i]==7)
+F e.k_Z alwaysCrit HIGH  # có kỹ năng 37 Động Sát Lực "đánh thường 100% CRIT" → m_Z=true
+F e.l_Z isCountering MED  # mục tiêu có j_Z, 50% → l_Z; state 8 chờ phản đòn; nhận sát thương 15% giảm nửa
+F e.m_Z isCrit HIGH  # Patch sfx$crit <- e.m:Z ; sát thương x2; vẽ "CRIT"
+F e.n_Z halfDamage HIGH  # kỹ năng 36 Ý Chí Kiên Định "sát thương nhận vào giảm một nửa" → dmg/=2
+F e.o_Z dodged HIGH  # Patch sfx$dodge <- e.o:Z ; vẽ "Né"
+F e.p_Z isDefending HIGH  # lệnh 2 (Phòng thủ) → p_Z=true, f_I=3; sát thương /5
+F e.a_cj motion LOW  # instance cj không dùng (cj chỉ có hàm tĩnh)
+F e.g_I moveDir HIGH  # = cj.a(...) hướng 2/3
+F e.b_AI moveVelocity HIGH  # = cj.a_AI(...) vận tốc fixed-point {vx,vy}
+F e.a_bx sprite HIGH  # Patch sfx$bx <- e.a:Lbx; sprite nhân vật (chr*.av / k.a(role))
+F e.b_bx castPortrait MED  # /face/zdtx1.av, zdtx2.av: chân dung khi tung kỹ năng (vẽ tên kỹ năng)
+F e.a_Abx effectSprites HIGH  # bx hiệu ứng kỹ năng trên từng mục tiêu ("/ft/"+skill.txt cột 3)
+F e.c_bx hitEffect HIGH  # team.txt actEffect (gongji1/2.av) vẽ trên mục tiêu khi g_Z
+F e.d_bx defendEffect HIGH  # /ft/defense.av
+F e.e_bx poisonEffect HIGH  # /ft/zhongdu.av (trúng độc) vẽ khi f_AB[0]>0
+F e.f_bx confuseEffect HIGH  # /ft/zhunluan.av (hỗn loạn) vẽ khi b_B>0
+F e.g_bx stunEffect HIGH  # /ft/zhongyun.av (choáng) vẽ khi a_B>0
+F e.a_AS skillIds HIGH  # mọi id kỹ năng (bl.a_AS / petdata cột 13)
+F e.b_m pos HIGH  # vị trí vẽ hiện tại (a(m), cj.step cập nhật)
+F e.c_m homePos HIGH  # vị trí đứng gốc (battlepos.txt pos x/y)
+F e.b_AS skillLevels MED  # cấp kỹ năng của địch (petdata "id,cấp"); AI chọn cấp theo MP
+F e.a_Ad skills MED  # đối tượng kỹ năng d (cấp a_B, exp a_I/b_I) của kỹ năng chủ động
+F e.c_AS activeSkillIds HIGH  # a_AS trừ bị động bn.i_AS {7,29-32,35-38}; rỗng → "Không có kỹ năng khả dụng"
+F e.h_I expFactor LOW  # petdata cột 1; exp thưởng a_AI[1] = h_I*h_I*level
+F e.d_AB elements HIGH  # 4 nguyên tố [Địa,Thủy,Hỏa,Phong] dùng trong công thức khắc chế bn.a(byte[],byte[])
+F e.j_I attack HIGH  # = a_AI[12] (+%); công thức dmg = atk*... - def; buff kỹ năng 2/17
+F e.k_I defense HIGH  # = a_AI[13]; trừ trong công thức sát thương; kỹ năng 6 giảm
+F e.l_I speed HIGH  # = a_AI[14]; bn.m sắp thứ tự lượt theo l_I; xúc xắc trúng/né; kỹ năng 38 +20%
+F e.d_S critRate HIGH  # 5 + trang bị; k.a(1,100) <= d_S → m_Z
+F e.e_AB baseElements HIGH  # nguyên tố gốc (vẽ icon Địa/Thủy/Hỏa/Phong)
+F e.f_AB poison HIGH  # {số lượt, % HP mỗi lượt} kỹ năng 9/33; g() trừ a_AI[10]*f_AB[1]/100
+F e.a_B stunTurns HIGH  # kỹ năng 1/11/12 "choáng"; >0 bỏ lượt; icon zhongyun
+F e.b_B confuseTurns HIGH  # kỹ năng 10/34 "hỗn loạn"; >0 đánh mục tiêu ngẫu nhiên
+F e.c_B silenceTurns HIGH  # kỹ năng 16 Thiên Địa Mạc Ngôn; "cấm dùng kỹ năng"
+F e.d_B hitsLeft HIGH  # kỹ năng 4: d_B = 2+(lv-1)/4 ("mainRole.DUOCHONG"); state 5 giảm
+F e.g_AB attackBuff HIGH  # kỹ năng 2: {3 lượt, 25+lv*5 %ATK}
+F e.h_AB rallyBuff HIGH  # kỹ năng 17 Chiến Ý Cao Ngang: {3/5 lượt, 12+lv*3 % ATK+DEF}
+F e.i_AB defenseDebuff HIGH  # kỹ năng 6 Bối Thủy: {1 lượt, % DEF tự giảm}, trả lại khi hết
+F e.m_I hp HIGH  # Patch sfx$hp <- e.m:I ; HP trong trận (trừ dần), commit vào a_AI[3]
+F e.n_I mp HIGH  # Patch sfx$mp <- e.n:I ; trừ MP kỹ năng d.a_AAS
+F e.a_Image missImage HIGH  # /pic/miss.gf: nửa trên "Né", nửa dưới "CRIT"
+F e.o_I hiddenTicks MED  # moveType 1: đếm tick ẩn (>6 thì hiện ở đích)
+F e.q_Z actionAnimDone MED  # anim hành động (đánh/tung/dùng đồ) đã xong → bắt đầu hiệu ứng/số sát thương
+M e.a(m) setPos HIGH  # b_m = var1
+M e.a_I() getMoveType HIGH  # return e_I
+M e.a(Graphics) draw HIGH  # vẽ a_bx tại b_m theo state, tiến frame mỗi 3 tick
+M e.a_V() startReturn HIGH  # tính hướng/vận tốc từ b_m về c_m; h_Z=false
+M e.a(int,int) setAction HIGH  # a_bx.a_V(action); a_bx.b(0)
+M e.a(bx,int,int) setSpriteAction HIGH  # tĩnh: bx.a_V(action); bx.b(0)
+
+# ---- Battle (bn) ----
+C bn Battle HIGH  # trận đánh: cd.a_bn, cd gọi bn.f() + bn.a(Graphics) mỗi tick khi cd.b_B==5 (FLOWS_battle.md)
+# -- trạng thái chính / máy pha --
+F bn.a_I phase HIGH  # Patch putfield bn.a:I → onPhase; 0 nhập lệnh, 2 AI+chuẩn bị, 3 thực thi lượt, 4 hội thoại, 5 kết quả trinh sát, 6 chờ dùng đồ/phòng thủ, 8 hợp kích, 24 thắng, 25 thua, 27 mở màn, 28 đang nạp
+F bn.a_Ae actors HIGH  # Patch bn.a:[Le; ; slot 0–9 phe ta, 10–19 địch
+F bn.a_Z isLoaded HIGH  # x.run/c_V() đặt true sau a_Z(); pha 28 chờ a_Z && tiến độ>=100
+F bn.d_I turnIndex HIGH  # FLOWS: chỉ số trong thứ tự lượt; >= a_AAS.length → g() hết vòng
+F bn.j_I actingSlot HIGH  # FLOWS: slot đang hành động = a_AAS[d_I][0]
+F bn.a_AAS turnOrder HIGH  # m(): {slot, speed} sắp giảm dần theo e.l_I
+F bn.e_AAI actionPlans HIGH  # FLOWS bn.e[slot] = {slot, lệnh(1 đánh,2 thủ,4 kỹ năng,6 vật phẩm), mục tiêu, id kỹ năng, cấp}
+F bn.i_I commandSlot HIGH  # slot phe ta đang được chọn lệnh (0 nhân vật chính, 1/2 sủng vật); "X Bắt đầu tấn công"
+F bn.f_I commandIndex HIGH  # vòng lệnh: 0 Đánh 1 Phòng thủ 2 Kỹ năng 3 Vật phẩm 4 Sủng vật 5 Hạ ngay 6 Chạy | 7–10 Đánh/Phòng thủ/Kỹ năng/Lui (sủng vật)
+F bn.g_I menuMode MED  # 0 vòng lệnh, 1 chọn địch, 21 chọn mục tiêu kỹ năng, 2 danh sách kỹ năng, 3 chọn cấp, 4 vật phẩm, 41 chọn đồng minh, 5 sủng vật, 51 chọn vị trí, 66 thu hồi
+F bn.c_I targetCursor HIGH  # slot mục tiêu đang trỏ (g_I 1/21), ghi vào plan[2] trong s()
+F bn.n_I allyTargetIndex MED  # g_I==41: chỉ số trong aliveSlots(0,10) cho vật phẩm
+F bn.f_Z isRingTurningRight MED  # phím phải (5) → f_Z; vẽ vòng lệnh xoay
+F bn.g_Z isRingTurningLeft MED  # phím trái (2) → g_Z
+F bn.k_I cursorBob MED  # 0/3 đổi mỗi 3 tick; cộng vào y mũi tên chọn mục tiêu
+F bn.b_Z isStoryBattle MED  # cd đặt true khi có danh sách địch cố định; "Không thể bỏ chạy", không phạt khi thua
+F bn.b_I smsContext LOW  # 1 = mời hồi sinh khi thua, 3 = "Hạ ngay"; df dùng khi mua SMS thất bại (1→thua, 2→thắng, 3→g())
+F bn.c_B tutorialStep HIGH  # teachMode: teach<c_B>; "Hãy chọn kỹ năng trinh sát!" khi c_B==1
+F bn.d_B dialogMode LOW  # 1 = hội thoại đầu trận/dạy (xong → pha 0); 4 trả true
+F bn.b_AString dialogLines MED  # enemy.bin "start:" hoặc "teach1:" → a(String[])
+F bn.a_cf dialog MED  # hộp thoại cf (pha 4)
+F bn.e_Z petSummoned MED  # q() đặt true khi gọi sủng vật trong vòng; g() xoá; chặn quay lại slot 0
+F bn.i_Z isSummoning MED  # đang chạy anim tanshe.av gọi/thu hồi sủng vật (g_I 51/66)
+F bn.v_I summonSlot MED  # vị trí đặt sủng vật 0/2 (g_I==51)
+F bn.B_I chosenPetIndex MED  # = d_ab.b_I() khi chọn sủng vật
+F bn.t_I comboIndex MED  # pha 8: duyệt thành viên hợp kích
+F bn.u_I scoutedSlot MED  # kỹ năng 39 Trinh sát: slot mục tiêu (pha 5 "Thêm vào đồ giám")
+F bn.c_Z showBackground MED  # vẽ nền w_Image + hạt bụi khi true; kỹ năng nhiều mục tiêu đặt false (nền đen)
+F bn.d_Z critFlash MED  # actor m_Z chí mạng → nháy đỏ toàn màn (A_I đếm)
+F bn.A_I critFlashTicks MED  # đếm 10 lần nháy rồi tắt d_Z
+F bn.h_Z roundEffectsShown MED  # pha 0: hiện số trừ HP (độc…) sau g() rồi commit, kiểm thắng/thua
+F bn.s_I popupFrame MED  # chỉ số khung trong a_AAB (bảng nhảy số sát thương), +1 mỗi 3 tick
+F bn.a_AAB popupOffsets MED  # skill.bin "headNum:" → offset nhảy của số sát thương
+# -- dữ liệu trận --
+F bn.a_Abl party HIGH  # cd: a_bn.a_Abl = o.a_Abl() (đội: nhân vật + sủng vật)
+F bn.a_Acv petRoster MED  # cd: o.a_Acv(); danh sách "Sủng vật" để gọi
+F bn.b_AS enemyIds HIGH  # cd.a(short[]x3) tham số 1 (id petdata); "enemy"+b_AS[0]
+F bn.c_AS enemyLevels HIGH  # tham số 2 → a_AI[0] của địch
+F bn.a_AS enemyVisible MED  # tham số 3; ==0 → e.b_Z=false (địch ẩn)
+F bn.a_B enemyCount HIGH  # = b_AS.length hoặc random; battlepos "amount"+a_B
+F bn.a_AString enemyNames HIGH  # petdata[id-1][0]
+F bn.h_AS enemyRoleIds MED  # = id petdata từng địch (chỉ ghi)
+F bn.a_AAString petTable HIGH  # petdata.bin "petdata"
+F bn.b_AAString starTable HIGH  # petdata.bin "stardata"
+F bn.a_String teamData HIGH  # nội dung /bin/team.bin (attack1/attack2/attackDefault)
+F bn.d_AS allyX HIGH  # battlepos.bin team pos x
+F bn.e_AS allyY HIGH  # battlepos.bin team pos y
+F bn.f_AS enemyX HIGH  # battlepos.bin enemy pos x theo amountN
+F bn.g_AS enemyY HIGH  # battlepos.bin enemy pos y
+F bn.b_AAS dropItemIds MED  # petdata cột 14; thưởng o.b(id,1) "X 1"
+F bn.c_AAS dropItemRates MED  # petdata cột 15; % (x2 khi df.b_Z)
+F bn.d_AAS dropEquipIds MED  # petdata cột 16; "Nhận "+ck.a_AString
+F bn.e_AAS dropEquipRates MED  # petdata cột 17; phần nghìn
+F bn.f_AAS usableItems HIGH  # j(): vật phẩm o.g_AS==1 {id, số lượng}; "Không có vật phẩm dùng được"
+F bn.i_AS passiveSkillIds HIGH  # {7,29,30,31,32,35,36,37,38} — bị động, không vào danh sách kỹ năng
+F bn.a_AB scoutedStars LOW  # petdata cột 4,6,..,12 (giá trị đầu) của địch bị trinh sát; vẽ sao
+# -- thưởng / kết quả --
+F bn.c_AString rewardItemLines MED  # "Nhận vật phẩm": "Thịt ngon X 1"…
+F bn.d_AString rewardExpLines MED  # "Nhận EXP": "<tên> EXP+n"
+F bn.a_S rewardScroll MED  # cuộn danh sách vật phẩm thưởng (>6 dòng)
+F bn.e_B resultPage MED  # pha 24: 0 vật phẩm, 1 EXP, 2 lên cấp
+F bn.a_Vector levelUps MED  # bản sao bl trước khi lên cấp (so chỉ số cũ/mới)
+F bn.o_I levelUpIndex MED  # phần tử a_Vector đang hiện
+F bn.e_AString defeatLines HIGH  # {"Mất một nửa vàng","Tự về làng"}
+F bn.f_B defeatLineIndex MED  # dòng thua đang hiện (pha 25)
+# -- nạp / giao diện --
+F bn.m_I loadProgress HIGH  # 10..100 trong a_Z()
+F bn.l_I shownLoadProgress MED  # tiến độ hiển thị; c_bx đặt theo l_I/100
+F bn.c_bx loadingSprite HIGH  # /av/long1.av chạy theo tiến độ ở pha 28
+F bn.q_I introSlide MED  # pha 27: trượt ảnh E020q03 lên 5px/tick
+F bn.z_Image introImage MED  # /pic/E020q03.gf (pha 27)
+F bn.w_Image background HIGH  # /ftmap/<o.b_B>.jpg
+F bn.A_Image grainImage1 MED  # /pic/grain1.gf hạt bay (c(Graphics))
+F bn.B_Image grainImage2 MED  # /pic/grain2.gf
+F bn.g_AAS particles MED  # {x,y,loại} hạt bay lên trong c(Graphics)
+F bn.a_AI menuRect HIGH  # {x,y,193,28} khung menu giữa màn hình
+F bn.h_I menuHeight LOW  # 194/200; c_V(n, h_I-n)
+F bn.z_I menuWidth MED  # 191; độ rộng nền/khung
+F bn.w_I listHeight MED  # c_V(): chiều cao vùng danh sách (r_Image)
+F bn.x_I infoHeight MED  # c_V(): chiều cao vùng mô tả (s_Image)
+F bn.y_I footerHeight MED  # 28; chân menu (t_Image + phím mềm)
+F bn.r_Image listPanel MED  # k.a_Image(193, h, …) nền vùng danh sách
+F bn.s_Image infoPanel MED  # nền vùng mô tả
+F bn.t_Image footerPanel MED  # nền chân menu
+F bn.o_Image menuHeader MED  # /pic/D03.gf
+F bn.p_Image menuTitle MED  # /pic/D46.gf vẽ giữa header
+F bn.q_Image softKeyLabels MED  # /pic/D06.gf (3 hàng: OK/Về; đảo cho E2/V8)
+F bn.a_ab itemList HIGH  # g_I==4 danh sách vật phẩm
+F bn.b_ab skillList HIGH  # g_I==2 danh sách kỹ năng (mô tả d.c_AString)
+F bn.c_ab skillLevelList HIGH  # g_I==3 "… cấp", "Cấp này cần MP"
+F bn.d_ab petList HIGH  # g_I==5 danh sách sủng vật
+F bn.a_dc infoText MED  # dc: khung chữ mô tả vật phẩm o.g_AString
+F bn.d_bx petPreview MED  # sprite sủng vật đang chọn (k.a(cv.a_I,true))
+F bn.e_bx summonEffect MED  # /ft/tanshe.av gọi/thu hồi sủng vật
+F bn.f_bx scoutedSprite MED  # sprite địch bị trinh sát (pha 5)
+F bn.a_bx heroFace MED  # /face/1f.av, /face/2f.av vẽ ở bảng trạng thái
+F bn.b_bx ringCenter LOW  # /pic/D25.av vẽ giữa vòng lệnh
+F bn.a_AAI heroRing MED  # 7 vị trí icon vòng lệnh nhân vật chính
+F bn.b_AAI heroRingTurning MED  # 7 vị trí trung gian khi xoay
+F bn.c_AAI petRing MED  # 4 vị trí vòng lệnh sủng vật
+F bn.d_AAI petRingTurning MED  # 4 vị trí trung gian khi xoay
+F bn.k_Image commandIcons MED  # /pic/D26.gf (11 icon lệnh)
+F bn.l_Image commandIconsDim MED  # D26.gf qua be.a(…,50) (tối 50%)
+F bn.m_Image commandLabels MED  # /pic/D27.gf tên lệnh (11 hàng)
+F bn.a_AImage statusPanelImages MED  # D28 nền, D32 nhãn HP/MP/EXP, D33 thanh
+F bn.a_Image digits MED  # /pic/number01.gf số trên bảng trạng thái
+F bn.n_Image digitsSmall MED  # /pic/number01.gf số ở bảng sủng vật
+F bn.b_Image digitsBig MED  # /pic/number03.gf số nguyên tố/chỉ số
+F bn.j_Image damageDigits HIGH  # /pic/battleNumber1.gf số sát thương nảy (k.a)
+F bn.c_Image elementIcons HIGH  # /pic/D02.gf; "Ảnh Địa Thủy Hỏa Phong trống"
+F bn.d_Image barImage LOW  # /pic/D05.gf thanh HP/MP/EXP sủng vật
+F bn.g_Image statIcons MED  # /pic/D13.gf 10 hàng icon chỉ số
+F bn.h_Image gainArrow MED  # /pic/up_down.gf mũi tên tăng chỉ số khi lên cấp
+F bn.i_Image namePlate MED  # /pic/D29.gf nền tên actor
+F bn.e_Image roleNameImage LOW  # luôn null (dòng D09 bị bỏ); có thì vẽ tên dạng ảnh
+F bn.u_Image silenceIcon MED  # /icon/12.gf vẽ khi e.c_B>0 (cấm kỹ năng)
+F bn.v_Image buffIcon MED  # /icon/10.gf vẽ khi g_AB/h_AB còn lượt
+F bn.x_Image arrowImage HIGH  # /pic/arrow.gf mũi tên chọn mục tiêu/danh sách
+F bn.y_Image starImage HIGH  # /pic/star.gf sao (drawStars)
+F bn.C_Image touchBackImage LOW  # /pic/D23.gf nút "về" cho máy cảm ứng (E6/N5800…)
+F bn.p_I textColor LOW  # 0xFFFFFF
+F bn.r_I textOutlineColor LOW  # 556710
+# -- hàm --
+M bn.a_Z() loadResources HIGH  # nạp ảnh/anim/bảng, tạo actor; m_I 10..100; x.run gọi
+M bn.c_V() init HIGH  # Patch hook battleStart (đầu bn.c()V): a_Z() rồi isLoaded=true
+M bn.a_V(int) playBattleMusic HIGH  # tĩnh; 0 o.j_String trận, 1 thắng, 2 thua (da: pha 24→1, 25→2)
+M bn.f() tick HIGH  # FLOWS: cập nhật mỗi tick (máy trạng thái actor + pha 2/3/6)
+M bn.a(Graphics) draw HIGH  # cd gọi sau f(); vẽ mọi pha
+M bn.a_Z(int) handleKey HIGH  # cd chuyển phím khi b_B==5; xử lý vòng lệnh/danh sách
+M bn.b_V(int,int) handlePointer MED  # cd chuyển chạm (x,y); đổi thành phím mềm
+M bn.h() onVictory HIGH  # Patch battleEnd(1); n(); o.c_I+=2; b_V()
+M bn.e_V() onDefeat HIGH  # Patch battleEnd(2); nhạc thua, "Mất một nửa vàng", pha 25
+M bn.g() endRound HIGH  # Patch battleEnd(3) "hết vòng": commit HP/MP, trừ độc, giảm lượt hiệu ứng, sang lượt mới
+M bn.b_V() buildVictoryRewards HIGH  # EXP/lên cấp, rơi đồ ("Thịt ngon X 1", "Nhận …"), pha 24 "Thắng trận"; Patch gọi là battleEnd(4)/"bỏ chạy" — SAI, xem notes
+M bn.a_V() killAllEnemies HIGH  # mọi địch HP=0, chết, f_I=128 (df "Hạ ngay")
+M bn.a(String[]) startDialog MED  # thay '&' bằng tên nhân vật, mở cf, pha 4
+M bn.i() loadSkillTables HIGH  # tĩnh: skill.bin "skill:" + "headNum:"
+M bn.j() buildUsableItemList HIGH  # f_AAS = vật phẩm có o.g_AS==1
+M bn.k() createPartyActors HIGH  # slot 0..n từ a_Abl: sprite, actEffect, chỉ số, kỹ năng
+M bn.l() createEnemyActors HIGH  # slot 10+ từ petdata: chỉ số theo cấp, rơi đồ, kỹ năng, nguyên tố
+M bn.b_V(int) createPetActor HIGH  # dựng actor cho sủng vật vừa gọi vào slot var1
+M bn.q() summonPet HIGH  # đưa cv đã chọn vào đội ở vị trí v_I (thay sủng vật cũ)
+M bn.a(e,e,int) rollHit HIGH  # tĩnh: trúng nếu rand(1..100) <= 20 + spdA*100/(spdA+spdD) + spdA + bonus (FLOWS: xúc xắc né)
+M bn.a_V(int,int) normalAttack HIGH  # dealDamage(a[x], a[y], atk, def, 0, false)
+M bn.a(e,e,int,int,int,boolean) dealDamage HIGH  # trượt → o_Z; dmg = atk(x2 crit)*(200+khắc)/100 - def + rand(0..5), /5 thủ, /2 kỹ năng 36, min 10 → m_I-=
+M bn.a(byte[],byte[]) elementAdvantage HIGH  # tĩnh: khắc chế Địa→Thủy→Hỏa→Phong→Địa; >=10 "[Khắc]", <=-10 "[Bị khắc]"
+M bn.a_I(e) elementPassiveBonus HIGH  # tĩnh: kỹ năng 29–32 +nguyên tố*ATK/10
+M bn.a_I(int,int) countAlive HIGH  # số actor sống trong [from,to)
+M bn.a_AB(int,int) aliveSlots HIGH  # mảng slot sống trong [from,to)
+M bn.b_I(int,int) firstAliveSlot HIGH  # slot sống đầu tiên trong [from,to), không có → from-1
+M bn.c_I(int,int) prevAliveEnemy MED  # lùi từ var1 tới 10 tìm địch sống, không có → var1+1
+M bn.b_I(int) retargetIfDead HIGH  # mục tiêu chết → chọn ngẫu nhiên actor sống cùng phe
+M bn.m() buildTurnOrder HIGH  # a_AAS = {slot, l_I} sắp theo tốc độ
+M bn.a_V(e) clearStatus HIGH  # xoá độc/choáng/hỗn loạn/cấm/buff + plan của actor
+M bn.n() clearAllStatus HIGH  # a_V(e) cho mọi actor
+M bn.o() resetActionPlans HIGH  # e_AAI[i] = {i,-1,-1,-1,-1}
+M bn.s() confirmCommand HIGH  # FLOWS: chốt lệnh, sang sủng vật kế hoặc pha 2
+M bn.a_m(int,int) attackPosition HIGH  # điểm đứng trước mục tiêu var1 (± rộng sprite var2)
+M bn.p() resetActorPoses MED  # i_Z=false, anim 0, về c_m
+M bn.v() commitHpMp HIGH  # m_I/n_I → a_AI[3]/[5], kẹp max, chết khi HP<=0
+M bn.t() saveStatsToParty HIGH  # chép e.a_AI về bl tương ứng (roleId+uid)
+M bn.u() saveSkillProgressToParty HIGH  # chép cấp/exp kỹ năng d về bl
+M bn.a(bl[]) returnToMap HIGH  # tĩnh: lưu đội, hồi HP nếu trận phải thua, thoát trận (cd.l(), ci.a(0))
+M bn.b_Z() hasEnemySource MED  # b_AS != null || o.a_AS != null (cd chỉ tạo trận khi true)
+M bn.d_V() dispose HIGH  # cd gọi khi rời trận: xoá actor, ab
+M bn.c_Z() allAlliesStunned MED  # mọi đồng minh sống có a_B (choáng) ≠ 0
+M bn.d_Z() allAlliesConfused MED  # mọi đồng minh sống có b_B (hỗn loạn) ≠ 0
+M bn.a_I(int) controlStatus MED  # 0 choáng, 1 hỗn loạn, -1 bình thường
+M bn.e_Z() allEnemiesDead HIGH  # mọi slot 10+ f_I==128
+M bn.a_Z(e) hasNegativeStatus HIGH  # tĩnh: độc/choáng/hỗn loạn (không chồng hiệu ứng mới)
+M bn.a(e,int,int) applySkill HIGH  # Patch onSkillApply(bn,e,id,lv): chọn mục tiêu, tạo bx, trừ MP, hiệu ứng từng id
+M bn.a_e(int) getActor HIGH  # return a_Ae[slot] (SfxHooks sfx$actor)
+M bn.a(byte[]) allInComboWait MED  # mọi slot trong mảng có f_I==16 (chờ hợp kích)
+M bn.r() loadMenuImages MED  # D03/D46/D06 + t_Image
+M bn.c_V(int,int) createMenuPanels MED  # tạo r_Image/s_Image cao var1/var2, đặt w_I/x_I
+M bn.b(Graphics) drawScoutResult HIGH  # "Thêm vào đồ giám thành công", "Gen đặc trưng"
+M bn.a(Graphics,Image,int,int,int,int) drawStars MED  # tĩnh: n/2 sao đầy + nửa sao
+M bn.a(Graphics,int,int,int,int) drawStatGain MED  # icon, giá trị cũ → mới (màn lên cấp)
+M bn.a(Graphics,e) drawStatusIcon HIGH  # tĩnh: zhongdu/zhunluan/zhongyun theo hiệu ứng
+M bn.a(Graphics,byte[]) drawSkillEffects HIGH  # vẽ e.a_Abx trên mục tiêu; xong → effectDone
+M bn.c(Graphics) drawParticles MED  # hạt grain bay lên
+M bn.b(Graphics,e) drawStatusPanel HIGH  # bảng HP/MP/EXP + nguyên tố của actor đang chọn lệnh (dưới màn)
+M bn.a(Graphics,int,int,int,int,int,int) drawBarFrame MED  # tĩnh: drawRect + drawRoundRect viền thanh
+M bn.d(Graphics) drawCommandMenu HIGH  # theo g_I: vòng lệnh, chọn mục tiêu, danh sách kỹ năng/đồ/sủng vật
+M bn.a(Graphics,int,int,int,int[][]) drawPetBars MED  # 3 thanh HP/MP/EXP sủng vật
+M bn.e(Graphics) drawMenuPanel MED  # khung menu: header, nền danh sách/mô tả, phím mềm
+M bn.a(Graphics,int,int,byte[]) drawElements MED  # icon Địa/Thủy/Hỏa/Phong + số
+M bn.a(Graphics,int) drawTargetInfo HIGH  # thanh trên: nguyên tố, "[Khắc]"/"[Bị khắc]", tên, cấp, HP/MP mục tiêu
+M bn.f(Graphics) drawTopBar MED  # tĩnh: dải nền tiêu đề trên cùng

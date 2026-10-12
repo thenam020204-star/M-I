@@ -1,0 +1,130 @@
+# part_ui_ab.map — cụm ui_ab: ab av bs ce ba bh cx
+# Ghi chú chi tiết: docs/rename_notes/ui_ab.md
+
+# ---- ResultListener (cx) ----
+C cx ResultListener HIGH                    # interface a(int,String); implemented by as, ch, df; called by ba (OK), bh (thread), ch (SMS result)
+M cx.a(int,String) onResult HIGH            # ch: a(1,"Không có SIM"), a(1,"Người dùng hủy thanh toán"), a(0,""); df: 0 -> buy ok else "Mua thất bại"; as: 0 -> rename pet
+
+# ---- TextInputDialog (ba) ----
+C ba TextInputDialog HIGH                   # CommandListener with Form+TextField, OK/"Trở về"; built in ab.g for "Đổi tên sủng vật"
+F ba.a_TextField textField HIGH             # getString() passed to listener on OK
+F ba.a_Form form HIGH                       # new Form(title); append(textField); setCommandListener(this)
+F ba.a_cx listener HIGH                     # a_cx.a(0, text) on OK
+
+# ---- SmsSendTask (bh) ----
+C bh SmsSendTask MED                        # only caller ch (SMS payment: smsc, precmd/number/msg keys); Runnable that just reports success
+F bh.a_String smsText MED                   # 1st arg of bh.a: ch passes precmd+cmd / cmd string ("msg" side); never read (stub)
+F bh.b_String phoneNumber MED               # 2nd arg: ch b_AString = cg "number" key; never read (stub)
+F bh.a_cx listener HIGH                     # run(): a_cx.a(0,null)
+M bh.a(String,String,cx) send MED           # static: new bh, fill fields, new Thread(it).start()
+
+# ---- LogoScreen (av) ----
+C av LogoScreen HIGH                        # Main.showLogo: new av, a_B=2; plays cq logo list (.av/.png/.gf) then music prompt "Bật âm nhạc?"
+F av.a_B mode HIGH                          # 2 = logo sequence (Main.showLogo), 1 = music on/off prompt (da key handler checks a_B==1)
+F av.a_Image logoImage HIGH                 # cc.a(logo .png/.gf) drawn centered
+F av.a_bx logoAnim HIGH                     # new bx().a(logo .av)
+F av.a_AZ logoLoaded HIGH                   # per-logo "already loaded" flags (length = logo count)
+F av.b_B logoIndex HIGH                     # index into logo list, ++ when one finishes
+F av.a_AString logoFiles HIGH               # = cq.a_AString, file names checked for .av/.png/.gf
+F av.a_AI logoBackColors MED                # = cq.a_AI, fill color behind .av logo
+F av.a_AS logoDurations MED                 # = cq.a_AS (+2000 default via cg.a_AS), ms compared with currentTimeMillis-a_J
+F av.a_J logoStartTime HIGH                 # System.currentTimeMillis() at logo start
+F av.a_Z isFinished HIGH                    # true after last logo / after prompt answered (da sets it)
+F av.b_Image musicIcon HIGH                 # cc.a("/pic/musicIcon.gf")
+M av.a(Graphics) draw HIGH                  # da paint: a_av.a(g)
+
+# ---- TitleScreen (bs) ----
+C bs TitleScreen HIGH                       # cover menu "Chơi mới/Chơi tiếp/Cài đặt/Hướng dẫn/Giới thiệu/Thoát game"; Main.showCover
+F bs.a_B page HIGH                          # 0 loading, 6 start anim, 1 main menu, 2 help, 3 music volume, 4 about, 5 load slot, 7 recommended games, 8 QQ center confirm
+F bs.b_B menuIndex HIGH                     # selected menu item (left/right keys wrap)
+F bs.a_AString menuItems HIGH               # {"Chơi mới","Chơi tiếp",...}
+F bs.e_AString shownMenuItems MED           # = a_AString after load; drawn/compared
+F bs.c_B loadTargetPercent HIGH             # set 20/70/90/100 by loader b()
+F bs.d_B loadPercent HIGH                   # displayed %, ++ towards c_B; text "Đang tải dữ liệu..." + progress bar
+F bs.a_Z isLoaded HIGH                      # set by ce after b() returns
+F bs.c_Z isEnteringGame MED                 # set when a save is chosen ("Chơi tiếp"), blocks further keys
+F bs.a_bx startAnim HIGH                    # "/pic/start/start.av"
+F bs.b_bx logoAnim HIGH                     # "/pic/start/logo.av"
+F bs.c_bx loadingAnim HIGH                  # "/av/long1.av" moved along the progress bar
+F bs.d_bx volumeAnim HIGH                   # "/pic/D41.av" on settings page, frame 1 = on, 0 = off
+F bs.a_Image backgroundImage HIGH           # "/pic/menuBack.jpg"
+F bs.b_Image menuLabelImage MED             # "/pic/hk2.gf" path dropped, always null -> image label branch dead
+F bs.c_Image menuArrowsImage HIGH           # "/pic/D04.gf" = yellow left/right arrows around menu label
+F bs.d_Image topBarImage LOW                # "/pic/topbj.gf" loaded, never drawn
+F bs.e_Image levelLabelImage HIGH           # "/pic/D08.gf" = "Lv" label on save slot
+F bs.f_Image softKeyIcons HIGH              # "/pic/D23.gf" = tick/cross soft key icons
+F bs.g_Image digitsImage HIGH               # "/pic/number01.gf", cg number drawing 6x7 digits
+F bs.h_Image heroNamesImage HIGH            # "/pic/D09.gf" = "Quinn/Julie" (fallback strings)
+F bs.i_Image cursorImage HIGH               # "/pic/arrow.gf" 15x15 drawn at selected slot
+F bs.j_Image musicIcon HIGH                 # "/pic/musicIcon.gf" on settings page
+F bs.k_Image volumeArrowsImage HIGH         # "/pic/D11.gf" small arrows beside volume value
+F bs.e_B blinkFrame LOW                     # toggled 0/2 every 3 frames, never read
+F bs.a_I cursorBob HIGH                     # 3 every 12th frame else 0, offsets arrows/cursor
+F bs.a_String helpText MED                  # about.bin section "help:".."helpEnd" (temp, nulled)
+F bs.b_AString helpLines HIGH               # wrapped help text drawn on page 2
+F bs.c_AString aboutLines HIGH              # wrapped cq.a_String drawn on page 4 ("Giới thiệu")
+F bs.a_S helpScrollY HIGH                   # +-cg.b_S on up/down in page 2
+F bs.b_Z hasSave HIGH                       # RecordStore names o.n/o/p_String found
+F bs.a_AB saveSlots HIGH                    # slot numbers 1..3 present in RMS
+F bs.d_AString saveSlotNames HIGH           # "Tiến độ 1/2/3", passed to cd.a(name)
+F bs.f_B slotIndex HIGH                     # selected slot on page 5
+F bs.a_Abx slotHeroAnims HIGH               # "/av/chr"+o.j_AS[i]+".av" per slot
+F bs.f_AString recommendedGames HIGH        # "Tải {Linh Thú Chi Vương}"... from Tj<n>Url
+F bs.g_AString recommendedUrls HIGH         # getAppProperty("Tj"+n+"Url"), platformRequest
+F bs.g_B recommendedIndex HIGH              # selected entry page 7
+F bs.h_B recommendedScroll HIGH             # first visible entry page 7
+F bs.b_I recommendedRows HIGH               # 188/cg.b_S visible rows
+F bs.a_dc noticeBox MED                     # dc text box with fee notice "Lưu ý: tải miễn phí..."
+M bs.a() startLoading HIGH                  # page=0; new ce(this)  (Main.showCover)
+M bs.b() loadResources HIGH                 # run by ce thread: images, data, about.bin, save list, progress %
+M bs.c() releaseResources HIGH              # null anims/images before game
+M bs.a(Graphics) draw HIGH                  # da paint state 3
+M bs.a(int) handleKey HIGH                  # da keyPressed state 3
+M bs.a(int,int) handlePointer HIGH          # da pointerPressed; soft-key 30x30 hit boxes
+M bs.b(Graphics) drawPanelBackground HIGH   # background + menu label + 176x208 framed panel + soft key icons
+
+# ---- TitleLoader (ce) ----
+C ce TitleLoader HIGH                       # Runnable started in ctor: bs.b(); bs.a_Z=true
+F ce.a_Thread thread HIGH                   # new Thread(this).start()
+F ce.a_bs titleScreen HIGH                  # target bs
+
+# ---- MenuList (ab) ----
+C ab MenuList MED                           # instance: list of bg columns with shared cursor/scrollbar (as/bn); statics: in-game menu key dispatcher
+F ab.a_Vector columns HIGH                  # Vector of bg, addElement in a(bg)
+F ab.a_AI rowIds HIGH                       # as: skill/item id per row; read by a_I(int)
+F ab.a_I x HIGH                             # ctor arg 1, scrollbar x = a_I+c_I-15
+F ab.b_I y HIGH                             # ctor arg 2
+F ab.c_I w HIGH                             # ctor arg 3
+F ab.d_I h HIGH                             # ctor arg 4
+F ab.a_Image cursorImage HIGH               # a(Image,int); drawRegion 15x15 at selected row
+F ab.e_I cursorX HIGH                       # a(Image,int) 2nd arg; cursor x = e_I+8+bob
+F ab.f_I cursorBob HIGH                     # 3 every 12th frame else 0
+M ab.a(Image,int) setCursor HIGH            # sets cursor image + x
+M ab.a_I(int) getRowId HIGH                 # return a_AI[row]; callers o.c_I(...) lookup
+M ab.a_I() getColumnCount HIGH              # a_Vector.size()
+M ab.b_I() getSelectedRow HIGH              # column 0 bg.c() (selected index)
+M ab.a(bg) addColumn HIGH                   # a_Vector.addElement
+M ab.a_V() clearColumns HIGH                # bg.a_V() on each then removeAllElements
+M ab.b_V() selectPrev HIGH                  # bg.f() on each (key up)
+M ab.c_V() selectNext HIGH                  # bg.e() on each (key down)
+M ab.a(Graphics) draw HIGH                  # scrollbar k.a + columns + cursor
+M ab.b(int) resetSelection HIGH             # bg.a(0) on each column (param unused)
+M ab.d() scrollToTop HIGH                   # bg.b(0) -> h_I=0
+M ab.a_V(int) handleMenuKey HIGH            # cd.c: b_B==4 -> ab.a_V(key); switch on as.o_B page
+M ab.a_V(int,int) handleMenuPointer HIGH    # cd pointer: b_B==4 -> ab.a_V(x,y); soft-key boxes -> handleMenuKey
+M ab.a(int,int,int,int,int,int) isInButton HIGH  # px,py inside 30x30 box at x,y (w,h ignored); used by bs, bn, cd
+M ab.a_Z() closeMenu HIGH                   # as.e(), a_as=null, cd.b_B=1; also o "Cuộn hồi thành"
+M ab.c(int) handleShopBuyKey HIGH           # page 15 B_B==1: quantity 1..99, "Không đủ vàng", "Mua "+name
+M ab.b_Z() canLearnerLearnSkill HIGH        # d.a_AAAS[skill][i][0]==as.c_I; else "Nghề này không thể học kỹ năng này"
+M ab.a_Z(int,int) meetsSkillLevel HIGH      # level req vs hero/pet level; "không đủ cấp yêu cầu"
+M ab.a(int,int,int) hasLearnedSkill HIGH    # skill id already in a_Ad; "Đã học kỹ năng này"
+M ab.d(int) handlePetBookKey MED            # page 8: petdata.bin, 3 tabs (b_I%3), pet synthesis "Không đủ nguyên liệu"
+M ab.e(int) handleQuestPageKey HIGH         # page 7: "nhiệm vụ chính tuyến/phụ tuyến"
+M ab.a(short[][][],int,int,int) removeBagItems HIGH  # o.c(id,n); decrement count or remove slot
+M ab.f(int) handleEquipPageKey HIGH         # page 5: "Vũ khí/Mũ/Áo/Giày/Dây chuyền/Nhẫn", Thay/Tháo/Bỏ/Khảm
+M ab.a(bl,int,int) equipFromBag HIGH        # class check "Nhân vật không phù hợp", level "Cấp không đủ!", swap into slot
+M ab.a(bl,int) applySetBonus MED            # piece count >=2/4/6 adds stats by job h_S
+M ab.g(int) handlePetPageKey HIGH           # page 3: "Thuộc tính/Kỹ năng/Xuất chiến/Thả/Đổi tên/Cấy/Tinh luyện"
+M ab.e() loadSaveSlotInfo HIGH              # RecordStore o.m_String -> o.a_Z(); slot hero anims
+M ab.h(int) handleSystemPageKey HIGH        # page 9: "Lưu game/Tải game/Cài đặt nhạc/Thoát game" (Patch hook ab.h(I)V)
+M ab.c_Z() saveToSelectedSlot HIGH          # o.a_Z(as.l_B) + o.b(as.l_B); "Lưu thành công"
