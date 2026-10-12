@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 java/build_tmp/
 projects/magioi_du_an.zip
+projects/SVTH/*.zip
