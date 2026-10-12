@@ -1,0 +1,5 @@
+4ebd72d SVTH phiên 8: bỏ kỹ năng 8 khỏi kho ngẫu nhiên, pet ở lại khi sắp được hồi, bản 1.8.0 cuối + báo cáo/số đo/ảnh
+c1dd17c SVTH phiên 8: AI sủng vật đồng đội, ATK theo ngân sách sát thương, giới hạn hỗ trợ/khống chế, tài liệu ENEMY_AI/BINDIFF
+459a2fa SVTH phiên 8: EnemyAI (AI chấm điểm, bám cấp TB đội, sàn chỉ số, bộ kỹ năng ngẫu nhiên) + Patch8 + build_s8.sh + harness sets/battle
+05e5de3 SVTH: nhận chỉnh sửa tay của người dùng (font.bin, f18.bin) + JAR gốc phiên 8
+e8b5a5c SVTH: baseline phiên 8 (từ SVTH_refactor_session7.zip, v1.7.0)
