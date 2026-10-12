@@ -1,0 +1,167 @@
+wait 3000
+show
+wait 1500
+key -5
+wait 3000
+key -7
+wait 5000
+key -5
+wait 14000
+key -7
+wait 3000
+sets GameData sceneEnemyIds = S:5,6,9,10,41,42
+sets GameData sceneEnemyCountRange = B:1,2
+sets GameData sceneEnemyLevelRange = s:8,11
+calls World dbg$join i:2
+wait 300
+sets GameData party[0] stats[0] = i:10
+sets GameData party[0] stats[4] = i:2082
+sets GameData party[0] stats[10] = i:2082
+sets GameData party[0] stats[3] = i:2082
+sets GameData party[0] stats[7] = i:637
+sets GameData party[0] stats[12] = i:637
+sets GameData party[0] stats[8] = i:779
+sets GameData party[0] stats[13] = i:779
+sets GameData party[0] stats[9] = i:375
+sets GameData party[0] stats[14] = i:375
+sets GameData party[0] stats[5] = i:5000
+sets GameData party[0] stats[6] = i:5000
+sets GameData party[0] stats[11] = i:5000
+sets GameData party[1] stats[0] = i:10
+sets GameData party[1] stats[4] = i:2200
+sets GameData party[1] stats[10] = i:2200
+sets GameData party[1] stats[3] = i:2200
+sets GameData party[1] stats[7] = i:787
+sets GameData party[1] stats[12] = i:787
+sets GameData party[1] stats[8] = i:824
+sets GameData party[1] stats[13] = i:824
+sets GameData party[1] stats[9] = i:642
+sets GameData party[1] stats[14] = i:642
+sets GameData party[1] stats[5] = i:5000
+sets GameData party[1] stats[6] = i:5000
+sets GameData party[1] stats[11] = i:5000
+callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
+battle 240000 L10#1
+shot b1.png
+calls World dbg$join i:2
+wait 300
+sets GameData party[0] stats[0] = i:10
+sets GameData party[0] stats[4] = i:2082
+sets GameData party[0] stats[10] = i:2082
+sets GameData party[0] stats[3] = i:2082
+sets GameData party[0] stats[7] = i:637
+sets GameData party[0] stats[12] = i:637
+sets GameData party[0] stats[8] = i:779
+sets GameData party[0] stats[13] = i:779
+sets GameData party[0] stats[9] = i:375
+sets GameData party[0] stats[14] = i:375
+sets GameData party[0] stats[5] = i:5000
+sets GameData party[0] stats[6] = i:5000
+sets GameData party[0] stats[11] = i:5000
+sets GameData party[1] stats[0] = i:10
+sets GameData party[1] stats[4] = i:2200
+sets GameData party[1] stats[10] = i:2200
+sets GameData party[1] stats[3] = i:2200
+sets GameData party[1] stats[7] = i:787
+sets GameData party[1] stats[12] = i:787
+sets GameData party[1] stats[8] = i:824
+sets GameData party[1] stats[13] = i:824
+sets GameData party[1] stats[9] = i:642
+sets GameData party[1] stats[14] = i:642
+sets GameData party[1] stats[5] = i:5000
+sets GameData party[1] stats[6] = i:5000
+sets GameData party[1] stats[11] = i:5000
+callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
+battle 240000 L10#2
+calls World dbg$join i:2
+wait 300
+sets GameData party[0] stats[0] = i:10
+sets GameData party[0] stats[4] = i:2082
+sets GameData party[0] stats[10] = i:2082
+sets GameData party[0] stats[3] = i:2082
+sets GameData party[0] stats[7] = i:637
+sets GameData party[0] stats[12] = i:637
+sets GameData party[0] stats[8] = i:779
+sets GameData party[0] stats[13] = i:779
+sets GameData party[0] stats[9] = i:375
+sets GameData party[0] stats[14] = i:375
+sets GameData party[0] stats[5] = i:5000
+sets GameData party[0] stats[6] = i:5000
+sets GameData party[0] stats[11] = i:5000
+sets GameData party[1] stats[0] = i:10
+sets GameData party[1] stats[4] = i:2200
+sets GameData party[1] stats[10] = i:2200
+sets GameData party[1] stats[3] = i:2200
+sets GameData party[1] stats[7] = i:787
+sets GameData party[1] stats[12] = i:787
+sets GameData party[1] stats[8] = i:824
+sets GameData party[1] stats[13] = i:824
+sets GameData party[1] stats[9] = i:642
+sets GameData party[1] stats[14] = i:642
+sets GameData party[1] stats[5] = i:5000
+sets GameData party[1] stats[6] = i:5000
+sets GameData party[1] stats[11] = i:5000
+callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
+battle 240000 L10#3
+calls World dbg$join i:2
+wait 300
+sets GameData party[0] stats[0] = i:10
+sets GameData party[0] stats[4] = i:2082
+sets GameData party[0] stats[10] = i:2082
+sets GameData party[0] stats[3] = i:2082
+sets GameData party[0] stats[7] = i:637
+sets GameData party[0] stats[12] = i:637
+sets GameData party[0] stats[8] = i:779
+sets GameData party[0] stats[13] = i:779
+sets GameData party[0] stats[9] = i:375
+sets GameData party[0] stats[14] = i:375
+sets GameData party[0] stats[5] = i:5000
+sets GameData party[0] stats[6] = i:5000
+sets GameData party[0] stats[11] = i:5000
+sets GameData party[1] stats[0] = i:10
+sets GameData party[1] stats[4] = i:2200
+sets GameData party[1] stats[10] = i:2200
+sets GameData party[1] stats[3] = i:2200
+sets GameData party[1] stats[7] = i:787
+sets GameData party[1] stats[12] = i:787
+sets GameData party[1] stats[8] = i:824
+sets GameData party[1] stats[13] = i:824
+sets GameData party[1] stats[9] = i:642
+sets GameData party[1] stats[14] = i:642
+sets GameData party[1] stats[5] = i:5000
+sets GameData party[1] stats[6] = i:5000
+sets GameData party[1] stats[11] = i:5000
+callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
+battle 240000 L10#4
+calls World dbg$join i:2
+wait 300
+sets GameData party[0] stats[0] = i:10
+sets GameData party[0] stats[4] = i:2082
+sets GameData party[0] stats[10] = i:2082
+sets GameData party[0] stats[3] = i:2082
+sets GameData party[0] stats[7] = i:637
+sets GameData party[0] stats[12] = i:637
+sets GameData party[0] stats[8] = i:779
+sets GameData party[0] stats[13] = i:779
+sets GameData party[0] stats[9] = i:375
+sets GameData party[0] stats[14] = i:375
+sets GameData party[0] stats[5] = i:5000
+sets GameData party[0] stats[6] = i:5000
+sets GameData party[0] stats[11] = i:5000
+sets GameData party[1] stats[0] = i:10
+sets GameData party[1] stats[4] = i:2200
+sets GameData party[1] stats[10] = i:2200
+sets GameData party[1] stats[3] = i:2200
+sets GameData party[1] stats[7] = i:787
+sets GameData party[1] stats[12] = i:787
+sets GameData party[1] stats[8] = i:824
+sets GameData party[1] stats[13] = i:824
+sets GameData party[1] stats[9] = i:642
+sets GameData party[1] stats[14] = i:642
+sets GameData party[1] stats[5] = i:5000
+sets GameData party[1] stats[6] = i:5000
+sets GameData party[1] stats[11] = i:5000
+callm GameCanvas instance:GameCanvas world:World -- triggerRandomEncounter z:false
+battle 240000 L10#5
+say DONE
+quit

@@ -127,6 +127,45 @@ public class MeRun {
                         Class<?> c = cl.loadClass(w[1]);
                         Object r = invoke(c, null, w[2], Arrays.copyOfRange(w, 3, w.length));
                         System.out.println("MERUN calls " + ln.substring(6) + " -> " + r); break; }
+                    case "sets": {            // session 8: sets <Lớp> <đường dẫn: tĩnh rồi instance, cho phép a[2]> = <i:n|z:b|s:text|S:1,2|B:1,2|I:1,2>
+                        int eq = Arrays.asList(w).indexOf("=");
+                        Object[] tgt = resolve(cl.loadClass(w[1]), Arrays.copyOfRange(w, 2, eq), true);
+                        assign(tgt, w[eq + 1]);
+                        System.out.println("MERUN sets " + ln.substring(5) + " -> ok"); break; }
+                    case "battle": {          // session 8: battle <timeout ms> <nhãn> — bấm OK (đánh thường mục tiêu mặc định) tới khi trận xong rồi về bản đồ
+                        long lim = System.currentTimeMillis() + Long.parseLong(w[1]);
+                        Class<?> gc = cl.loadClass("GameCanvas");
+                        Object world = field(field(gc, null, "instance", true).getClass(), field(gc, null, "instance", true), "world", false);
+                        boolean dead0 = false, started = false; long t0b = 0; int rounds = 0, lastPhase = -1; String foes = ""; int minPct0 = 100, minPct1 = 100; int heroes = 0;
+                        while (System.currentTimeMillis() < lim) {
+                            Object bt = field(world.getClass(), world, "battle", false);
+                            int mode = ((Number) field(world.getClass(), world, "mode", false)).intValue();
+                            if (bt != null && mode == 5) {
+                                Object[] act = (Object[]) field(bt.getClass(), bt, "actors", false);
+                                int ph = ((Number) field(bt.getClass(), bt, "phase", false)).intValue();
+                                if (act != null && act[0] != null) {
+                                    if (!started) {
+                                        started = true; t0b = System.currentTimeMillis(); StringBuilder sb = new StringBuilder();
+                                        for (int i = 10; i < act.length; i++) if (act[i] != null) { int[] st = (int[]) field(act[i].getClass(), act[i], "stats", false); sb.append(field(act[i].getClass(), act[i], "roleId", false)).append(':').append(st[0]).append(' '); }
+                                        foes = sb.toString().trim();
+                                        for (int i = 0; i < 10; i++) if (act[i] != null) heroes++;
+                                    }
+                                    if (ph == 2 && lastPhase != 2) rounds++;
+                                    lastPhase = ph;
+                                    for (int i = 0; i < 2; i++) if (act[i] != null) {
+                                        int hp = ((Number) field(act[i].getClass(), act[i], "hp", false)).intValue();
+                                        int mx = ((int[]) field(act[i].getClass(), act[i], "stats", false))[10];
+                                        int pct = mx > 0 ? Math.max(0, hp) * 100 / mx : 0;
+                                        if (i == 0) minPct0 = Math.min(minPct0, pct); else minPct1 = Math.min(minPct1, pct);
+                                    }
+                                    if (((Number) field(act[0].getClass(), act[0], "state", false)).intValue() == 128) dead0 = true;
+                                }
+                            } else if (started && mode == 1) break;
+                            callInt(cur(), "keyPressed", -5); Thread.sleep(60); callInt(cur(), "keyReleased", -5); Thread.sleep(250);
+                        }
+                        System.out.println("MERUN battle " + (w.length > 2 ? w[2] : "") + " result=" + (!started ? "nostart" : dead0 ? "lose" : System.currentTimeMillis() >= lim ? "timeout" : "win")
+                                + " secs=" + (started ? (System.currentTimeMillis() - t0b) / 1000 : 0) + " heroes=" + heroes + " minHpPct0=" + minPct0 + " minHpPct1=" + (heroes > 1 ? minPct1 : -1) + " foes=" + foes);
+                        break; }
                     case "quit": System.out.println("MERUN quit"); System.out.flush(); Runtime.getRuntime().halt(0);
                     default: System.out.println("MERUN ??? " + ln);
                 }
@@ -137,6 +176,60 @@ public class MeRun {
         Runtime.getRuntime().halt(0);
     }
 
+
+    /** session 8: đường dẫn field: phần tử đầu là field tĩnh của c, sau đó field instance; "x[3]" lấy phần tử mảng.
+     *  Trả {đối tượng chứa, tên field hoặc Integer chỉ số} của phần tử cuối (để gán). */
+    static Object[] resolve(Class<?> c, String[] path, boolean firstStatic) throws Exception {
+        Object o = null; Class<?> k = c;
+        for (int i = 0; i < path.length; i++) {
+            String p = path[i]; int br = p.indexOf('[');
+            String name = br < 0 ? p : p.substring(0, br);
+            boolean last = i == path.length - 1;
+            if (last && br < 0) return new Object[]{o == null ? c : o, name, Boolean.valueOf(o == null)};
+            Object v = field(o == null ? k : o.getClass(), o, name, o == null && i == 0 && firstStatic);
+            if (br >= 0) {
+                int idx = Integer.parseInt(p.substring(br + 1, p.indexOf(']')));
+                if (last) return new Object[]{v, Integer.valueOf(idx), Boolean.FALSE};
+                v = java.lang.reflect.Array.get(v, idx);
+            }
+            o = v;
+        }
+        throw new RuntimeException("path?");
+    }
+    static void assign(Object[] t, String val) throws Exception {
+        Object holder = t[0];
+        Object v;
+        if (val.startsWith("i:")) v = Integer.valueOf(val.substring(2));
+        else if (val.startsWith("z:")) v = Boolean.valueOf(val.substring(2));
+        else if (val.startsWith("s:")) v = val.substring(2);
+        else if (val.startsWith("S:") || val.startsWith("B:") || val.startsWith("I:")) {
+            String[] p = val.substring(2).split(",");
+            if (val.charAt(0) == 'S') { short[] a = new short[p.length]; for (int i = 0; i < p.length; i++) a[i] = Short.parseShort(p[i]); v = a; }
+            else if (val.charAt(0) == 'B') { byte[] a = new byte[p.length]; for (int i = 0; i < p.length; i++) a[i] = Byte.parseByte(p[i]); v = a; }
+            else { int[] a = new int[p.length]; for (int i = 0; i < p.length; i++) a[i] = Integer.parseInt(p[i]); v = a; }
+        } else if (val.equals("null")) v = null;
+        else throw new RuntimeException("value? " + val);
+        if (t[1] instanceof Integer) {
+            int idx = (Integer) t[1]; Class<?> ct = holder.getClass().getComponentType();
+            if (ct == int.class) java.lang.reflect.Array.setInt(holder, idx, (Integer) v);
+            else if (ct == short.class) java.lang.reflect.Array.setShort(holder, idx, (short) (int) (Integer) v);
+            else if (ct == byte.class) java.lang.reflect.Array.setByte(holder, idx, (byte) (int) (Integer) v);
+            else java.lang.reflect.Array.set(holder, idx, v);
+            return;
+        }
+        String name = (String) t[1]; boolean st = (Boolean) t[2];
+        Class<?> k0 = st ? (Class<?>) holder : holder.getClass();
+        for (Class<?> k = k0; k != null; k = k.getSuperclass()) for (Field f : k.getDeclaredFields()) {
+            if (!f.getName().equals(name) || Modifier.isStatic(f.getModifiers()) != st) continue;
+            f.setAccessible(true);
+            Object obj = st ? null : holder; Class<?> ft = f.getType();
+            if (v instanceof Integer) { int n = (Integer) v; if (ft == byte.class) f.setByte(obj, (byte) n); else if (ft == short.class) f.setShort(obj, (short) n); else f.setInt(obj, n); }
+            else if (v instanceof Boolean) f.setBoolean(obj, (Boolean) v);
+            else f.set(obj, v);
+            return;
+        }
+        throw new NoSuchFieldException(name);
+    }
     static Object invoke(Class<?> c, Object o, String name, String[] a) throws Exception {
         Object[] args = new Object[a.length];
         for (int i = 0; i < a.length; i++) {
