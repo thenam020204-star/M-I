@@ -1,0 +1,4 @@
+> before getstatic
+> K.clinit
+> V=42const-string
+> main completed

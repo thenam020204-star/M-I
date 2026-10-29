@@ -1,0 +1,5 @@
+> thrown true
+> error-subclass true
+> depth>100 true
+> second thrown true
+> thread ok true

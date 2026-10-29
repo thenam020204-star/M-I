@@ -11,7 +11,7 @@ STUBS="${J2MEC_LIBS:-$M/${CLDC/cldc/cldcapi}-$MICROEMU_VER.jar:$M/midpapi20-$MIC
 W="$(mktemp -d)"; trap 'rm -rf "$W"' EXIT
 mkdir -p "$W/raw" "$W/pv"
 find "$SRC" -name '*.java' > "$W/srcs.txt"
-"$JDK8_HOME/bin/javac" -nowarn -source 1.3 -target 1.3 -bootclasspath "$STUBS" -extdirs "" -d "$W/raw" @"$W/srcs.txt" >"$W/javac.log" 2>&1 \
+"$JDK8_HOME/bin/javac" -encoding UTF-8 -nowarn -source 1.3 -target 1.3 -bootclasspath "$STUBS" -extdirs "" -d "$W/raw" @"$W/srcs.txt" >"$W/javac.log" 2>&1 \
   || { grep -v '^Picked up' "$W/javac.log" >&2; echo "javac failed" >&2; exit 1; }
 PG="$M/proguard-base-$PROGUARD_VER.jar:$M/proguard-core-$PROGUARD_CORE_VER.jar:$M/kotlin-stdlib-$KOTLIN_STDLIB_VER.jar:$M/gson-$GSON_VER.jar:$M/log4j-api-$LOG4J_VER.jar:$M/log4j-core-$LOG4J_VER.jar:$M/json-$JSON_VER.jar"
 cat > "$W/pg.conf" <<PGC

@@ -91,10 +91,8 @@ public final class Extractor {
                 f.desc = desc;
                 f.access = access;
                 if (value != null) {
-                    f.constant = value;
-                    f.constantType = value instanceof Integer ? "I" : value instanceof Long ? "J"
-                            : value instanceof Float ? "F" : value instanceof Double ? "D" : "S";
-                    if (value instanceof Integer && !desc.equals("I")) f.constantType = desc;   // Z,B,C,S share ints
+                    f.constant = String.valueOf(value);
+                    f.constantType = value instanceof String ? "Ljava/lang/String;" : desc;
                 }
                 cs.fields.add(f);
                 return null;

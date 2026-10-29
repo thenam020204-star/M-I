@@ -1,0 +1,2 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM). UNVERIFIED for CLDC: HotSpot throws ExceptionInInitializerError then NoClassDefFoundError; CLDC 1.1 has no ExceptionInInitializerError, so the error mapping is a T12 decision (docs/error-mapping.md)

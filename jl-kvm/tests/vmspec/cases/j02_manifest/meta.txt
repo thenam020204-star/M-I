@@ -1,0 +1,2 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus (after the jar is opened normally); spec: JAR manifest continuation lines (java.util.jar spec / MIDP 2.0 sec.4); MIDlet.getAppProperty

@@ -1,0 +1,7 @@
+> timed wait elapsed ok true
+> W waiting
+> N notified, still holding lock
+> N leaving
+> W woke
+> notifyAll woke 3
+> wait(-1) IllegalArgumentException

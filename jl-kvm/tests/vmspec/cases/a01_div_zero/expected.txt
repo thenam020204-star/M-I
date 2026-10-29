@@ -1,0 +1,8 @@
+> idiv ArithmeticException
+> irem ArithmeticException
+> ldiv ArithmeticException
+> lrem ArithmeticException
+> fdiv Infinity
+> ddiv Infinity
+> frem-nan true
+> drem-nan true

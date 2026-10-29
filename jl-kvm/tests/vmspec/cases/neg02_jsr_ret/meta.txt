@@ -1,0 +1,2 @@
+mode: spec-only
+source: spec: CLDC 1.1 preverification rules (section number not verified): jsr/ret are not allowed in preverified classes (rejected, VerifyError assumed, UNVERIFIED). Oracles accept them

@@ -1,0 +1,3 @@
+> Aa aA AA aa
+> a A _ $ a1
+> forName TTTT[java.lang.ClassNotFoundException]

@@ -1,0 +1,9 @@
+> B.clinit begin ax=10 ay=0
+> B.clinit end
+> A.clinit begin bx=20
+> A.clinit end ay=21
+> A.ay=21
+> B.bx=20
+> S.clinit count=1
+> S.touch
+> S.touch

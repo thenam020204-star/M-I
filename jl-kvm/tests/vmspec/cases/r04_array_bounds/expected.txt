@@ -1,0 +1,10 @@
+> istore -1 ArrayIndexOutOfBoundsException
+> iload n ArrayIndexOutOfBoundsException
+> bastore n ArrayIndexOutOfBoundsException
+> aaload -1 ArrayIndexOutOfBoundsException
+> aastore n ArrayIndexOutOfBoundsException
+> last-ok 0 0
+> charAt StringIndexOutOfBoundsException
+> arraycopy ArrayIndexOutOfBoundsException
+> arraycopy-type ArrayStoreException
+> arraycopy-null NullPointerException

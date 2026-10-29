@@ -1,0 +1,8 @@
+> utf8 41c3a9e282ac
+> latin1 41e93f
+> decode utf8 len=3 c1=233 c2=8364
+> decode latin1 len=3 c1=195 c2=169
+> malformed len=3 first=65 last=66
+> writer utf8 41c3a9e282ac
+> reader utf8 true
+> unknown charset UnsupportedEncodingException

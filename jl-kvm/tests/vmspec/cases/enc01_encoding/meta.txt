@@ -1,0 +1,2 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM); spec: CLDC 1.1 required encodings (section number not verified) UTF-8 and ISO8859_1 (also 'ISO-8859-1' alias is accepted by both oracles); default encoding is device dependent and only printed as '# ' info. Malformed-UTF-8 handling is not specified by CLDC (UNVERIFIED)

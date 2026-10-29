@@ -1,0 +1,2 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM); spec: Object.wait(long) javadoc (CLDC 1.1): timeout, notify wakes one waiter that re-acquires the monitor after the notifier exits, IllegalArgumentException for negative timeout. Timing assertions allow a wide margin

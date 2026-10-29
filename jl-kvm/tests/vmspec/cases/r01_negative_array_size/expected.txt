@@ -1,0 +1,5 @@
+> newarray NegativeArraySizeException
+> anewarray NegativeArraySizeException
+> multianewarray-inner NegativeArraySizeException
+> multianewarray-outer NegativeArraySizeException
+> zero-length 0 0

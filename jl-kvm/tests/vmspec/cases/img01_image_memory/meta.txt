@@ -1,0 +1,2 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM); whether pixel memory is charged to the Java heap is a device property (UNVERIFIED, profile parameter imagesCountInHeap), only the delta is printed as info

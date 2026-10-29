@@ -1,0 +1,3 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM); spec: JVMS 8.13 monitorexit by a non-owner and a method that returns holding a lock throw IllegalMonitorStateException (HotSpot); structured locking is optional in the JVMS, so UNVERIFIED for KVM
+notes: Raw bytecode (ASM)

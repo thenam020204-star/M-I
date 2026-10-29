@@ -35,8 +35,8 @@ public final class ApiDb {
         public String name;
         public String desc;
         public int access;
-        public Object constant;          // ConstantValue, if any (Integer/Long/Float/Double/String)
-        public String constantType;      // I,J,F,D,S(tring) to survive JSON round trip
+        public String constant;          // ConstantValue as text (String.valueOf), if any
+        public String constantType;      // field descriptor (Z,B,C,S,I,J,F,D or Ljava/lang/String;)
     }
 
     public static final class MethodSig {

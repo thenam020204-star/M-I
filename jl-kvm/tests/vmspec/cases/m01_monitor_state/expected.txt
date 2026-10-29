@@ -1,0 +1,9 @@
+> wait IllegalMonitorStateException
+> wait(10) IllegalMonitorStateException
+> notify IllegalMonitorStateException
+> notifyAll IllegalMonitorStateException
+> notify inside lock ok
+> reentrant x3 ok
+> notify after nested exit ok
+> notify after exit IllegalMonitorStateException
+> notify other lock IllegalMonitorStateException

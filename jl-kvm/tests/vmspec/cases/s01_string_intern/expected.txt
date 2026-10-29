@@ -1,0 +1,11 @@
+> literal == literal T
+> const concat T
+> final concat T
+> runtime concat == literal F
+> runtime concat.equals T
+> intern T
+> new String == literal F
+> new String.intern == literal T
+> other class literal T
+> other class intern T
+> empty TT

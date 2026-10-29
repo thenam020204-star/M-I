@@ -1,0 +1,5245 @@
+{
+  "format": 1,
+  "name": "cldc-1.1",
+  "source": "MicroEmulator 2.0.4 stubs (Maven Central org.microemu, Apache-2.0/LGPL dual), see PLAN V1: cldcapi11-2.0.4.jar",
+  "classes": [
+    {
+      "name": "java/io/ByteArrayInputStream",
+      "superName": "java/io/InputStream",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "buf",
+          "desc": "[B",
+          "access": 4
+        },
+        {
+          "name": "count",
+          "desc": "I",
+          "access": 4
+        },
+        {
+          "name": "mark",
+          "desc": "I",
+          "access": 4
+        },
+        {
+          "name": "pos",
+          "desc": "I",
+          "access": 4
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "([B)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "([BII)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "available",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "close",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "mark",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "markSupported",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "read",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "read",
+          "desc": "([BII)I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "reset",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "skip",
+          "desc": "(J)J",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/io/ByteArrayOutputStream",
+      "superName": "java/io/OutputStream",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "buf",
+          "desc": "[B",
+          "access": 4
+        },
+        {
+          "name": "count",
+          "desc": "I",
+          "access": 4
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "close",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "reset",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "size",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toByteArray",
+          "desc": "()[B",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "write",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "write",
+          "desc": "([BII)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/io/DataInput",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "readBoolean",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readByte",
+          "desc": "()B",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readChar",
+          "desc": "()C",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readDouble",
+          "desc": "()D",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readFloat",
+          "desc": "()F",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readFully",
+          "desc": "([B)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readFully",
+          "desc": "([BII)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readInt",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readLong",
+          "desc": "()J",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readShort",
+          "desc": "()S",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readUTF",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readUnsignedByte",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readUnsignedShort",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "skipBytes",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "java/io/DataInputStream",
+      "superName": "java/io/InputStream",
+      "interfaces": [
+        "java/io/DataInput"
+      ],
+      "access": 1,
+      "fields": [
+        {
+          "name": "in",
+          "desc": "Ljava/io/InputStream;",
+          "access": 4
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(Ljava/io/InputStream;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "available",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "close",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "mark",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "markSupported",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "read",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "read",
+          "desc": "([B)I",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "read",
+          "desc": "([BII)I",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readBoolean",
+          "desc": "()Z",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readByte",
+          "desc": "()B",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readChar",
+          "desc": "()C",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readDouble",
+          "desc": "()D",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readFloat",
+          "desc": "()F",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readFully",
+          "desc": "([B)V",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readFully",
+          "desc": "([BII)V",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readInt",
+          "desc": "()I",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readLong",
+          "desc": "()J",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readShort",
+          "desc": "()S",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readUTF",
+          "desc": "()Ljava/lang/String;",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readUTF",
+          "desc": "(Ljava/io/DataInput;)Ljava/lang/String;",
+          "access": 25,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readUnsignedByte",
+          "desc": "()I",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "readUnsignedShort",
+          "desc": "()I",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "reset",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "skip",
+          "desc": "(J)J",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "skipBytes",
+          "desc": "(I)I",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "java/io/DataOutput",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "write",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "([B)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "([BII)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeBoolean",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeByte",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeChar",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeChars",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeDouble",
+          "desc": "(D)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeFloat",
+          "desc": "(F)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeInt",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeLong",
+          "desc": "(J)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeShort",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeUTF",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "java/io/DataOutputStream",
+      "superName": "java/io/OutputStream",
+      "interfaces": [
+        "java/io/DataOutput"
+      ],
+      "access": 1,
+      "fields": [
+        {
+          "name": "out",
+          "desc": "Ljava/io/OutputStream;",
+          "access": 4
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(Ljava/io/OutputStream;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "close",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "flush",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "([BII)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeBoolean",
+          "desc": "(Z)V",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeByte",
+          "desc": "(I)V",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeChar",
+          "desc": "(I)V",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeChars",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeDouble",
+          "desc": "(D)V",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeFloat",
+          "desc": "(F)V",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeInt",
+          "desc": "(I)V",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeLong",
+          "desc": "(J)V",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeShort",
+          "desc": "(I)V",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "writeUTF",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 17,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "java/io/EOFException",
+      "superName": "java/io/IOException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/io/IOException",
+      "superName": "java/lang/Exception",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/io/InputStream",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1025,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "available",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "close",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "mark",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "markSupported",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "read",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "read",
+          "desc": "([B)I",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "read",
+          "desc": "([BII)I",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "reset",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "skip",
+          "desc": "(J)J",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "java/io/InputStreamReader",
+      "superName": "java/io/Reader",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(Ljava/io/InputStream;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/io/InputStream;Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/UnsupportedEncodingException"
+          ]
+        },
+        {
+          "name": "close",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "mark",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "markSupported",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "read",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "read",
+          "desc": "([CII)I",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "ready",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "reset",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "skip",
+          "desc": "(J)J",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "java/io/InterruptedIOException",
+      "superName": "java/io/IOException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "bytesTransferred",
+          "desc": "I",
+          "access": 1
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/io/OutputStream",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1025,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "close",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "flush",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "([B)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "([BII)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "java/io/OutputStreamWriter",
+      "superName": "java/io/Writer",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(Ljava/io/OutputStream;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/io/OutputStream;Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/UnsupportedEncodingException"
+          ]
+        },
+        {
+          "name": "close",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "flush",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "(Ljava/lang/String;II)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "([CII)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "java/io/PrintStream",
+      "superName": "java/io/OutputStream",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(Ljava/io/OutputStream;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "checkError",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "close",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "flush",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "print",
+          "desc": "(C)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "print",
+          "desc": "(D)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "print",
+          "desc": "(F)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "print",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "print",
+          "desc": "(J)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "print",
+          "desc": "(Ljava/lang/Object;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "print",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "print",
+          "desc": "(Z)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "print",
+          "desc": "([C)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "println",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "println",
+          "desc": "(C)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "println",
+          "desc": "(D)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "println",
+          "desc": "(F)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "println",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "println",
+          "desc": "(J)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "println",
+          "desc": "(Ljava/lang/Object;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "println",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "println",
+          "desc": "(Z)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "println",
+          "desc": "([C)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setError",
+          "desc": "()V",
+          "access": 4,
+          "exceptions": []
+        },
+        {
+          "name": "write",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "write",
+          "desc": "([BII)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/io/Reader",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1025,
+      "fields": [
+        {
+          "name": "lock",
+          "desc": "Ljava/lang/Object;",
+          "access": 4
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 4,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/Object;)V",
+          "access": 4,
+          "exceptions": []
+        },
+        {
+          "name": "close",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "mark",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "markSupported",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "read",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "read",
+          "desc": "([C)I",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "read",
+          "desc": "([CII)I",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "ready",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "reset",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "skip",
+          "desc": "(J)J",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "java/io/UTFDataFormatException",
+      "superName": "java/io/IOException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/io/UnsupportedEncodingException",
+      "superName": "java/io/IOException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/io/Writer",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1025,
+      "fields": [
+        {
+          "name": "lock",
+          "desc": "Ljava/lang/Object;",
+          "access": 4
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 4,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/Object;)V",
+          "access": 4,
+          "exceptions": []
+        },
+        {
+          "name": "close",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "flush",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "(Ljava/lang/String;II)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "([C)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "write",
+          "desc": "([CII)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "java/lang/ArithmeticException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/ArrayIndexOutOfBoundsException",
+      "superName": "java/lang/IndexOutOfBoundsException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/ArrayStoreException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Boolean",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [
+        {
+          "name": "FALSE",
+          "desc": "Ljava/lang/Boolean;",
+          "access": 25
+        },
+        {
+          "name": "TRUE",
+          "desc": "Ljava/lang/Boolean;",
+          "access": 25
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(Z)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "booleanValue",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "hashCode",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Byte",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [
+        {
+          "name": "MAX_VALUE",
+          "desc": "B",
+          "access": 25,
+          "constant": "127",
+          "constantType": "B"
+        },
+        {
+          "name": "MIN_VALUE",
+          "desc": "B",
+          "access": 25,
+          "constant": "-128",
+          "constantType": "B"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(B)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "byteValue",
+          "desc": "()B",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "hashCode",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "parseByte",
+          "desc": "(Ljava/lang/String;)B",
+          "access": 9,
+          "exceptions": [
+            "java/lang/NumberFormatException"
+          ]
+        },
+        {
+          "name": "parseByte",
+          "desc": "(Ljava/lang/String;I)B",
+          "access": 9,
+          "exceptions": [
+            "java/lang/NumberFormatException"
+          ]
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Character",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [
+        {
+          "name": "MAX_RADIX",
+          "desc": "I",
+          "access": 25,
+          "constant": "36",
+          "constantType": "I"
+        },
+        {
+          "name": "MAX_VALUE",
+          "desc": "C",
+          "access": 25,
+          "constant": "65535",
+          "constantType": "C"
+        },
+        {
+          "name": "MIN_RADIX",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "MIN_VALUE",
+          "desc": "C",
+          "access": 25,
+          "constant": "0",
+          "constantType": "C"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(C)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "charValue",
+          "desc": "()C",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "digit",
+          "desc": "(CI)I",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "hashCode",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isDigit",
+          "desc": "(C)Z",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "isLowerCase",
+          "desc": "(C)Z",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "isUpperCase",
+          "desc": "(C)Z",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "toLowerCase",
+          "desc": "(C)C",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toUpperCase",
+          "desc": "(C)C",
+          "access": 9,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Class",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [],
+      "methods": [
+        {
+          "name": "forName",
+          "desc": "(Ljava/lang/String;)Ljava/lang/Class;",
+          "access": 9,
+          "exceptions": [
+            "java/lang/ClassNotFoundException"
+          ]
+        },
+        {
+          "name": "getName",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getResourceAsStream",
+          "desc": "(Ljava/lang/String;)Ljava/io/InputStream;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isArray",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isAssignableFrom",
+          "desc": "(Ljava/lang/Class;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isInstance",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isInterface",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "newInstance",
+          "desc": "()Ljava/lang/Object;",
+          "access": 1,
+          "exceptions": [
+            "java/lang/IllegalAccessException",
+            "java/lang/InstantiationException"
+          ]
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/ClassCastException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/ClassNotFoundException",
+      "superName": "java/lang/Exception",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Double",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [
+        {
+          "name": "MAX_VALUE",
+          "desc": "D",
+          "access": 25,
+          "constant": "1.7976931348623157E308",
+          "constantType": "D"
+        },
+        {
+          "name": "MIN_VALUE",
+          "desc": "D",
+          "access": 25,
+          "constant": "4.9E-324",
+          "constantType": "D"
+        },
+        {
+          "name": "NEGATIVE_INFINITY",
+          "desc": "D",
+          "access": 25,
+          "constant": "-Infinity",
+          "constantType": "D"
+        },
+        {
+          "name": "NaN",
+          "desc": "D",
+          "access": 25,
+          "constant": "NaN",
+          "constantType": "D"
+        },
+        {
+          "name": "POSITIVE_INFINITY",
+          "desc": "D",
+          "access": 25,
+          "constant": "Infinity",
+          "constantType": "D"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(D)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "byteValue",
+          "desc": "()B",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "doubleToLongBits",
+          "desc": "(D)J",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "doubleValue",
+          "desc": "()D",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "floatValue",
+          "desc": "()F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "hashCode",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "intValue",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isInfinite",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isInfinite",
+          "desc": "(D)Z",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "isNaN",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isNaN",
+          "desc": "(D)Z",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "longBitsToDouble",
+          "desc": "(J)D",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "longValue",
+          "desc": "()J",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "parseDouble",
+          "desc": "(Ljava/lang/String;)D",
+          "access": 9,
+          "exceptions": [
+            "java/lang/NumberFormatException"
+          ]
+        },
+        {
+          "name": "shortValue",
+          "desc": "()S",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "(D)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "valueOf",
+          "desc": "(Ljava/lang/String;)Ljava/lang/Double;",
+          "access": 9,
+          "exceptions": [
+            "java/lang/NumberFormatException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Error",
+      "superName": "java/lang/Throwable",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Exception",
+      "superName": "java/lang/Throwable",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Float",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [
+        {
+          "name": "MAX_VALUE",
+          "desc": "F",
+          "access": 25,
+          "constant": "3.4028235E38",
+          "constantType": "F"
+        },
+        {
+          "name": "MIN_VALUE",
+          "desc": "F",
+          "access": 25,
+          "constant": "1.4E-45",
+          "constantType": "F"
+        },
+        {
+          "name": "NEGATIVE_INFINITY",
+          "desc": "F",
+          "access": 25,
+          "constant": "-Infinity",
+          "constantType": "F"
+        },
+        {
+          "name": "NaN",
+          "desc": "F",
+          "access": 25,
+          "constant": "NaN",
+          "constantType": "F"
+        },
+        {
+          "name": "POSITIVE_INFINITY",
+          "desc": "F",
+          "access": 25,
+          "constant": "Infinity",
+          "constantType": "F"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(D)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(F)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "byteValue",
+          "desc": "()B",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "doubleValue",
+          "desc": "()D",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "floatToIntBits",
+          "desc": "(F)I",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "floatValue",
+          "desc": "()F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "hashCode",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "intBitsToFloat",
+          "desc": "(I)F",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "intValue",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isInfinite",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isInfinite",
+          "desc": "(F)Z",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "isNaN",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isNaN",
+          "desc": "(F)Z",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "longValue",
+          "desc": "()J",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "parseFloat",
+          "desc": "(Ljava/lang/String;)F",
+          "access": 9,
+          "exceptions": [
+            "java/lang/NumberFormatException"
+          ]
+        },
+        {
+          "name": "shortValue",
+          "desc": "()S",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "(F)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "valueOf",
+          "desc": "(Ljava/lang/String;)Ljava/lang/Float;",
+          "access": 9,
+          "exceptions": [
+            "java/lang/NumberFormatException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "java/lang/IllegalAccessException",
+      "superName": "java/lang/Exception",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/IllegalArgumentException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/IllegalMonitorStateException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/IllegalThreadStateException",
+      "superName": "java/lang/IllegalArgumentException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/IndexOutOfBoundsException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/InstantiationException",
+      "superName": "java/lang/Exception",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Integer",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [
+        {
+          "name": "MAX_VALUE",
+          "desc": "I",
+          "access": 25,
+          "constant": "2147483647",
+          "constantType": "I"
+        },
+        {
+          "name": "MIN_VALUE",
+          "desc": "I",
+          "access": 25,
+          "constant": "-2147483648",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "byteValue",
+          "desc": "()B",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "doubleValue",
+          "desc": "()D",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "floatValue",
+          "desc": "()F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "hashCode",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "intValue",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "longValue",
+          "desc": "()J",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "parseInt",
+          "desc": "(Ljava/lang/String;)I",
+          "access": 9,
+          "exceptions": [
+            "java/lang/NumberFormatException"
+          ]
+        },
+        {
+          "name": "parseInt",
+          "desc": "(Ljava/lang/String;I)I",
+          "access": 9,
+          "exceptions": [
+            "java/lang/NumberFormatException"
+          ]
+        },
+        {
+          "name": "shortValue",
+          "desc": "()S",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toBinaryString",
+          "desc": "(I)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "toHexString",
+          "desc": "(I)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "toOctalString",
+          "desc": "(I)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "(I)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "(II)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "valueOf",
+          "desc": "(Ljava/lang/String;)Ljava/lang/Integer;",
+          "access": 9,
+          "exceptions": [
+            "java/lang/NumberFormatException"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "desc": "(Ljava/lang/String;I)Ljava/lang/Integer;",
+          "access": 9,
+          "exceptions": [
+            "java/lang/NumberFormatException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "java/lang/InterruptedException",
+      "superName": "java/lang/Exception",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Long",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [
+        {
+          "name": "MAX_VALUE",
+          "desc": "J",
+          "access": 25,
+          "constant": "9223372036854775807",
+          "constantType": "J"
+        },
+        {
+          "name": "MIN_VALUE",
+          "desc": "J",
+          "access": 25,
+          "constant": "-9223372036854775808",
+          "constantType": "J"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(J)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "doubleValue",
+          "desc": "()D",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "floatValue",
+          "desc": "()F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "hashCode",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "longValue",
+          "desc": "()J",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "parseLong",
+          "desc": "(Ljava/lang/String;)J",
+          "access": 9,
+          "exceptions": [
+            "java/lang/NumberFormatException"
+          ]
+        },
+        {
+          "name": "parseLong",
+          "desc": "(Ljava/lang/String;I)J",
+          "access": 9,
+          "exceptions": [
+            "java/lang/NumberFormatException"
+          ]
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "(J)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "(JI)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Math",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [
+        {
+          "name": "E",
+          "desc": "D",
+          "access": 25,
+          "constant": "2.718281828459045",
+          "constantType": "D"
+        },
+        {
+          "name": "PI",
+          "desc": "D",
+          "access": 25,
+          "constant": "3.141592653589793",
+          "constantType": "D"
+        }
+      ],
+      "methods": [
+        {
+          "name": "abs",
+          "desc": "(D)D",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "abs",
+          "desc": "(F)F",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "abs",
+          "desc": "(I)I",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "abs",
+          "desc": "(J)J",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "ceil",
+          "desc": "(D)D",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "cos",
+          "desc": "(D)D",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "floor",
+          "desc": "(D)D",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "max",
+          "desc": "(DD)D",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "max",
+          "desc": "(FF)F",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "max",
+          "desc": "(II)I",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "max",
+          "desc": "(JJ)J",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "min",
+          "desc": "(DD)D",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "min",
+          "desc": "(FF)F",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "min",
+          "desc": "(II)I",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "min",
+          "desc": "(JJ)J",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "sin",
+          "desc": "(D)D",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "sqrt",
+          "desc": "(D)D",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "tan",
+          "desc": "(D)D",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "toDegrees",
+          "desc": "(D)D",
+          "access": 2057,
+          "exceptions": []
+        },
+        {
+          "name": "toRadians",
+          "desc": "(D)D",
+          "access": 2057,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/NegativeArraySizeException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/NoClassDefFoundError",
+      "superName": "java/lang/Error",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/NullPointerException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/NumberFormatException",
+      "superName": "java/lang/IllegalArgumentException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getClass",
+          "desc": "()Ljava/lang/Class;",
+          "access": 17,
+          "exceptions": []
+        },
+        {
+          "name": "hashCode",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "notify",
+          "desc": "()V",
+          "access": 17,
+          "exceptions": []
+        },
+        {
+          "name": "notifyAll",
+          "desc": "()V",
+          "access": 17,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "wait",
+          "desc": "()V",
+          "access": 17,
+          "exceptions": [
+            "java/lang/InterruptedException"
+          ]
+        },
+        {
+          "name": "wait",
+          "desc": "(J)V",
+          "access": 17,
+          "exceptions": [
+            "java/lang/InterruptedException"
+          ]
+        },
+        {
+          "name": "wait",
+          "desc": "(JI)V",
+          "access": 17,
+          "exceptions": [
+            "java/lang/InterruptedException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "java/lang/OutOfMemoryError",
+      "superName": "java/lang/VirtualMachineError",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Runnable",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "run",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Runtime",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "exit",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "freeMemory",
+          "desc": "()J",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "gc",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getRuntime",
+          "desc": "()Ljava/lang/Runtime;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "totalMemory",
+          "desc": "()J",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/RuntimeException",
+      "superName": "java/lang/Exception",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/SecurityException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Short",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [
+        {
+          "name": "MAX_VALUE",
+          "desc": "S",
+          "access": 25,
+          "constant": "32767",
+          "constantType": "S"
+        },
+        {
+          "name": "MIN_VALUE",
+          "desc": "S",
+          "access": 25,
+          "constant": "-32768",
+          "constantType": "S"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(S)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "hashCode",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "parseShort",
+          "desc": "(Ljava/lang/String;)S",
+          "access": 9,
+          "exceptions": [
+            "java/lang/NumberFormatException"
+          ]
+        },
+        {
+          "name": "parseShort",
+          "desc": "(Ljava/lang/String;I)S",
+          "access": 9,
+          "exceptions": [
+            "java/lang/NumberFormatException"
+          ]
+        },
+        {
+          "name": "shortValue",
+          "desc": "()S",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/String",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/StringBuffer;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "([B)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "([BII)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "([BIILjava/lang/String;)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/UnsupportedEncodingException"
+          ]
+        },
+        {
+          "name": "<init>",
+          "desc": "([BLjava/lang/String;)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/UnsupportedEncodingException"
+          ]
+        },
+        {
+          "name": "<init>",
+          "desc": "([C)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "([CII)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "charAt",
+          "desc": "(I)C",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "compareTo",
+          "desc": "(Ljava/lang/String;)I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "concat",
+          "desc": "(Ljava/lang/String;)Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "endsWith",
+          "desc": "(Ljava/lang/String;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "equalsIgnoreCase",
+          "desc": "(Ljava/lang/String;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getBytes",
+          "desc": "()[B",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getBytes",
+          "desc": "(Ljava/lang/String;)[B",
+          "access": 1,
+          "exceptions": [
+            "java/io/UnsupportedEncodingException"
+          ]
+        },
+        {
+          "name": "getChars",
+          "desc": "(II[CI)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "hashCode",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "indexOf",
+          "desc": "(I)I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "indexOf",
+          "desc": "(II)I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "indexOf",
+          "desc": "(Ljava/lang/String;)I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "indexOf",
+          "desc": "(Ljava/lang/String;I)I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "intern",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "lastIndexOf",
+          "desc": "(I)I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "lastIndexOf",
+          "desc": "(II)I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "length",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "regionMatches",
+          "desc": "(ZILjava/lang/String;II)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "replace",
+          "desc": "(CC)Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "startsWith",
+          "desc": "(Ljava/lang/String;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "startsWith",
+          "desc": "(Ljava/lang/String;I)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "substring",
+          "desc": "(I)Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "substring",
+          "desc": "(II)Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toCharArray",
+          "desc": "()[C",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toLowerCase",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toUpperCase",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "trim",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "valueOf",
+          "desc": "(C)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "valueOf",
+          "desc": "(D)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "valueOf",
+          "desc": "(F)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "valueOf",
+          "desc": "(I)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "valueOf",
+          "desc": "(J)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "valueOf",
+          "desc": "(Ljava/lang/Object;)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "valueOf",
+          "desc": "(Z)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "valueOf",
+          "desc": "([C)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "valueOf",
+          "desc": "([CII)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/StringBuffer",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "append",
+          "desc": "(C)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "append",
+          "desc": "(D)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "append",
+          "desc": "(F)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "append",
+          "desc": "(I)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "append",
+          "desc": "(J)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "append",
+          "desc": "(Ljava/lang/Object;)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "append",
+          "desc": "(Ljava/lang/String;)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "append",
+          "desc": "(Z)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "append",
+          "desc": "([C)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "append",
+          "desc": "([CII)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "capacity",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "charAt",
+          "desc": "(I)C",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "delete",
+          "desc": "(II)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "deleteCharAt",
+          "desc": "(I)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "ensureCapacity",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getChars",
+          "desc": "(II[CI)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "insert",
+          "desc": "(IC)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "insert",
+          "desc": "(ID)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "insert",
+          "desc": "(IF)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "insert",
+          "desc": "(II)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "insert",
+          "desc": "(IJ)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "insert",
+          "desc": "(ILjava/lang/Object;)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "insert",
+          "desc": "(ILjava/lang/String;)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "insert",
+          "desc": "(IZ)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "insert",
+          "desc": "(I[C)Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "length",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "reverse",
+          "desc": "()Ljava/lang/StringBuffer;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setCharAt",
+          "desc": "(IC)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setLength",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/StringIndexOutOfBoundsException",
+      "superName": "java/lang/IndexOutOfBoundsException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/System",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [
+        {
+          "name": "err",
+          "desc": "Ljava/io/PrintStream;",
+          "access": 25
+        },
+        {
+          "name": "out",
+          "desc": "Ljava/io/PrintStream;",
+          "access": 25
+        }
+      ],
+      "methods": [
+        {
+          "name": "arraycopy",
+          "desc": "(Ljava/lang/Object;ILjava/lang/Object;II)V",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "currentTimeMillis",
+          "desc": "()J",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "exit",
+          "desc": "(I)V",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "gc",
+          "desc": "()V",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getProperty",
+          "desc": "(Ljava/lang/String;)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "identityHashCode",
+          "desc": "(Ljava/lang/Object;)I",
+          "access": 9,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Thread",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "java/lang/Runnable"
+      ],
+      "access": 1,
+      "fields": [
+        {
+          "name": "MAX_PRIORITY",
+          "desc": "I",
+          "access": 25,
+          "constant": "10",
+          "constantType": "I"
+        },
+        {
+          "name": "MIN_PRIORITY",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "NORM_PRIORITY",
+          "desc": "I",
+          "access": 25,
+          "constant": "5",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/Runnable;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/Runnable;Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "activeCount",
+          "desc": "()I",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "currentThread",
+          "desc": "()Ljava/lang/Thread;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getName",
+          "desc": "()Ljava/lang/String;",
+          "access": 17,
+          "exceptions": []
+        },
+        {
+          "name": "getPriority",
+          "desc": "()I",
+          "access": 17,
+          "exceptions": []
+        },
+        {
+          "name": "interrupt",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isAlive",
+          "desc": "()Z",
+          "access": 17,
+          "exceptions": []
+        },
+        {
+          "name": "join",
+          "desc": "()V",
+          "access": 17,
+          "exceptions": [
+            "java/lang/InterruptedException"
+          ]
+        },
+        {
+          "name": "run",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setPriority",
+          "desc": "(I)V",
+          "access": 17,
+          "exceptions": []
+        },
+        {
+          "name": "sleep",
+          "desc": "(J)V",
+          "access": 9,
+          "exceptions": [
+            "java/lang/InterruptedException"
+          ]
+        },
+        {
+          "name": "start",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "yield",
+          "desc": "()V",
+          "access": 9,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/Throwable",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getMessage",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "printStackTrace",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/VirtualMachineError",
+      "superName": "java/lang/Error",
+      "interfaces": [],
+      "access": 1025,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/ref/Reference",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1025,
+      "fields": [],
+      "methods": [
+        {
+          "name": "clear",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "get",
+          "desc": "()Ljava/lang/Object;",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/lang/ref/WeakReference",
+      "superName": "java/lang/ref/Reference",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/Object;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/util/Calendar",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1025,
+      "fields": [
+        {
+          "name": "AM",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "AM_PM",
+          "desc": "I",
+          "access": 25,
+          "constant": "9",
+          "constantType": "I"
+        },
+        {
+          "name": "APRIL",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "AUGUST",
+          "desc": "I",
+          "access": 25,
+          "constant": "7",
+          "constantType": "I"
+        },
+        {
+          "name": "DATE",
+          "desc": "I",
+          "access": 25,
+          "constant": "5",
+          "constantType": "I"
+        },
+        {
+          "name": "DAY_OF_MONTH",
+          "desc": "I",
+          "access": 25,
+          "constant": "5",
+          "constantType": "I"
+        },
+        {
+          "name": "DAY_OF_WEEK",
+          "desc": "I",
+          "access": 25,
+          "constant": "7",
+          "constantType": "I"
+        },
+        {
+          "name": "DECEMBER",
+          "desc": "I",
+          "access": 25,
+          "constant": "11",
+          "constantType": "I"
+        },
+        {
+          "name": "FEBRUARY",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "FRIDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "6",
+          "constantType": "I"
+        },
+        {
+          "name": "HOUR",
+          "desc": "I",
+          "access": 25,
+          "constant": "10",
+          "constantType": "I"
+        },
+        {
+          "name": "HOUR_OF_DAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "11",
+          "constantType": "I"
+        },
+        {
+          "name": "JANUARY",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "JULY",
+          "desc": "I",
+          "access": 25,
+          "constant": "6",
+          "constantType": "I"
+        },
+        {
+          "name": "JUNE",
+          "desc": "I",
+          "access": 25,
+          "constant": "5",
+          "constantType": "I"
+        },
+        {
+          "name": "MARCH",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "MAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "MILLISECOND",
+          "desc": "I",
+          "access": 25,
+          "constant": "14",
+          "constantType": "I"
+        },
+        {
+          "name": "MINUTE",
+          "desc": "I",
+          "access": 25,
+          "constant": "12",
+          "constantType": "I"
+        },
+        {
+          "name": "MONDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "MONTH",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "NOVEMBER",
+          "desc": "I",
+          "access": 25,
+          "constant": "10",
+          "constantType": "I"
+        },
+        {
+          "name": "OCTOBER",
+          "desc": "I",
+          "access": 25,
+          "constant": "9",
+          "constantType": "I"
+        },
+        {
+          "name": "PM",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "SATURDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "7",
+          "constantType": "I"
+        },
+        {
+          "name": "SECOND",
+          "desc": "I",
+          "access": 25,
+          "constant": "13",
+          "constantType": "I"
+        },
+        {
+          "name": "SEPTEMBER",
+          "desc": "I",
+          "access": 25,
+          "constant": "8",
+          "constantType": "I"
+        },
+        {
+          "name": "SUNDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "THURSDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "5",
+          "constantType": "I"
+        },
+        {
+          "name": "TUESDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "WEDNESDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "YEAR",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "fields",
+          "desc": "[I",
+          "access": 4
+        },
+        {
+          "name": "isSet",
+          "desc": "[Z",
+          "access": 4
+        },
+        {
+          "name": "time",
+          "desc": "J",
+          "access": 4
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 4,
+          "exceptions": []
+        },
+        {
+          "name": "after",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "before",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "computeFields",
+          "desc": "()V",
+          "access": 1028,
+          "exceptions": []
+        },
+        {
+          "name": "computeTime",
+          "desc": "()V",
+          "access": 1028,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "get",
+          "desc": "(I)I",
+          "access": 17,
+          "exceptions": []
+        },
+        {
+          "name": "getInstance",
+          "desc": "()Ljava/util/Calendar;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getInstance",
+          "desc": "(Ljava/util/TimeZone;)Ljava/util/Calendar;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getTime",
+          "desc": "()Ljava/util/Date;",
+          "access": 17,
+          "exceptions": []
+        },
+        {
+          "name": "getTimeInMillis",
+          "desc": "()J",
+          "access": 4,
+          "exceptions": []
+        },
+        {
+          "name": "getTimeZone",
+          "desc": "()Ljava/util/TimeZone;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "set",
+          "desc": "(II)V",
+          "access": 17,
+          "exceptions": []
+        },
+        {
+          "name": "setTime",
+          "desc": "(Ljava/util/Date;)V",
+          "access": 17,
+          "exceptions": []
+        },
+        {
+          "name": "setTimeInMillis",
+          "desc": "(J)V",
+          "access": 4,
+          "exceptions": []
+        },
+        {
+          "name": "setTimeZone",
+          "desc": "(Ljava/util/TimeZone;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/util/Date",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(J)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getTime",
+          "desc": "()J",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "hashCode",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setTime",
+          "desc": "(J)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/util/EmptyStackException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/util/Enumeration",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "hasMoreElements",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "nextElement",
+          "desc": "()Ljava/lang/Object;",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/util/Hashtable",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "clear",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "contains",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "containsKey",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "elements",
+          "desc": "()Ljava/util/Enumeration;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "get",
+          "desc": "(Ljava/lang/Object;)Ljava/lang/Object;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isEmpty",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "keys",
+          "desc": "()Ljava/util/Enumeration;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "put",
+          "desc": "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "rehash",
+          "desc": "()V",
+          "access": 4,
+          "exceptions": []
+        },
+        {
+          "name": "remove",
+          "desc": "(Ljava/lang/Object;)Ljava/lang/Object;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "size",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/util/NoSuchElementException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/util/Random",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(J)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "next",
+          "desc": "(I)I",
+          "access": 4,
+          "exceptions": []
+        },
+        {
+          "name": "nextDouble",
+          "desc": "()D",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "nextFloat",
+          "desc": "()F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "nextInt",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "nextInt",
+          "desc": "(I)I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "nextLong",
+          "desc": "()J",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setSeed",
+          "desc": "(J)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/util/Stack",
+      "superName": "java/util/Vector",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "empty",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "peek",
+          "desc": "()Ljava/lang/Object;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "pop",
+          "desc": "()Ljava/lang/Object;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "push",
+          "desc": "(Ljava/lang/Object;)Ljava/lang/Object;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "search",
+          "desc": "(Ljava/lang/Object;)I",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/util/TimeZone",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1025,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getAvailableIDs",
+          "desc": "()[Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getDefault",
+          "desc": "()Ljava/util/TimeZone;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getID",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getOffset",
+          "desc": "(IIIIII)I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getRawOffset",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getTimeZone",
+          "desc": "(Ljava/lang/String;)Ljava/util/TimeZone;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "useDaylightTime",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "java/util/Vector",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "capacityIncrement",
+          "desc": "I",
+          "access": 4
+        },
+        {
+          "name": "elementCount",
+          "desc": "I",
+          "access": 4
+        },
+        {
+          "name": "elementData",
+          "desc": "[Ljava/lang/Object;",
+          "access": 4
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(II)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "addElement",
+          "desc": "(Ljava/lang/Object;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "capacity",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "contains",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "copyInto",
+          "desc": "([Ljava/lang/Object;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "elementAt",
+          "desc": "(I)Ljava/lang/Object;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "elements",
+          "desc": "()Ljava/util/Enumeration;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "ensureCapacity",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "firstElement",
+          "desc": "()Ljava/lang/Object;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "indexOf",
+          "desc": "(Ljava/lang/Object;)I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "indexOf",
+          "desc": "(Ljava/lang/Object;I)I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "insertElementAt",
+          "desc": "(Ljava/lang/Object;I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isEmpty",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "lastElement",
+          "desc": "()Ljava/lang/Object;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "lastIndexOf",
+          "desc": "(Ljava/lang/Object;)I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "lastIndexOf",
+          "desc": "(Ljava/lang/Object;I)I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "removeAllElements",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "removeElement",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "removeElementAt",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setElementAt",
+          "desc": "(Ljava/lang/Object;I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setSize",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "size",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "trimToSize",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/io/Connection",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "close",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/io/ConnectionNotFoundException",
+      "superName": "java/io/IOException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/io/Connector",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "READ",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "READ_WRITE",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "WRITE",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "open",
+          "desc": "(Ljava/lang/String;)Ljavax/microedition/io/Connection;",
+          "access": 9,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "open",
+          "desc": "(Ljava/lang/String;I)Ljavax/microedition/io/Connection;",
+          "access": 9,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "open",
+          "desc": "(Ljava/lang/String;IZ)Ljavax/microedition/io/Connection;",
+          "access": 9,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "openDataInputStream",
+          "desc": "(Ljava/lang/String;)Ljava/io/DataInputStream;",
+          "access": 9,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "openDataOutputStream",
+          "desc": "(Ljava/lang/String;)Ljava/io/DataOutputStream;",
+          "access": 9,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "openInputStream",
+          "desc": "(Ljava/lang/String;)Ljava/io/InputStream;",
+          "access": 9,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "openOutputStream",
+          "desc": "(Ljava/lang/String;)Ljava/io/OutputStream;",
+          "access": 9,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/io/ContentConnection",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/io/StreamConnection"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getEncoding",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getLength",
+          "desc": "()J",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getType",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/io/Datagram",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "java/io/DataInput",
+        "java/io/DataOutput"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getAddress",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getData",
+          "desc": "()[B",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getLength",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getOffset",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "reset",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setAddress",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "setAddress",
+          "desc": "(Ljavax/microedition/io/Datagram;)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setData",
+          "desc": "([BII)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setLength",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/io/DatagramConnection",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/io/Connection"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getMaximumLength",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "getNominalLength",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "newDatagram",
+          "desc": "(I)Ljavax/microedition/io/Datagram;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "newDatagram",
+          "desc": "(ILjava/lang/String;)Ljavax/microedition/io/Datagram;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "newDatagram",
+          "desc": "([BI)Ljavax/microedition/io/Datagram;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "newDatagram",
+          "desc": "([BILjava/lang/String;)Ljavax/microedition/io/Datagram;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "receive",
+          "desc": "(Ljavax/microedition/io/Datagram;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "send",
+          "desc": "(Ljavax/microedition/io/Datagram;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/io/InputConnection",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/io/Connection"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "openDataInputStream",
+          "desc": "()Ljava/io/DataInputStream;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "openInputStream",
+          "desc": "()Ljava/io/InputStream;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/io/OutputConnection",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/io/Connection"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "openDataOutputStream",
+          "desc": "()Ljava/io/DataOutputStream;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "openOutputStream",
+          "desc": "()Ljava/io/OutputStream;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/io/StreamConnection",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/io/InputConnection",
+        "javax/microedition/io/OutputConnection"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": []
+    },
+    {
+      "name": "javax/microedition/io/StreamConnectionNotifier",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/io/Connection"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "acceptAndOpen",
+          "desc": "()Ljavax/microedition/io/StreamConnection;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    }
+  ]
+}

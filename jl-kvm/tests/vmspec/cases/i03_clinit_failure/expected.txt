@@ -1,0 +1,3 @@
+> first java.lang.ExceptionInInitializerError
+> second java.lang.NoClassDefFoundError
+> sub java.lang.NoClassDefFoundError

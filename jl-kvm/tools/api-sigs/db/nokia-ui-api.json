@@ -1,0 +1,7 @@
+{
+  "format": 1,
+  "name": "nokia-ui-api",
+  "source": "none: no Nokia S40 SDK stub jar supplied yet (PLAN V1)",
+  "note": "UNVERIFIED - intentionally empty until the user provides the Nokia UI API stub jars from the S40 SDKs",
+  "classes": []
+}

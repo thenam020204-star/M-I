@@ -1,0 +1,2 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM); spec: JLS 3.10.5 string literals are interned, compile-time constants too; String.intern javadoc (CLDC 1.1)

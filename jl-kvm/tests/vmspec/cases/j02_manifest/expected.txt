@@ -1,0 +1,5 @@
+> MIDlet-Name=Manifest Test
+> Long=012345678901234567890123456789012345678901234567890123456789abcdefghijklmnopqrstuvwxyz-continued-line-one-and-two
+> Missing=null
+> Empty=[]
+> Spaces=[padded value]

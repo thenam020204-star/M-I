@@ -1,0 +1,3 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM). UNVERIFIED for KVM: both oracles (HotSpot) treat every class as ACC_SUPER and print B.m; the original JVMS (1st ed.) rule for a class without ACC_SUPER would give A.m. Decide with real KVM/phoneME evidence at T12
+notes: Class file 45.3 without ACC_SUPER, invokespecial naming a non-direct superclass method

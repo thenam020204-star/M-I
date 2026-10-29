@@ -1,0 +1,2 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM). Only the facts 'a Throwable (Error) is thrown, VM survives, other threads fine' are compared; the guest class is implementation-specific (StackOverflowError is not in the CLDC minimum class list) -> UNVERIFIED, see info line

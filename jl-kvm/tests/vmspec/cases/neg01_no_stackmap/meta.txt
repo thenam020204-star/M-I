@@ -1,0 +1,2 @@
+mode: spec-only
+source: spec: CLDC 1.1 (JSR-139) sec.5 'Class file verification': a method with branches/handlers but no StackMap attribute is rejected (VerifyError); the exact error class is UNVERIFIED. Oracles (JVM old verifier) run it, so they are not usable here

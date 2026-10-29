@@ -1,0 +1,14 @@
+> f< F
+> f<= F
+> f> F
+> f>= F
+> f== F
+> f!= T
+> d< F
+> d<= F
+> d> F
+> d>= F
+> d== F
+> d!= T
+> f-0==0 T
+> isNaN TT

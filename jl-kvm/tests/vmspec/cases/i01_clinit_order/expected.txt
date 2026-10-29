@@ -1,0 +1,16 @@
+> start
+> init A.ax
+> A.clinit
+> read B.ax=1
+> init B.bx
+> B.clinit
+> B.bsm
+> new C
+> C.clinit
+> init A.inst
+> C.ctor
+> new E
+> E.clinit
+> read I.V
+> D.clinit
+> I.V=6

@@ -1,0 +1,2 @@
+> data -> goo` data, goo` data, goo` data, goo` data
+> other -> second file

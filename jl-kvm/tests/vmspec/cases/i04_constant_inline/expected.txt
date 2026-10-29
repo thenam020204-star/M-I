@@ -1,0 +1,7 @@
+> I=42
+> L=1099511627776
+> S=lit
+> F=1.5
+> before NI
+> K.clinit
+> NI=7

@@ -1,0 +1,11 @@
+> reentrant bottom
+> T enter inst
+> T leave inst
+> main enter inst
+> main leave inst
+> T2 enter static
+> main holds instance lock while T2 is in static
+> T2 leave static
+> main enter static
+> main leave static
+> counter 8000

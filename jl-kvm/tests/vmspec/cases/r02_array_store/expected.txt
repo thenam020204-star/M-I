@@ -1,0 +1,7 @@
+> store-Integer-in-String[] ArrayStoreException
+> store-null ok
+> store-String ok
+> store-A-in-B[] ArrayStoreException
+> store-B-in-B[] ok
+> store-int[]-in-int[][] ok
+> store-long[]-in-int[][] ArrayStoreException

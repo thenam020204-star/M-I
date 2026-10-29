@@ -1,0 +1,7 @@
+> lens 2 3 3
+> third-null true true
+> lens 2 0 0
+> deflt 0
+> name [[[I [[J
+> name [[Ljava.lang.String; [Ljava.lang.String;
+> name [[Z [[C false 0

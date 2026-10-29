@@ -1,0 +1,3 @@
+> main after sleep, spinner made progress true
+> spinner ended
+> both spinners ran true

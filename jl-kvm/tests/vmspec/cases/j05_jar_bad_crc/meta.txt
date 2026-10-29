@@ -1,0 +1,2 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM). Note: the damaged entry is STORED by Python zipfile, so neither oracle notices the CRC mismatch; a deflated-entry variant is TODO. UNVERIFIED for Nokia

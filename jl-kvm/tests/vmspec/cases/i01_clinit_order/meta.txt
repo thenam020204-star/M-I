@@ -1,0 +1,2 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM); spec: JVMS sec.2.17.4/5.5 initialisation: superclass first, getstatic of an inherited field initialises only the declaring class, interfaces are not initialised by class init

@@ -1,0 +1,7 @@
+> thread running
+> main alive after thread exception
+> serviceRepaints returned
+> serviceRepaints 2 returned
+> paint count>=2 true
+> callSerially running
+> end

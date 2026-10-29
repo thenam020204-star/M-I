@@ -1,0 +1,21 @@
+> String[] instanceof Object[] T
+> String[] instanceof String[] T
+> String[] instanceof Integer[] F
+> String[] instanceof Object T
+> int[] instanceof Object[] F
+> int[] instanceof int[] T
+> int[] instanceof long[] F
+> int[][] instanceof Object[] T
+> int[][] instanceof int[][] T
+> int[][] instanceof int[] F
+> K[] instanceof I[] T
+> K[] instanceof J[] T
+> K[] instanceof Runnable[] F
+> K instanceof I T
+> K instanceof Runnable F
+> null instanceof Object F
+> cast K->Runnable ClassCastException
+> cast K->I ok
+> cast int[]->Object[] ClassCastException
+> cast String[]->Integer[] ClassCastException
+> cast null ok

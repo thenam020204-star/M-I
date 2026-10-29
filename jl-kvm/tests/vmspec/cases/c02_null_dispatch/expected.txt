@@ -1,0 +1,9 @@
+> invokeinterface NullPointerException
+> invokevirtual NullPointerException
+> getfield NullPointerException
+> putfield NullPointerException
+> arraylength NullPointerException
+> iaload NullPointerException
+> athrow-null NullPointerException
+> monitorenter NullPointerException
+> hashCode NullPointerException

@@ -1,0 +1,2 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM); spec: JVMS fcmpl/fcmpg/dcmpl/dcmpg (any NaN operand: all ordered comparisons false, != true). CLDC 1.1 only

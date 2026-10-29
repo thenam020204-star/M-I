@@ -1,0 +1,3 @@
+> images created 10
+> mutable true size 200x200
+> total>=free true

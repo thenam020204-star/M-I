@@ -1,0 +1,11 @@
+MIDlet-Name: Manifest Test
+MIDlet-Version: 1.0.0
+MIDlet-Vendor: jl-kvm
+MIDlet-1: M,,vmspec.J02Manifest
+MicroEdition-Configuration: CLDC-1.1
+MicroEdition-Profile: MIDP-2.0
+Long-Attribute: 0123456789012345678901234567890123456789012345678901234567
+ 89abcdefghijklmnopqrstuvwxyz-continued-line-one
+ -and-two
+Empty-Attribute: 
+Spaces-Attribute:   padded value  

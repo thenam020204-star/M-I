@@ -1,0 +1,2 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM); spec: Object.wait/notify/notifyAll javadoc (CLDC 1.1): IllegalMonitorStateException when the current thread is not the owner

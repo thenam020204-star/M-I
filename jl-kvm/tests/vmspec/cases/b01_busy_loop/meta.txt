@@ -1,0 +1,2 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM); spec: CLDC 1.1 threads are pre-emptive on typical devices (JSR-139 sec.2.2.4 time slicing is VM-defined but a busy thread must not starve others). UNVERIFIED on a Nokia device

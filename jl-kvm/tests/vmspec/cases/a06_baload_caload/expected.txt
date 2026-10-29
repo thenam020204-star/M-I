@@ -1,0 +1,12 @@
+> baload[0] -1 &ff=255
+> caload[0] 65535
+> saload[0] -1
+> baload[1] -128 &ff=128
+> caload[1] 32768
+> saload[1] -32768
+> baload[2] 127 &ff=127
+> caload[2] 32767
+> saload[2] 32767
+> bastore -1
+> castore 65535
+> sastore -1
