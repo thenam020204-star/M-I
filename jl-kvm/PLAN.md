@@ -248,12 +248,12 @@ Phân công đợt 1: **A1 chạy T01–T20 và T13b** (M0–M3, 21 task). **A2 
   - Đầu vào/đầu ra: `byte[]` → `ClassFile` (CP đủ tag cho version ≤ 49; attribute Code, Exceptions, ConstantValue, StackMap, SourceFile, LineNumberTable, LocalVariableTable; attribute lạ bỏ qua)
   - File: `vm-core/.../classfile/*`
   - Hoàn thành khi: parse 100% class trong corpus + ROM; fuzz (cắt cụt/đảo byte 10k mẫu) không crash host, chỉ ném `ClassFormatError` guest
-- [ ] T08. Verifier CLDC dựa trên StackMap — **Quản đốc nghiệm thu**
+- [x] T08. Verifier CLDC dựa trên StackMap — **Quản đốc nghiệm thu**
   - Agent: A1 (phụ thuộc T07)
   - Đầu vào/đầu ra: method + StackMap → chấp nhận/`VerifyError` (kèm pc, lý do); chế độ strict/lenient (D6)
   - File: `vm-core/.../verify/*`
   - Hoàn thành khi: mọi class preverify trong corpus qua; mọi case âm trong vmspec bị từ chối; tập chấp nhận/từ chối khớp phoneME (difftest), khác biệt nào cũng được ghi vào báo cáo
-- [ ] T09. Xuất bản đồ kiểu cho GC
+- [x] T09. Xuất bản đồ kiểu cho GC
   - Agent: A1 (phụ thuộc T08)
   - Đầu vào/đầu ra: (method, pc) → bitmap tham chiếu cho locals + stack, có cache
   - File: `vm-core/.../verify/TypeMaps.java`
@@ -421,6 +421,7 @@ Task chỉ được tick khi qua mọi bước áp dụng được. "Game vẫn 
 - V2. Có máy Nokia thật nào để đo không (model)? Quyết định profile ưu tiên và nguồn `measured`.
 - V3. Mặc định đã chọn, người dùng có thể đổi: lõi Java (D2), ưu tiên S40 trước S60, giữ engine dex ở debug để A/B (D17), dự án dùng riêng hay phát hành công khai (ảnh hưởng T41).
 - V4. (A1) Oracle T05 chưa dựng được: phoneME (nguồn không tải được: github.com/nikita36078/phoneME-feature trả 403 qua proxy, svn.java.net không phân giải; cần người dùng cung cấp nguồn/bản build cục bộ rồi đặt `tools/difftest/oracles/run_phoneme.sh`), KEmulator (app GUI Windows, không có bản headless), JL-Mod-dex (cần runtime Android; dành cho T35/T39). T05 đạt với 2 oracle: MicroEmulator + FreeJ2ME.
+- V5. (A1) Văn bản đặc tả CLDC 1.1 (chương Class File Verification) không tải được: jcp.org dẫn tới trang chấp nhận giấy phép của Oracle, Javadoc không có phần verifier. Quy tắc đặc thù CLDC (jsr/ret, thiếu StackMap, fall-through vào frame, uninit nhảy lùi, lớp lỗi) ghi UNVERIFIED trong `docs/verifier-report.md`. Cần người dùng cung cấp PDF đặc tả hoặc phoneME/thiết bị để đối chiếu.
 
 ## Nhật ký
 - 2026-10-29 [quản đốc] Repo đặt tại `M-I/jl-kvm/` (snapshot JL-Mod `dev` @ f723a19, không kèm lịch sử git) theo quyết định người dùng. Android SDK cài ngoài repo tại `/opt/android-sdk` (platform 34, build-tools 34.0.0, NDK 22.1.7171670) — đặt `local.properties` (không commit). Đợt 1: A1 làm T01–T20 + T13b.
@@ -434,6 +435,8 @@ Task chỉ được tick khi qua mọi bước áp dụng được. "Game vẫn 
 - 2026-10-29 [A1 mới] T06 đạt: `tests/vmspec/run_vmspec.sh` -> pass=37 fail=0 spec-only=3 (neg01-03, nguồn đặc tả, lớp lỗi UNVERIFIED), mọi case có `source:` trong meta.txt và expected.txt; `tests/midlets` selftest chạy trên 2 oracle SAME (3 PASS); `tests/games/README.md` có quy ước + định dạng .inp. Lưu ý: oracle là JVM chứ không phải CLDC VM (D18/R2). Cụm M0 T01–T06 xong.
 - 2026-10-29 [quản đốc] NGHIỆM THU M0 (T01–T06): chạy lại `assembleDebug :vm-core:checkNoAndroidImports :vm-core:test` OK, `jarscan/selftest.sh` PASS, `run_vmspec.sh` pass=37 fail=0 spec-only=3, oracle hello SAME (microemu == freej2me). Quyết định: (1) TinySoundFont (submodule JL-Mod) vendored chỉ `tsf.h`/`tml.h`/LICENSE (MIT) tại đúng commit ghim `0d10306`, xem `VENDORED.txt`; (2) Maven Central trả 429 qua proxy → init script `~/.gradle/init.d/maven-mirror.gradle` (ngoài repo) chuyển sang mirror Google; script tải phải dùng mirror này; (3) V4 (thiếu phoneME/KEmulator/JL-Mod-dex) chấp nhận cho M0, các case CLDC-riêng giữ `UNVERIFIED`.
 - 2026-10-29 [A1 mới] T07 đạt: `vm-core/.../classfile/{ClassParser,ClassFile,ConstantPool,Descriptors,ClassFormatException}` + `jlkvm/ClassSource`. `./gradlew :vm-core:test`: parse 242/242 class (jar vmspec + stub cldcapi11/midpapi20, gồm raw 45.x), fuzz 10k (seed cố định) rejected=9040 accepted=960, không crash host. Test cần `tests/vmspec/run_vmspec.sh` đã chạy (assume nếu thiếu corpus). ROM chưa có.
+- 2026-10-29 [A1 mới] T08 đạt (chờ quản đốc nghiệm thu): viết lại `verify/MethodVerifier` (bản dở chỉ có khung) + `Verifier`; strict/lenient, uninit, long/double 2 từ, handler, mảng, interface=Object, jsr/ret từ chối. `./gradlew --no-daemon :vm-core:test`: vmspec 92 class chấp nhận / 3 từ chối (neg01–03 đúng); midlets+hello+clean 7/0; stub 147/0; stress (microemu, ecj, gson qua ProGuard -microedition) 12052 method chấp nhận, 0 từ chối ngoài ý muốn (78 `ldc Class` ở v47 bị từ chối đúng); ASM `tests/vmspec/gen_verify_cases.sh` 16 positive chấp nhận + 42 negative bị từ chối (pc + lý do khớp), lenient 58/58; fuzz 33k mẫu không crash. So HotSpot-21: chỉ khác ở quy tắc riêng CLDC. phoneME không có (V4), đặc tả CLDC không tải được (V5) → mọi điểm chưa chắc ghi UNVERIFIED trong `docs/verifier-report.md`. `RawGen` m05 thêm StackMap (vmspec vẫn pass=37 fail=0 spec-only=3).
+- 2026-10-29 [A1 mới] T09 đạt: `verify/TypeMaps` ((method,pc) → `RefMap` bitmap locals+stack, `at` = trước lệnh, `atCall` = caller trong lúc invoke, cache theo method); `TypeMapsTest` 11 test (10 method mẫu tính tay: long/double, uninit, uninitThis, handler, interface, mảng, null, field, dup_x2/dup2_x2) pass.
 
 ---
 

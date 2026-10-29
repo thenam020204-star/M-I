@@ -1,3 +1,5 @@
+import org.objectweb.asm.Attribute;
+import org.objectweb.asm.ByteVector;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Label;
@@ -38,6 +40,34 @@ public class RawGen implements Opcodes {
         m.visitInsn(RETURN);
         m.visitMaxs(1, 1);
         m.visitEnd();
+    }
+
+    /** Minimal CLDC StackMap attribute: frames given as {Label, Object[] locals, Object[] stack}, types "T" or "Lname". */
+    static final class SM extends Attribute {
+        final java.util.List<Object[]> entries = new java.util.ArrayList<Object[]>();
+        SM() { super("StackMap"); }
+        @Override public boolean isCodeAttribute() { return true; }
+        @Override protected Label[] getLabels() {
+            Label[] r = new Label[entries.size()];
+            for (int i = 0; i < r.length; i++) r[i] = (Label) entries.get(i)[0];
+            return r;
+        }
+        @Override protected ByteVector write(ClassWriter cw, byte[] code, int len, int maxStack, int maxLocals) {
+            ByteVector v = new ByteVector();
+            v.putShort(entries.size());
+            for (Object[] e : entries) {
+                v.putShort(((Label) e[0]).getOffset());
+                for (int k = 1; k <= 2; k++) {
+                    Object[] ts = (Object[]) e[k];
+                    v.putShort(ts.length);
+                    for (Object t : ts) {
+                        String x = (String) t;
+                        if (x.equals("T")) v.putByte(0); else v.putByte(7).putShort(cw.newClass(x.substring(1)));
+                    }
+                }
+            }
+            return v;
+        }
     }
 
     static ClassWriter cls(int version, int access, String name, String sup, String... ifs) {
@@ -151,6 +181,7 @@ public class RawGen implements Opcodes {
         m = D.visitMethod(ACC_PUBLIC, "run", "()V", null, null);
         m.visitCode();
         String[] names = { "exitOnly", "enterOnly", "doubleExit" };
+        SM sm = new SM();
         for (String n : names) {
             Label s = new Label(), e = new Label(), h = new Label(), end = new Label();
             m.visitTryCatchBlock(s, e, h, "java/lang/Throwable");
@@ -160,6 +191,7 @@ public class RawGen implements Opcodes {
             m.visitLabel(e);
             m.visitJumpInsn(GOTO, end);
             m.visitLabel(h);
+            sm.entries.add(new Object[] { h, new Object[] { "Lvmspec/M05D" }, new Object[] { "Ljava/lang/Throwable" } });
             m.visitVarInsn(ASTORE, 1);
             m.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
             m.visitTypeInsn(NEW, "java/lang/StringBuffer"); m.visitInsn(DUP);
@@ -172,8 +204,9 @@ public class RawGen implements Opcodes {
             m.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuffer", "toString", "()Ljava/lang/String;", false);
             m.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
             m.visitLabel(end);
+            sm.entries.add(new Object[] { end, new Object[] { "Lvmspec/M05D" }, new Object[0] });
         }
-        m.visitInsn(RETURN); m.visitMaxs(4, 2); m.visitEnd();
+        m.visitInsn(RETURN); m.visitAttribute(sm); m.visitMaxs(4, 2); m.visitEnd();
         write(id, "M05D", D.toByteArray());
     }
 
