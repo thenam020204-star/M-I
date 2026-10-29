@@ -1,0 +1,3 @@
+mode: spec-only
+source: spec: PLAN D3 (heap budget from the device profile; exhausted heap -> collector -> OutOfMemoryError of the guest; Runtime.freeMemory/totalMemory from the arena); CLDC 1.1 6.2.7.2 keeps OutOfMemoryError. The oracles' JVM heap is far larger than a device heap, so the case needs the project VM's 32 MB test heap.
+notes: no-gc-stress is not needed (the loop is bounded by the 32 MB heap) but the run takes a collection per exhausted allocation.

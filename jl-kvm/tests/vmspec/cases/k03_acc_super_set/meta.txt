@@ -1,0 +1,3 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (HotSpot, PLAN D18 level 4-5); spec: JVMS 2nd ed. sec.6.4 invokespecial with ACC_SUPER set: lookup restarts at the direct superclass K03B, so B.m
+notes: Same classes as k01 but class K03C has ACC_SUPER (flag set, class file 45.3). Pairs with k01 (flag missing).

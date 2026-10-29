@@ -1,0 +1,9 @@
+> T1 touches Slow
+> Slow.clinit begin
+> main touches Slow
+> Slow.clinit end
+> SlowFail.clinit begin
+> T1 Slow.x=5
+> T1 SlowFail ExceptionInInitializerError
+> main Slow.x=5
+> main SlowFail NoClassDefFoundError

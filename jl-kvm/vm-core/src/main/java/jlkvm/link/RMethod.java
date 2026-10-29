@@ -12,11 +12,13 @@ public final class RMethod {
     public final ClassFile.MethodInfo mi;
     public final String name, desc;
     public final int access;
-    public final boolean isStatic, isNative, isAbstract, isSync;
+    public final boolean isStatic, isNative, isAbstract, isSync, isInit;
     /** Words of the arguments including the receiver. */
     public final int argWords;
     /** Word offset of each parameter (receiver is parameter 0 of an instance method). */
     public final int[] argOffset;
+    /** Per argument word (receiver and long/double halves included): holds a reference. Used by the collector for natives in progress. */
+    public final boolean[] argWordIsRef;
     /** Return descriptor first char: V Z B C S I F J D L [ . */
     public final char ret;
     public final int maxLocals, maxStack;
@@ -36,6 +38,7 @@ public final class RMethod {
         this.isStatic = (access & ClassFile.ACC_STATIC) != 0;
         this.isNative = (access & ClassFile.ACC_NATIVE) != 0;
         this.isAbstract = (access & ClassFile.ACC_ABSTRACT) != 0;
+        this.isInit = mi.name.equals("<init>");
         this.isSync = (access & ClassFile.ACC_SYNCHRONIZED) != 0;
         List<String> ps = Descriptors.params(desc);
         int n = ps.size() + (isStatic ? 0 : 1);
@@ -47,6 +50,9 @@ public final class RMethod {
             w += (p.equals("J") || p.equals("D")) ? 2 : 1;
         }
         argWords = w;
+        argWordIsRef = new boolean[w];
+        if (!isStatic) argWordIsRef[0] = true;
+        { int ai = isStatic ? 0 : 1; for (String p : ps) { argWordIsRef[argOffset[ai++]] = p.charAt(0) == 'L' || p.charAt(0) == '['; } }
         ret = Descriptors.returnType(desc).charAt(0);
         if (mi.code != null) {
             code = mi.code.code;

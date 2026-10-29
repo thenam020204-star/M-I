@@ -1,3 +1,4 @@
+diverges: microemu|freej2me
 mode: oracle
-source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM). UNVERIFIED for KVM: both oracles (HotSpot) treat every class as ACC_SUPER and print B.m; the original JVMS (1st ed.) rule for a class without ACC_SUPER would give A.m. Decide with real KVM/phoneME evidence at T12
-notes: Class file 45.3 without ACC_SUPER, invokespecial naming a non-direct superclass method
+source: spec: JVMS 2nd ed. (1999, the edition CLDC 1.1 refers to) sec.6.4 invokespecial: only when the ACC_SUPER flag is set (and the reference names a superclass, method is not <init>) is the method looked up again from the direct superclass; without the flag the resolved method is called, here K01A.m. Both oracles (MicroEmulator 2.0.4, FreeJ2ME-Plus on HotSpot) ignore the flag and print B.m; HotSpot treats every class as ACC_SUPER since JDK 1.0.2. UNVERIFIED for a Nokia KVM (V2/V4): no device or phoneME to confirm; the choice follows the spec text (PLAN D18 order: spec before JVM oracles).
+notes: Class file 45.3 WITHOUT ACC_SUPER, invokespecial naming a non-direct superclass method. T12 changed expected from B.m to A.m. See k03 for the same class with the flag set.

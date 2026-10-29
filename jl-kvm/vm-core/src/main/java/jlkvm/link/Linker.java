@@ -20,8 +20,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Class loading, linking and lazy constant-pool resolution (PLAN D7). SKELETON of T12: loading+verification at first use of a
- * class, resolution on first execution of an instruction; access checks and the final error mapping are T12.
+ * Class loading, linking and lazy constant-pool resolution (PLAN D7, T12): loading+verification at first use of a class,
+ * resolution (with access control, JVMS 5.4.3/5.4.4) on first execution of an instruction, invokespecial/ACC_SUPER and
+ * invokeinterface selection. Error mapping: {@link Errors}; rules and sources: docs/error-mapping.md.
  */
 public final class Linker implements ClassHierarchy {
     private static final Object MISSING = new Object();
@@ -67,7 +68,12 @@ public final class Linker implements ClassHierarchy {
         if (o != null) return o;
         byte[] b = rom.readClass(n);
         boolean fromRom = b != null;
-        if (b == null && app != null) b = app.readClass(n);
+        if (b == null && app != null) {
+            if (isProtectedPackage(n)) {
+                // CLDC 1.1 spec 3.4.2.2: an application cannot add classes to the system packages
+                if (app.readClass(n) != null && vm.config.debug) vm.host.log(2, "link", "refused app class in protected package: " + n);
+            } else b = app.readClass(n);
+        }
         if (b == null) o = MISSING;
         else {
             try {
@@ -80,6 +86,37 @@ public final class Linker implements ClassHierarchy {
         }
         parsed.put(n, o);
         return o;
+    }
+
+    /** CLDC 1.1 spec 3.4.2.2: java.*, javax.microedition.* and the manufacturer packages of the profile belong to the system. */
+    public static boolean isProtectedPackage(String internalName) {
+        return internalName.startsWith("java/") || internalName.startsWith("javax/microedition/") || internalName.startsWith("com/nokia/mid/");
+    }
+
+    // ------------------------------------------------------------------ access control (JVMS 2nd ed. 5.4.4)
+
+    private static boolean samePackage(ClassInfo a, ClassInfo b) { return a.pkg.equals(b.pkg); }
+
+    private static ClassInfo elementClass(ClassInfo c) {
+        while (c.isArray) { if (c.component == null) return null; c = c.component; }
+        return c;
+    }
+
+    /** A class is accessible to {@code from} when it is public or in the same runtime package (one bootstrap namespace, CLDC 5.1.1). */
+    static boolean classAccessible(ClassInfo from, ClassInfo target) {
+        ClassInfo e = elementClass(target);
+        return e == null || (e.access & ClassFile.ACC_PUBLIC) != 0 || samePackage(from, e);
+    }
+
+    static boolean memberAccessible(ClassInfo from, ClassInfo declaring, int access) {
+        if ((access & ClassFile.ACC_PUBLIC) != 0) return true;
+        if ((access & ClassFile.ACC_PRIVATE) != 0) return from == declaring;
+        if (samePackage(from, declaring)) return true;
+        return (access & ClassFile.ACC_PROTECTED) != 0 && from.isSubclassOf(declaring);
+    }
+
+    private static void checkClass(ClassInfo from, ClassInfo target) {
+        if (!classAccessible(from, target)) throw Errors.error("java/lang/IllegalAccessError", from.name + " cannot access class " + target.name);
     }
 
     // ------------------------------------------------------------------ lookup
@@ -112,6 +149,8 @@ public final class Linker implements ClassHierarchy {
             ClassInfo sup = null;
             if (cf.superName != null) {
                 sup = find(cf.superName);
+                if ((sup.access & ClassFile.ACC_PUBLIC) == 0 && !sup.pkg.equals(pkgOf(name)))
+                    throw Errors.error("java/lang/IllegalAccessError", name + " cannot access super class " + sup.name);
                 if (sup.isInterface && !cf.isInterface()) throw Errors.error("java/lang/IncompatibleClassChangeError", name + " has interface " + sup.name + " as super class");
                 if ((sup.access & ClassFile.ACC_FINAL) != 0) throw Errors.error("java/lang/VerifyError", name + " cannot inherit from final " + sup.name);
             } else if (!name.equals("java/lang/Object")) throw Errors.error("java/lang/ClassFormatError", name + " has no super class");
@@ -119,6 +158,8 @@ public final class Linker implements ClassHierarchy {
             for (int i = 0; i < ifs.length; i++) {
                 ifs[i] = find(cf.interfaces[i]);
                 if (!ifs[i].isInterface) throw Errors.error("java/lang/IncompatibleClassChangeError", name + ": " + ifs[i].name + " is not an interface");
+                if ((ifs[i].access & ClassFile.ACC_PUBLIC) == 0 && !ifs[i].pkg.equals(pkgOf(name)))
+                    throw Errors.error("java/lang/IllegalAccessError", name + " cannot access interface " + ifs[i].name);
             }
             boolean fromRom = romNames.contains(name);
             if (fromRom ? vm.config.verifyRom : vm.config.verifyApp) {
@@ -145,6 +186,8 @@ public final class Linker implements ClassHierarchy {
             loading.remove(name);
         }
     }
+
+    private static String pkgOf(String name) { int s = name.lastIndexOf('/'); return s < 0 ? "" : name.substring(0, s); }
 
     private void layout(ClassInfo c) {
         ClassFile cf = c.cf;
@@ -186,7 +229,8 @@ public final class Linker implements ClassHierarchy {
         c.isWeakRef = (c.superClass != null && c.superClass.isWeakRef) || c.name.equals("java/lang/ref/WeakReference");
         if (c.isWeakRef) c.weakSlot = c.superClass != null && c.superClass.isWeakRef ? c.superClass.weakSlot : -1;
         if (c.name.equals("java/lang/ref/WeakReference")) {
-            RField r = c.findDeclaredField("referent", null);
+            RField r = null;
+            for (ClassInfo k = c; k != null && r == null; k = k.superClass) r = k.findDeclaredField("referent", null);
             c.weakSlot = r == null ? -1 : r.slot;
         }
     }
@@ -265,10 +309,12 @@ public final class Linker implements ClassHierarchy {
 
     // ------------------------------------------------------------------ resolution
 
+    /** Resolves a CONSTANT_Class (JVMS 5.4.3.1): loads it and checks that {@code from} may access it. Not cached on failure. */
     public ClassInfo resolveClass(ClassInfo from, int idx) {
         Object o = from.resolved[idx];
         if (o instanceof ClassInfo) return (ClassInfo) o;
         ClassInfo c = find(from.cf.pool.className(idx));
+        checkClass(from, c);
         from.resolved[idx] = c;
         return c;
     }
@@ -285,18 +331,22 @@ public final class Linker implements ClassHierarchy {
         return null;
     }
 
+    /** Field resolution (JVMS 5.4.3.2): class resolution, lookup, NoSuchFieldError, access check (IllegalAccessError). */
     public RField resolveField(ClassInfo from, int idx) {
         Object o = from.resolved[idx];
         if (o instanceof RField) return (RField) o;
         ConstantPool cp = from.cf.pool;
-        ClassInfo c = find(cp.refClass(idx));
+        ClassInfo c = resolveClass(from, cp.refClassIndex(idx));
         RField f = findField(c, cp.refName(idx), cp.refDescriptor(idx));
         if (f == null) throw Errors.error("java/lang/NoSuchFieldError", c.name + "." + cp.refName(idx));
+        if (!memberAccessible(from, f.owner, f.access))
+            throw Errors.error("java/lang/IllegalAccessError", from.name + " cannot access field " + f.owner.name + "." + f.name);
         from.resolved[idx] = f;
         return f;
     }
 
     public RMethod findMethod(ClassInfo c, String name, String desc) {
+        if (name.equals("<init>") || name.equals("<clinit>")) return c.findDeclared(name, desc);   // not inherited
         for (ClassInfo k = c; k != null; k = k.superClass) {
             RMethod m = k.findDeclared(name, desc);
             if (m != null) return m;
@@ -310,15 +360,58 @@ public final class Linker implements ClassHierarchy {
         return null;
     }
 
+    /**
+     * Method resolution (JVMS 5.4.3.3 / 5.4.3.4). A Methodref must name a class and an InterfaceMethodref an interface
+     * (IncompatibleClassChangeError otherwise); NoSuchMethodError; access check (IllegalAccessError).
+     */
     public RMethod resolveMethod(ClassInfo from, int idx) {
         Object o = from.resolved[idx];
         if (o instanceof RMethod) return (RMethod) o;
         ConstantPool cp = from.cf.pool;
-        ClassInfo c = find(cp.refClass(idx));
+        ClassInfo c = resolveClass(from, cp.refClassIndex(idx));
+        boolean viaInterfaceRef = cp.tag(idx) == ConstantPool.IMETHODREF;
+        if (c.isInterface != viaInterfaceRef)
+            throw Errors.error("java/lang/IncompatibleClassChangeError", c.name + (viaInterfaceRef ? " is not an interface" : " is an interface"));
         RMethod m = findMethod(c, cp.refName(idx), cp.refDescriptor(idx));
         if (m == null) throw Errors.error("java/lang/NoSuchMethodError", c.name + "." + cp.refName(idx) + cp.refDescriptor(idx));
+        if (!memberAccessible(from, m.owner, m.access))
+            throw Errors.error("java/lang/IllegalAccessError", from.name + " cannot access method " + m);
         from.resolved[idx] = m;
         return m;
+    }
+
+    /**
+     * invokespecial target (JVMS 2nd ed. 6.4). With ACC_SUPER set on the calling class, a method that is not <init> and whose
+     * reference names a proper superclass is looked up again from the direct superclass; without ACC_SUPER (class files from
+     * before JDK 1.0.2) the resolved method is called as is. Cached per (class, pool index).
+     */
+    public RMethod specialTarget(ClassInfo cls, int idx, RMethod ref) {
+        if (ref.isInit || (cls.access & ClassFile.ACC_SUPER) == 0) return ref;
+        RMethod[] cache = cls.superTargets;
+        if (cache == null) cache = cls.superTargets = new RMethod[cls.cf.pool.size()];
+        RMethod t = cache[idx];
+        if (t != null) return t;
+        ClassInfo named = resolveClass(cls, cls.cf.pool.refClassIndex(idx));
+        t = ref;
+        if (!named.isInterface && named != cls && cls.isSubclassOf(named)) {
+            t = cls.superClass.selectVirtual(ref);
+            if (t == null) throw Errors.error("java/lang/AbstractMethodError", ref.toString());
+        }
+        cache[idx] = t;
+        return t;
+    }
+
+    /** invokeinterface selection: the receiver class must implement the interface (ICCE); the method must be public (IllegalAccessError). */
+    public RMethod selectInterface(ClassInfo recv, RMethod ref) {
+        RMethod t = recv.cachedInterfaceTarget(ref);
+        if (t != null) return t;
+        if (ref.owner.isInterface && !recv.implementsInterface(ref.owner))
+            throw Errors.error("java/lang/IncompatibleClassChangeError", recv.name + " does not implement " + ref.owner.name);
+        t = recv.selectVirtual(ref);
+        if (t == null) throw Errors.error("java/lang/AbstractMethodError", ref.toString());
+        if ((t.access & ClassFile.ACC_PUBLIC) == 0) throw Errors.error("java/lang/IllegalAccessError", t.toString());
+        recv.cacheInterfaceTarget(ref, t);
+        return t;
     }
 
     /** Guest String of a CONSTANT_String (interned). */

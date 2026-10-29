@@ -43,6 +43,8 @@ public final class ConstantPool {
             throw new ClassFormatException("constant pool entry " + i + " is not a member reference");
     }
 
+    /** Constant pool index of the CONSTANT_Class named by a member reference. */
+    public int refClassIndex(int i) { expectRef(i); return a[i]; }
     public String refClass(int i) { expectRef(i); return className(a[i]); }
     public String refName(int i) { expectRef(i); expect(b[i], NAME_AND_TYPE); return utf8(a[b[i]]); }
     public String refDescriptor(int i) { expectRef(i); expect(b[i], NAME_AND_TYPE); return utf8(b[b[i]]); }

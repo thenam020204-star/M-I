@@ -1,0 +1,4 @@
+no-gc-stress: yes
+mode: spec-only
+source: spec: PLAN D8 (objects with host resources keep an int peer into the handle table) and T13 ("bảng handle host không rò: đếm về 0 sau khi thả hết"); natives vmspec/Peer.* are provided by the test host (vm-core/src/test/java/jlkvm/tmp/TempHost.java), so the oracles cannot run it.
+notes: A local that is dead after some point is not a root (the preverifier StackMap omits it) - the case reads `keep` after the second gc() on purpose. With heap 32 MB the 1000 Peers never fill the heap, so the collector runs only through Runtime.gc(); with --gc-stress the "before gc" line differs (that run is only checked for crashes).

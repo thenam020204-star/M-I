@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # run_jlkvm.sh GAME.jar [RunJar options: --cldc10 --lenient --debug --noverify --timeout SEC]
 # Runs the MIDlet on THIS project's VM (vm-core) with the TEMPORARY stub ROM (vm-core/src/test/guest-stub, PLAN T11).
+# JLKVM_MAIN=jlkvm.tmp.Bench runs the benchmark driver instead (tests/bench/run_bench.sh).
 # Guest console output on stdout, VM diagnostics on stderr. Rebuilds the engine classes / stub ROM when sources changed.
 set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"; ROOT="$HERE/../../.."
@@ -18,4 +19,6 @@ fi
 if [ ! -f "$ROM" ] || [ -n "$(find "$ROOT/vm-core/src/test/guest-stub/src" -name '*.java' -newer "$ROM" | head -1)" ]; then
   "$ROOT/vm-core/src/test/guest-stub/build.sh" "$ROM" >&2 || exit 2
 fi
-exec env -u JAVA_TOOL_OPTIONS "$JDK8_HOME/bin/java" -cp "$B/classes" jlkvm.tmp.RunJar "$ROM" "$JAR" "$@"
+# JLKVM_ARGS (e.g. "--gc-stress 1 --gc-verify") is added to every run except --noverify ones: without a verified method there is no GC type map
+EXTRA="${JLKVM_ARGS:-}"; case " $* " in *" --noverify "*) EXTRA="" ;; esac
+exec env -u JAVA_TOOL_OPTIONS "${JLKVM_JAVA:-$JDK8_HOME/bin/java}" ${JLKVM_JAVA_OPTS:-} -cp "$B/classes" ${JLKVM_MAIN:-jlkvm.tmp.RunJar} "$ROM" "$JAR" "$@" $EXTRA

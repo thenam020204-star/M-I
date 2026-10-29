@@ -45,7 +45,8 @@ public final class CoreNatives {
             try {
                 k = vm.linker.find(n.replace('.', '/'));
             } catch (VmThrow t) {
-                if (t.guestClass != null && t.guestClass.equals("java/lang/NoClassDefFoundError")) c.throwNew("java/lang/ClassNotFoundException", n);
+                // only the requested class itself missing is a ClassNotFoundException; a missing superclass stays a NoClassDefFoundError
+                if (t.guestClass != null && t.guestClass.equals("java/lang/NoClassDefFoundError") && n.replace('.', '/').equals(t.msg)) c.throwNew("java/lang/ClassNotFoundException", n);
                 else throw t;
                 return;
             }

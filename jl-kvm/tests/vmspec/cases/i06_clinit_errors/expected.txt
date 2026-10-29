@@ -1,0 +1,15 @@
+> ThrowsError 1 I06Main$MyErr
+> ThrowsError 2 NoClassDefFoundError
+> ThrowsOom 1 OutOfMemoryError
+> ThrowsOom 2 NoClassDefFoundError
+> new Sub 1 ExceptionInInitializerError
+> new Sub 2 NoClassDefFoundError
+> Base 1 NoClassDefFoundError
+> new Sub2 NoClassDefFoundError
+> forName 1 ExceptionInInitializerError
+> forName 2 NoClassDefFoundError
+> state=7
+> Catches ok
+> Order.a
+> a=1
+> Order ok

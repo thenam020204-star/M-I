@@ -1,0 +1,3 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus (HotSpot, PLAN D18 level 4-5); spec: JVMS 2nd ed. 5.5 steps 5-11 (an Error is rethrown, other exceptions are wrapped in ExceptionInInitializerError, the class is marked erroneous, later requests give NoClassDefFoundError), 2.17.5; CLDC 1.1 spec 4.2/5.1.4 and 6.2.7.2 (ExceptionInInitializerError not in CLDC -> java.lang.Error; MyErr is an application class and is thrown unchanged).
+notes: UNVERIFIED on a Nokia KVM whether the device throws or halts (V2/V4). Companion of i03 (which fixes the exact class names for the CLDC mapping).

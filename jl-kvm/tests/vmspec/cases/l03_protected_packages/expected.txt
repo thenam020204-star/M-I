@@ -1,0 +1,4 @@
+> vmspec.L03Ok loaded
+> java.lang.L03Evil refused
+> javax.microedition.L03Evil refused
+> com.nokia.mid.L03Evil refused

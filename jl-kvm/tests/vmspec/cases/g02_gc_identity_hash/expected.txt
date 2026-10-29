@@ -1,0 +1,6 @@
+> hash changed (assigned before moves): 0
+> hash changed (assigned after moves): 0
+> null hash: 0
+> stable on repeat: true
+> gc() reclaims it: true
+> total memory constant: true

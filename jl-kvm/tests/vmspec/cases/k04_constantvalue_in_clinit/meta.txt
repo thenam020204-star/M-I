@@ -1,0 +1,3 @@
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus (HotSpot, PLAN D18 level 4-5); spec: JVMS 2nd ed. 4.5.2 ConstantValue ("assigned ... when the class is initialized, before <clinit> runs"; applies to every static field that has the attribute, final or not) and 5.5.
+notes: Raw class (RawGen k04) because javac inlines compile-time constants. Companion of k02 (getstatic initialises the class).

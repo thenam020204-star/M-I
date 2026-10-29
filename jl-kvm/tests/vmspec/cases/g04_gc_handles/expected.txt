@@ -1,0 +1,6 @@
+> before gc: live=1000
+> after gc, 10 kept: live=10 disposed by gc=990
+> 5 closed explicitly: live=5
+> after gc, 5 kept: live=5 disposed by gc=990 last kept=true
+> all dropped: live=0 disposed by gc=995
+> again: live=0 disposed by gc=1195

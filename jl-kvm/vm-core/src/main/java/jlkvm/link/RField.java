@@ -7,7 +7,8 @@ public final class RField {
     public final ClassInfo owner;
     public final ClassFile.FieldInfo fi;
     public final String name, desc;
-    public final boolean isStatic;
+    public final boolean isStatic, isFinal;
+    public final int access;
     /** Descriptor first char: Z B C S I F J D L [ . */
     public final char kind;
     public final int words;
@@ -19,7 +20,9 @@ public final class RField {
         this.fi = fi;
         this.name = fi.name;
         this.desc = fi.descriptor;
+        this.access = fi.access;
         this.isStatic = (fi.access & ClassFile.ACC_STATIC) != 0;
+        this.isFinal = (fi.access & ClassFile.ACC_FINAL) != 0;
         this.kind = desc.charAt(0);
         this.words = (kind == 'J' || kind == 'D') ? 2 : 1;
         this.isRef = kind == 'L' || kind == '[';

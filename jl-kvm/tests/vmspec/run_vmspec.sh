@@ -13,6 +13,7 @@
 #   source: where expected.txt comes from (oracle names, or spec citation)  [required]
 #   diverges: microemu|freej2me|...          oracles known to deviate from expected.txt (reason in notes:)
 #   jlkvm-args: extra options for run_jlkvm.sh (e.g. --noverify for jsr/ret classes)
+#   no-gc-stress: yes   do not add env JLKVM_ARGS (e.g. "--gc-stress 1 --gc-verify") to this case
 #   notes: free text
 # Exit status: 0 when every case passes, 1 otherwise.
 set -uo pipefail
@@ -66,7 +67,8 @@ for id in "${IDS[@]}"; do
   outs=()
   if [ "$ENGINE" = jlkvm ]; then
     o=jlkvm
-    "$ORA/run_jlkvm.sh" "$JAR" $( [ "$cldc" = cldc10 ] && echo --cldc10 ) $(meta "$id" jlkvm-args) > "$W/$o.raw" 2> "$W/$o.err"
+    ja="${JLKVM_ARGS:-}"; [ -n "$(meta "$id" no-gc-stress)" ] && ja=""   # env JLKVM_ARGS="--gc-stress 1 --gc-verify": GC torture for the whole corpus
+    JLKVM_ARGS="$ja" "$ORA/run_jlkvm.sh" "$JAR" $( [ "$cldc" = cldc10 ] && echo --cldc10 ) $(meta "$id" jlkvm-args) > "$W/$o.raw" 2> "$W/$o.err"
     norm < "$W/$o.raw" > "$W/$o.out"; outs+=("$o")
   else
   for o in microemu freej2me; do

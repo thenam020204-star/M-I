@@ -37,6 +37,7 @@ public final class Heap {
     private int[] instWords = new int[64];
     private Collector collector;
     private int hashState;
+    private int stressInterval, stressCount;
     private long allocatedWords, allocatedObjects;
 
     /** @param bytes heap budget (from the device profile); rounded down to whole words. */
@@ -49,6 +50,9 @@ public final class Heap {
     }
 
     public void setCollector(Collector c) { collector = c; }
+
+    /** Debug (VmConfig.gcStressInterval): run the collector before every {@code n}-th allocation; 0 = off. */
+    public void setStressInterval(int n) { stressInterval = n; stressCount = 0; }
 
     /** Linker registers the number of field words (without header) of an instance class. */
     public void setInstanceWords(int classId, int words) {
@@ -76,6 +80,10 @@ public final class Heap {
     // ------------------------------------------------------------------ allocation
 
     private int reserve(int words) {
+        if (stressInterval > 0 && collector != null && ++stressCount >= stressInterval) {
+            stressCount = 0;
+            collector.collect(this, words);
+        }
         if (words > limit - top) {
             if (collector != null) collector.collect(this, words);
             if (words > limit - top) return 0;

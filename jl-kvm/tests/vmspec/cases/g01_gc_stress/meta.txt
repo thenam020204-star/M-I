@@ -1,0 +1,4 @@
+no-gc-stress: yes
+mode: oracle
+source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus (HotSpot, PLAN D18 level 4-5): the checksum depends only on the reachable data (LCG seed, no identity hashes, Integer/String hashCode are specified), so every correct VM prints the same lines. T13 acceptance: "stress 1 triệu cấp phát đồ thị ngẫu nhiên có checksum không sai".
+notes: The project VM is also run with a 3 MB heap and with --gc-stress/--gc-verify (vm-core test GcTest, docs/gc.md) so the collector really runs many times; with the default 32 MB heap only a few collections happen.

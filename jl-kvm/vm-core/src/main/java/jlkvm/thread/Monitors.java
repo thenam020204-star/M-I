@@ -33,6 +33,17 @@ public final class Monitors {
         for (Integer k : map.keySet()) r[i++] = k;
         return r;
     }
+    /** GC (after marking): forgets the records of objects that did not survive. */
+    public void dropDead(jlkvm.heap.Heap h) {
+        for (java.util.Iterator<Integer> it = map.keySet().iterator(); it.hasNext(); ) if (!h.isMarked(it.next())) it.remove();
+    }
+    /** GC (compaction): re-keys every record to the new address of its object. */
+    public void relocate(jlkvm.heap.Forwarder f) {
+        Map<Integer, Monitor> n = new HashMap<Integer, Monitor>();
+        for (Map.Entry<Integer, Monitor> e : map.entrySet()) n.put(f.forward(e.getKey()), e.getValue());
+        map.clear();
+        map.putAll(n);
+    }
     public void rekey(int oldRef, int newRef) {
         Monitor m = map.remove(oldRef);
         if (m != null) map.put(newRef, m);

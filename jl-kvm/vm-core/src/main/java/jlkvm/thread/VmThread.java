@@ -20,6 +20,10 @@ public final class VmThread {
     public boolean interrupted;
     public String pendingThrow;        // guest class thrown when the thread resumes
     public int excPc;                  // pc used for that throw
+    /** Class to initialise before the first instruction runs (main thread of {@link jlkvm.Vm#launch}). */
+    public jlkvm.link.ClassInfo initFirst;
+    /** Native method being executed (its arguments are still on the operand stack; GC needs their types). */
+    public RMethod inNative;
     public int threadObj;              // guest java/lang/Thread object (GC root)
     public Blocker blocker;
     public char blockerRet;

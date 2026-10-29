@@ -122,7 +122,8 @@ public final class Interpreter {
                     ipc = th.excPc;
                     throw new VmThrow(c, null);
                 }
-                inner:
+                if (th.initFirst != null) { slowCls = th.initFirst; th.initFirst = null; slow = S_INIT; ipc = pc; }
+                if (slow == S_NONE) inner:
                 for (;;) {
                     if (budget-- <= 0) { slow = S_SWITCH; break inner; }
                     ipc = pc;
@@ -142,6 +143,7 @@ public final class Interpreter {
                         int idx;
                         if (op == 18) idx = code[pc++] & 0xff; else { idx = u16(code, pc); pc += 2; }
                         ConstantPool cp = cls.cf.pool;
+                        th.fp = fp; th.sp = sp; th.pc = ipc; th.method = m;   // GC safepoint: resolving a string or class literal allocates
                         switch (cp.tag(idx)) {
                         case ConstantPool.INTEGER: st[sp++] = cp.intValue(idx); break;
                         case ConstantPool.FLOAT: st[sp++] = Float.floatToRawIntBits(cp.floatValue(idx)); break;
@@ -383,6 +385,7 @@ public final class Interpreter {
                     case 178: case 179: { // getstatic putstatic
                         RField f = (RField) (cls.resolved[u16(code, pc)] instanceof RField ? cls.resolved[u16(code, pc)] : lk.resolveField(cls, u16(code, pc)));
                         if (!f.isStatic) throw icce("not a static field: " + f.name);
+                        if (op == 179 && f.isFinal && f.owner != cls) throw Errors.error("java/lang/IllegalAccessError", "final field " + f.owner.name + "." + f.name + " assigned from " + cls.name);
                         ClassInfo oc = f.owner;
                         if (needsInit(oc, th)) { slow = S_INIT; slowCls = oc; pc = ipc; break inner; }
                         pc += 2;
@@ -411,6 +414,7 @@ public final class Interpreter {
                     case 181: { // putfield
                         RField f = (RField) (cls.resolved[u16(code, pc)] instanceof RField ? cls.resolved[u16(code, pc)] : lk.resolveField(cls, u16(code, pc)));
                         if (f.isStatic) throw icce("static field " + f.name);
+                        if (f.isFinal && f.owner != cls) throw Errors.error("java/lang/IllegalAccessError", "final field " + f.owner.name + "." + f.name + " assigned from " + cls.name);
                         if (f.words == 2) {
                             int lo = st[--sp], hi = st[--sp], ref = st[--sp];
                             if (ref == 0) throw npe();
@@ -436,10 +440,9 @@ public final class Interpreter {
                             int recv = st[sp - ref.argWords];
                             if (recv == 0) throw npe();
                             if (op == 183) {
-                                if (!ref.name.equals("<init>") && ref.owner != cls && !ref.owner.isInterface && cls.isSubclassOf(ref.owner)) {
-                                    t = cls.superClass.selectVirtual(ref);   // ACC_SUPER semantics (always applied, see docs/error-mapping.md)
-                                    if (t == null) throw Errors.error("java/lang/AbstractMethodError", ref.toString());
-                                }
+                                t = lk.specialTarget(cls, idx, ref);   // ACC_SUPER lookup only when the calling class has the flag (T12)
+                            } else if (op == 185) {
+                                t = lk.selectInterface(classOf(recv), ref);
                             } else if ((ref.access & ClassFile.ACC_PRIVATE) == 0) {
                                 t = classOf(recv).selectVirtual(ref);
                                 if (t == null) throw Errors.error("java/lang/AbstractMethodError", ref.toString());
@@ -451,7 +454,9 @@ public final class Interpreter {
                             th.fp = fp; th.sp = sp; th.pc = ipc; th.method = m;
                             NativeCtx c = ctx;
                             c.begin(th, st, sp - t.argWords, t);
+                            th.inNative = t;   // GC: the arguments are still on the operand stack
                             t.nat.invoke(c);
+                            th.inNative = null;
                             if (c.exClass != null) throw new VmThrow(c.exClass, c.exMsg);
                             if (c.exRef != 0) throw new VmThrow(c.exRef);
                             if (c.initCls != null) { slow = S_INIT; slowCls = c.initCls; pc = ipc; break inner; }
@@ -478,11 +483,15 @@ public final class Interpreter {
                         if (t.code == null) throw Errors.error("java/lang/AbstractMethodError", t.toString());
                         int nfp = sp - t.argWords, nhdr = nfp + t.maxLocals;
                         if (nhdr + Frames.HDR + t.maxStack > st.length) throw Errors.error("java/lang/StackOverflowError", null);
+                        int lockRef = 0;
+                        if (t.isSync) {
+                            if (t.isStatic) { th.fp = fp; th.sp = sp; th.pc = ipc; th.method = m; lockRef = lk.mirror(t.owner); }   // may allocate: before the frame is built
+                            else lockRef = st[nfp];
+                        }
                         st[nhdr + Frames.PREV_FP] = fp; st[nhdr + Frames.PREV_MID] = m.id; st[nhdr + Frames.PREV_PC] = ipc;
                         st[nhdr + Frames.SYNC] = 0; st[nhdr + Frames.FLAGS] = 0; st[nhdr + Frames.LOCKS] = th.lockTop;
                         fp = nfp; m = t; code = t.code; cls = t.owner; sp = nhdr + Frames.HDR; pc = 0;
                         if (t.isSync) {
-                            int lockRef = t.isStatic ? lk.mirror(t.owner) : st[nfp];
                             st[nhdr + Frames.SYNC] = lockRef;
                             if (!mons.enter(th, lockRef)) { slow = S_SWITCH; break inner; }
                         }
@@ -492,9 +501,10 @@ public final class Interpreter {
                         int idx = u16(code, pc);
                         Object o = cls.resolved[idx];
                         ClassInfo c = o instanceof ClassInfo ? (ClassInfo) o : lk.resolveClass(cls, idx);
-                        if (needsInit(c, th)) { slow = S_INIT; slowCls = c; pc = ipc; break inner; }
                         if (c.isInterface || (c.access & ClassFile.ACC_ABSTRACT) != 0 || c.isArray)
                             throw Errors.error("java/lang/InstantiationError", c.name);
+                        if (needsInit(c, th)) { slow = S_INIT; slowCls = c; pc = ipc; break inner; }
+                        th.fp = fp; th.sp = sp; th.pc = ipc; th.method = m;   // GC safepoint
                         int r = heap.allocObject(c.id);
                         if (r == 0) throw vm.oomThrow(c.name);
                         st[sp++] = r;
@@ -511,6 +521,7 @@ public final class Interpreter {
                         if (primArr[kind] == 0) primArr[kind] = primArray(kind).id;
                         int len = st[sp - 1];
                         if (len < 0) throw new VmThrow("java/lang/NegativeArraySizeException", String.valueOf(len));
+                        th.fp = fp; th.sp = sp; th.pc = ipc; th.method = m;   // GC safepoint (pc = this instruction: its operand is still on the stack)
                         int r = heap.allocArray(primArr[kind], kind, len);
                         if (r == 0) throw vm.oomThrow("array of " + len);
                         st[sp - 1] = r;
@@ -518,6 +529,7 @@ public final class Interpreter {
                     }
                     case 189: { // anewarray
                         ClassInfo ac = lk.arrayOf(lk.resolveClass(cls, u16(code, pc)));
+                        th.fp = fp; th.sp = sp; th.pc = ipc; th.method = m;
                         pc += 2;
                         st[sp - 1] = allocArray(ac, st[sp - 1]);
                         break;
@@ -525,17 +537,19 @@ public final class Interpreter {
                     case 190: { int a = st[sp - 1]; if (a == 0) throw npe(); st[sp - 1] = mem[a + 2]; break; }
                     case 191: { int a = st[sp - 1]; if (a == 0) throw npe(); throw new VmThrow(a); }
                     case 192: { // checkcast
+                        int r = st[sp - 1];
+                        if (r == 0) { pc += 2; break; }   // null: the class is not resolved (JVMS)
                         ClassInfo c = lk.resolveClass(cls, u16(code, pc));
                         pc += 2;
-                        int r = st[sp - 1];
-                        if (r != 0 && !lk.isAssignable(classOf(r), c)) throw new VmThrow("java/lang/ClassCastException", classOf(r).name.replace('/', '.'));
+                        if (!lk.isAssignable(classOf(r), c)) throw new VmThrow("java/lang/ClassCastException", classOf(r).name.replace('/', '.'));
                         break;
                     }
                     case 193: { // instanceof
+                        int r = st[sp - 1];
+                        if (r == 0) { pc += 2; break; }   // null: the class is not resolved (JVMS)
                         ClassInfo c = lk.resolveClass(cls, u16(code, pc));
                         pc += 2;
-                        int r = st[sp - 1];
-                        st[sp - 1] = r != 0 && lk.isAssignable(classOf(r), c) ? 1 : 0;
+                        st[sp - 1] = lk.isAssignable(classOf(r), c) ? 1 : 0;
                         break;
                     }
                     case 194: { // monitorenter
@@ -577,6 +591,9 @@ public final class Interpreter {
                         int[] counts = new int[dims];
                         for (int i = dims - 1; i >= 0; i--) counts[i] = st[--sp];
                         for (int i = 0; i < dims; i++) if (counts[i] < 0) throw new VmThrow("java/lang/NegativeArraySizeException", String.valueOf(counts[i]));
+                        sp += dims;   // the counts stay on the operand stack (as before the instruction) while the arrays are allocated
+                        th.fp = fp; th.sp = sp; th.pc = ipc; th.method = m;
+                        sp -= dims;
                         st[sp++] = multi(ac, counts, 0);
                         break;
                     }
@@ -598,7 +615,10 @@ public final class Interpreter {
                     if (r == 2) { th.excPc = ipc; pc = ipc; th.fp = fp; th.sp = sp; th.method = m; th.pc = pc; return slice - budget; }
                     RMethod t = vm.initRun.clinit;
                     int nhdr = sp + t.maxLocals;
-                    if (nhdr + Frames.HDR + t.maxStack > st.length) throw Errors.error("java/lang/StackOverflowError", null);
+                    if (nhdr + Frames.HDR + t.maxStack > st.length) {
+                        vm.initRun.state = ClassInfo.ERROR; vm.initRun.initThread = 0;   // the class cannot be initialised any more
+                        throw Errors.error("java/lang/StackOverflowError", null);
+                    }
                     st[nhdr + Frames.PREV_FP] = fp; st[nhdr + Frames.PREV_MID] = m.id; st[nhdr + Frames.PREV_PC] = ipc;
                     st[nhdr + Frames.SYNC] = 0; st[nhdr + Frames.FLAGS] = Frames.F_INIT; st[nhdr + Frames.EXTRA] = vm.initRun.id; st[nhdr + Frames.LOCKS] = th.lockTop;
                     fp = sp; m = t; code = t.code; cls = t.owner; sp = nhdr + Frames.HDR; pc = 0;
@@ -619,6 +639,7 @@ public final class Interpreter {
                     return Math.max(0, slice - budget);
                 }
             } catch (VmThrow t) {
+                th.inNative = null;
                 th.fp = fp; th.sp = sp; th.method = m; th.pc = ipc;
                 slow = S_NONE;
                 int ex = vm.materialize(t, th);
@@ -655,7 +676,14 @@ public final class Interpreter {
                     if (pc < h.startPc || pc >= h.endPc) continue;
                     if (h.catchType != 0) {
                         ClassInfo ct;
-                        try { ct = lk.resolveClass(m.owner, h.catchType); } catch (VmThrow x) { continue; }
+                        try {
+                            ct = lk.resolveClass(m.owner, h.catchType);
+                        } catch (VmThrow x) {
+                            // JVMS 5.4.3: the resolution error is thrown instead; it leaves this frame (no further handler of it is tried)
+                            ex = vm.materialize(x, th);
+                            ec = classOf(ex);
+                            break;
+                        }
                         if (!lk.isAssignable(ec, ct)) continue;
                     }
                     th.fp = fp; th.method = m;
@@ -676,7 +704,7 @@ public final class Interpreter {
                 ClassInfo ic = lk.byId(st[hdr + Frames.EXTRA]);
                 ic.state = ClassInfo.ERROR; ic.initThread = 0;
                 if (!ec.isSubclassOf(errorClass)) {   // ExceptionInInitializerError is not in CLDC: mapped to java.lang.Error (CLDC 4.2/5.1.4)
-                    ex = vm.newThrowable(Errors.guest("java/lang/ExceptionInInitializerError"), ec.name.replace('/', '.'), null);
+                    ex = vm.wrapInitializerError(ex);
                     ec = classOf(ex);
                 }
             }

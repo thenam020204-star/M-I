@@ -50,11 +50,18 @@ public final class ClassInfo {
     public int mirror;
 
     private final Map<Integer, RMethod> vcache = new HashMap<Integer, RMethod>();
+    private final Map<Integer, RMethod> icache = new HashMap<Integer, RMethod>();
+    /** Per constant-pool index: target of an invokespecial that went through the ACC_SUPER lookup (null = not computed). */
+    public RMethod[] superTargets;
+    /** Package of the class (internal form, "" for the default package); arrays: package of the element class is used by the Linker. */
+    public final String pkg;
 
     ClassInfo(int id, String name, ClassFile cf) {
         this.id = id;
         this.name = name;
         this.cf = cf;
+        int sl = name.lastIndexOf('/');
+        this.pkg = sl < 0 || name.charAt(0) == '[' ? "" : name.substring(0, sl);
     }
 
     public ClassInfo arrayClassCache() { return arrayOf; }
@@ -82,17 +89,27 @@ public final class ClassInfo {
         return false;
     }
 
-    /** Virtual selection of the method that overrides {@code ref} in this (receiver) class; null if none (AbstractMethodError). */
+    /**
+     * Virtual selection (JVMS 2nd ed. invokevirtual): the first instance method named like {@code ref} found walking from this
+     * (receiver) class up the superclasses; null when it is abstract or absent (AbstractMethodError). Private and static
+     * methods are never selected.
+     */
     public RMethod selectVirtual(RMethod ref) {
         RMethod r = vcache.get(ref.ndId);
         if (r != null) return r;
-        for (ClassInfo c = this; c != null && r == null; c = c.superClass) {
+        for (ClassInfo c = this; c != null; c = c.superClass) {
             RMethod m = c.findDeclared(ref.name, ref.desc);
-            if (m != null && !m.isStatic && (m.access & ClassFile.ACC_PRIVATE) == 0 && !m.isAbstract) r = m;
+            if (m != null && !m.isStatic && (m.access & ClassFile.ACC_PRIVATE) == 0) {
+                if (m.isAbstract) return null;
+                vcache.put(ref.ndId, m);
+                return m;
+            }
         }
-        if (r != null) vcache.put(ref.ndId, r);
-        return r;
+        return null;
     }
+
+    RMethod cachedInterfaceTarget(RMethod ref) { return icache.get(ref.id); }
+    void cacheInterfaceTarget(RMethod ref, RMethod t) { icache.put(ref.id, t); }
 
     @Override public String toString() { return name; }
 }

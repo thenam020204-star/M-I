@@ -24,6 +24,14 @@ public final class Errors {
         }
     }
 
-    public static VmThrow error(String jvmsName, String msg) { return new VmThrow(guest(jvmsName), msg); }
+    /**
+     * The VM-raised error {@code jvmsName} as the guest class that CLDC has. When the class changed, the message starts with the
+     * simple JVMS name ("NoSuchMethodError: A.m()V") so logs and tests can tell the cases apart (docs/error-mapping.md).
+     */
+    public static VmThrow error(String jvmsName, String msg) {
+        String g = guest(jvmsName);
+        if (!g.equals(jvmsName)) msg = jvmsName.substring(jvmsName.lastIndexOf('/') + 1) + (msg == null ? "" : ": " + msg);
+        return new VmThrow(g, msg);
+    }
     public static VmThrow noClassDef(String name) { return new VmThrow("java/lang/NoClassDefFoundError", name); }
 }

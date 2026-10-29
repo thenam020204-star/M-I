@@ -1,0 +1,17 @@
+> start
+> unexecuted branch ok
+> new NoClassDefFoundError
+> new again NoClassDefFoundError
+> invokestatic NoClassDefFoundError
+> getstatic NoClassDefFoundError
+> instanceof null ok
+> instanceof object NoClassDefFoundError
+> checkcast null ok
+> checkcast object NoClassDefFoundError
+> anewarray NoClassDefFoundError
+> new Sub (superclass missing) NoClassDefFoundError
+> new Sub again NoClassDefFoundError
+> forName missing ClassNotFoundException
+> forName Sub (superclass missing) NoClassDefFoundError
+> caught in the same method NoClassDefFoundError
+> end

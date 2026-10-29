@@ -1,5 +1,6 @@
 package jlkvm;
 
+import jlkvm.gc.Gc;
 import jlkvm.heap.Heap;
 import jlkvm.heap.TempRoots;
 import jlkvm.interp.CoreNatives;
@@ -36,6 +37,7 @@ public final class Vm implements ExecutionEngine, GuestServices {
     public final Scheduler sched;
     public final Monitors monitors;
     public final Interpreter interp;
+    public final Gc gc;
 
     public volatile boolean exitRequested;
     /** Bytecodes charged to the running slice by natives (see {@link #charge}). */
@@ -46,7 +48,8 @@ public final class Vm implements ExecutionEngine, GuestServices {
     private final Map<String, Integer> internTable = new HashMap<String, Integer>();
     private final ConcurrentLinkedQueue<int[]> events = new ConcurrentLinkedQueue<int[]>();
     private final long baseNanos, baseMillis;
-    private int oomRef;
+    /** Preallocated OutOfMemoryError (GC root: cell 0). */
+    private final int[] oomCell = new int[1];
     private ClassInfo stringClass, throwableClass;
     private int strValue, strOffset, strCount, thMessage, thTrace, threadVmId;
 
@@ -65,6 +68,9 @@ public final class Vm implements ExecutionEngine, GuestServices {
         this.monitors = new Monitors(this);
         this.sched = new Scheduler(this);
         this.interp = new Interpreter(this);
+        this.gc = new Gc(this);
+        heap.setCollector(gc);
+        heap.setStressInterval(cfg.gcStressInterval);
     }
 
     public static Vm create(VmConfig cfg, HostPlatform host, ClassSource app, DeviceProfile p) {
@@ -88,17 +94,26 @@ public final class Vm implements ExecutionEngine, GuestServices {
         threadVmId = th.findDeclaredField("vmId", null).slot;
         ClassInfo oom = linker.find("java/lang/OutOfMemoryError");
         markInitialisedIfTrivial(oom);
-        oomRef = heap.allocObject(oom.id);
-        if (oomRef == 0) throw new IllegalStateException("heap too small");
+        oomCell[0] = heap.allocObject(oom.id);
+        if (oomCell[0] == 0) throw new IllegalStateException("heap too small");
     }
 
+    /**
+     * Boot-time and host-side creation of instances (no guest {@code new} runs): a class whose chain from the top has no
+     * <clinit> is marked initialised (statics prepared); at the first class with a <clinit> the walk stops, so that the
+     * interpreter runs it at the first real use (JVMS 5.5) instead of never.
+     */
     private void markInitialisedIfTrivial(ClassInfo c) {
-        for (ClassInfo k = c; k != null; k = k.superClass) {
-            if (k.state == ClassInfo.LINKED) {
-                if (k.clinit != null) host.log(2, "vm", "boot class " + k.name + " has <clinit>; it is not run for host-created instances");
-                linker.prepareStatics(k);
-                k.state = ClassInfo.INITIALIZED;
+        java.util.ArrayList<ClassInfo> chain = new java.util.ArrayList<ClassInfo>();
+        for (ClassInfo k = c; k != null; k = k.superClass) chain.add(0, k);
+        for (ClassInfo k : chain) {
+            if (k.state != ClassInfo.LINKED) continue;
+            if (k.clinit != null) {
+                host.log(2, "vm", "host-created instance of " + c.name + ": <clinit> of " + k.name + " runs at its first guest use");
+                return;
             }
+            linker.prepareStatics(k);
+            k.state = ClassInfo.INITIALIZED;
         }
     }
 
@@ -126,7 +141,7 @@ public final class Vm implements ExecutionEngine, GuestServices {
         int tobj = heap.allocObject(linker.find("java/lang/Thread").id);
         heap.putInt(tobj, threadVmId, t.id);
         t.threadObj = tobj;
-        markInitialisedIfTrivial(c);
+        t.initFirst = c;   // JVMS 5.5: the class of a static method is initialised before the method runs
         int s = arg == null ? 0 : newString(arg);
         enterFrame(t, m, s);
         sched.makeRunnable(t);
@@ -145,8 +160,11 @@ public final class Vm implements ExecutionEngine, GuestServices {
         sched.makeRunnable(t);
     }
 
-    /** Runtime.gc(): asks the collector (T13) to run; no collector yet. */
-    public void collectGarbage() { }
+    /** Runtime.gc(): a full collection now (called from a native: the thread state is published). */
+    public void collectGarbage() { gc.collect(heap, 0); }
+
+    /** Host-side references the collector must treat as roots and rewrite (cell 0: the preallocated OutOfMemoryError). */
+    public int[] hostRootCells() { return oomCell; }
 
     public int threadVmIdSlot() { return threadVmId; }
 
@@ -262,7 +280,7 @@ public final class Vm implements ExecutionEngine, GuestServices {
 
     // ------------------------------------------------------------------ exceptions
 
-    public VmThrow oomThrow(String what) { return new VmThrow(oomRef); }
+    public VmThrow oomThrow(String what) { return new VmThrow(oomCell[0]); }
 
     public int materialize(VmThrow t, VmThread th) {
         if (t.ref != 0) return t.ref;
@@ -280,7 +298,7 @@ public final class Vm implements ExecutionEngine, GuestServices {
         }
         markInitialisedIfTrivial(c);
         int ex = heap.allocObject(c.id);
-        if (ex == 0) return oomRef;
+        if (ex == 0) return oomCell[0];
         int mark = roots.mark();
         int ri = roots.push(ex);
         if (msg != null) {
@@ -290,6 +308,22 @@ public final class Vm implements ExecutionEngine, GuestServices {
         if (th != null) fillTrace(roots.get(ri), th, false);
         ex = roots.get(ri);
         roots.release(mark);
+        return ex;
+    }
+
+    /**
+     * ExceptionInInitializerError for a <clinit> that threw a non-Error. CLDC has no such class, so the guest class is the
+     * nearest CLDC superclass (java.lang.Error, CLDC 4.2/5.1.4); message "ExceptionInInitializerError: <class>: <message>" and
+     * the stack trace of the original exception are kept.
+     */
+    public int wrapInitializerError(int orig) {
+        int mark = roots.mark();
+        int ri = roots.push(orig);
+        String text = describe(orig);
+        int ex = newThrowable(Errors.guest("java/lang/ExceptionInInitializerError"), "ExceptionInInitializerError: " + text, null);
+        orig = roots.get(ri);
+        roots.release(mark);
+        if (ex != oomCell[0]) heap.putRef(ex, thTrace, heap.getRef(orig, thTrace));
         return ex;
     }
 

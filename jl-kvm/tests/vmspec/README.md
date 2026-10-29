@@ -13,7 +13,7 @@ optional `res/` (resources added to the jar), `MANIFEST.MF` (custom manifest), `
 `expected.txt`. `gen/RawGen.java` (ASM) writes the raw-bytecode classes (old class file versions, no ACC_SUPER, ConstantValue
 getstatic, monitor imbalance, jsr/ret, no StackMap, float) into `cases/*/raw/` on every run; they are not committed.
 
-`meta.txt`: `mode: oracle|spec-only`, `source:`, `diverges:` (oracles known to deviate), `cldc:` (cldc10|cldc11), `notes:`.
+`meta.txt`: `no-gc-stress: yes` (case khong chay duoi `JLKVM_ARGS="--gc-stress 1 --gc-verify" run_vmspec.sh --engine jlkvm`), `mode: oracle|spec-only`, `source:`, `diverges:` (oracles known to deviate), `cldc:` (cldc10|cldc11), `notes:`.
 `spec-only` cases cannot be run on the oracles (they accept what CLDC must reject); their `expected.txt` is the required
 result for the project's own VM, taken from the cited spec text (the exact error class is marked UNVERIFIED).
 
@@ -29,8 +29,10 @@ phoneME could not be built (PLAN V4); once it can, re-run `--record` and review 
 | Dấu phẩy động: f2i/d2i/f2l/d2l, fcmpl/fcmpg NaN; CLDC 1.0 không float | f01, f02, neg03 (spec-only) |
 | Mảng: kích thước âm, aastore, multianewarray, chỉ số ngoài biên | r01, r02, r03, r04 |
 | checkcast/instanceof mảng + interface; invokeinterface null | c01, c02 |
-| Class file cũ không ACC_SUPER (45.x) | k01 (UNVERIFIED for KVM) |
-| `<clinit>`: thứ tự, đệ quy, lỗi, ConstantValue | i01, i02, i03 (UNVERIFIED for CLDC), i04, k02 |
+| Class file cũ không ACC_SUPER (45.x) | k01 (không cờ -> A.m, spec; UNVERIFIED KVM), k03 (có cờ -> B.m) |
+| `<clinit>`: thứ tự, đệ quy, lỗi, ConstantValue, đa luồng | i01, i02, i03 (UNVERIFIED for CLDC), i04, i05, i06, k02, k04 |
+| GC (T13): đồ thị ngẫu nhiên 1M cấp phát, hash định danh qua nén, WeakReference, handle host về 0, thread dừng ở mọi trạng thái, OOM rồi phục hồi | g01, g02, g03, g04, g05, g06 |
+| Liên kết: NoClassDefFoundError timing, kiểm quyền truy cập, ICCE/NoSuch*, gói hệ thống bị chặn | l01, l02, l03 |
 | String literal intern | s01 |
 | Monitor: lệch enter/exit, synchronized method, wait timeout, interrupt | m01, m05, m02, m03, m04 |
 | Tràn stack | t01 (error class UNVERIFIED) |

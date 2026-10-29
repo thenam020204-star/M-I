@@ -13,6 +13,10 @@ public final class VmConfig {
     public boolean verifyRom = true;
     /** Seed for identity hashes (D14). */
     public int hashSeed = 0x1234567;
+    /** T13 debug: collect before every N-th allocation (1 = every allocation, 0 = off) to flush out missing roots. */
+    public int gcStressInterval = 0;
+    /** T13 debug: validate every root and reference during a collection and the whole heap afterwards (slow). */
+    public boolean gcVerify = false;
     /** Debug hooks (D15): class load and exception logging. */
     public boolean debug = false;
     /** JAD/manifest attributes visible through MIDlet.getAppProperty (keys compared case-insensitively). */

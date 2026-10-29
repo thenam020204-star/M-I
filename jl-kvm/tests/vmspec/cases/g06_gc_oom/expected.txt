@@ -1,0 +1,5 @@
+> OutOfMemoryError thrown: true
+> filled most of the heap: true
+> free memory small: true
+> free memory after dropping: true
+> allocates again: true

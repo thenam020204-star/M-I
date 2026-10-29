@@ -1,0 +1,4 @@
+diverges: microemu|freej2me
+mode: oracle
+source: spec: CLDC 1.1 spec 3.4.2.2 (tools/env/cache/spec/CLDCSpecification1.1.txt lines 992-1005). The oracles are JVM-hosted: java.* is refused with SecurityException but javax.microedition.* and com.nokia.* classes of the jar load, so they deviate (see the "# class" notes).
+notes: UNVERIFIED which error a Nokia KVM raises (the project VM reports the class as not found, ClassNotFoundException from forName / NoClassDefFoundError from a use). com/nokia/mid/ is the manufacturer package of this PLAN (profile Nokia); other manufacturer packages are added with their profiles (T33).

@@ -17,6 +17,8 @@ public final class Scheduler {
     private int nextId = 1;
     private long idleUntil;
     public VmThread current;
+    /** Bytecodes executed by guest threads since the VM started (benchmarks, T13b; natives' charges included). */
+    public long bytecodes;
 
     public Scheduler(Vm vm) { this.vm = vm; }
 
@@ -80,6 +82,7 @@ public final class Scheduler {
             vm.charged = 0;
             int slice = Math.min(vm.profile.timesliceBytecodes, budget);
             int used = vm.interp.run(t, slice);
+            bytecodes += Math.max(0, used);
             budget -= Math.max(1, used) + vm.charged;
             current = null;
             if (t.state == VmThread.RUNNING) { t.state = VmThread.RUNNABLE; runq.add(t); }

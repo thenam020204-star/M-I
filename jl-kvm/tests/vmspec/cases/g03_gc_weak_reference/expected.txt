@@ -1,0 +1,12 @@
+> strong referent kept: true
+> kept referent intact: 33 kept
+> weak-only referent cleared: true
+> array referent kept: true 2
+> cleared by clear(): true
+> weak chain a cleared: true
+> weak chain b cleared: true
+> subclass referent cleared: true
+> subclass fields kept: 7 extra-kept
+> subclass live referent: true 8 5
+> garbage referents still alive: 0
+> live referents alive: 500 wrong: 0

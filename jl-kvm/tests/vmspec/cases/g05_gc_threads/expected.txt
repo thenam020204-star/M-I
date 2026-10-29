@@ -1,0 +1,4 @@
+> produced == consumed: true sum=1813495500
+> sleeper kept its locals: 1
+> waiter kept its locals: 1
+> blocked thread kept its locals: 1

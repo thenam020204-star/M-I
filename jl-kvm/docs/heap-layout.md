@@ -41,7 +41,7 @@ h1              identity hash, 0 = not assigned yet; assigned lazily from a seed
 | WeakReference | class `java/lang/ref/WeakReference` (flag `ClassInfo.isWeakRef`, field `referent`, slot in `ClassInfo.weakSlot`): do not trace through the referent slot, after marking clear referents that are unmarked, enqueue nothing (CLDC 1.1 has no ReferenceQueue) |
 | Peer cleanup | `Handles` entries registered with an owner reference: after marking, release the entries whose owner is dead |
 
-Compaction recommendation (no layout change needed): mark with `FLAG_MARK`, compute forwarding addresses in one linear
+Implemented in T13, see `docs/gc.md` (kept for reference). Compaction recommendation (no layout change needed): mark with `FLAG_MARK`, compute forwarding addresses in one linear
 walk (running `newTop`), keeping them in a host `int[]` indexed by the object's ordinal or in a sorted break table (the
 heap is not touched), update all roots and all reference fields/elements, slide objects down with `System.arraycopy`,
 clear marks, `Heap.setTop(newTop)`. Bit 28 of `h0` is free if a forwarding scheme wants a flag. No header word is lost.
