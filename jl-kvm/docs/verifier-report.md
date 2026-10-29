@@ -30,11 +30,11 @@ quy tắc đặc thù CLDC được đánh UNVERIFIED trong bảng 3; phần ki�
 * **Uninitialized:** `new` đẩy `uninit@pc`; `invokespecial <init>` thay MỌI bản sao trong stack+locals bằng kiểu đã khởi tạo; `uninitializedThis`
   ở `<init>` (trừ `java/lang/Object`); `<init>` phải gọi đúng lớp của lệnh `new` (hoặc lớp này/lớp cha với uninitThis); `return` trong `<init>` khi
   `this` chưa khởi tạo → từ chối; `new` cùng pc khi bản cũ còn sống → từ chối; **uninit còn trong stack/locals khi nhảy lùi → từ chối** (xem bảng 3).
-* **Kiểu:** mảng `[I`… gán được cho `Object/Cloneable/Serializable` và mảng ref theo phần tử; **interface coi như Object** (đích là interface →
+* **Kiểu:** mảng `[I`… chỉ gán được cho `java/lang/Object` và mảng tương thích theo phần tử (T08a: CLDC 1.1 Appendix1-verifier.txt dòng 441–447, `isArrayInterface` không có clause; `Cloneable`/`Serializable` không tồn tại trong CLDC; test `n42`, `n43`); **interface coi như Object** (đích là interface →
   nhận mọi ref; nguồn là interface chỉ gán được cho `Object`/interface); `null` gán được cho mọi ref; `aaload` từ `null` ra `null`.
 * **jsr/jsr_w/ret → từ chối** ngay ở bước quét (`jsr/ret not allowed in preverified code`): preverifier CLDC inline subroutine nên mã đã
-  preverify không còn jsr/ret. `Verifier` không suy luận subroutine, cả ở lenient. **UNVERIFIED** (không đọc được văn bản CLDC; ProGuard
-  `-microedition` không bao giờ phát jsr/ret).
+  preverify không còn jsr/ret. `Verifier` không suy luận subroutine, cả ở lenient. Nguồn: CLDCSpecification1.1.txt §5.3 (dòng ~1318–1337, 1518–1522): preverifier
+  inline và xoá jsr/jsr_w/ret; verifier StackMap từ chối chúng (interpreter vẫn thực thi jsr/ret, T11).
 * **CLDC 1.0 (`cldc11=false`):** từ chối opcode float/double, `ldc` float, `newarray` float/double, field/method có F/D trong descriptor. Hành vi
   của KVM CLDC 1.0 thật (VerifyError hay ClassFormatError) **UNVERIFIED**.
 * **`ldc` lớp:** chỉ hợp lệ khi class file ≥ 49 (JVMS); version 45–48 → từ chối. (ProGuard `-target 1.3` để lại `ldc Class` trong mã v47; đó là lý
@@ -69,8 +69,8 @@ local ngoài max_locals (n35), lớp không tồn tại (n36), receiver sai lớ
 |---|---|---|
 | Kiểu dữ liệu từng opcode, độ sâu stack, `max_stack`/`max_locals`, long/double 2 từ | [JVMS2] 4.9.2, [JVMS3] 4.10.1.9 | khớp HotSpot-21 trên toàn bộ case lỗi kiểu (mục 4) |
 | Frame tại đích nhảy / handler, gán được, fall-through vào frame | [JVMS3] 4.10.1.4–4.10.1.6, định dạng CLDC | đúng theo type-checking; việc KVM so sánh *gán được* hay *bằng nhau* ở fall-through: **UNVERIFIED** |
-| Thiếu StackMap ở method có nhánh/handler → từ chối; method không cần frame thì không cần attribute | [CLDC] ch.5 | **UNVERIFIED** (nội dung nhớ) |
-| jsr/jsr_w/ret bị từ chối | [CLDC] preverifier inline subroutine | **UNVERIFIED** |
+| Thiếu StackMap ở method có nhánh/handler → từ chối; method không cần frame thì không cần attribute | Appendix1-verifier.txt dòng 58–63 (thiếu attribute = StackMap rỗng ngầm định; hai StackMap → ClassFormatError) | có nguồn |
+| jsr/jsr_w/ret bị từ chối | CLDCSpecification1.1.txt §5.3 dòng ~1318–1337, 1518–1522 | có nguồn |
 | `uninit` trong stack/locals khi nhảy lùi bị từ chối | [JVMS2] 4.9.4 (giữ lại từ verifier cũ; CLDC suy ra từ nó) | **UNVERIFIED**; chặt hơn type-checking [JVMS3]; có thể từ chối thứ phoneME chấp nhận (ctor có vòng lặp trước `super()`: chưa gặp trong corpus) |
 | `uninit` trong locals dưới vùng handler (JVMS2 4.9.4 gạch đầu dòng 3) | [JVMS2] | **chưa cài**; khung handler tự khai báo locals nên kiểu hệ thống cho phép |
 | Truy cập `protected` (receiver phải là lớp hiện tại hoặc lớp con) | [JVMS3] 4.10.1.8 | **chưa cài** (không có trong CLDC verifier nhớ được; chấp nhận nhiều hơn) |
@@ -79,7 +79,7 @@ local ngoài max_locals (n35), lớp không tồn tại (n36), receiver sai lớ
 | `lookupswitch` khoá phải tăng dần; padding switch không kiểm | [JVMS2] 4.9.1 | khoá: cài; padding: bỏ qua |
 | `<init>` chỉ được gọi bằng `invokespecial`; `<clinit>` không được gọi | JVMS 4.9 | cài |
 | Version class > 49 | T07 | do parser từ chối (ClassFormatError) |
-| Ánh xạ lỗi sang lớp guest (VerifyError / ClassFormatError / NoClassDefFoundError) | CLDC chỉ có tập lỗi nhỏ | **UNVERIFIED** (T12) |
+| Ánh xạ lỗi sang lớp guest | CLDC §4.2 / §5.1.4 (dòng ~1191): Error ngoài danh sách (Error, NoClassDefFoundError, OutOfMemoryError, VirtualMachineError) → lớp cha gần nhất có trong CLDC: VerifyError/ClassFormatError → `java.lang.Error`; hành vi Nokia cụ thể vẫn UNVERIFIED | có nguồn (quy tắc), máy thật UNVERIFIED |
 
 ## 4. Đối chiếu độc lập
 

@@ -1,0 +1,68 @@
+package jlkvm.tmp;
+
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import jlkvm.DeviceProfile;
+import jlkvm.ExecutionEngine;
+import jlkvm.Vm;
+import jlkvm.VmConfig;
+
+/**
+ * TEST-ONLY command line runner (PLAN T11): {@code RunJar ROM.jar APP.jar [--cldc10] [--lenient] [--debug] [--timeout SEC] [--noverify]}.
+ * Runs the MIDlet named by MIDlet-1 on the project's VM; guest console output goes to stdout, VM diagnostics to stderr.
+ */
+public final class RunJar {
+    public static void main(String[] a) throws Exception {
+        String rom = a[0], app = a[1];
+        boolean cldc10 = false, noverify = false, lenient = false, debug = false;
+        long timeout = 60;
+        for (int i = 2; i < a.length; i++) {
+            if (a[i].equals("--cldc10")) cldc10 = true;
+            else if (a[i].equals("--lenient")) lenient = true;
+            else if (a[i].equals("--debug")) debug = true;
+            else if (a[i].equals("--noverify")) noverify = true;
+            else if (a[i].equals("--timeout")) timeout = Long.parseLong(a[++i]);
+        }
+        boolean ok = run(rom, app, cldc10, noverify, lenient, debug, timeout, System.out);
+        System.out.flush();
+        String sf = System.getProperty("jlkvm.opstats.file");
+        if (sf != null) {
+            StringBuilder b = new StringBuilder();
+            for (int i = 0; i < 256; i++) if (jlkvm.interp.Interpreter.OPSTATS[i] > 0) b.append(i).append('\n');
+            java.nio.file.Files.write(java.nio.file.Paths.get(sf), b.toString().getBytes(), java.nio.file.StandardOpenOption.CREATE, java.nio.file.StandardOpenOption.APPEND);
+        }
+        System.exit(ok ? 0 : 124);
+    }
+
+    /** Runs the MIDlet of {@code app} to completion; guest console output goes to {@code out}. @return false on timeout. */
+    public static boolean run(String rom, String app, boolean cldc10, boolean noverify, boolean lenient, boolean debug,
+                              long timeoutSec, java.io.PrintStream out) throws Exception {
+        VmConfig cfg = new VmConfig();
+        DeviceProfile p = new DeviceProfile();
+        p.heapBytes = 32 << 20;
+        if (cldc10) { p.cldc11 = false; cfg.verifyRom = false; /* the stub ROM is a CLDC 1.1 library */ }
+        if (lenient) cfg.strictVerify = false;
+        if (debug) cfg.debug = true;
+        if (noverify) { cfg.verifyApp = false; cfg.verifyRom = false; }
+        JarFile jf = new JarFile(app);
+        Attributes at = jf.getManifest().getMainAttributes();
+        for (Object k : at.keySet()) cfg.appProperties.put(k.toString(), at.getValue(k.toString()).trim());   // MIDP: leading/trailing blanks of attribute values are ignored
+        jf.close();
+        String m1 = cfg.appProperties.get("MIDlet-1");
+        String cls = m1.substring(m1.lastIndexOf(',') + 1).trim();
+        TempHost host = new TempHost(new JarSource(rom), cfg);
+        host.stdout = out;
+        Vm vm = Vm.create(cfg, host, new JarSource(app), p);
+        vm.launch("javax/microedition/midlet/MIDletBoot", "run", "(Ljava/lang/String;)V", cls);
+        long end = System.nanoTime() + timeoutSec * 1000000000L;
+        for (;;) {
+            int r = vm.runSlice(20000);
+            if (r == ExecutionEngine.EXITED) return true;
+            if (System.nanoTime() > end) { System.err.println("TIMEOUT"); return false; }
+            if (r == ExecutionEngine.IDLE_UNTIL) {
+                long ns = vm.idleUntilNanos() - System.nanoTime();
+                if (ns > 0) Thread.sleep(Math.min(ns / 1000000L + 1, 20));
+            }
+        }
+    }
+}

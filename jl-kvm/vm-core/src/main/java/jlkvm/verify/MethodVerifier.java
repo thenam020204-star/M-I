@@ -265,7 +265,7 @@ final class MethodVerifier {
         if (to.equals(from) || to.equals("java/lang/Object")) return true;
         if (from.charAt(0) == '[') {
             if (to.charAt(0) == '[') return elemAssignable(to.substring(1), from.substring(1));
-            return to.equals("java/lang/Cloneable") || to.equals("java/io/Serializable");
+            return false; // CLDC 1.1 Appendix1 (isJavaAssignable, isArrayInterface has no clauses): arrays are subtypes of Object only
         }
         if (to.charAt(0) == '[') return false;
         if (!h.exists(to)) throw err("cannot load class " + to);

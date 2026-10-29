@@ -1,2 +1,4 @@
+diverges: microemu|freej2me
 mode: oracle
 source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM). UNVERIFIED for CLDC: HotSpot throws ExceptionInInitializerError then NoClassDefFoundError; CLDC 1.1 has no ExceptionInInitializerError, so the error mapping is a T12 decision (docs/error-mapping.md)
+notes-T11: expected class changed to java.lang.Error after CLDC 1.1 spec 4.2/5.1.4: an Error not in the CLDC list is replaced by its nearest CLDC superclass (VerifyError/ExceptionInInitializerError -> java.lang.Error). Whether a Nokia KVM throws or halts is UNVERIFIED (V2/V4).

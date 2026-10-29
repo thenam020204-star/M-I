@@ -1,0 +1,14 @@
+package jlkvm.natives;
+
+/** Helpers for natives that need to look at guest objects (strings, class names). Implemented by the VM. */
+public interface GuestServices {
+    /** @return the Java string of a guest java/lang/String, null for null. */
+    String string(int ref);
+    /** Allocates a guest String (null for null); may return 0 when the heap is exhausted. */
+    int newString(String s);
+    /** Allocates a guest byte[]. */
+    int newByteArray(byte[] b, int off, int len);
+    String className(int objRef);
+    /** Charges {@code bytecodes} to the running time slice (long natives must not starve other threads). */
+    void charge(int bytecodes);
+}

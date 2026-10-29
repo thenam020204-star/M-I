@@ -5,22 +5,26 @@
 # res/), runs it on the oracles (tools/difftest/oracles) and compares the lines starting with "> " against
 # expected.txt. Lines starting with "# " are informational and never compared.
 #   --record   write expected.txt from the oracles when ALL oracles agree (else write oracle-diff.txt and flag the case)
+#   --engine jlkvm   run on this project's VM (tools/difftest/oracles/run_jlkvm.sh, TEMPORARY stub ROM) instead of the oracles;
+#                    spec-only cases are run too, `diverges:` is ignored (the VM must match expected.txt exactly)
 #   --keep DIR keep jars and oracle outputs in DIR (default: build/vmspec under this directory)
 # meta.txt keys (one "key: value" per line):
 #   mode: oracle (default) | spec-only        spec-only = oracles cannot run it; expected.txt comes from the cited spec
 #   source: where expected.txt comes from (oracle names, or spec citation)  [required]
 #   diverges: microemu|freej2me|...          oracles known to deviate from expected.txt (reason in notes:)
+#   jlkvm-args: extra options for run_jlkvm.sh (e.g. --noverify for jsr/ret classes)
 #   notes: free text
 # Exit status: 0 when every case passes, 1 otherwise.
 set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"; ROOT="$HERE/../.."
 . "$ROOT/tools/env/lib.sh"; . "$ROOT/tools/env/versions.sh"
 ORA="$ROOT/tools/difftest/oracles"
-RECORD=0; KEEP="$HERE/build/vmspec"; IDS=()
+ENGINE=oracle; RECORD=0; KEEP="$HERE/build/vmspec"; IDS=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --record) RECORD=1 ;;
     --keep) KEEP="$2"; shift ;;
+    --engine) ENGINE="$2"; shift ;;
     *) IDS+=("$1") ;;
   esac; shift
 done
@@ -54,18 +58,24 @@ for id in "${IDS[@]}"; do
     [ -d "$C/res" ] && (cd "$C/res" && "$JDK8_HOME/bin/jar" uf "$JAR" . 2>&1 | grep -v '^Picked up')
   fi
   MAINCLS="$(unzip -p "$JAR" META-INF/MANIFEST.MF | tr -d '\r' | sed -n 's/^MIDlet-1:[^,]*,[^,]*,[ ]*//p' | head -1)"
-  if [ "$mode" = spec-only ]; then
+  if [ "$mode" = spec-only ] && [ "$ENGINE" != jlkvm ]; then
     if [ -s "$C/expected.txt" ] && [ -n "$(meta "$id" source)" ]; then echo "SPEC  $id (expected from: $(meta "$id" source))"; specs=$((specs+1))
     else echo "FAIL  $id (spec-only case needs expected.txt and meta source)"; fail=$((fail+1)); fi
     continue
   fi
   outs=()
+  if [ "$ENGINE" = jlkvm ]; then
+    o=jlkvm
+    "$ORA/run_jlkvm.sh" "$JAR" $( [ "$cldc" = cldc10 ] && echo --cldc10 ) $(meta "$id" jlkvm-args) > "$W/$o.raw" 2> "$W/$o.err"
+    norm < "$W/$o.raw" > "$W/$o.out"; outs+=("$o")
+  else
   for o in microemu freej2me; do
     if [ $o = microemu ]; then "$ORA/run_microemu.sh" "$JAR" > "$W/$o.raw" 2> "$W/$o.err"
     else "$ORA/run_freej2me.sh" "$JAR" > "$W/$o.raw" 2> "$W/$o.err"; fi
     norm < "$W/$o.raw" > "$W/$o.out"; outs+=("$o")
   done
-  div="$(meta "$id" diverges)"
+  fi
+  div="$(meta "$id" diverges)"; [ "$ENGINE" = jlkvm ] && div=""
   if [ $RECORD -eq 1 ]; then
     # record from the oracles not listed in "diverges:" (all of them must agree and print something)
     ref=""; agree=1

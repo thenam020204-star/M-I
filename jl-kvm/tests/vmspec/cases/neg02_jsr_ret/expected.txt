@@ -1,1 +1,1 @@
-> main caught java.lang.VerifyError
+> main caught java.lang.Error

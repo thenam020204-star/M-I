@@ -86,6 +86,8 @@ public class RawGen implements Opcodes {
         neg01();
         neg02();
         neg03();
+        o02();
+        o03();
     }
 
     /** k01: invokespecial of a non-direct superclass method from a class WITHOUT ACC_SUPER (class file 45.3). */
@@ -255,4 +257,132 @@ public class RawGen implements Opcodes {
     static void neg02() throws Exception { driverWithLoop("neg02_jsr_ret", "Neg02D", true, false); }
 
     static void neg03() throws Exception { driverWithLoop("neg03_float_in_cldc10", "Neg03D", false, true); }
+
+    // ---- opcode coverage helpers (T11): print the value on top of the stack with a "> " prefix
+    static void pre(MethodVisitor m) {
+        m.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+        m.visitLdcInsn("> ");
+        m.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Ljava/lang/String;)V", false);
+    }
+    static void printInt(MethodVisitor m, String label) {
+        pre(m); m.visitLdcInsn(label + " "); m.visitInsn(POP); // keep label out of the stack effect
+        m.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+        m.visitInsn(SWAP);
+        m.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V", false);
+    }
+    static void printFloat(MethodVisitor m) {
+        pre(m);
+        m.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+        m.visitInsn(SWAP);
+        m.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(F)V", false);
+    }
+    static void printWide(MethodVisitor m, String desc) {   // value occupies 2 words
+        pre(m);
+        m.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+        m.visitInsn(DUP_X2); m.visitInsn(POP);
+        m.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(" + desc + ")V", false);
+    }
+
+    /** o02: stack-shuffling opcodes, nop, wide forms, ixor, rarely used short load/store forms. Straight-line code (no StackMap needed). */
+    static void o02() throws Exception {
+        String id = "o02_raw_ops";
+        ClassWriter D = cls(ver(46, 0), ACC_PUBLIC | ACC_SUPER, "vmspec/O02D", "java/lang/Object", "java/lang/Runnable");
+        ctor(D, "java/lang/Object");
+        MethodVisitor m = D.visitMethod(ACC_PUBLIC, "run", "()V", null, null);
+        m.visitCode();
+        m.visitInsn(NOP);
+        // dup_x2: 1 2 3 -> 3 1 2 3 ; print 3 2 1 3
+        m.visitInsn(ICONST_1); m.visitInsn(ICONST_2); m.visitInsn(ICONST_3); m.visitInsn(DUP_X2);
+        for (int i = 0; i < 4; i++) printInt(m, "");
+        // dup2_x1: 1 2 3 -> 2 3 1 2 3 ; print 3 2 1 3 2
+        m.visitInsn(ICONST_1); m.visitInsn(ICONST_2); m.visitInsn(ICONST_3); m.visitInsn(DUP2_X1);
+        for (int i = 0; i < 5; i++) printInt(m, "");
+        // dup2_x2: 1 2 3 4 -> 3 4 1 2 3 4 ; print 4 3 2 1 4 3
+        m.visitInsn(ICONST_1); m.visitInsn(ICONST_2); m.visitInsn(ICONST_3); m.visitInsn(ICONST_4); m.visitInsn(DUP2_X2);
+        for (int i = 0; i < 6; i++) printInt(m, "");
+        // swap, pop2 (two ints, then one long)
+        m.visitInsn(ICONST_5); m.visitIntInsn(BIPUSH, 6); m.visitInsn(SWAP); printInt(m, ""); printInt(m, "");
+        m.visitInsn(ICONST_1); m.visitInsn(ICONST_2); m.visitInsn(POP2);
+        m.visitInsn(LCONST_1); m.visitInsn(POP2);
+        // ixor
+        m.visitInsn(ICONST_5); m.visitInsn(ICONST_3); m.visitInsn(IXOR); printInt(m, "");
+        // wide: locals above 255
+        m.visitIntInsn(SIPUSH, 1000); m.visitVarInsn(ISTORE, 300);
+        m.visitIincInsn(300, 1000); m.visitIincInsn(300, -3);
+        m.visitVarInsn(ILOAD, 300); printInt(m, "");
+        m.visitLdcInsn(Long.valueOf(123456789012L)); m.visitVarInsn(LSTORE, 301); m.visitVarInsn(LLOAD, 301); printWide(m, "J");
+        m.visitLdcInsn(Double.valueOf(2.5d)); m.visitVarInsn(DSTORE, 303); m.visitVarInsn(DLOAD, 303); printWide(m, "D");
+        m.visitLdcInsn(Float.valueOf(1.25f)); m.visitVarInsn(FSTORE, 305); m.visitVarInsn(FLOAD, 305); printFloat(m);
+        m.visitTypeInsn(NEW, "java/lang/Object"); m.visitInsn(DUP);
+        m.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
+        m.visitVarInsn(ASTORE, 306); m.visitVarInsn(ALOAD, 306); m.visitInsn(POP);
+        // short forms: fstore_0/2/3-style slots 0..3 of a static helper
+        m.visitMethodInsn(INVOKESTATIC, "vmspec/O02D", "slots", "()V", false);
+        m.visitInsn(RETURN); m.visitMaxs(8, 307); m.visitEnd();
+        m = D.visitMethod(ACC_STATIC, "slots", "()V", null, null);
+        m.visitCode();
+        m.visitInsn(FCONST_2); m.visitVarInsn(FSTORE, 0);
+        m.visitInsn(FCONST_1); m.visitVarInsn(FSTORE, 2);
+        m.visitInsn(FCONST_0); m.visitVarInsn(FSTORE, 3);
+        m.visitVarInsn(FLOAD, 0); m.visitVarInsn(FLOAD, 2); m.visitInsn(FADD); m.visitVarInsn(FLOAD, 3); m.visitInsn(FADD); printFloat(m);
+        m.visitInsn(DCONST_1); m.visitVarInsn(DSTORE, 0);
+        m.visitLdcInsn(Double.valueOf(0.25d)); m.visitVarInsn(DSTORE, 3);
+        m.visitVarInsn(DLOAD, 0); m.visitVarInsn(DLOAD, 3); m.visitInsn(DADD); printWide(m, "D");
+        m.visitLdcInsn(Double.valueOf(0.5d)); m.visitVarInsn(DSTORE, 1);
+        m.visitVarInsn(DLOAD, 1); printWide(m, "D");
+        m.visitInsn(RETURN); m.visitMaxs(8, 5); m.visitEnd();
+        write(id, "O02D", D.toByteArray());
+    }
+
+    /** o03: jsr/ret, jsr_w and goto_w (patched into placeholders), class version 46 (old verifier). The VM must run it with verification off. */
+    static void o03() throws Exception {
+        String id = "o03_jsr_ret";
+        ClassWriter D = cls(ver(46, 0), ACC_PUBLIC | ACC_SUPER, "vmspec/O03D", "java/lang/Object", "java/lang/Runnable");
+        ctor(D, "java/lang/Object");
+        MethodVisitor m = D.visitMethod(ACC_PUBLIC, "run", "()V", null, null);
+        m.visitCode();
+        Label sub = new Label(), pw = new Label(), gw = new Label(), end = new Label(), skipped = new Label();
+        m.visitInsn(ICONST_0); m.visitVarInsn(ISTORE, 1);
+        m.visitJumpInsn(JSR, sub);
+        m.visitLabel(pw);
+        for (int i = 0; i < 5; i++) m.visitInsn(ICONST_M1);       // -> jsr_w sub
+        m.visitInsn(NOP);
+        m.visitLabel(gw);
+        for (int i = 0; i < 5; i++) m.visitInsn(ICONST_M1);       // -> goto_w end
+        m.visitLabel(skipped);
+        println(m, "skipped (wrong)");
+        m.visitLabel(end);
+        m.visitVarInsn(ILOAD, 1); printInt(m, "");
+        m.visitInsn(RETURN);
+        m.visitLabel(sub);
+        m.visitVarInsn(ASTORE, 2);
+        m.visitIincInsn(1, 1);
+        println(m, "in subroutine");
+        m.visitVarInsn(RET, 2);
+        m.visitMaxs(8, 3); m.visitEnd();
+        byte[] b = D.toByteArray();
+        int pPw = pw.getOffset(), pGw = gw.getOffset(), pSub = sub.getOffset(), pEnd = end.getOffset();
+        // find the code array start: the first occurrence of the 5 x ICONST_M1 pattern
+        int first = indexOf(b, new byte[] { 2, 2, 2, 2, 2 }, 0);
+        int second = indexOf(b, new byte[] { 2, 2, 2, 2, 2 }, first + 5);
+        int codeStart = first - pPw;
+        if (second - codeStart != pGw) throw new IllegalStateException("o03 placeholder layout");
+        put(b, first, 0xC9, pSub - pPw);          // jsr_w
+        put(b, second, 0xC8, pEnd - pGw);         // goto_w
+        write(id, "O03D", b);
+    }
+
+    static int indexOf(byte[] b, byte[] pat, int from) {
+        outer:
+        for (int i = from; i + pat.length <= b.length; i++) {
+            for (int k = 0; k < pat.length; k++) if (b[i + k] != pat[k]) continue outer;
+            return i;
+        }
+        throw new IllegalStateException("pattern not found");
+    }
+
+    static void put(byte[] b, int at, int op, int off) {
+        b[at] = (byte) op;
+        b[at + 1] = (byte) (off >>> 24); b[at + 2] = (byte) (off >>> 16); b[at + 3] = (byte) (off >>> 8); b[at + 4] = (byte) off;
+    }
 }

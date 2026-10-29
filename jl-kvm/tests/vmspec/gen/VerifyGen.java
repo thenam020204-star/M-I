@@ -464,5 +464,11 @@ public class VerifyGen implements Opcodes {
             m.visitLdcInsn("s"); c.mark(m); m.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuffer", "length", "()I", false);
             m.visitInsn(POP); m.visitInsn(RETURN);
         });
+        bad("n42_intarray_as_cloneable", MARK, "-", 1, 1, "([I)V", (m, c) -> {
+            m.visitVarInsn(ALOAD, 0); c.mark(m); m.visitMethodInsn(INVOKESTATIC, "vf/n42_intarray_as_cloneable", "o", "(Ljava/lang/Cloneable;)V", false); m.visitInsn(RETURN);
+        });
+        bad("n43_objarray_as_serializable", MARK, "-", 1, 1, "([Ljava/lang/Object;)V", (m, c) -> {
+            m.visitVarInsn(ALOAD, 0); c.mark(m); m.visitMethodInsn(INVOKESTATIC, "vf/n43_objarray_as_serializable", "o", "(Ljava/io/Serializable;)V", false); m.visitInsn(RETURN);
+        });
     }
 }

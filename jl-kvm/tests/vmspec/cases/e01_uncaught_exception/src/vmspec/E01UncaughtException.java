@@ -26,7 +26,7 @@ public class E01UncaughtException extends MIDlet {
         Thread t = new Thread(new Runnable() {
             public void run() {
                 p("thread running");
-                throw new IllegalStateException("thread boom");
+                throw new IllegalArgumentException("thread boom");
             }
         });
         t.start();

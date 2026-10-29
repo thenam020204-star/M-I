@@ -46,7 +46,7 @@ public class CorpusVerifyTest {
         int accepted = 0, rejected = 0;
         StringBuilder unexpected = new StringBuilder();
         for (Map.Entry<String, File> e : jars.entrySet()) {
-            boolean neg = e.getKey().startsWith("neg");
+            boolean neg = e.getKey().startsWith("neg") || e.getKey().equals("o03_jsr_ret");   // o03: jsr/ret, run with verification off
             boolean cldc10 = e.getKey().equals("neg03_float_in_cldc10");
             MapSource app = new MapSource();
             app.m.putAll(Corpus.classes(e.getValue()));
