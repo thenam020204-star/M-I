@@ -211,7 +211,7 @@ Phân công đợt 1: **A1 chạy T01–T20 và T13b** (M0–M3, 21 task). **A2 
 **Luật thay công nhân (người dùng, 2026-10-29):** công nhân nào có ngữ cảnh vượt **400k token** thì quản đốc cho dừng và thay bằng công nhân mới (cùng vai A1/A2, cùng model Sonnet 5.5). Trước khi bàn giao, công nhân cũ phải đưa file về trạng thái nhất quán và ghi vào Nhật ký dòng `BÀN GIAO: đang ở Txx, đã xong …, bước tiếp theo …, lưu ý …`. Công nhân mới bắt đầu bằng việc đọc lại toàn bộ PLAN.md, không dựa vào lịch sử chat của người cũ. Quản đốc theo dõi mức ngữ cảnh khi nhận báo cáo; công nhân tự thấy mình gần 400k thì chủ động ghi BÀN GIAO rồi dừng.
 
 ### M0 — Nền móng
-- [ ] T01. Fork JL-Mod @ `f723a19`, dựng khung module
+- [x] T01. Fork JL-Mod @ `f723a19`, dựng khung module
   - Agent: A1
   - Đầu vào/đầu ra: repo JL-Mod → repo `jl-kvm` có module rỗng `vm-core`, `vm-classlib`, `host-android`, `host-desktop`, `tools/*`
   - File: `settings.gradle.kts`, `*/build.gradle.kts`
@@ -221,22 +221,22 @@ Phân công đợt 1: **A1 chạy T01–T20 và T13b** (M0–M3, 21 task). **A2 
   - Đầu vào/đầu ra: script `tools/env/check_toolchain.sh` in phiên bản: JDK 8 (hoặc ECJ còn hỗ trợ 1.3), JDK hiện đại cho Gradle, preverify (WTK 2.5.2 / Java ME SDK), CFR, FernFlower, Procyon, JADX, javap, ASM (+ asm-util Textifier), Jasmin
   - File: `tools/env/*`
   - Hoàn thành khi: script exit 0; biên dịch MIDlet hello `-source 1.3 -target 1.3` + preverify ra class có thuộc tính `StackMap` (kiểm bằng `javap -v` hoặc dump ASM, lưu kết quả vào `tools/env/proof.txt`)
-- [ ] T03. CSDL chữ ký API từ stub jar
+- [x] T03. CSDL chữ ký API từ stub jar
   - Agent: A1
   - Đầu vào/đầu ra: stub jar do người dùng cung cấp (CLDC 1.0/1.1, MIDP 2.0/2.1, Nokia UI API từ các SDK S40, từng JSR) → `tools/api-sigs/db/<api>-<version>.json` (lớp, super, interface, access, field: descriptor/access/hằng, method: descriptor/access/exceptions)
   - File: `tools/api-sigs/*`
   - Hoàn thành khi: tạo được DB cho mọi stub có; lệnh `api-sigs diff A.json B.json` liệt kê khác biệt; test: số lớp trong DB CLDC 1.1 = số lớp public trong stub jar
-- [ ] T04. `jarscan` — scanner tương thích v1
+- [x] T04. `jarscan` — scanner tương thích v1
   - Agent: A1 (phụ thuộc T03)
   - Đầu vào/đầu ra: game JAR + profile → báo cáo JSON + Markdown: tham chiếu lớp/method/field không có trong profile, version class, có/thiếu StackMap, dùng float/double, `jsr/ret`, cấp phát mảng lớn hằng số, đệ quy (SCC trên call graph), dùng Thread/Timer, `System.gc`, ép kiểu thu hẹp đáng ngờ
   - File: `tools/jarscan/*`
   - Hoàn thành khi: JAR test cố ý gọi `String.isEmpty()` và `java.util.ArrayList` bị đánh dấu **NOT J2ME-SAFE** (mức lỗi nghiêm trọng → exit code ≠ 0); JAR sạch → exit 0
-- [ ] T05. Oracle rig cục bộ
+- [x] T05. Oracle rig cục bộ
   - Agent: A1
   - Đầu vào/đầu ra: script chạy MIDlet headless trên phoneME (build Linux cục bộ, **không commit binary/mã GPL**), MicroEmulator, KEmulator (nếu có), JL-Mod-dex; thu stdout/exception
   - File: `tools/difftest/oracles/*` (chỉ script + hướng dẫn)
   - Hoàn thành khi: MIDlet hello in cùng chuỗi trên ít nhất 2 oracle; oracle nào không dựng được thì ghi vào Vướng mắc kèm lý do
-- [ ] T06. Corpus test
+- [x] T06. Corpus test
   - Agent: A1
   - Đầu vào/đầu ra: `tests/vmspec/` (≥ 1 class cho mỗi mục trong "Ràng buộc và edge case", sinh bằng Jasmin/ASM, kèm `expected.txt`), `tests/midlets/` khung MIDlet test, quy ước `tests/games/` (không commit) + định dạng kịch bản input
   - File: `tests/**`
@@ -420,6 +420,7 @@ Task chỉ được tick khi qua mọi bước áp dụng được. "Game vẫn 
 - V1. ĐÃ QUYẾT (người dùng, 2026-10-29): dùng nguồn mở thay thế. Stub CLDC 1.0/1.1 + MIDP 2.0 lấy từ MicroEmulator trên Maven Central (`org.microemu:cldcapi10`, `cldcapi11`, `midpapi20`; dùng làm DB chữ ký, ghi rõ nguồn trong JSON). Preverify: ProGuard `-microedition` thay WTK `preverify` (T02 chấp nhận). Oracle T05: MicroEmulator + FreeJ2ME (`../freej2me/freej2me_plus.jar` trong repo M-I) + phoneME build cục bộ nếu dựng được (không commit). DB Nokia UI API để trống cho tới khi người dùng cung cấp SDK S40 — ghi `UNVERIFIED`.
 - V2. Có máy Nokia thật nào để đo không (model)? Quyết định profile ưu tiên và nguồn `measured`.
 - V3. Mặc định đã chọn, người dùng có thể đổi: lõi Java (D2), ưu tiên S40 trước S60, giữ engine dex ở debug để A/B (D17), dự án dùng riêng hay phát hành công khai (ảnh hưởng T41).
+- V4. (A1) Oracle T05 chưa dựng được: phoneME (nguồn không tải được: github.com/nikita36078/phoneME-feature trả 403 qua proxy, svn.java.net không phân giải; cần người dùng cung cấp nguồn/bản build cục bộ rồi đặt `tools/difftest/oracles/run_phoneme.sh`), KEmulator (app GUI Windows, không có bản headless), JL-Mod-dex (cần runtime Android; dành cho T35/T39). T05 đạt với 2 oracle: MicroEmulator + FreeJ2ME.
 
 ## Nhật ký
 - 2026-10-29 [quản đốc] Repo đặt tại `M-I/jl-kvm/` (snapshot JL-Mod `dev` @ f723a19, không kèm lịch sử git) theo quyết định người dùng. Android SDK cài ngoài repo tại `/opt/android-sdk` (platform 34, build-tools 34.0.0, NDK 22.1.7171670) — đặt `local.properties` (không commit). Đợt 1: A1 làm T01–T20 + T13b.
@@ -427,6 +428,11 @@ Task chỉ được tick khi qua mọi bước áp dụng được. "Game vẫn 
 - 2026-10-29 [A1] T01 DANG DO (chưa tick): đã tạo `settings.gradle.kts` (include vm-core, vm-classlib, host-android, host-desktop, tools:*), `*/build.gradle.kts`, `vm-core` có task `checkNoAndroidImports` + test mẫu `VmInfoTest`, `local.properties`, `chmod +x gradlew`. Chưa xác nhận `./gradlew assembleDebug :vm-core:test` (lần chạy đầu đang tải phụ thuộc).
 - 2026-10-29 [A1] T03 DANG DO (chưa tick, chưa build/test): code `tools/api-sigs` (ApiDb, Extractor, Differ, Main, test, launcher `api-sigs`); chưa sinh `db/*.json`. T04 DANG DO (chưa build/test): code `tools/jarscan` (Scanner, Main, profiles); thiếu JAR test bẩn/sạch + selftest. T05, T06 chưa bắt đầu.
 - 2026-10-29 [A1] TẠM DỪNG theo quản đốc: đang ở T01 (chờ kết quả gradle) / T03; bước tiếp theo là chạy `./gradlew assembleDebug :vm-core:test :tools:api-sigs:test`, sửa lỗi biên dịch nếu có, sinh db/cldc-1.0, cldc-1.1, midp-2.0 từ stub MicroEmulator, rồi T04 (selftest bad/clean jar), T05, T06.
+- 2026-10-29 [A1 mới] T01 đạt: `./gradlew assembleDebug :vm-core:test` BUILD SUCCESSFUL (cần mirror Maven của quản đốc; submodule TinySoundFont rỗng nên đã clone MIT source vào `app/.../mmapi_tsf/TinySoundFont`, bỏ .git, untracked); `checkNoAndroidImports` fail khi chèn `import android.` (đã thử), pass khi sạch. Kiểm kê: 3b8e3be có code T03–T06 chưa nghiệm thu, đang kiểm lại từng task.
+- 2026-10-29 [A1 mới] T03 đạt: `tools/api-sigs/make_db.sh` sinh cldc-1.0/1.1/midp-2.0 (76/81/66 lớp = số lớp trong stub, đếm bằng javap), `api-sigs diff` chạy (0 diff khi tự so; cldc1.0→1.1 liệt kê float/double), test ApiSigsTest 2/2 không skip. nokia-ui-api.json rỗng UNVERIFIED (V1). T04 đạt: `tools/jarscan/selftest.sh` -> bad.jar exit=1 NOT J2ME-SAFE (isEmpty, ArrayList, NO_STACKMAP), clean.jar exit=0, SELFTEST PASS.
+- 2026-10-29 [A1 mới] T05 đạt: `tools/difftest/oracles/run_all.sh tools/env/cache/out/hello.jar` -> oracles ran: microemu freej2me, SAME (HELLO-JLKVM / sum=25), rc=0. phoneME/KEmulator/JL-Mod-dex ghi V4.
+- 2026-10-29 [A1 mới] T06 đạt: `tests/vmspec/run_vmspec.sh` -> pass=37 fail=0 spec-only=3 (neg01-03, nguồn đặc tả, lớp lỗi UNVERIFIED), mọi case có `source:` trong meta.txt và expected.txt; `tests/midlets` selftest chạy trên 2 oracle SAME (3 PASS); `tests/games/README.md` có quy ước + định dạng .inp. Lưu ý: oracle là JVM chứ không phải CLDC VM (D18/R2). Cụm M0 T01–T06 xong.
+- 2026-10-29 [quản đốc] NGHIỆM THU M0 (T01–T06): chạy lại `assembleDebug :vm-core:checkNoAndroidImports :vm-core:test` OK, `jarscan/selftest.sh` PASS, `run_vmspec.sh` pass=37 fail=0 spec-only=3, oracle hello SAME (microemu == freej2me). Quyết định: (1) TinySoundFont (submodule JL-Mod) vendored chỉ `tsf.h`/`tml.h`/LICENSE (MIT) tại đúng commit ghim `0d10306`, xem `VENDORED.txt`; (2) Maven Central trả 429 qua proxy → init script `~/.gradle/init.d/maven-mirror.gradle` (ngoài repo) chuyển sang mirror Google; script tải phải dùng mirror này; (3) V4 (thiếu phoneME/KEmulator/JL-Mod-dex) chấp nhận cho M0, các case CLDC-riêng giữ `UNVERIFIED`.
 
 ---
 

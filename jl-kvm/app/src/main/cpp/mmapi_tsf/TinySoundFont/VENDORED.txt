@@ -1,0 +1,1 @@
+Vendored from https://github.com/schellingb/TinySoundFont @ 0d10306120037ce049a7699f9eaa5314d5b888f8 (submodule pin of JL-Mod f723a19), MIT. Only headers + LICENSE kept.
