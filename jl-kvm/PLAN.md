@@ -258,6 +258,10 @@ Phân công đợt 1: **A1 chạy T01–T20 và T13b** (M0–M3, 21 task). **A2 
   - Đầu vào/đầu ra: (method, pc) → bitmap tham chiếu cho locals + stack, có cache
   - File: `vm-core/.../verify/TypeMaps.java`
   - Hoàn thành khi: unit test trên 10 method mẫu khớp bản tính tay
+- [ ] T08a. Sửa nhỏ verifier (quản đốc ghi khi nghiệm thu T08)
+  - Agent: A1
+  - Lỗi: `MethodVerifier.classAssignable` cho mảng gán được vào `java/lang/Cloneable` và `java/io/Serializable` — CLDC 1.0/1.1 không có hai lớp này; với profile CLDC mảng chỉ gán được vào `java/lang/Object` (và mảng tương thích).
+  - Hoàn thành khi: test ASM: class gán `int[]`/`Object[]` vào biến kiểu `java/lang/Cloneable` bị từ chối ở strict (lớp không tồn tại → VerifyError/NoClassDefFoundError theo cách hiện có), toàn bộ `:vm-core:test` + vmspec vẫn qua; ghi vào `docs/verifier-report.md`
 
 ### M2 — Runtime
 - [ ] T10. Heap arena + mô hình object
@@ -437,6 +441,7 @@ Task chỉ được tick khi qua mọi bước áp dụng được. "Game vẫn 
 - 2026-10-29 [A1 mới] T07 đạt: `vm-core/.../classfile/{ClassParser,ClassFile,ConstantPool,Descriptors,ClassFormatException}` + `jlkvm/ClassSource`. `./gradlew :vm-core:test`: parse 242/242 class (jar vmspec + stub cldcapi11/midpapi20, gồm raw 45.x), fuzz 10k (seed cố định) rejected=9040 accepted=960, không crash host. Test cần `tests/vmspec/run_vmspec.sh` đã chạy (assume nếu thiếu corpus). ROM chưa có.
 - 2026-10-29 [A1 mới] T08 đạt (chờ quản đốc nghiệm thu): viết lại `verify/MethodVerifier` (bản dở chỉ có khung) + `Verifier`; strict/lenient, uninit, long/double 2 từ, handler, mảng, interface=Object, jsr/ret từ chối. `./gradlew --no-daemon :vm-core:test`: vmspec 92 class chấp nhận / 3 từ chối (neg01–03 đúng); midlets+hello+clean 7/0; stub 147/0; stress (microemu, ecj, gson qua ProGuard -microedition) 12052 method chấp nhận, 0 từ chối ngoài ý muốn (78 `ldc Class` ở v47 bị từ chối đúng); ASM `tests/vmspec/gen_verify_cases.sh` 16 positive chấp nhận + 42 negative bị từ chối (pc + lý do khớp), lenient 58/58; fuzz 33k mẫu không crash. So HotSpot-21: chỉ khác ở quy tắc riêng CLDC. phoneME không có (V4), đặc tả CLDC không tải được (V5) → mọi điểm chưa chắc ghi UNVERIFIED trong `docs/verifier-report.md`. `RawGen` m05 thêm StackMap (vmspec vẫn pass=37 fail=0 spec-only=3).
 - 2026-10-29 [A1 mới] T09 đạt: `verify/TypeMaps` ((method,pc) → `RefMap` bitmap locals+stack, `at` = trước lệnh, `atCall` = caller trong lúc invoke, cache theo method); `TypeMapsTest` 11 test (10 method mẫu tính tay: long/double, uninit, uninitThis, handler, interface, mảng, null, field, dup_x2/dup2_x2) pass.
+- 2026-10-30 [quản đốc] NGHIỆM THU T08 ĐẠT (kèm T08a sửa nhỏ), T09 đạt: chạy lại `:vm-core:test` 22/22 (Corpus, Generated, Stress, Fuzz, TypeMaps), soát `MethodVerifier`: StackMap strict, handler frame, uninit/backward branch, `<init>` đúng lớp, invokespecial, CLDC 1.0 float. Chấp nhận các điểm UNVERIFIED trong `docs/verifier-report.md` (V4/V5). Phát hiện: mảng gán được vào Cloneable/Serializable → T08a.
 
 ---
 
