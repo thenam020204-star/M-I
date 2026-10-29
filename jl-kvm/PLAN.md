@@ -1,0 +1,429 @@
+# PLAN: JL-KVM — chạy thẳng JAR J2ME (không dex hoá) trên nền JL-Mod, đủ Nokia API
+
+## Mục tiêu
+Fork JL-Mod, thay toàn bộ đường "JAR → dx → DEX → ART" bằng một máy ảo CLDC tự viết chạy bytecode gốc của JAR (interpreter + verifier + heap/GC riêng + green thread), để game chạy trên Android với hành vi gần KVM/Nokia thật nhất có thể. Toàn bộ API MIDP + Nokia UI API + các JSR có trên máy Nokia được dựng lại theo mô hình "lớp guest (bytecode CLDC) + native phía host (Android)". Kết quả phụ quan trọng: một môi trường kiểm thử nghiêm ngặt, bắt được patch "chỉ chạy trên J2ME Loader" (⚠️ NOT J2ME-SAFE).
+
+---
+
+## Hiện trạng JL-Mod (đã kiểm tra trực tiếp mã nguồn)
+Bản khảo sát: `woesss/JL-Mod`, nhánh `dev`, commit `f723a19` (2026-04-11, "LCDUI: refactoring"), 634 file .java, ~73.6k dòng, Apache-2.0.
+
+| Điểm | Bằng chứng | Hệ quả với mục tiêu "giống KVM thật" |
+|---|---|---|
+| Dex hoá lúc cài | `ru/woesss/j2me/installer/AppInstaller.java` gọi `com.android.dx.command.dexer.Main` với `--no-optimize`, ra `converted.zip`; JAR gốc chép thành `res.jar` | Phải bỏ bước này |
+| Sửa bytecode lúc dex | `dexlib/.../dx/command/dexer/Main.java` gọi `AndroidProducer.instrument()`; `AndroidMethodVisitor` viết lại `Class.getResourceAsStream`, `Thread.yield→sleep`, `new String(byte[])`, `getBytes()`, `InputStreamReader`, `OutputStreamWriter`, `ByteArrayOutputStream.toString`, `PrintStream`… | Game không chạy đúng bytecode gốc → vi phạm binary integrity |
+| Nạp class | `AppClassLoader extends DexClassLoader`; `CoreClassLoader` cho game thấy `java.*`, `javax.*`, `com.*` của **Android libcore** | Game gọi API ngoài CLDC (vd. `String.isEmpty()`, `ArrayList`) vẫn chạy → che lỗi |
+| Bộ nhớ | `Runtime` là của Android, không có heap giả lập | `freeMemory()/totalMemory()` sai hoàn toàn; không có OOM như máy thật |
+| Luồng | `MidletThread extends HandlerThread`; thread game = thread Android thật, preemptive, đa nhân | Race condition không bao giờ xảy ra trên KVM có thể xuất hiện và ngược lại |
+| Thuộc tính hệ thống | `assets/defaults/system.props`: `microedition.configuration: CDLC-1.1` (gõ sai, phải là `CLDC-1.1`), `microedition.platform: Nokia 6233` | Cần profile thiết bị đúng |
+| Nokia API có sẵn | `com/nokia/mid/ui`: FullCanvas, DirectGraphics(+Imp), DirectUtils, DeviceControl, SoftNotification(+Listener/Exception), Clipboard, FreeSizeFontInvoker; `com/nokia/mid/sound`: Sound, SoundListener, ToneVerifier; `com/nokia/mid/payment` (IAP); `com/nokia/mid/m3d` | Dùng làm backend, phải tách guest/host |
+| JSR có sẵn | lcdui, game, media(+tone, control), rms, m3g, io.file, pim, bluetooth, obex, wireless.messaging, amms, sensor, pki | Tái dùng backend |
+| JSR chưa có | `javax.microedition.m2g` (JSR-226), `location` (JSR-179), `khronos` (JSR-239), `javax.xml` (JSR-172), `global` (JSR-238), `content` (JSR-211), `apdu` (JSR-177 phần SATSA) | Bổ sung theo tầng ưu tiên |
+| Native C/C++ | `cpp/m3g` (lõi M3G của Nokia, **EPL v1.0**, khoảng 323 khai báo native phía Java, có cả `m3g_kvm_api.inl`), `sonivox`, `mmapi_tsf` (TinySoundFont), `mmapi_eas`, `micro3d`, `gles_utils` | Giữ, viết lại lớp glue JNI |
+| Đọc ZIP | `ru.woesss.util.zip.ZipFile` (chịu được JAR lỗi) | Tái dùng để đọc JAR trực tiếp |
+| Thư viện kèm | ACRA, Gson, RxJava, Zip4j, PNGJ, MobileFFmpeg (**LGPL v3**), NoNonsense-FilePicker (**MPL 2.0**)… | Kiểm license khi phát hành |
+
+---
+
+## Phạm vi
+- **Trong phạm vi**
+  - VM CLDC 1.1 (có chế độ CLDC 1.0) viết bằng Java thuần, chạy bytecode từ JAR không giải nén, không dex.
+  - Verifier CLDC (StackMap), heap/GC riêng có giới hạn theo thiết bị, green thread, monitor.
+  - Thư viện guest: CLDC 1.1, MIDP 2.0/2.1, Nokia UI API (đầy đủ theo tầng), các JSR có trên máy Nokia.
+  - Host Android (tái dùng backend JL-Mod) + host desktop headless (CI, so pixel).
+  - Profile thiết bị Nokia, scanner tương thích, công cụ so sánh chéo (difftest).
+- **Ngoài phạm vi (giai đoạn này)**
+  - DoJa/i-appli, WIPI, BREW; API riêng Siemens/Samsung/Motorola/SE/Vodafone/KDDI (JL-Mod có, để đợt sau — kiến trúc cho phép thêm).
+  - eSWT, MIDP 3.0, LWUIT ngoài phần game tự đóng gói.
+  - JIT/AOT sinh mã. Không bao giờ quay lại dex hoá.
+  - Kết nối mạng thật cho game online (chỉ chính sách cho phép/từ chối/offline).
+
+---
+
+## Quyết định thiết kế (KHÔNG tự đổi khi implement)
+- **D1. Bỏ dex hoàn toàn; game chạy bằng interpreter.** — lý do: yêu cầu người dùng; dex + `AndroidProducer` thay đổi bytecode, không giữ hành vi gốc.
+- **D2. Lõi VM viết bằng Java thuần (module `vm-core`, cấm `import android.*`).** — lý do: gọi thẳng backend Java của JL-Mod không qua JNI; cùng một lõi chạy được trên desktop JVM để test/CI/so sánh; ART JIT biên dịch vòng lặp interpreter. Hiệu năng được đo sớm (T13b). Nếu không đạt, phương án dự phòng là lõi C++ (NDK) cài cùng interface `ExecutionEngine` — vẫn là interpreter, không dex.
+- **D3. Heap riêng: một mảng `int[]` (arena), tham chiếu là chỉ số `int`, `null = 0`.** Kích thước heap lấy từ profile thiết bị. Hết heap → GC → vẫn thiếu → `OutOfMemoryError` của guest. `Runtime.freeMemory/totalMemory` trả số liệu của arena. — lý do: tái hiện kỷ luật bộ nhớ và OOM như máy thật.
+- **D4. GC chính xác (precise) mark–sweep + nén trượt (sliding compaction).** Bản đồ tham chiếu của từng frame lấy từ kết quả verifier tại pc đó (cache). Hỗ trợ `WeakReference` (CLDC 1.1). Hash định danh lưu trong header, sống qua nén. — lý do: không quét bảo thủ, không rò; giống cách KVM dùng stackmap.
+- **D5. Green thread: toàn bộ thread guest chạy trên một thread host (`vm-thread`), chuyển thread sau N bytecode (N từ profile) hoặc khi block.** — lý do: tái hiện lập lịch KVM, xác định được (deterministic), GC dừng-thế-giới đơn giản.
+- **D6. Verifier CLDC (type-checking dựa trên thuộc tính `StackMap`).** Chế độ `strict` (mặc định): class thiếu StackMap → `VerifyError` như máy thật. Chế độ `lenient` (chỉ debug): suy luận kiểu, chỉ cảnh báo. — lý do: preverify là bắt buộc trên thiết bị thật.
+- **D7. Phân giải lười (lazy resolution) constant pool tại lần thực thi đầu.** Lỗi liên kết ném đúng thời điểm chạy tới, ánh xạ về lớp lỗi có trong CLDC (CLDC không có đủ cây Error của Java SE; cách ánh xạ cụ thể phải xác minh bằng oracle — xem T12).
+- **D8. Mô hình API "guest + native host".** Mọi lớp game nhìn thấy (`java.*`, `javax.microedition.*`, `com.nokia.*`…) là **bytecode guest** trong ROM; phần cần nền tảng là phương thức `native` do host đăng ký theo khoá `"lớp.tên(descriptor)"`. Đối tượng có tài nguyên host giữ trường `int peer` → bảng handle phía host.
+- **D9. Bề mặt API guest phải khớp 100% chữ ký stub chính thức** (lớp, superclass, interface, access flag, descriptor field/method, giá trị hằng, exception khai báo) của profile đang chạy. Không thừa thành viên public/protected nào. — lý do: game gọi API không có trên máy phải lỗi `NoSuchMethodError/NoClassDefFoundError` đúng như máy thật.
+- **D10. API theo profile.** Thiết bị không có JSR nào thì lớp của JSR đó không tồn tại trong ROM khi chạy profile đó.
+- **D11. Thư viện guest biên dịch `-source 1.3 -target 1.3`, `-bootclasspath` trỏ vào chính nó** (không bao giờ thấy rt.jar/android.jar), rồi chạy qua preverifier + verifier của chính dự án. — lý do: mã guest buộc phải là mã CLDC hợp lệ; tự kiểm verifier.
+- **D12. Nguồn mã guest chỉ được lấy từ: viết mới; JL-Mod (Apache-2.0); MicroEmulator (song license LGPL/Apache — dùng nhánh Apache); Apache Harmony (Apache-2.0).** **Cấm chép mã phoneME (GPLv2)** vào repo. phoneME chỉ dùng làm oracle chạy cục bộ, không phân phối.
+- **D13. Sự kiện MIDP chạy trong guest:** một thread guest hệ thống (`EventLoop`) nhận sự kiện từ host qua native chặn, đảm bảo tuần tự hoá `paint`/`keyPressed`/`commandAction`/`callSerially`/`serviceRepaints` theo MIDP. Host không bao giờ gọi vào guest từ thread Android khác.
+- **D14. Chế độ xác định (deterministic) cho debug:** đồng hồ ảo, timeslice cố định, seed ngẫu nhiên cố định, ghi/phát lại input → tái hiện lỗi 100%.
+- **D15. Debug hooks chỉ có trong bản debug** (cờ hằng biên dịch); bản release không ghi log nặng để không đổi timing/bộ nhớ.
+- **D16. JAR đọc trực tiếp, không giải nén** (dùng `ru.woesss.util.zip.ZipFile` của JL-Mod). — lý do: tránh lỗi trùng tên class khác hoa/thường trên file system; giữ nguyên dữ liệu gốc.
+- **D17. Engine dex cũ của JL-Mod chỉ giữ trong bản debug làm đối chứng A/B (T35), xoá khỏi release ở T42.**
+- **D18. Thứ tự sự thật:** thiết bị thật > đặc tả CLDC/MIDP/Nokia > phoneME (RI của Sun) > KEmulator/MicroEmulator > JL-Mod. Lưu ý phoneME cũng **không phải** VM của Nokia; khác biệt giữa các oracle phải ghi lại, không tự chọn bừa.
+
+### Cấu trúc thư mục
+```
+jl-kvm/                          (fork JL-Mod @ f723a19)
+├─ app/                          UI JL-Mod (danh sách app, cài đặt, profile game, skin, bàn phím ảo)
+├─ dexlib/                       giữ tạm cho A/B ở bản debug; xoá ở T42
+├─ vm-core/                      Java thuần, KHÔNG android.*
+│  └─ src/main/java/jlkvm/
+│     ├─ classfile/   parser, constant pool, attribute
+│     ├─ verify/      verifier CLDC + xuất bản đồ kiểu
+│     ├─ link/        class table, phân giải, khởi tạo <clinit>
+│     ├─ interp/      vòng lặp interpreter, frame, quickening
+│     ├─ heap/        arena, bố cục object/array, cấp phát, temp roots
+│     ├─ gc/          mark, sweep, compact, weak ref, hàng đợi dọn peer
+│     ├─ thread/      scheduler green thread, monitor
+│     ├─ natives/     registry, NativeContext, bảng handle, blocker
+│     ├─ rom/         nạp ROM thư viện guest
+│     └─ debug/       trace, profiler, chế độ xác định
+├─ vm-classlib/                  MÃ GUEST: java.lang/io/util, javax.microedition.*, com.nokia.*, JSR…
+├─ host-android/                 native trên Android (chuyển backend JL-Mod sang đây)
+├─ host-desktop/                 native headless cho CI (raster phần mềm, audio null, bàn phím kịch bản)
+├─ tools/
+│  ├─ env/        kiểm toolchain
+│  ├─ api-sigs/   tạo/so sánh CSDL chữ ký từ stub jar
+│  ├─ jarscan/    scanner tương thích game JAR theo profile
+│  ├─ romgen/     đóng gói ROM
+│  └─ difftest/   chạy chéo phoneME / KEmulator / JL-Mod-dex / JL-KVM
+├─ profiles/*.json               profile thiết bị
+└─ tests/
+   ├─ vmspec/     class edge-case (sinh bằng Jasmin/ASM) + kết quả mong đợi
+   ├─ midlets/    MIDlet test API
+   ├─ golden/     hash framebuffer chuẩn
+   └─ games/      (KHÔNG commit) JAR của người dùng + kịch bản input
+```
+
+### Kiến trúc chạy
+```
+ Android UI thread                vm-thread (1 thread host)                         Guest (bytecode)
+ ─────────────────                ──────────────────────────                        ────────────────
+ input/touch ──postEvent()──▶  hàng đợi sự kiện (thread-safe) ──native nextEvent()──▶ EventLoop (MIDP)
+ SurfaceView/GLES ◀─frame swap── Bitmap offscreen ◀── native Graphics.* ◀────────── game.paint(g)
+ AudioTrack/Sonivox ◀────────── host media ◀──────── native Player.* ◀──────────── game logic
+                                 Scheduler: chạy thread guest theo timeslice,
+                                 GC dừng-thế-giới tại điểm chuyển thread
+```
+
+### Interface giữa module (chữ ký cố định)
+```java
+// vm-core — host cài đặt interface này
+public interface HostPlatform {
+    long hostNanoTime();
+    void log(int level, String tag, String msg);
+    void registerNatives(NativeRegistry r);      // host-android / host-desktop đăng ký native
+    ClassSource rom();                           // ROM thư viện guest
+}
+public interface ClassSource {                   // JAR game hoặc ROM
+    byte[] readClass(String internalName);       // null nếu không có
+    byte[] readResource(String absPath);         // null nếu không có
+}
+public interface ExecutionEngine {               // cho phép thay lõi C++ sau này (D2)
+    int runSlice(int maxBytecodes);              // trả RUNNING / IDLE_UNTIL / EXITED
+    long idleUntilNanos();
+}
+public final class Vm implements ExecutionEngine {
+    public static Vm create(VmConfig cfg, HostPlatform host, ClassSource app, DeviceProfile p);
+    public void postEvent(int type, int a, int b, int c);   // gọi từ thread bất kỳ
+    public void requestExit();
+}
+public interface NativeMethod { void invoke(NativeContext c); }
+public interface NativeContext {
+    int argInt(int i); long argLong(int i); float argFloat(int i); double argDouble(int i);
+    int argRef(int i);                           // tham chiếu guest (chỉ số arena)
+    void retInt(int v); void retLong(long v); void retFloat(float v); void retDouble(double v);
+    void retRef(int ref); void retVoid();
+    void throwNew(String guestClass, String msg);
+    void block(Blocker b);                       // treo thread guest hiện tại, KHÔNG treo vm-thread
+    Heap heap(); Handles handles(); TempRoots roots();
+}
+```
+Quy ước khoá native: `"javax/microedition/lcdui/Graphics.drawLine(IIII)V"`. Thiếu native → lỗi được log ngay khi nạp lớp (bản debug) và ném Error guest khi gọi.
+
+---
+
+## Ràng buộc và edge case (bắt buộc có test trong `tests/vmspec`)
+- Số học: `idiv/ldiv` chia 0 → `ArithmeticException`; `Integer.MIN_VALUE / -1`; dấu của `irem/lrem`; shift che `&31/&63`; `i2b/i2s` mở rộng dấu, `i2c` mở rộng không dấu; `baload` mở rộng dấu, `caload` không dấu.
+- Dấu phẩy động: `f2i/d2i/f2l/d2l` NaN→0 và bão hoà; `fcmpl/fcmpg` với NaN; profile CLDC 1.0 không có float/double (hành vi khi gặp opcode float phải xác minh).
+- Mảng: kích thước âm → `NegativeArraySizeException`; `aastore` sai kiểu → `ArrayStoreException`; `multianewarray`; chỉ số ngoài biên.
+- `checkcast/instanceof` với mảng và interface; `invokeinterface` trên null.
+- **Class file cũ không có cờ `ACC_SUPER`** (version 45.x): ngữ nghĩa `invokespecial` khác — game rất cũ có thể dính.
+- `<clinit>`: thứ tự, khởi tạo đệ quy, khởi tạo lỗi (CLDC không có `ExceptionInInitializerError` → ánh xạ phải xác minh); hằng `ConstantValue`.
+- String literal phải intern (game so sánh bằng `==`).
+- Monitor: `monitorenter/exit` lệch → `IllegalMonitorStateException`; `synchronized` method; `wait` có timeout; `interrupt` (CLDC 1.1).
+- Tràn stack: kích thước stack mỗi thread từ profile; lớp lỗi ném ra phải xác minh (CLDC không có `StackOverflowError` trong danh sách tối thiểu).
+- Ngoại lệ trong `paint()`/callback: hành vi phụ thuộc hiện thực → xác minh bằng oracle, ghi vào profile.
+- Game vòng lặp bận không `sleep` (dựa vào preemption) → scheduler phải cắt theo số bytecode.
+- Native dài (giải mã ảnh lớn, I/O) không được làm đứng scheduler.
+- Ảnh lớn: bộ nhớ pixel có tính vào heap guest hay không là tham số profile (`imagesCountInHeap`).
+- JAR: tên class khác hoa/thường, tên lạ do obfuscate, entry trùng, CRC hỏng, manifest có dòng nối/BOM; resource phân biệt hoa thường; `getResourceAsStream` tương đối theo package, tuyệt đối khi bắt đầu bằng `/`.
+- Mã hoá mặc định (`microedition.encoding`) theo profile cho `new String(byte[])`, `getBytes()`, Reader/Writer — **không viết lại bytecode như `AndroidProducer`**.
+
+---
+
+## Danh mục API cần dựng (đích "đầy đủ Nokia")
+Cột "JL-Mod" = đã có backend để chuyển sang host. "[XM]" = cần xác minh với stub SDK Nokia trước khi làm (tên lớp, phiên bản giới thiệu).
+
+| Tầng | API | JL-Mod | Ghi chú |
+|---|---|---|---|
+| P0 | CLDC 1.1 (`java.lang`, `java.io`, `java.util`, `java.lang.ref`, `javax.microedition.io`) | Không (dùng libcore Android) | Viết mới trong guest |
+| P0 | MIDP 2.0/2.1: midlet, lcdui, lcdui.game, rms, media (subset MIDP), io (GCF), pki | Có | Tách guest/host |
+| P0 | `com.nokia.mid.ui`: FullCanvas, DirectGraphics, DirectUtils, DeviceControl | Có | Đủ pixel format (byte 1-bit gray… int 8888 ARGB), phép lật/xoay, đa giác/tam giác |
+| P0 | `com.nokia.mid.sound`: Sound, SoundListener | Có | Định dạng tone + ringing tone (OTT) + WAV, `getConcurrentSoundCount` |
+| P0 | JSR-135 MMAPI (MIDI, WAV, AMR, tone) | Có | Sonivox/TinySoundFont |
+| P1 | JSR-184 M3G | Có (lõi C Nokia, EPL) | Viết lại glue JNI theo handle guest |
+| P1 | JSR-75 FileConnection + PIM | Có | Ánh xạ thư mục ảo theo profile |
+| P1 | `com.nokia.mid.ui`: SoftNotification, Clipboard, FreeSizeFontInvoker | Có | |
+| P1 | `com.nokia.mid.ui.gestures` (GestureInteractiveZone, GestureRegistrationManager, GestureEvent, GestureListener) | Không | Có từ S40 6th Edition FP1 |
+| P1 | `com.nokia.mid.ui`: TextEditor, TextEditorListener | Không | [XM] phiên bản |
+| P1 | `com.nokia.mid.ui.frameanimator`, `.multipointtouch`, `.orientation` | Không | [XM] |
+| P1 | `com.nokia.mid.ui`: CategoryBar, IconCommand, ElementListener, VirtualKeyboard, KeyboardVisibilityListener, LCDUIUtil | Không | [XM] |
+| P1 | JSR-256 Sensor, JSR-234 AMMS, JSR-120/205 WMA, JSR-82 Bluetooth/OBEX | Có | WMA/BT ở chế độ offline/stub có kiểm soát |
+| P2 | JSR-179 Location | Không | Android location |
+| P2 | JSR-226 SVG Tiny | Không | Lớn — làm sau |
+| P2 | JSR-172 Web Services/XML, JSR-177 SATSA, JSR-238, JSR-211 | Một phần (pki) | Chỉ khi profile cần |
+| P2 | `com.nokia.mid.payment`, `com.nokia.mid.m3d`, `com.nokia.mid.s40.*` | Có/Không | [XM] |
+| P3 | S60: TactileFeedback, S60TextEditor, CanvasItem, iapinfo, JSR-239 OpenGL ES | Không | Chỉ khi thêm profile S60 |
+| P3 | Mascot Capsule v3 (không phải Nokia nhưng nhiều game) | Có | Đợt sau |
+
+Thuộc tính JAD/manifest riêng Nokia cần hỗ trợ [XM giá trị và ngữ nghĩa]: `Nokia-MIDlet-Original-Display-Size`, `Nokia-MIDlet-Target-Display-Size`, `Nokia-MIDlet-On-Screen-Keypad`, `Nokia-MIDlet-App-Orientation`, `Nokia-UI-Enhancement`, `Nokia-MIDlet-Category`.
+
+---
+
+## Mốc
+| Mốc | Nội dung | Điều kiện qua mốc |
+|---|---|---|
+| M0 | Nền móng, toolchain, CSDL chữ ký, scanner, oracle, corpus | T01–T06 xong |
+| M1 | Classfile + verifier | Verifier khớp oracle trên corpus |
+| M2 | Runtime VM (heap, interpreter, GC, thread, native) | `tests/vmspec` 100%; **benchmark sớm T13b đạt ngưỡng** |
+| M3 | Thư viện CLDC 1.1 guest | Diff chữ ký CLDC 1.1 = 0 |
+| M4 | MIDP 2.x + host desktop & Android | MIDlet test chạy trên cả hai host, hash pixel khớp nhau |
+| M5 | Nokia API + JSR theo tầng P0→P2 | Diff chữ ký từng profile = 0 |
+| M6 | Tích hợp Android không dex | Cài game không sinh DEX; chạy được corpus |
+| M7 | Hiệu năng + mô phỏng tốc độ máy gốc | Đạt ngưỡng benchmark |
+| M8 | Kiểm chứng chéo + phát hành | Difftest sạch hoặc mọi khác biệt có giải thích |
+
+---
+
+## Checklist
+Phân công đợt 1: **A1 chạy T01–T20 và T13b** (M0–M3, 21 task). **A2 chỉ đọc trước T21–T27** (M4), chỉ bắt đầu làm khi quản đốc xác nhận A1 ≥ 90% (≥ 19/21 task đã tick). T28 trở đi: quản đốc giao ở đợt sau.
+
+### M0 — Nền móng
+- [ ] T01. Fork JL-Mod @ `f723a19`, dựng khung module
+  - Agent: A1
+  - Đầu vào/đầu ra: repo JL-Mod → repo `jl-kvm` có module rỗng `vm-core`, `vm-classlib`, `host-android`, `host-desktop`, `tools/*`
+  - File: `settings.gradle.kts`, `*/build.gradle.kts`
+  - Hoàn thành khi: `./gradlew assembleDebug` và `./gradlew :vm-core:test` chạy thành công; `vm-core` có kiểm tra build-time cấm `import android.` (task Gradle grep, fail nếu vi phạm)
+- [ ] T02. Toolchain J2ME + reverse engineering
+  - Agent: A1
+  - Đầu vào/đầu ra: script `tools/env/check_toolchain.sh` in phiên bản: JDK 8 (hoặc ECJ còn hỗ trợ 1.3), JDK hiện đại cho Gradle, preverify (WTK 2.5.2 / Java ME SDK), CFR, FernFlower, Procyon, JADX, javap, ASM (+ asm-util Textifier), Jasmin
+  - File: `tools/env/*`
+  - Hoàn thành khi: script exit 0; biên dịch MIDlet hello `-source 1.3 -target 1.3` + preverify ra class có thuộc tính `StackMap` (kiểm bằng `javap -v` hoặc dump ASM, lưu kết quả vào `tools/env/proof.txt`)
+- [ ] T03. CSDL chữ ký API từ stub jar
+  - Agent: A1
+  - Đầu vào/đầu ra: stub jar do người dùng cung cấp (CLDC 1.0/1.1, MIDP 2.0/2.1, Nokia UI API từ các SDK S40, từng JSR) → `tools/api-sigs/db/<api>-<version>.json` (lớp, super, interface, access, field: descriptor/access/hằng, method: descriptor/access/exceptions)
+  - File: `tools/api-sigs/*`
+  - Hoàn thành khi: tạo được DB cho mọi stub có; lệnh `api-sigs diff A.json B.json` liệt kê khác biệt; test: số lớp trong DB CLDC 1.1 = số lớp public trong stub jar
+- [ ] T04. `jarscan` — scanner tương thích v1
+  - Agent: A1 (phụ thuộc T03)
+  - Đầu vào/đầu ra: game JAR + profile → báo cáo JSON + Markdown: tham chiếu lớp/method/field không có trong profile, version class, có/thiếu StackMap, dùng float/double, `jsr/ret`, cấp phát mảng lớn hằng số, đệ quy (SCC trên call graph), dùng Thread/Timer, `System.gc`, ép kiểu thu hẹp đáng ngờ
+  - File: `tools/jarscan/*`
+  - Hoàn thành khi: JAR test cố ý gọi `String.isEmpty()` và `java.util.ArrayList` bị đánh dấu **NOT J2ME-SAFE** (mức lỗi nghiêm trọng → exit code ≠ 0); JAR sạch → exit 0
+- [ ] T05. Oracle rig cục bộ
+  - Agent: A1
+  - Đầu vào/đầu ra: script chạy MIDlet headless trên phoneME (build Linux cục bộ, **không commit binary/mã GPL**), MicroEmulator, KEmulator (nếu có), JL-Mod-dex; thu stdout/exception
+  - File: `tools/difftest/oracles/*` (chỉ script + hướng dẫn)
+  - Hoàn thành khi: MIDlet hello in cùng chuỗi trên ít nhất 2 oracle; oracle nào không dựng được thì ghi vào Vướng mắc kèm lý do
+- [ ] T06. Corpus test
+  - Agent: A1
+  - Đầu vào/đầu ra: `tests/vmspec/` (≥ 1 class cho mỗi mục trong "Ràng buộc và edge case", sinh bằng Jasmin/ASM, kèm `expected.txt`), `tests/midlets/` khung MIDlet test, quy ước `tests/games/` (không commit) + định dạng kịch bản input
+  - File: `tests/**`
+  - Hoàn thành khi: mỗi case vmspec có kết quả mong đợi lấy từ oracle (T05) hoặc trích dẫn đặc tả, ghi rõ nguồn trong file
+
+### M1 — Classfile + verifier
+- [ ] T07. Parser class file
+  - Agent: A1
+  - Đầu vào/đầu ra: `byte[]` → `ClassFile` (CP đủ tag cho version ≤ 49; attribute Code, Exceptions, ConstantValue, StackMap, SourceFile, LineNumberTable, LocalVariableTable; attribute lạ bỏ qua)
+  - File: `vm-core/.../classfile/*`
+  - Hoàn thành khi: parse 100% class trong corpus + ROM; fuzz (cắt cụt/đảo byte 10k mẫu) không crash host, chỉ ném `ClassFormatError` guest
+- [ ] T08. Verifier CLDC dựa trên StackMap — **Quản đốc nghiệm thu**
+  - Agent: A1 (phụ thuộc T07)
+  - Đầu vào/đầu ra: method + StackMap → chấp nhận/`VerifyError` (kèm pc, lý do); chế độ strict/lenient (D6)
+  - File: `vm-core/.../verify/*`
+  - Hoàn thành khi: mọi class preverify trong corpus qua; mọi case âm trong vmspec bị từ chối; tập chấp nhận/từ chối khớp phoneME (difftest), khác biệt nào cũng được ghi vào báo cáo
+- [ ] T09. Xuất bản đồ kiểu cho GC
+  - Agent: A1 (phụ thuộc T08)
+  - Đầu vào/đầu ra: (method, pc) → bitmap tham chiếu cho locals + stack, có cache
+  - File: `vm-core/.../verify/TypeMaps.java`
+  - Hoàn thành khi: unit test trên 10 method mẫu khớp bản tính tay
+
+### M2 — Runtime
+- [ ] T10. Heap arena + mô hình object
+  - Agent: A1
+  - Đầu vào/đầu ra: arena `int[]` kích thước từ profile; header (class id, word hash/monitor/cờ GC); mảng byte/char/short đóng gói; long/double 2 word; API cấp phát + temp roots
+  - File: `vm-core/.../heap/*`
+  - Hoàn thành khi: test đọc/ghi mọi kiểu; cấp phát vượt ngân sách đúng 1 byte thì đòi GC rồi OOM; `freeMemory()` khớp sổ sách
+- [ ] T11. Interpreter đủ opcode + frame + ngoại lệ — **Quản đốc nghiệm thu**
+  - Agent: A1 (phụ thuộc T09, T10)
+  - Đầu vào/đầu ra: thực thi mọi opcode (kể cả `jsr/ret`, `wide`, `tableswitch/lookupswitch`); bảng exception; stack trace guest
+  - File: `vm-core/.../interp/*`
+  - Hoàn thành khi: `tests/vmspec` 100% khớp `expected.txt`; không có nhánh "TODO opcode"
+- [ ] T12. Liên kết, phân giải, khởi tạo lớp
+  - Agent: A1 (phụ thuộc T11)
+  - Đầu vào/đầu ra: phân giải lười, kiểm quyền truy cập, `<clinit>` đúng JVM spec, xử lý class thiếu `ACC_SUPER`, ánh xạ lỗi sang lớp có trong CLDC
+  - File: `vm-core/.../link/*`
+  - Hoàn thành khi: test thời điểm ném `NoClassDefFoundError`, `<clinit>` đệ quy, `<clinit>` lỗi cho kết quả khớp oracle; bảng ánh xạ lỗi ghi trong `docs/error-mapping.md` kèm nguồn
+- [ ] T13. GC chính xác + nén + WeakReference + dọn peer — **Quản đốc nghiệm thu**
+  - Agent: A1 (phụ thuộc T09, T10)
+  - Đầu vào/đầu ra: root = stack (qua TypeMaps), static, chuỗi intern, temp roots, bảng handle, monitor; dọn peer host khi object guest chết
+  - File: `vm-core/.../gc/*`
+  - Hoàn thành khi: stress 1 triệu cấp phát đồ thị ngẫu nhiên có checksum không sai; hash định danh giữ nguyên sau nén; bảng handle host không rò (đếm về 0 sau khi thả hết)
+- [ ] T13b. Benchmark sớm (cổng quyết định D2)
+  - Agent: A1 (phụ thuộc T11)
+  - Đầu vào/đầu ra: vòng lặp số học, gọi method ảo, truy cập mảng, cấp phát → triệu bytecode/giây trên desktop và 1 máy Android
+  - File: `tests/bench/*`, `docs/bench.md`
+  - Hoàn thành khi: có số đo; quản đốc so với nhu cầu game (ngưỡng quản đốc chốt sau khi có số đầu tiên) và ghi quyết định giữ lõi Java hay mở nhánh lõi C++
+- [ ] T14. Scheduler green thread + monitor
+  - Agent: A1 (phụ thuộc T11)
+  - Đầu vào/đầu ra: timeslice theo bytecode (từ profile), ưu tiên, `sleep/wait/notify/notifyAll/join/interrupt/yield`, `synchronized`; phát hiện deadlock (debug)
+  - File: `vm-core/.../thread/*`
+  - Hoàn thành khi: test producer–consumer, deadlock cố ý (debug báo); cùng seed chạy 10 lần ra output y hệt
+- [ ] T15. Native registry + NativeContext + blocker + bảng handle
+  - Agent: A1 (phụ thuộc T11)
+  - Đầu vào/đầu ra: theo "Interface giữa module"
+  - File: `vm-core/.../natives/*`
+  - Hoàn thành khi: native mẫu trên host-desktop chạy; native chặn treo đúng 1 thread guest, các thread khác vẫn chạy; native thiếu bị báo khi nạp lớp
+- [ ] T16. Debug & trace
+  - Agent: A1
+  - Đầu vào/đầu ra: log nạp lớp, ngoại lệ (stack guest), profiler vị trí cấp phát (theo pc), log GC, đếm bytecode theo method, ring buffer trace, chế độ xác định + ghi/phát lại input (D14)
+  - File: `vm-core/.../debug/*`
+  - Hoàn thành khi: bản debug có đủ log; bản release đo benchmark chênh < 2% so với khi gỡ hẳn hook
+
+### M3 — Thư viện CLDC 1.1 (guest)
+- [ ] T17. Build pipeline thư viện guest + `romgen`
+  - Agent: A1 (phụ thuộc T02, T08)
+  - Đầu vào/đầu ra: `vm-classlib/src` → biên dịch theo D11 → preverify → verifier của dự án → `rom.jar` (đóng vào asset)
+  - File: `vm-classlib/build.gradle.kts`, `tools/romgen/*`
+  - Hoàn thành khi: build fail nếu mã guest tham chiếu lớp ngoài chính nó; ROM qua verifier strict
+- [ ] T18. `java.lang` / `java.util` / `java.io` / `java.lang.ref` đúng bề mặt CLDC 1.1
+  - Agent: A1 (phụ thuộc T17, T03)
+  - Đầu vào/đầu ra: lớp guest theo D12 (nguồn mã ghi ở header từng file)
+  - File: `vm-classlib/src/java/**`
+  - Hoàn thành khi: `api-sigs diff` (ROM vs CLDC 1.1) = 0 khác biệt; test classlib qua
+- [ ] T19. String, encoding, chuyển số
+  - Agent: A1 (phụ thuộc T18)
+  - Đầu vào/đầu ra: `String/StringBuffer`, intern, ISO-8859-1/UTF-8, encoding mặc định theo profile, `Integer/Long` parse/toString, `Float/Double.toString`
+  - File: `vm-classlib/src/java/lang/*`
+  - Hoàn thành khi: bộ test chuỗi khớp output phoneME; khác biệt `Double.toString` (nếu có) được ghi rõ là theo oracle nào
+- [ ] T20. System/Runtime + thuộc tính theo profile + GCF cơ sở
+  - Agent: A1 (phụ thuộc T18)
+  - Đầu vào/đầu ra: `System.getProperty` từ profile (sửa `CLDC-1.1`), `Runtime.gc/freeMemory/totalMemory` từ arena, `currentTimeMillis` (đồng hồ ảo ở chế độ xác định); `Connector` + chính sách mạng theo profile
+  - File: `vm-classlib/src/java/lang/System.java`, `.../Runtime.java`, `vm-classlib/src/javax/microedition/io/*`
+  - Hoàn thành khi: test in thuộc tính khớp profile JSON, khoá lạ → `null`; `Connector.open("http://…")` cho đúng hành vi (cho phép/từ chối/offline)
+
+### M4 — MIDP 2.x + host (A2 đọc trước, chờ A1 ≥ 90%)
+- [ ] T21. Vòng đời MIDlet + JAD/manifest + AMS
+  - Agent: A2
+  - Đầu vào/đầu ra: tái dùng `ru.woesss.j2me.jar.Descriptor`; `startApp/pauseApp/destroyApp`, `notifyDestroyed`, `getAppProperty`, `platformRequest`
+  - File: `vm-classlib/src/javax/microedition/midlet/*`, `host-*/.../ams/*`
+  - Hoàn thành khi: MIDlet test ghi đúng thứ tự vòng đời, kể cả pause/resume theo `onPause/onResume` của Android
+- [ ] T22. EventLoop + Display + mã phím theo profile — **Quản đốc nghiệm thu**
+  - Agent: A2 (phụ thuộc T21)
+  - Đầu vào/đầu ra: D13; gộp repaint, `serviceRepaints`, `callSerially`, `setCurrent`, `showNotify/hideNotify`, `sizeChanged`; mã phím Nokia (soft −6/−7, chọn −5, mũi tên −1…−4…) lấy từ profile
+  - File: `vm-classlib/src/javax/microedition/lcdui/{Display,Displayable,Canvas}.java`, `vm-classlib/src/jlkvm/internal/EventLoop.java`
+  - Hoàn thành khi: test thứ tự sự kiện khớp oracle; không có lời gọi guest nào từ thread Android ngoài vm-thread (assert trong debug)
+- [ ] T23. Graphics / Image / Font
+  - Agent: A2 (phụ thuộc T22)
+  - Đầu vào/đầu ra: guest giữ trạng thái rẻ (màu, translate, clip), native vẽ; host-android chuyển backend JL-Mod; host-desktop raster phần mềm
+  - File: `vm-classlib/src/javax/microedition/lcdui/{Graphics,Image,Font}.java`, `host-android/.../lcdui/*`, `host-desktop/.../lcdui/*`
+  - Hoàn thành khi: MIDlet kiểm đồ hoạ (clip, anchor, `drawRegion` 8 phép biến đổi, `drawRGB` alpha, `getRGB`, ảnh mutable/immutable) cho hash pixel giống nhau giữa desktop và Android; khác biệt với KEmulator được liệt kê
+- [ ] T24. lcdui cấp cao (Form, List, TextBox, Alert, Ticker, Command, Item)
+  - Agent: A2 (phụ thuộc T22)
+  - File: `vm-classlib/src/javax/microedition/lcdui/*`, `host-android/.../lcdui/ui/*`
+  - Hoàn thành khi: MIDlet mẫu thao tác được; `commandAction` luôn đến qua EventLoop
+- [ ] T25. Game API (GameCanvas, Sprite, TiledLayer, LayerManager)
+  - Agent: A2 (phụ thuộc T23)
+  - Đầu vào/đầu ra: phần lớn là Java guest thuần trên Graphics; va chạm pixel
+  - Hoàn thành khi: test `getKeyStates`, `flushGraphics`, va chạm pixel, animated tile qua
+- [ ] T26. RMS
+  - Agent: A2 (phụ thuộc T21)
+  - Đầu vào/đầu ra: giới hạn dung lượng theo profile, thứ tự enumeration, ngoại lệ; tuỳ chọn nhập save từ JL-Mod
+  - Hoàn thành khi: test RMS (đầy bộ nhớ, `getSizeAvailable`, xoá/thêm) khớp profile
+- [ ] T27. MMAPI + tone
+  - Agent: A2 (phụ thuộc T22)
+  - Đầu vào/đầu ra: `Manager.createPlayer` theo định dạng profile hỗ trợ, trạng thái, listener, Volume/ToneControl, `playTone`; host dùng Sonivox/TSF của JL-Mod
+  - Hoàn thành khi: log chuyển trạng thái đúng đặc tả; listener chỉ chạy trên thread guest
+
+### M5 — Nokia API + JSR (giao đợt sau)
+- [ ] T28. Nokia UI API lõi: FullCanvas, DirectGraphics, DirectUtils, DeviceControl, Sound/SoundListener — **Quản đốc nghiệm thu**
+  - Hoàn thành khi: diff chữ ký với DB Nokia UI API của profile = 0; test pixel từng định dạng `drawPixels/getPixels` + phép biến đổi khớp KEmulator hoặc ảnh chụp máy thật; parser ringing tone có test
+- [ ] T29. API S40 6th/Developer Platform: gestures, TextEditor, frameanimator, multipointtouch, orientation, CategoryBar/IconCommand, VirtualKeyboard, LCDUIUtil, SoftNotification, Clipboard, FreeSizeFont
+  - Hoàn thành khi: mọi lớp [XM] đã đối chiếu stub SDK; diff chữ ký profile S40 tương ứng = 0; ví dụ trong SDK Nokia chạy được
+- [ ] T30. Thuộc tính hệ thống Nokia + thuộc tính JAD Nokia
+  - Hoàn thành khi: mỗi khoá có nguồn (tài liệu SDK/đo máy thật); test hành vi scale/màn hình/bàn phím ảo theo thuộc tính
+- [ ] T31. JSR-184 M3G: nối lại lõi C Nokia (EPL) với handle guest — **Quản đốc nghiệm thu**
+  - Hoàn thành khi: toàn bộ native M3G cũ được thay bằng glue mới; demo M3G + game M3G trong corpus hiển thị đúng
+- [ ] T32. JSR-75, 82, 120/205, 234, 256 (tái dùng), 179 (mới); P2: 226, 172
+  - Hoàn thành khi: mỗi JSR có diff chữ ký = 0 trên profile khai báo nó; demo chạy
+- [ ] T33. Profile thiết bị Nokia
+  - Đầu vào/đầu ra: `profiles/*.json` (S40 2nd/3rd/5th/6th/Developer Platform; S60 tuỳ chọn): màn hình, mã phím, font, heap, giới hạn JAR, version class tối đa, CLDC/MIDP, danh sách API, thuộc tính, timeslice, tốc độ CPU giả lập
+  - Hoàn thành khi: validator schema qua; **mọi số liệu có thẻ nguồn** (`datasheet` / `sdk` / `measured`) hoặc `UNVERIFIED`
+
+### M6 — Tích hợp Android không dex
+- [ ] T34. Installer không dex
+  - Hoàn thành khi: cài game không tạo `converted.zip`/DEX nào (kiểm danh sách file thư mục app); báo cáo `jarscan` hiển thị sau khi cài
+- [ ] T35. Runner + chọn engine + A/B
+  - Đầu vào/đầu ra: Activity chạy `Vm` trên `vm-thread`; tái dùng surface/GLES/shader/skin/bàn phím ảo/âm thanh của JL-Mod; engine dex cũ chỉ có ở debug (D17)
+  - Hoàn thành khi: corpus chạy; xoay màn hình, pause/resume ổn; debug chạy được cùng game trên 2 engine để so
+
+### M7 — Hiệu năng & độ trung thực
+- [ ] T36. Benchmark đầy đủ (throughput, tốc độ cấp phát, thời gian dừng GC, thời gian paint) trên ≥ 2 máy Android
+- [ ] T37. Tối ưu: quickening, inline cache, siêu lệnh, native nhanh cho String/arraycopy — mỗi thay đổi phải qua lại toàn bộ vmspec + difftest, không đổi ngữ nghĩa
+- [ ] T38. Bộ điều tốc giả lập tốc độ CPU máy gốc + nhịp khung hình
+
+### M8 — Kiểm chứng & phát hành
+- [ ] T39. Difftest tự động trên corpus (stdout, ngoại lệ, hash framebuffer) với phoneME / KEmulator / JL-Mod-dex — **Quản đốc nghiệm thu**
+- [ ] T40. Hồi quy game (kịch bản input + golden hash)
+- [ ] T41. Kiểm toán license: Apache-2.0 (NOTICE), EPL (M3G), LGPL v3 (MobileFFmpeg), MPL 2.0 (FilePicker); không có mã GPL trong APK
+- [ ] T42. Bản release: gỡ hook debug, xoá `dexlib`, R8 chỉ áp cho mã host (ROM guest không bị đụng), tài liệu
+
+---
+
+## Quy trình bắt buộc sau mỗi thay đổi (Definition of Done)
+1. Biên dịch (host + guest).
+2. Unit test `vm-core`.
+3. `tests/vmspec` 100%.
+4. Verifier strict trên ROM.
+5. `api-sigs diff` ROM vs profile = 0.
+6. `jarscan` trên corpus không có cảnh báo mới.
+7. Đo cấp phát trong vòng lặp paint/update của MIDlet test (debug profiler).
+8. Difftest với oracle.
+9. Chạy trên host-desktop → host-android → máy thật (nếu có).
+Task chỉ được tick khi qua mọi bước áp dụng được. "Game vẫn chạy" không phải bằng chứng.
+
+## Rủi ro
+- **R1 Hiệu năng interpreter Java trên ART.** Đo ở T13b (rất sớm). Dự phòng: lõi C++ cùng interface `ExecutionEngine`.
+- **R2 Thiếu chân lý về VM Nokia.** phoneME là RI của Sun, không phải VM Nokia. Cần máy thật hoặc dữ liệu đo; mọi điểm chưa chắc đánh `UNVERIFIED`.
+- **R3 License.** Không trộn mã GPLv2; stub jar SDK chỉ dùng cục bộ để tạo DB chữ ký.
+- **R4 M3G** (khoảng 323 native) tốn công nối lại.
+- **R5 Phình phạm vi** (SVG, Web Services, S60). Giữ đúng tầng P0→P3.
+- **R6 Hồi quy so với JL-Mod** (JL-Mod có nhiều xử lý riêng cho game). A/B ở T35 để phát hiện.
+- **R7 API chỉ chạy trên UI thread Android** (TextBox, dialog) — native phải post sang UI thread và chỉ treo thread guest.
+
+## Vướng mắc (công nhân ghi vào đây, chờ quản đốc/người dùng quyết)
+- V1. ĐÃ QUYẾT (người dùng, 2026-10-29): dùng nguồn mở thay thế. Stub CLDC 1.0/1.1 + MIDP 2.0 lấy từ MicroEmulator trên Maven Central (`org.microemu:cldcapi10`, `cldcapi11`, `midpapi20`; dùng làm DB chữ ký, ghi rõ nguồn trong JSON). Preverify: ProGuard `-microedition` thay WTK `preverify` (T02 chấp nhận). Oracle T05: MicroEmulator + FreeJ2ME (`../freej2me/freej2me_plus.jar` trong repo M-I) + phoneME build cục bộ nếu dựng được (không commit). DB Nokia UI API để trống cho tới khi người dùng cung cấp SDK S40 — ghi `UNVERIFIED`.
+- V2. Có máy Nokia thật nào để đo không (model)? Quyết định profile ưu tiên và nguồn `measured`.
+- V3. Mặc định đã chọn, người dùng có thể đổi: lõi Java (D2), ưu tiên S40 trước S60, giữ engine dex ở debug để A/B (D17), dự án dùng riêng hay phát hành công khai (ảnh hưởng T41).
+
+## Nhật ký
+- 2026-10-29 [quản đốc] Repo đặt tại `M-I/jl-kvm/` (snapshot JL-Mod `dev` @ f723a19, không kèm lịch sử git) theo quyết định người dùng. Android SDK cài ngoài repo tại `/opt/android-sdk` (platform 34, build-tools 34.0.0, NDK 22.1.7171670) — đặt `local.properties` (không commit). Đợt 1: A1 làm T01–T20 + T13b.
+
+---
+
+## Prompt khởi động cho công nhân Sonnet 5.5 (sau khi clear context)
+```
+Đọc PLAN.md ở gốc dự án rồi implement lần lượt từng task chưa tick trong Checklist được giao cho bạn (A1 hoặc A2).
+Làm đúng phạm vi từng task, chạy kiểm tra theo "Hoàn thành khi" và quy trình Definition of Done, tick [x] và ghi Nhật ký.
+Không đổi Quyết định thiết kế; có vấn đề thì ghi vào Vướng mắc và báo quản đốc.
+A2: chỉ đọc trước, không sửa file/không build cho tới khi quản đốc xác nhận A1 ≥ 90%.
+```
