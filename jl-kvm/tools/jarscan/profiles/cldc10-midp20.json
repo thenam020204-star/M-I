@@ -1,0 +1,9 @@
+{
+  "name": "cldc10-midp20",
+  "apis": ["cldc-1.0", "midp-2.0"],
+  "maxClassVersion": 49,
+  "floatingPoint": false,
+  "requireStackMap": true,
+  "largeArrayThreshold": 8192,
+  "source": "tools/jarscan scan profile (not a device profile; T33 supersedes)"
+}

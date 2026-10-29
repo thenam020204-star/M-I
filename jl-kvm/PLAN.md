@@ -208,13 +208,15 @@ Thuộc tính JAD/manifest riêng Nokia cần hỗ trợ [XM giá trị và ng�
 ## Checklist
 Phân công đợt 1: **A1 chạy T01–T20 và T13b** (M0–M3, 21 task). **A2 chỉ đọc trước T21–T27** (M4), chỉ bắt đầu làm khi quản đốc xác nhận A1 ≥ 90% (≥ 19/21 task đã tick). T28 trở đi: quản đốc giao ở đợt sau.
 
+**Luật thay công nhân (người dùng, 2026-10-29):** công nhân nào có ngữ cảnh vượt **400k token** thì quản đốc cho dừng và thay bằng công nhân mới (cùng vai A1/A2, cùng model Sonnet 5.5). Trước khi bàn giao, công nhân cũ phải đưa file về trạng thái nhất quán và ghi vào Nhật ký dòng `BÀN GIAO: đang ở Txx, đã xong …, bước tiếp theo …, lưu ý …`. Công nhân mới bắt đầu bằng việc đọc lại toàn bộ PLAN.md, không dựa vào lịch sử chat của người cũ. Quản đốc theo dõi mức ngữ cảnh khi nhận báo cáo; công nhân tự thấy mình gần 400k thì chủ động ghi BÀN GIAO rồi dừng.
+
 ### M0 — Nền móng
 - [ ] T01. Fork JL-Mod @ `f723a19`, dựng khung module
   - Agent: A1
   - Đầu vào/đầu ra: repo JL-Mod → repo `jl-kvm` có module rỗng `vm-core`, `vm-classlib`, `host-android`, `host-desktop`, `tools/*`
   - File: `settings.gradle.kts`, `*/build.gradle.kts`
   - Hoàn thành khi: `./gradlew assembleDebug` và `./gradlew :vm-core:test` chạy thành công; `vm-core` có kiểm tra build-time cấm `import android.` (task Gradle grep, fail nếu vi phạm)
-- [ ] T02. Toolchain J2ME + reverse engineering
+- [x] T02. Toolchain J2ME + reverse engineering
   - Agent: A1
   - Đầu vào/đầu ra: script `tools/env/check_toolchain.sh` in phiên bản: JDK 8 (hoặc ECJ còn hỗ trợ 1.3), JDK hiện đại cho Gradle, preverify (WTK 2.5.2 / Java ME SDK), CFR, FernFlower, Procyon, JADX, javap, ASM (+ asm-util Textifier), Jasmin
   - File: `tools/env/*`
@@ -352,11 +354,11 @@ Phân công đợt 1: **A1 chạy T01–T20 và T13b** (M0–M3, 21 task). **A2 
 - [ ] T27. MMAPI + tone
   - Agent: A2 (phụ thuộc T22)
   - Đầu vào/đầu ra: `Manager.createPlayer` theo định dạng profile hỗ trợ, trạng thái, listener, Volume/ToneControl, `playTone`; host dùng Sonivox/TSF của JL-Mod
-  - Hoàn thành khi: log chuyển trạng thái đúng đặc tả; listener chỉ chạy trên thread guest
+  - Hoàn thành khi: log chuyển trạng thái đúng đặc tả; listener chỉ chạy trên thread guest; nhạc chuông dạng văn bản RTTTL/RTX (`.rtx`, MIME `audio/x-rtttl`/`text/x-rtttl` — [XM] danh sách MIME theo profile) được phân tích trong guest/host và phát qua bộ tạo tone, **không** đưa qua ffmpeg (log JL-Mod thật của người dùng: `mobile-ffmpeg: ….rtx: Invalid data found` → game mất tiếng); có test parser RTTTL
 
 ### M5 — Nokia API + JSR (giao đợt sau)
 - [ ] T28. Nokia UI API lõi: FullCanvas, DirectGraphics, DirectUtils, DeviceControl, Sound/SoundListener — **Quản đốc nghiệm thu**
-  - Hoàn thành khi: diff chữ ký với DB Nokia UI API của profile = 0; test pixel từng định dạng `drawPixels/getPixels` + phép biến đổi khớp KEmulator hoặc ảnh chụp máy thật; parser ringing tone có test
+  - Hoàn thành khi: diff chữ ký với DB Nokia UI API của profile = 0; test pixel từng định dạng `drawPixels/getPixels` + phép biến đổi khớp KEmulator hoặc ảnh chụp máy thật; parser ringing tone có test (Smart Messaging OTT + RTTTL/RTX dùng chung bộ phân tích của T27)
 - [ ] T29. API S40 6th/Developer Platform: gestures, TextEditor, frameanimator, multipointtouch, orientation, CategoryBar/IconCommand, VirtualKeyboard, LCDUIUtil, SoftNotification, Clipboard, FreeSizeFont
   - Hoàn thành khi: mọi lớp [XM] đã đối chiếu stub SDK; diff chữ ký profile S40 tương ứng = 0; ví dụ trong SDK Nokia chạy được
 - [ ] T30. Thuộc tính hệ thống Nokia + thuộc tính JAD Nokia
@@ -375,6 +377,10 @@ Phân công đợt 1: **A1 chạy T01–T20 và T13b** (M0–M3, 21 task). **A2 
 - [ ] T35. Runner + chọn engine + A/B
   - Đầu vào/đầu ra: Activity chạy `Vm` trên `vm-thread`; tái dùng surface/GLES/shader/skin/bàn phím ảo/âm thanh của JL-Mod; engine dex cũ chỉ có ở debug (D17)
   - Hoàn thành khi: corpus chạy; xoay màn hình, pause/resume ổn; debug chạy được cùng game trên 2 engine để so
+- [ ] T35b. Log lỗi game gọn (người dùng yêu cầu 2026-10-29)
+  - Bối cảnh: JL-Mod lưu log bằng `logcat -t 500 -f` không lọc (`ru/playsoftware/j2meloader/util/LogUtils.java`); log mẫu của người dùng 1031 dòng chủ yếu là `MIUIInput`/`Insets*`/`VRI`/`Audio*` của hệ thống (mỗi lần chạm phím ảo) và 157 dòng `AppClassLoader: CUSTOM GET RES`, không có lỗi game.
+  - Đầu vào/đầu ra: VM ghi file `game-errors.log` riêng mỗi lần chạy: thông tin profile; ngoại lệ không bắt (stack trace guest: lớp, method, pc, dòng nếu có); lỗi liên kết (`NoClassDefFoundError`/`NoSuchMethodError`/`NoSuchFieldError`/`VerifyError`); `OutOfMemoryError` kèm số liệu heap; resource không tìm thấy sau khi thử hết đường dẫn hợp lệ (1 dòng/tài nguyên, không lặp); media không giải mã được (tên, định dạng, MIME). KHÔNG ghi sự kiện phím/chạm/khung hình (input chỉ ghi khi bật chế độ ghi/phát lại D14, ra file khác). Nút gửi/lưu log chỉ lấy file này + logcat lọc theo PID và tag của app. Bỏ log debug `CUSTOM GET RES` ở release.
+  - Hoàn thành khi: chạy lại kịch bản tương đương log mẫu (chạm phím ảo liên tục + phát âm thanh) → file log không có dòng nào của `MIUIInput`/`Insets*`/`VRI`/`Audio*`/sự kiện chạm; ngoại lệ cố ý trong MIDlet test xuất hiện đúng 1 lần kèm stack trace guest; release không còn log debug nặng (D15)
 
 ### M7 — Hiệu năng & độ trung thực
 - [ ] T36. Benchmark đầy đủ (throughput, tốc độ cấp phát, thời gian dừng GC, thời gian paint) trên ≥ 2 máy Android
@@ -417,6 +423,10 @@ Task chỉ được tick khi qua mọi bước áp dụng được. "Game vẫn 
 
 ## Nhật ký
 - 2026-10-29 [quản đốc] Repo đặt tại `M-I/jl-kvm/` (snapshot JL-Mod `dev` @ f723a19, không kèm lịch sử git) theo quyết định người dùng. Android SDK cài ngoài repo tại `/opt/android-sdk` (platform 34, build-tools 34.0.0, NDK 22.1.7171670) — đặt `local.properties` (không commit). Đợt 1: A1 làm T01–T20 + T13b.
+- 2026-10-29 [A1] T02 đạt: `tools/env/{lib.sh,versions.sh,setup_toolchain.sh,check_toolchain.sh,j2mec.sh,DumpAttrs.java,proof.txt}`. Chọn JDK 8 Temurin tại `/opt/jdk8` (javac 1.8 chấp nhận `-source 1.3 -target 1.3`, class v47); ECJ 3.12.3 làm dự phòng; preverify = ProGuard 7.5.0 `-microedition` (Maven Central); stub = MicroEmulator cldcapi10/11, midpapi20 2.0.4; CFR/FernFlower/Procyon/JADX/ASM/Jasmin tải vào `tools/env/cache` (gitignore). `check_toolchain.sh` exit 0, proof.txt có `StackMap`.
+- 2026-10-29 [A1] T01 DANG DO (chưa tick): đã tạo `settings.gradle.kts` (include vm-core, vm-classlib, host-android, host-desktop, tools:*), `*/build.gradle.kts`, `vm-core` có task `checkNoAndroidImports` + test mẫu `VmInfoTest`, `local.properties`, `chmod +x gradlew`. Chưa xác nhận `./gradlew assembleDebug :vm-core:test` (lần chạy đầu đang tải phụ thuộc).
+- 2026-10-29 [A1] T03 DANG DO (chưa tick, chưa build/test): code `tools/api-sigs` (ApiDb, Extractor, Differ, Main, test, launcher `api-sigs`); chưa sinh `db/*.json`. T04 DANG DO (chưa build/test): code `tools/jarscan` (Scanner, Main, profiles); thiếu JAR test bẩn/sạch + selftest. T05, T06 chưa bắt đầu.
+- 2026-10-29 [A1] TẠM DỪNG theo quản đốc: đang ở T01 (chờ kết quả gradle) / T03; bước tiếp theo là chạy `./gradlew assembleDebug :vm-core:test :tools:api-sigs:test`, sửa lỗi biên dịch nếu có, sinh db/cldc-1.0, cldc-1.1, midp-2.0 từ stub MicroEmulator, rồi T04 (selftest bad/clean jar), T05, T06.
 
 ---
 

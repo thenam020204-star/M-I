@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Launcher: builds the tool on first use, then runs it. Usage: tools/api-sigs/api-sigs diff A.json B.json
+D="$(cd "$(dirname "$0")" && pwd)"; ROOT="$D/../.."
+LIB="$D/build/install/api-sigs/lib"
+[ -d "$LIB" ] || (cd "$ROOT" && ./gradlew -q :tools:api-sigs:installDist >&2) || exit 1
+exec java -cp "$LIB/*" jlkvm.tools.apisigs.Main "$@" 2> >(grep -v '^Picked up' >&2)

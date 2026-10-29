@@ -1,0 +1,21 @@
+# T02 proof: hello MIDlet, javac(JDK8) -source 1.3 -target 1.3, ProGuard -microedition
+## class version + Code sub-attributes (StackMap must be present on methods with branches)
+hello/HelloMIDlet.class version=47.0 methods=4 withCode=4 codeAttrs={LineNumberTable=4, StackMap=1}
+## javap -v (JDK8) excerpt
+  major version: 47
+  #36 = Utf8               StackMap
+  #48 = Utf8               startApp
+         1: invokespecial #15                 // Method javax/microedition/midlet/MIDlet."<init>":()V
+  protected void startApp();
+         5: invokevirtual #10                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+        47: invokespecial #11                 // Method java/lang/StringBuffer."<init>":()V
+        52: invokevirtual #13                 // Method java/lang/StringBuffer.append:(Ljava/lang/String;)Ljava/lang/StringBuffer;
+        56: invokevirtual #12                 // Method java/lang/StringBuffer.append:(I)Ljava/lang/StringBuffer;
+        59: invokevirtual #14                 // Method java/lang/StringBuffer.toString:()Ljava/lang/String;
+        62: invokevirtual #10                 // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+        66: invokevirtual #9                  // Method notifyDestroyed:()V
+      StackMap: number_of_entries = 4
+        frame_type = 255 offset = 12
+        frame_type = 255 offset = 31
+        frame_type = 255 offset = 34
+        frame_type = 255 offset = 40
