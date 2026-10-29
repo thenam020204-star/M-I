@@ -243,7 +243,7 @@ Phân công đợt 1: **A1 chạy T01–T20 và T13b** (M0–M3, 21 task). **A2 
   - Hoàn thành khi: mỗi case vmspec có kết quả mong đợi lấy từ oracle (T05) hoặc trích dẫn đặc tả, ghi rõ nguồn trong file
 
 ### M1 — Classfile + verifier
-- [ ] T07. Parser class file
+- [x] T07. Parser class file
   - Agent: A1
   - Đầu vào/đầu ra: `byte[]` → `ClassFile` (CP đủ tag cho version ≤ 49; attribute Code, Exceptions, ConstantValue, StackMap, SourceFile, LineNumberTable, LocalVariableTable; attribute lạ bỏ qua)
   - File: `vm-core/.../classfile/*`
@@ -433,6 +433,7 @@ Task chỉ được tick khi qua mọi bước áp dụng được. "Game vẫn 
 - 2026-10-29 [A1 mới] T05 đạt: `tools/difftest/oracles/run_all.sh tools/env/cache/out/hello.jar` -> oracles ran: microemu freej2me, SAME (HELLO-JLKVM / sum=25), rc=0. phoneME/KEmulator/JL-Mod-dex ghi V4.
 - 2026-10-29 [A1 mới] T06 đạt: `tests/vmspec/run_vmspec.sh` -> pass=37 fail=0 spec-only=3 (neg01-03, nguồn đặc tả, lớp lỗi UNVERIFIED), mọi case có `source:` trong meta.txt và expected.txt; `tests/midlets` selftest chạy trên 2 oracle SAME (3 PASS); `tests/games/README.md` có quy ước + định dạng .inp. Lưu ý: oracle là JVM chứ không phải CLDC VM (D18/R2). Cụm M0 T01–T06 xong.
 - 2026-10-29 [quản đốc] NGHIỆM THU M0 (T01–T06): chạy lại `assembleDebug :vm-core:checkNoAndroidImports :vm-core:test` OK, `jarscan/selftest.sh` PASS, `run_vmspec.sh` pass=37 fail=0 spec-only=3, oracle hello SAME (microemu == freej2me). Quyết định: (1) TinySoundFont (submodule JL-Mod) vendored chỉ `tsf.h`/`tml.h`/LICENSE (MIT) tại đúng commit ghim `0d10306`, xem `VENDORED.txt`; (2) Maven Central trả 429 qua proxy → init script `~/.gradle/init.d/maven-mirror.gradle` (ngoài repo) chuyển sang mirror Google; script tải phải dùng mirror này; (3) V4 (thiếu phoneME/KEmulator/JL-Mod-dex) chấp nhận cho M0, các case CLDC-riêng giữ `UNVERIFIED`.
+- 2026-10-29 [A1 mới] T07 đạt: `vm-core/.../classfile/{ClassParser,ClassFile,ConstantPool,Descriptors,ClassFormatException}` + `jlkvm/ClassSource`. `./gradlew :vm-core:test`: parse 242/242 class (jar vmspec + stub cldcapi11/midpapi20, gồm raw 45.x), fuzz 10k (seed cố định) rejected=9040 accepted=960, không crash host. Test cần `tests/vmspec/run_vmspec.sh` đã chạy (assume nếu thiếu corpus). ROM chưa có.
 
 ---
 
