@@ -1,0 +1,978 @@
+{
+  "format": 1,
+  "name": "jsr179-location",
+  "source": "javax.microedition.location.* signatures only, taken from the stub classes in freej2me_plus.jar (local, GPL, not redistributed; no code copied); UNVERIFIED against the JSR spec / an SDK (PLAN T32, A9); CORRECTED by hand against the JSR-179 API as remembered (the stub looks like an implementation): Coordinates has no public fields, setLatitude/setLongitude take double, convert(double,int) is static; Location() has no arguments; LandmarkStore has no public constructor",
+  "classes": [
+    {
+      "name": "javax/microedition/location/AddressInfo",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "BUILDING_FLOOR",
+          "desc": "I",
+          "access": 25,
+          "constant": "11",
+          "constantType": "I"
+        },
+        {
+          "name": "BUILDING_NAME",
+          "desc": "I",
+          "access": 25,
+          "constant": "10",
+          "constantType": "I"
+        },
+        {
+          "name": "BUILDING_ROOM",
+          "desc": "I",
+          "access": 25,
+          "constant": "12",
+          "constantType": "I"
+        },
+        {
+          "name": "BUILDING_ZONE",
+          "desc": "I",
+          "access": 25,
+          "constant": "13",
+          "constantType": "I"
+        },
+        {
+          "name": "CITY",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "COUNTRY",
+          "desc": "I",
+          "access": 25,
+          "constant": "7",
+          "constantType": "I"
+        },
+        {
+          "name": "COUNTRY_CODE",
+          "desc": "I",
+          "access": 25,
+          "constant": "8",
+          "constantType": "I"
+        },
+        {
+          "name": "COUNTY",
+          "desc": "I",
+          "access": 25,
+          "constant": "5",
+          "constantType": "I"
+        },
+        {
+          "name": "CROSSING1",
+          "desc": "I",
+          "access": 25,
+          "constant": "14",
+          "constantType": "I"
+        },
+        {
+          "name": "CROSSING2",
+          "desc": "I",
+          "access": 25,
+          "constant": "15",
+          "constantType": "I"
+        },
+        {
+          "name": "DISTRICT",
+          "desc": "I",
+          "access": 25,
+          "constant": "9",
+          "constantType": "I"
+        },
+        {
+          "name": "EXTENSION",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "PHONE_NUMBER",
+          "desc": "I",
+          "access": 25,
+          "constant": "17",
+          "constantType": "I"
+        },
+        {
+          "name": "POSTAL_CODE",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "STATE",
+          "desc": "I",
+          "access": 25,
+          "constant": "6",
+          "constantType": "I"
+        },
+        {
+          "name": "STREET",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "URL",
+          "desc": "I",
+          "access": 25,
+          "constant": "16",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getField",
+          "desc": "(I)Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setField",
+          "desc": "(ILjava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/location/Coordinates",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "DD_MM",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "DD_MM_SS",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(DDF)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "azimuthTo",
+          "desc": "(Ljavax/microedition/location/Coordinates;)F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "convert",
+          "desc": "(DI)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "convert",
+          "desc": "(Ljava/lang/String;)D",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "distance",
+          "desc": "(Ljavax/microedition/location/Coordinates;)F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getAltitude",
+          "desc": "()F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getLatitude",
+          "desc": "()D",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getLongitude",
+          "desc": "()D",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setAltitude",
+          "desc": "(F)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setLatitude",
+          "desc": "(D)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setLongitude",
+          "desc": "(D)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/location/Criteria",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "NO_REQUIREMENT",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "POWER_USAGE_HIGH",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "POWER_USAGE_LOW",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "POWER_USAGE_MEDIUM",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getHorizontalAccuracy",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getPreferredPowerConsumption",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getPreferredResponseTime",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getVerticalAccuracy",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isAddressInfoRequired",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isAllowedToCost",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isAltitudeRequired",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isSpeedAndCourseRequired",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setAddressInfoRequired",
+          "desc": "(Z)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setAltitudeRequired",
+          "desc": "(Z)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setCostAllowed",
+          "desc": "(Z)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setHorizontalAccuracy",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setPreferredPowerConsumption",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setPreferredResponseTime",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setSpeedAndCourseRequired",
+          "desc": "(Z)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setVerticalAccuracy",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/location/Landmark",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;Ljava/lang/String;Ljavax/microedition/location/QualifiedCoordinates;Ljavax/microedition/location/AddressInfo;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getAddressInfo",
+          "desc": "()Ljavax/microedition/location/AddressInfo;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getDescription",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getName",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getQualifiedCoordinates",
+          "desc": "()Ljavax/microedition/location/QualifiedCoordinates;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setAddressInfo",
+          "desc": "(Ljavax/microedition/location/AddressInfo;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setDescription",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setName",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setQualifiedCoordinates",
+          "desc": "(Ljavax/microedition/location/QualifiedCoordinates;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/location/LandmarkException",
+      "superName": "java/lang/Exception",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/location/LandmarkStore",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "addCategory",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException",
+            "javax/microedition/location/LandmarkException"
+          ]
+        },
+        {
+          "name": "addLandmark",
+          "desc": "(Ljavax/microedition/location/Landmark;Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "createLandmarkStore",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 9,
+          "exceptions": [
+            "java/io/IOException",
+            "javax/microedition/location/LandmarkException"
+          ]
+        },
+        {
+          "name": "deleteCategory",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException",
+            "javax/microedition/location/LandmarkException"
+          ]
+        },
+        {
+          "name": "deleteLandmark",
+          "desc": "(Ljavax/microedition/location/Landmark;)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException",
+            "javax/microedition/location/LandmarkException"
+          ]
+        },
+        {
+          "name": "deleteLandmarkStore",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 9,
+          "exceptions": [
+            "java/io/IOException",
+            "javax/microedition/location/LandmarkException"
+          ]
+        },
+        {
+          "name": "getCategories",
+          "desc": "()Ljava/util/Enumeration;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getInstance",
+          "desc": "(Ljava/lang/String;)Ljavax/microedition/location/LandmarkStore;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getLandmarks",
+          "desc": "()Ljava/util/Enumeration;",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "getLandmarks",
+          "desc": "(Ljava/lang/String;DDDD)Ljava/util/Enumeration;",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "getLandmarks",
+          "desc": "(Ljava/lang/String;Ljava/lang/String;)Ljava/util/Enumeration;",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "listLandmarkStores",
+          "desc": "()[Ljava/lang/String;",
+          "access": 9,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "removeLandmarkFromCategory",
+          "desc": "(Ljavax/microedition/location/Landmark;Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "updateLandmark",
+          "desc": "(Ljavax/microedition/location/Landmark;)V",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException",
+            "javax/microedition/location/LandmarkException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/location/Location",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "MTA_ASSISTED",
+          "desc": "I",
+          "access": 25,
+          "constant": "262144",
+          "constantType": "I"
+        },
+        {
+          "name": "MTA_UNASSISTED",
+          "desc": "I",
+          "access": 25,
+          "constant": "524288",
+          "constantType": "I"
+        },
+        {
+          "name": "MTE_ANGLEOFARRIVAL",
+          "desc": "I",
+          "access": 25,
+          "constant": "32",
+          "constantType": "I"
+        },
+        {
+          "name": "MTE_CELLID",
+          "desc": "I",
+          "access": 25,
+          "constant": "8",
+          "constantType": "I"
+        },
+        {
+          "name": "MTE_SATELLITE",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "MTE_SHORTRANGE",
+          "desc": "I",
+          "access": 25,
+          "constant": "16",
+          "constantType": "I"
+        },
+        {
+          "name": "MTE_TIMEDIFFERENCE",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "MTE_TIMEOFARRIVAL",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "MTY_NETWORKBASED",
+          "desc": "I",
+          "access": 25,
+          "constant": "131072",
+          "constantType": "I"
+        },
+        {
+          "name": "MTY_TERMINALBASED",
+          "desc": "I",
+          "access": 25,
+          "constant": "65536",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 4,
+          "exceptions": []
+        },
+        {
+          "name": "getAddressInfo",
+          "desc": "()Ljavax/microedition/location/AddressInfo;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getCourse",
+          "desc": "()F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getExtraInfo",
+          "desc": "(Ljava/lang/String;)Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getLocationMethod",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getQualifiedCoordinates",
+          "desc": "()Ljavax/microedition/location/QualifiedCoordinates;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getSpeed",
+          "desc": "()F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getTimestamp",
+          "desc": "()J",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isValid",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/location/LocationException",
+      "superName": "java/lang/Exception",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/location/LocationListener",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "locationUpdated",
+          "desc": "(Ljavax/microedition/location/LocationProvider;Ljavax/microedition/location/Location;)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "providerStateChanged",
+          "desc": "(Ljavax/microedition/location/LocationProvider;I)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/location/LocationProvider",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1025,
+      "fields": [
+        {
+          "name": "AVAILABLE",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "OUT_OF_SERVICE",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "TEMPORARILY_UNAVAILABLE",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 4,
+          "exceptions": []
+        },
+        {
+          "name": "addProximityListener",
+          "desc": "(Ljavax/microedition/location/ProximityListener;Ljavax/microedition/location/Coordinates;F)V",
+          "access": 9,
+          "exceptions": [
+            "javax/microedition/location/LocationException"
+          ]
+        },
+        {
+          "name": "getInstance",
+          "desc": "(Ljavax/microedition/location/Criteria;)Ljavax/microedition/location/LocationProvider;",
+          "access": 9,
+          "exceptions": [
+            "javax/microedition/location/LocationException"
+          ]
+        },
+        {
+          "name": "getLastKnownLocation",
+          "desc": "()Ljavax/microedition/location/Location;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getLocation",
+          "desc": "(I)Ljavax/microedition/location/Location;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/InterruptedException",
+            "javax/microedition/location/LocationException"
+          ]
+        },
+        {
+          "name": "getState",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "removeProximityListener",
+          "desc": "(Ljavax/microedition/location/ProximityListener;)V",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "reset",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setLocationListener",
+          "desc": "(Ljavax/microedition/location/LocationListener;III)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/location/Orientation",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(FZFF)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getCompassAzimuth",
+          "desc": "()F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getOrientation",
+          "desc": "()Ljavax/microedition/location/Orientation;",
+          "access": 9,
+          "exceptions": [
+            "javax/microedition/location/LocationException"
+          ]
+        },
+        {
+          "name": "getPitch",
+          "desc": "()F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getRoll",
+          "desc": "()F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isOrientationMagnetic",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/location/ProximityListener",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "monitoringStateChanged",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "proximityEvent",
+          "desc": "(Ljavax/microedition/location/Coordinates;Ljavax/microedition/location/Location;)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/location/QualifiedCoordinates",
+      "superName": "javax/microedition/location/Coordinates",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(DDFFF)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getHorizontalAccuracy",
+          "desc": "()F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getVerticalAccuracy",
+          "desc": "()F",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "hashCode",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setHorizontalAccuracy",
+          "desc": "(F)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setVerticalAccuracy",
+          "desc": "(F)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    }
+  ]
+}

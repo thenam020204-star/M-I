@@ -107,6 +107,9 @@ Four more ROM layers in the same style as above (own jar each, only loaded when 
 | profile api | jar | sources | gradle task | surface == | DB source |
 |---|---|---|---|---|---|
 | `jsr82` | `rom-jsr82.jar` | `vm-classlib/jsr82/src` | `buildJsr82Rom` | cldc-1.1 + midp-2.0 + `s40dp2-jsr82.json` | Nokia S40 DP2.0 SDK 1.1 `classes.zip`, **verified source** (javadoc local: `tools/env/cache/nokia-sdk/sdk/api/Bluetooth_1.0`, not copied) |
+| `jsr179` | `rom-jsr179.jar` | `vm-classlib/jsr179/src` | `buildJsr179Rom` | cldc-1.1 + midp-2.0 + `jsr179-location.json` (**UNVERIFIED**) | `javax/microedition/location/**` of the stubs in `freej2me_plus.jar` (local, GPL, signatures only, 13 classes), **corrected by hand** (below) |
+| `jsr256` | `rom-jsr256.jar` | `vm-classlib/jsr256/src` | `buildJsr256Rom` | cldc-1.1 + midp-2.0 + `jsr256-sensor.json` (**UNVERIFIED**) | `javax/microedition/sensor/**` of the same jar (16 classes) |
+| `jsr234` | `rom-jsr234.jar` | `vm-classlib/jsr234/src` | `buildJsr234Rom` | cldc-1.1 + midp-2.0 + `jsr234-amms.json` (**UNVERIFIED**) | `javax/microedition/amms/**` of the same jar (43 classes) |
 
 The SDK DB of JSR-82 has no `javax.obex` and no `RFCOMM` classes of its own (RFCOMM = `StreamConnectionNotifier`/`StreamConnection` of CLDC): scheme `btgoep://` has no
 handler (`ConnectionNotFoundException`). The two public inner thread classes of `DiscoveryAgent` (`InquiryListenerThread`, `ServiceSearchListenerThread`, an artefact of the
@@ -136,3 +139,20 @@ SDK implementation that is in its DB) are real inner classes here and are what d
 * UNVERIFIED (not in the SDK javadoc, the project's own reading): everything listed as "values UNVERIFIED" above; the order NPE before IAE in `startInquiry`; the durations 1000/200 ms;
   `UUID.toString()` = 32 upper-case digits (also for 16/32-bit UUIDs) and left zero padding of a short 128-bit string; `DeviceClass` accessors keep the bits in place (masks 0xFFE000 /
   0x1F00 / 0xFC); the class of device of the local phone 0x20020C; `DataElement.clone()` (in the SDK DB, no javadoc) = deep copy; `BluetoothConnectionException(int)` accepts 1..6.
+
+## JSR-179 Location (`javax.microedition.location`)
+
+* **Source of the API: no spec, javadoc or SDK for JSR-179/256/234 is in the repo** (the Nokia S40 DP2.0 SDK predates them; PLAN V15). Signatures come from the freej2me stubs (GPL jar,
+  local; nothing copied; no JSR-179 stub exists on Maven Central under `org.microemu`). Everything is **UNVERIFIED** and to be redone when an SDK with the API is supplied
+  (S40 6th edition / S60 SDKs carry JSR-179 and JSR-256): replace the DB, run the diff again, re-read the lists below.
+* The stub looked like a copy of an implementation, so `jsr179-location.json` was corrected by hand against the API as remembered (the `source` field of the DB says so):
+  `Coordinates` has no public fields, `setLatitude/setLongitude(double)` (the stub had `float`: games call them with doubles, a `float` DB would have been a `NoSuchMethodError`), `convert(double,int)`
+  static; `Location()` takes no arguments; `LandmarkStore` has no public constructor.
+* **No position source** (this is every device the project can describe today; the Android host, M6, would add one - NOT done): `LocationProvider.getInstance(criteria)` answers **`null`**
+  (the contract: "null if no provider ... can be found"; `LocationException` is for providers that exist but are all out of service), `getLastKnownLocation()` `null`, `Orientation.getOrientation()` `null`,
+  `addProximityListener` -> `LocationException` after the argument checks (NPE, `IllegalArgumentException` for a radius <= 0), `removeProximityListener(null)` NPE. `Location` is concrete with a protected
+  constructor: the instance a host would hand out subclasses it; the base one is the invalid location (`isValid()` false, speed and course NaN, no coordinates). Test: vmspec `loc01_nohw`.
+* Data classes complete (vmspec `loc02_values`): `Coordinates` (range checks, `convert` both directions with `DD:MM:SS.sss` / `DD:MM.mmm`, spherical `distance` radius 6378137 m and `azimuthTo` with
+  an `atan` written in the guest because CLDC 1.1 `Math` has none, `jlkvm.internal.loc.Geo`), `QualifiedCoordinates`, `Criteria` (defaults NO_REQUIREMENT, cost allowed), `AddressInfo`, `Orientation`, `Landmark`.
+  `LandmarkStore` is in memory for the run only (no persistence, the default store always exists, `listLandmarkStores()` has it as entry `null`, `getLandmarks` returns `null` when nothing matches).
+* UNVERIFIED: every point above (text format of `convert`, spherical distance, in-memory stores, `null` rather than `LocationException` from `getInstance`, accuracy checks).
