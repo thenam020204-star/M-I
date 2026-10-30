@@ -10,6 +10,11 @@ public final class DeviceProfile {
     public int heapBytes = 1 << 20;
     /** Bytecodes per green-thread time slice (D5). */
     public int timesliceBytecodes = 2000;
+    /**
+     * true = strict priorities (the highest-priority runnable thread runs; round robin inside a priority). false = every thread
+     * is scheduled round robin. UNVERIFIED which one the Nokia KVM does (V2/V4).
+     */
+    public boolean priorityScheduling = true;
     /** Stack size of each guest thread, in 32-bit words. */
     public int threadStackWords = 8192;
     /** false = CLDC 1.0 (float/double rejected by the verifier). */

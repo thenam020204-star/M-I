@@ -9,6 +9,8 @@ public interface GuestServices {
     /** Allocates a guest byte[]. */
     int newByteArray(byte[] b, int off, int len);
     String className(int objRef);
+    /** Takes the next input event posted with Vm.postEvent: {type, a, b, c}, null when none (vm-thread only). */
+    int[] pollEvent();
     /** Charges {@code bytecodes} to the running time slice (long natives must not starve other threads). */
     void charge(int bytecodes);
 }

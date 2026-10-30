@@ -56,3 +56,22 @@ Raw output: `tests/bench/build/result-*.txt` (not committed). Collector: 26 coll
 
 Reproduce: `tests/bench/run_bench.sh`; with the flag: `JLKVM_JAVA_OPTS=-XX:-DontCompileHugeMethods tests/bench/run_bench.sh`; JDK 21:
 `JLKVM_JAVA=/usr/bin/java tests/bench/run_bench.sh`.
+
+## After T11a (split of `Interpreter.run`)
+
+Rare opcodes moved out of `run()` (pure code motion): long/float/double arithmetic, conversions and comparisons, `dup_x*`/`swap`,
+`tableswitch`/`lookupswitch` (`RareOps`); `ldc*`, `wide`, `multianewarray`, `monitorenter/exit`, return-time monitor checks and the whole
+native-call path (private methods of `Interpreter`). `javap -c`: `run()` **6826 bytes** (was 9774), every other method < 460 bytes,
+so HotSpot JIT-compiles it with default flags. Same seven checksums as HotSpot.
+
+| Workload | JDK 8, default flags (was) | JDK 8, default flags (now) | JDK 8, `-XX:-DontCompileHugeMethods` (now) | JDK 21, default flags (now) |
+|---|---|---|---|---|
+| arith | 22.8 | 132.3 | 140.1 | 151.3 |
+| long | 13.9 | 113.2 | 112.0 | 123.5 |
+| calls | 13.7 | 108.2 | 105.7 | 96.9 |
+| arrays | 21.7 | 144.8 | 123.5 | 151.1 |
+| alloc | 13.4 | 108.9 | 109.6 | 113.4 |
+| strings | 12.0 | 100.7 | 98.8 | 111.5 |
+| fp | 12.8 | 111.9 | 114.6 | 132.9 |
+
+Default flags now reach 100% of the flag-on figures (>= 70% required). Android/ART is still not measured (V6).

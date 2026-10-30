@@ -13,6 +13,7 @@
 #   source: where expected.txt comes from (oracle names, or spec citation)  [required]
 #   diverges: microemu|freej2me|...          oracles known to deviate from expected.txt (reason in notes:)
 #   jlkvm-args: extra options for run_jlkvm.sh (e.g. --noverify for jsr/ret classes)
+#   driven-by-test: <test name>   the case needs a host driver (input events...): the jar is only built here, a vm-core test runs it
 #   no-gc-stress: yes   do not add env JLKVM_ARGS (e.g. "--gc-stress 1 --gc-verify") to this case
 #   notes: free text
 # Exit status: 0 when every case passes, 1 otherwise.
@@ -64,6 +65,7 @@ for id in "${IDS[@]}"; do
     else echo "FAIL  $id (spec-only case needs expected.txt and meta source)"; fail=$((fail+1)); fi
     continue
   fi
+  if [ -n "$(meta "$id" driven-by-test)" ]; then echo "BUILT $id (driven by a vm-core test: $(meta "$id" driven-by-test))"; continue; fi   # needs a host that posts input; only built here
   outs=()
   if [ "$ENGINE" = jlkvm ]; then
     o=jlkvm

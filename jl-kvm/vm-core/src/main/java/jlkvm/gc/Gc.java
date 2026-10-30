@@ -1,6 +1,7 @@
 package jlkvm.gc;
 
 import jlkvm.Vm;
+import jlkvm.debug.DebugFlags;
 import jlkvm.classfile.ClassFile;
 import jlkvm.heap.Forwarder;
 import jlkvm.heap.Heap;
@@ -95,7 +96,7 @@ public final class Gc implements Heap.Collector, Forwarder {
             lastLiveWords = newTop - Heap.BASE;
             lastFreedWords = topBefore - newTop;
             if (verify) verifyHeap();
-            if (vm.config.debug) vm.host.log(1, "gc", "#" + collections + " live=" + (lastLiveWords * 4) + "B freed=" + (lastFreedWords * 4) + "B objects=" + lastMarkedObjects);
+            if (DebugFlags.ENABLED && vm.config.debug) vm.host.log(1, "gc", "#" + collections + " live=" + (lastLiveWords * 4) + "B freed=" + (lastFreedWords * 4) + "B objects=" + lastMarkedObjects);
         } finally {
             updating = false;
             active = false;

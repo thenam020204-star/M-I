@@ -1,6 +1,7 @@
 package jlkvm.thread;
 
 import jlkvm.Vm;
+import jlkvm.debug.DebugFlags;
 import jlkvm.link.VmThrow;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public final class Monitors {
     public static final class Monitor {
         int owner;
         int count;
+        int ref;   // the locked object (kept in step with the map key; debug dumps)
         final ArrayDeque<VmThread> entry = new ArrayDeque<VmThread>();
         final ArrayList<VmThread> waiters = new ArrayList<VmThread>();
     }
@@ -40,13 +42,13 @@ public final class Monitors {
     /** GC (compaction): re-keys every record to the new address of its object. */
     public void relocate(jlkvm.heap.Forwarder f) {
         Map<Integer, Monitor> n = new HashMap<Integer, Monitor>();
-        for (Map.Entry<Integer, Monitor> e : map.entrySet()) n.put(f.forward(e.getKey()), e.getValue());
+        for (Map.Entry<Integer, Monitor> e : map.entrySet()) { int nr = f.forward(e.getKey()); e.getValue().ref = nr; n.put(nr, e.getValue()); }
         map.clear();
         map.putAll(n);
     }
     public void rekey(int oldRef, int newRef) {
         Monitor m = map.remove(oldRef);
-        if (m != null) map.put(newRef, m);
+        if (m != null) { m.ref = newRef; map.put(newRef, m); }
     }
 
     /** @return true when acquired; false when the thread was queued (state BLOCKED_ENTER). */
@@ -54,6 +56,7 @@ public final class Monitors {
         Monitor m = map.get(ref);
         if (m == null) {
             m = new Monitor();
+            m.ref = ref;
             map.put(ref, m);
             vm.heap.setHasMonitor(ref, true);
         }
@@ -63,7 +66,46 @@ public final class Monitors {
         th.pendingCount = 1;
         th.waitMon = m;
         m.entry.add(th);
+        if (DebugFlags.ENABLED && vm.config.debug) detectDeadlock(th);
         return false;
+    }
+
+    /**
+     * Debug (D15): follows "blocked on a monitor owned by" from {@code th}; a path that comes back to {@code th} is a deadlock
+     * (reported through {@link Vm#reportDeadlock} with the guest stacks of the threads involved).
+     */
+    private void detectDeadlock(VmThread th) {
+        java.util.ArrayList<VmThread> chain = new java.util.ArrayList<VmThread>();
+        VmThread cur = th;
+        while (cur != null && chain.size() <= vm.sched.liveCount()) {
+            chain.add(cur);
+            if (cur.state != VmThread.BLOCKED_ENTER || cur.waitMon == null) return;
+            VmThread o = vm.sched.thread(cur.waitMon.owner);
+            if (o == th) { report(chain); return; }
+            cur = o;
+        }
+    }
+
+    private void report(java.util.ArrayList<VmThread> chain) {
+        StringBuilder sb = new StringBuilder("DEADLOCK: ").append(chain.size()).append(" thread(s) wait for each other\n");
+        for (VmThread t : chain) {
+            Monitor m = t.waitMon;
+            sb.append("  thread ").append(t.id).append(" waits for monitor of ").append(vm.className(m.ref)).append('@').append(m.ref)
+              .append(" held by thread ").append(m.owner).append('\n').append(vm.threadTrace(t));
+        }
+        vm.reportDeadlock(sb.toString());
+    }
+
+    /** Debug dump of every live thread (total stall: nothing runnable, no timer, no native wait). */
+    public void reportStall() {
+        StringBuilder sb = new StringBuilder("STALL: no runnable thread, no timer, no pending native; all live threads are blocked\n");
+        for (VmThread t : vm.sched.threads()) {
+            sb.append("  thread ").append(t.id).append(" state=").append(t.state);
+            Monitor m = t.waitMon;
+            if (m != null) sb.append(" monitor=").append(vm.className(m.ref)).append('@').append(m.ref).append(" owner=").append(m.owner);
+            sb.append('\n').append(vm.threadTrace(t));
+        }
+        vm.reportDeadlock(sb.toString());
     }
 
     private Monitor owned(VmThread th, int ref) {

@@ -25,6 +25,8 @@ public final class RMethod {
     public final byte[] code;
     /** Name+descriptor id shared by all methods with the same signature (virtual lookup cache key). */
     public final int ndId;
+    /** Debug hook (T16): bytecodes executed in this method (only counted by a debug VM with countBytecodes). */
+    public long bcCount;
     public NativeMethod nat;
     public String nativeKey;
 

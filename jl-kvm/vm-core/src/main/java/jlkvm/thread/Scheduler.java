@@ -2,6 +2,7 @@ package jlkvm.thread;
 
 import jlkvm.ExecutionEngine;
 import jlkvm.Vm;
+import jlkvm.debug.DebugFlags;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +11,12 @@ import java.util.Map;
 /** Green-thread scheduler (D5, T14 skeleton): round robin, time slice counted in bytecodes. */
 public final class Scheduler {
     private final Vm vm;
-    private final ArrayDeque<VmThread> runq = new ArrayDeque<VmThread>();
+    private static final int NORM = 5;
+    /** Run queues by priority 1..10 (index 0 unused). Without priority scheduling everything is queued at NORM. */
+    @SuppressWarnings("unchecked")
+    private final ArrayDeque<VmThread>[] runq = new ArrayDeque[11];
+    private int runnable;
+    private boolean stallReported;
     private final ArrayList<VmThread> timed = new ArrayList<VmThread>();
     private final ArrayList<VmThread> blockedNative = new ArrayList<VmThread>();
     private final Map<Integer, VmThread> byId = new HashMap<Integer, VmThread>();
@@ -20,7 +26,30 @@ public final class Scheduler {
     /** Bytecodes executed by guest threads since the VM started (benchmarks, T13b; natives' charges included). */
     public long bytecodes;
 
-    public Scheduler(Vm vm) { this.vm = vm; }
+    public Scheduler(Vm vm) {
+        this.vm = vm;
+        for (int i = 0; i < runq.length; i++) runq[i] = new ArrayDeque<VmThread>();
+    }
+
+    private int level(VmThread t) { return vm.profile.priorityScheduling ? t.priority : NORM; }
+
+    private VmThread pollRunnable() {
+        if (runnable == 0) return null;
+        for (int p = 10; p >= 1; p--) {
+            VmThread t = runq[p].poll();
+            if (t != null) { runnable--; return t; }
+        }
+        return null;
+    }
+
+    /** Thread.setPriority: re-queues a runnable thread at its new level. */
+    public void setPriority(VmThread t, int p) {
+        p = p < 1 ? 1 : p > 10 ? 10 : p;
+        if (t.state == VmThread.RUNNABLE && runq[level(t)].remove(t)) {
+            t.priority = p;
+            runq[level(t)].add(t);
+        } else t.priority = p;
+    }
 
     public VmThread create() {
         VmThread t = new VmThread(nextId++, vm.profile.threadStackWords);
@@ -35,7 +64,9 @@ public final class Scheduler {
     public void makeRunnable(VmThread t) {
         t.state = VmThread.RUNNABLE;
         t.wakeAt = 0;
-        runq.add(t);
+        stallReported = false;
+        runq[level(t)].add(t);
+        runnable++;
     }
     public void addTimed(VmThread t, long wakeAt) { t.wakeAt = wakeAt; if (!timed.contains(t)) timed.add(t); }
     public void removeTimed(VmThread t) { timed.remove(t); t.wakeAt = 0; }
@@ -68,12 +99,21 @@ public final class Scheduler {
             long now = vm.nanoTime();
             if (!timed.isEmpty()) pollTimers(now);
             if (!blockedNative.isEmpty()) pollBlocked();
-            VmThread t = runq.poll();
+            VmThread t = pollRunnable();
             if (t == null) {
                 if (byId.isEmpty()) return ExecutionEngine.EXITED;
                 long u = Long.MAX_VALUE;
                 for (VmThread x : timed) u = Math.min(u, x.wakeAt);
+                if (vm.config.deterministic) {
+                    // D14: nobody can run before the next timer / recorded input event: jump the virtual clock there instead of waiting
+                    u = Math.min(u, vm.nextReplayNanos());
+                    if (u != Long.MAX_VALUE && u > now) {
+                        vm.virtualNanos += u - now;
+                        continue;
+                    }
+                }
                 if (!blockedNative.isEmpty()) u = Math.min(u, now + 1000000L);
+                else if (DebugFlags.ENABLED && timed.isEmpty() && vm.config.debug && !stallReported) { stallReported = true; vm.monitors.reportStall(); }
                 idleUntil = u;
                 return ExecutionEngine.IDLE_UNTIL;
             }
@@ -83,9 +123,10 @@ public final class Scheduler {
             int slice = Math.min(vm.profile.timesliceBytecodes, budget);
             int used = vm.interp.run(t, slice);
             bytecodes += Math.max(0, used);
+            if (vm.config.deterministic) vm.virtualNanos += (long) (Math.max(1, used) + vm.charged) * vm.config.nanosPerBytecode;
             budget -= Math.max(1, used) + vm.charged;
             current = null;
-            if (t.state == VmThread.RUNNING) { t.state = VmThread.RUNNABLE; runq.add(t); }
+            if (t.state == VmThread.RUNNING) { t.state = VmThread.RUNNABLE; runq[level(t)].add(t); runnable++; }
             else if (t.state == VmThread.DEAD) ended(t);
         }
         return vm.exitRequested ? ExecutionEngine.EXITED : ExecutionEngine.RUNNING;

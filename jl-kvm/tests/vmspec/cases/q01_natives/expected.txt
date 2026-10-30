@@ -1,0 +1,13 @@
+> add 42
+> mix 10.75
+> mixl -3298534883328
+> fill 6 10 15
+> fill(null) NPE
+> fail boom
+> string native-7 true
+> missing native -> java.lang.Error
+> blockFill returned 300 buf 44 48
+> other thread ran while blocked true
+> order BA -6 80
+> blockThrow blocker failed
+> blockLong 42

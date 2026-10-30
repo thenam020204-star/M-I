@@ -3,6 +3,8 @@ package jlkvm.interp;
 import jlkvm.Vm;
 import jlkvm.classfile.ClassFile;
 import jlkvm.classfile.ConstantPool;
+import jlkvm.debug.Debug;
+import jlkvm.debug.DebugFlags;
 import jlkvm.heap.Heap;
 import jlkvm.link.ClassInfo;
 import jlkvm.link.Errors;
@@ -23,9 +25,9 @@ public final class Interpreter {
     private static final int S_NONE = 0, S_INIT = 1, S_SWITCH = 2, S_NFRAME = 3;
     private static final int CLASS_MASK = Heap.CLASS_MASK;
     /** D15 debug hook (off in release): -Djlkvm.trace=true prints every executed instruction to stderr. */
-    private static final boolean TRACE = Boolean.getBoolean("jlkvm.trace");
+    private static final boolean TRACE = DebugFlags.ENABLED && Boolean.getBoolean("jlkvm.trace");
     /** D15 debug hook: -Djlkvm.opstats=true counts executed opcodes in {@link #OPSTATS} (coverage of the opcode set). */
-    private static final boolean STATS = Boolean.getBoolean("jlkvm.opstats");
+    private static final boolean STATS = DebugFlags.ENABLED && Boolean.getBoolean("jlkvm.opstats");
     public static final long[] OPSTATS = new long[256];
 
     private final Vm vm;
@@ -36,6 +38,8 @@ public final class Interpreter {
     private final NativeCtx ctx;
     private final int[] primArr = new int[10];
     private ClassInfo errorClass;
+    /** D15 hooks of this VM, null when no debug feature is on (always null in a release build). */
+    private final Debug dbg;
 
     public Interpreter(Vm vm) {
         this.vm = vm;
@@ -44,6 +48,7 @@ public final class Interpreter {
         this.lk = vm.linker;
         this.mons = vm.monitors;
         this.ctx = new NativeCtx(vm);
+        this.dbg = DebugFlags.ENABLED ? vm.debug : null;
     }
 
     public NativeCtx nativeCtx() { return ctx; }
@@ -119,8 +124,10 @@ public final class Interpreter {
                 if (th.pendingThrow != null) {
                     String c = th.pendingThrow;
                     th.pendingThrow = null;
+                    String pm = th.pendingMsg;
+                    th.pendingMsg = null;
                     ipc = th.excPc;
-                    throw new VmThrow(c, null);
+                    throw new VmThrow(c, pm);
                 }
                 if (th.initFirst != null) { slowCls = th.initFirst; th.initFirst = null; slow = S_INIT; ipc = pc; }
                 if (slow == S_NONE) inner:
@@ -128,6 +135,7 @@ public final class Interpreter {
                     if (budget-- <= 0) { slow = S_SWITCH; break inner; }
                     ipc = pc;
                     int op = code[pc++] & 0xff;
+                    if (DebugFlags.ENABLED && dbg != null) dbg.step(th, m, ipc, op);
                     if (STATS) OPSTATS[op]++;
                     if (TRACE) System.err.println("T" + th.id + " " + m + " @" + ipc + " op=" + op + " sp=" + (sp - fp));
                     switch (op) {
@@ -142,17 +150,8 @@ public final class Interpreter {
                     case 18: case 19: case 20: {
                         int idx;
                         if (op == 18) idx = code[pc++] & 0xff; else { idx = u16(code, pc); pc += 2; }
-                        ConstantPool cp = cls.cf.pool;
                         th.fp = fp; th.sp = sp; th.pc = ipc; th.method = m;   // GC safepoint: resolving a string or class literal allocates
-                        switch (cp.tag(idx)) {
-                        case ConstantPool.INTEGER: st[sp++] = cp.intValue(idx); break;
-                        case ConstantPool.FLOAT: st[sp++] = Float.floatToRawIntBits(cp.floatValue(idx)); break;
-                        case ConstantPool.STRING: st[sp++] = lk.resolveString(cls, idx); break;
-                        case ConstantPool.CLASS: st[sp++] = lk.mirror(lk.resolveClass(cls, idx)); break;
-                        case ConstantPool.LONG: setL(st, sp, cp.longValue(idx)); sp += 2; break;
-                        case ConstantPool.DOUBLE: setD(st, sp, cp.doubleValue(idx)); sp += 2; break;
-                        default: throw Errors.error("java/lang/VerifyError", "bad ldc constant");
-                        }
+                        sp = ldc(st, sp, cls, idx);
                         break;
                     }
                     case 21: case 23: case 25: st[sp++] = st[fp + (code[pc++] & 0xff)]; break;
@@ -249,75 +248,28 @@ public final class Interpreter {
                     case 87: sp--; break;
                     case 88: sp -= 2; break;
                     case 89: st[sp] = st[sp - 1]; sp++; break;
-                    case 90: { int a = st[sp - 1], b = st[sp - 2]; st[sp - 2] = a; st[sp - 1] = b; st[sp++] = a; break; }
-                    case 91: { int a = st[sp - 1], b = st[sp - 2], c = st[sp - 3]; st[sp - 3] = a; st[sp - 2] = c; st[sp - 1] = b; st[sp++] = a; break; }
+                    case 90: case 91: case 93: case 94: case 95: sp = RareOps.stack(st, sp, op); break;
                     case 92: st[sp] = st[sp - 2]; st[sp + 1] = st[sp - 1]; sp += 2; break;
-                    case 93: { int a = st[sp - 1], b = st[sp - 2], c = st[sp - 3]; st[sp - 3] = b; st[sp - 2] = a; st[sp - 1] = c; st[sp] = b; st[sp + 1] = a; sp += 2; break; }
-                    case 94: { int a = st[sp - 1], b = st[sp - 2], c = st[sp - 3], d = st[sp - 4]; st[sp - 4] = b; st[sp - 3] = a; st[sp - 2] = d; st[sp - 1] = c; st[sp] = b; st[sp + 1] = a; sp += 2; break; }
-                    case 95: { int a = st[sp - 1]; st[sp - 1] = st[sp - 2]; st[sp - 2] = a; break; }
                     case 96: sp--; st[sp - 1] += st[sp]; break;
-                    case 97: { long b = getL(st, sp - 2), a = getL(st, sp - 4); sp -= 2; setL(st, sp - 2, a + b); break; }
-                    case 98: sp--; setF(st, sp - 1, getF(st, sp - 1) + getF(st, sp)); break;
-                    case 99: { double b = getD(st, sp - 2), a = getD(st, sp - 4); sp -= 2; setD(st, sp - 2, a + b); break; }
+                    case 97: case 98: case 99: case 101: case 102: case 103: case 105: case 106: case 107: case 109: case 110: case 111:
+                    case 113: case 114: case 115: case 117: case 118: case 119: case 121: case 123: case 125: case 127: case 129: case 131:
+                    case 133: case 134: case 135: case 136: case 137: case 138: case 139: case 140: case 141: case 142: case 143: case 144:
+                    case 148: case 149: case 150: case 151: case 152: sp = RareOps.arith(st, sp, op); break;
                     case 100: sp--; st[sp - 1] -= st[sp]; break;
-                    case 101: { long b = getL(st, sp - 2), a = getL(st, sp - 4); sp -= 2; setL(st, sp - 2, a - b); break; }
-                    case 102: sp--; setF(st, sp - 1, getF(st, sp - 1) - getF(st, sp)); break;
-                    case 103: { double b = getD(st, sp - 2), a = getD(st, sp - 4); sp -= 2; setD(st, sp - 2, a - b); break; }
                     case 104: sp--; st[sp - 1] *= st[sp]; break;
-                    case 105: { long b = getL(st, sp - 2), a = getL(st, sp - 4); sp -= 2; setL(st, sp - 2, a * b); break; }
-                    case 106: sp--; setF(st, sp - 1, getF(st, sp - 1) * getF(st, sp)); break;
-                    case 107: { double b = getD(st, sp - 2), a = getD(st, sp - 4); sp -= 2; setD(st, sp - 2, a * b); break; }
                     case 108: { int b = st[--sp]; if (b == 0) throw new VmThrow("java/lang/ArithmeticException", "/ by zero"); st[sp - 1] /= b; break; }
-                    case 109: { long b = getL(st, sp - 2), a = getL(st, sp - 4); if (b == 0) throw new VmThrow("java/lang/ArithmeticException", "/ by zero"); sp -= 2; setL(st, sp - 2, a / b); break; }
-                    case 110: sp--; setF(st, sp - 1, getF(st, sp - 1) / getF(st, sp)); break;
-                    case 111: { double b = getD(st, sp - 2), a = getD(st, sp - 4); sp -= 2; setD(st, sp - 2, a / b); break; }
                     case 112: { int b = st[--sp]; if (b == 0) throw new VmThrow("java/lang/ArithmeticException", "/ by zero"); st[sp - 1] %= b; break; }
-                    case 113: { long b = getL(st, sp - 2), a = getL(st, sp - 4); if (b == 0) throw new VmThrow("java/lang/ArithmeticException", "/ by zero"); sp -= 2; setL(st, sp - 2, a % b); break; }
-                    case 114: sp--; setF(st, sp - 1, getF(st, sp - 1) % getF(st, sp)); break;
-                    case 115: { double b = getD(st, sp - 2), a = getD(st, sp - 4); sp -= 2; setD(st, sp - 2, a % b); break; }
                     case 116: st[sp - 1] = -st[sp - 1]; break;
-                    case 117: setL(st, sp - 2, -getL(st, sp - 2)); break;
-                    case 118: setF(st, sp - 1, -getF(st, sp - 1)); break;
-                    case 119: setD(st, sp - 2, -getD(st, sp - 2)); break;
                     case 120: sp--; st[sp - 1] <<= st[sp]; break;
-                    case 121: { int s = st[--sp]; setL(st, sp - 2, getL(st, sp - 2) << s); break; }
                     case 122: sp--; st[sp - 1] >>= st[sp]; break;
-                    case 123: { int s = st[--sp]; setL(st, sp - 2, getL(st, sp - 2) >> s); break; }
                     case 124: sp--; st[sp - 1] >>>= st[sp]; break;
-                    case 125: { int s = st[--sp]; setL(st, sp - 2, getL(st, sp - 2) >>> s); break; }
                     case 126: sp--; st[sp - 1] &= st[sp]; break;
-                    case 127: { long b = getL(st, sp - 2), a = getL(st, sp - 4); sp -= 2; setL(st, sp - 2, a & b); break; }
                     case 128: sp--; st[sp - 1] |= st[sp]; break;
-                    case 129: { long b = getL(st, sp - 2), a = getL(st, sp - 4); sp -= 2; setL(st, sp - 2, a | b); break; }
                     case 130: sp--; st[sp - 1] ^= st[sp]; break;
-                    case 131: { long b = getL(st, sp - 2), a = getL(st, sp - 4); sp -= 2; setL(st, sp - 2, a ^ b); break; }
                     case 132: { int i = fp + (code[pc] & 0xff); st[i] += code[pc + 1]; pc += 2; break; }
-                    case 133: { int v = st[sp - 1]; setL(st, sp - 1, v); sp++; break; }
-                    case 134: setF(st, sp - 1, (float) st[sp - 1]); break;
-                    case 135: { int v = st[sp - 1]; setD(st, sp - 1, v); sp++; break; }
-                    case 136: sp--; st[sp - 1] = st[sp]; break; // l2i: low word is the top one
-                    case 137: sp--; setF(st, sp - 1, (float) getL(st, sp - 1)); break;
-                    case 138: setD(st, sp - 2, (double) getL(st, sp - 2)); break;
-                    case 139: st[sp - 1] = (int) getF(st, sp - 1); break;
-                    case 140: { float f = getF(st, sp - 1); setL(st, sp - 1, (long) f); sp++; break; }
-                    case 141: { float f = getF(st, sp - 1); setD(st, sp - 1, f); sp++; break; }
-                    case 142: sp--; st[sp - 1] = (int) getD(st, sp - 1); break;
-                    case 143: setL(st, sp - 2, (long) getD(st, sp - 2)); break;
-                    case 144: sp--; setF(st, sp - 1, (float) getD(st, sp - 1)); break;
                     case 145: st[sp - 1] = (byte) st[sp - 1]; break;
                     case 146: st[sp - 1] = (char) st[sp - 1]; break;
                     case 147: st[sp - 1] = (short) st[sp - 1]; break;
-                    case 148: { long b = getL(st, sp - 2), a = getL(st, sp - 4); sp -= 3; st[sp - 1] = a < b ? -1 : a > b ? 1 : 0; break; }
-                    case 149: case 150: {
-                        float b = getF(st, sp - 1), a = getF(st, sp - 2); sp--;
-                        st[sp - 1] = a > b ? 1 : a == b ? 0 : a < b ? -1 : (op == 150 ? 1 : -1);
-                        break;
-                    }
-                    case 151: case 152: {
-                        double b = getD(st, sp - 2), a = getD(st, sp - 4); sp -= 3;
-                        st[sp - 1] = a > b ? 1 : a == b ? 0 : a < b ? -1 : (op == 152 ? 1 : -1);
-                        break;
-                    }
                     case 153: if (st[--sp] == 0) pc = ipc + s16(code, pc); else pc += 2; break;
                     case 154: if (st[--sp] != 0) pc = ipc + s16(code, pc); else pc += 2; break;
                     case 155: if (st[--sp] < 0) pc = ipc + s16(code, pc); else pc += 2; break;
@@ -333,36 +285,11 @@ public final class Interpreter {
                     case 167: pc = ipc + s16(code, pc); break;
                     case 168: st[sp++] = pc + 2; pc = ipc + s16(code, pc); break; // jsr
                     case 169: pc = st[fp + (code[pc] & 0xff)]; break; // ret
-                    case 170: { // tableswitch
-                        int p = (ipc + 4) & ~3;
-                        int def = s32(code, p), lo = s32(code, p + 4), hi = s32(code, p + 8);
-                        int key = st[--sp];
-                        if (key < lo || key > hi) pc = ipc + def; else pc = ipc + s32(code, p + 12 + (key - lo) * 4);
-                        break;
-                    }
-                    case 171: { // lookupswitch
-                        int p = (ipc + 4) & ~3;
-                        int def = s32(code, p), n = s32(code, p + 4);
-                        int key = st[--sp];
-                        int target = def;
-                        int l = 0, h = n - 1;
-                        while (l <= h) {
-                            int mid = (l + h) >>> 1, k = s32(code, p + 8 + mid * 8);
-                            if (k == key) { target = s32(code, p + 12 + mid * 8); break; }
-                            if (k < key) l = mid + 1; else h = mid - 1;
-                        }
-                        pc = ipc + target;
-                        break;
-                    }
+                    case 170: case 171: pc = RareOps.switchTarget(code, ipc, op, st[--sp]); break; // tableswitch lookupswitch
                     case 172: case 173: case 174: case 175: case 176: case 177: {
                         int rw = op == 177 ? 0 : (op == 173 || op == 175) ? 2 : 1;
                         int hdr = fp + m.maxLocals;
-                        if (m.isSync) { int lockRef = st[hdr + Frames.SYNC]; if (lockRef != 0) mons.exit(th, lockRef); }
-                        if (th.lockTop > st[hdr + Frames.LOCKS]) {
-                            th.fp = fp; th.sp = sp; th.method = m; th.pc = ipc;
-                            releaseFrameLocks(th, st[hdr + Frames.LOCKS]);
-                            throw new VmThrow("java/lang/IllegalMonitorStateException", "method returned holding a monitor");
-                        }
+                        if (m.isSync || th.lockTop > st[hdr + Frames.LOCKS]) returnChecks(th, st, hdr, fp, sp, m, ipc);
                         int v1 = rw == 2 ? st[sp - 2] : 0, v0 = rw >= 1 ? st[sp - 1] : 0;
                         int pfp = st[hdr + Frames.PREV_FP];
                         if (pfp < 0) { sp = fp; th.state = VmThread.DEAD; slow = S_SWITCH; break inner; }
@@ -450,34 +377,11 @@ public final class Interpreter {
                         }
                         pc += op == 185 ? 4 : 2;
                         if (t.isNative) {
-                            if (t.nat == null) throw Errors.error("java/lang/UnsatisfiedLinkError", t.nativeKey);
-                            th.fp = fp; th.sp = sp; th.pc = ipc; th.method = m;
-                            NativeCtx c = ctx;
-                            c.begin(th, st, sp - t.argWords, t);
-                            th.inNative = t;   // GC: the arguments are still on the operand stack
-                            t.nat.invoke(c);
-                            th.inNative = null;
-                            if (c.exClass != null) throw new VmThrow(c.exClass, c.exMsg);
-                            if (c.exRef != 0) throw new VmThrow(c.exRef);
-                            if (c.initCls != null) { slow = S_INIT; slowCls = c.initCls; pc = ipc; break inner; }
-                            sp -= t.argWords;
-                            if (c.callM != null) {
-                                nframe = c.callM; nframeArg = c.callArg;
-                                st[sp++] = nframeArg;
-                                slow = S_NFRAME; break inner;
-                            }
-                            if (c.blocker != null) {
-                                th.blocker = c.blocker; th.state = VmThread.BLOCKED_NATIVE; th.blockerRet = t.ret; th.excPc = ipc;
-                                vm.sched.addBlockedNative(th);
-                                slow = S_SWITCH; break inner;
-                            }
-                            switch (t.ret) {
-                            case 'V': break;
-                            case 'J': case 'D': st[sp++] = c.rHi; st[sp++] = c.rLo; break;
-                            default: st[sp++] = c.rLo; break;
-                            }
-                            budget -= c.charge;
-                            if (th.state != VmThread.RUNNING || c.yield) { th.excPc = ipc; slow = S_SWITCH; break inner; }
+                            int nr = invokeNative(th, st, fp, sp, m, ipc, t);
+                            sp = nsp; budget -= ncharge;
+                            if (nr == 1) { slow = S_INIT; slowCls = nInit; pc = ipc; break inner; }
+                            if (nr == 2) { nframe = nfr; nframeArg = nfrArg; slow = S_NFRAME; break inner; }
+                            if (nr == 3) { if (th.state == VmThread.BLOCKED_NATIVE) pc = ipc; slow = S_SWITCH; break inner; }
                             break;
                         }
                         if (t.code == null) throw Errors.error("java/lang/AbstractMethodError", t.toString());
@@ -505,6 +409,7 @@ public final class Interpreter {
                             throw Errors.error("java/lang/InstantiationError", c.name);
                         if (needsInit(c, th)) { slow = S_INIT; slowCls = c; pc = ipc; break inner; }
                         th.fp = fp; th.sp = sp; th.pc = ipc; th.method = m;   // GC safepoint
+                        if (DebugFlags.ENABLED && dbg != null) dbg.allocObject(m, ipc, c);
                         int r = heap.allocObject(c.id);
                         if (r == 0) throw vm.oomThrow(c.name);
                         st[sp++] = r;
@@ -512,16 +417,12 @@ public final class Interpreter {
                         break;
                     }
                     case 188: { // newarray
-                        int kind;
-                        switch (code[pc++]) {
-                            case 4: kind = Heap.K_BOOLEAN; break; case 5: kind = Heap.K_CHAR; break; case 6: kind = Heap.K_FLOAT; break;
-                            case 7: kind = Heap.K_DOUBLE; break; case 8: kind = Heap.K_BYTE; break; case 9: kind = Heap.K_SHORT; break;
-                            case 10: kind = Heap.K_INT; break; default: kind = Heap.K_LONG; break;
-                        }
+                        int kind = arrayKind(code[pc++]);
                         if (primArr[kind] == 0) primArr[kind] = primArray(kind).id;
                         int len = st[sp - 1];
                         if (len < 0) throw new VmThrow("java/lang/NegativeArraySizeException", String.valueOf(len));
                         th.fp = fp; th.sp = sp; th.pc = ipc; th.method = m;   // GC safepoint (pc = this instruction: its operand is still on the stack)
+                        if (DebugFlags.ENABLED && dbg != null) dbg.allocArray(m, ipc, primArray(kind), len);
                         int r = heap.allocArray(primArr[kind], kind, len);
                         if (r == 0) throw vm.oomThrow("array of " + len);
                         st[sp - 1] = r;
@@ -531,6 +432,7 @@ public final class Interpreter {
                         ClassInfo ac = lk.arrayOf(lk.resolveClass(cls, u16(code, pc)));
                         th.fp = fp; th.sp = sp; th.pc = ipc; th.method = m;
                         pc += 2;
+                        if (DebugFlags.ENABLED && dbg != null) dbg.allocArray(m, ipc, ac, st[sp - 1]);
                         st[sp - 1] = allocArray(ac, st[sp - 1]);
                         break;
                     }
@@ -555,46 +457,24 @@ public final class Interpreter {
                     case 194: { // monitorenter
                         int r = st[--sp];
                         if (r == 0) throw npe();
-                        if (th.lockTop == th.locks.length) th.locks = java.util.Arrays.copyOf(th.locks, th.lockTop * 2);
-                        th.locks[th.lockTop++] = r;
-                        if (!mons.enter(th, r)) { slow = S_SWITCH; break inner; }
+                        if (!monitorEnter(th, r)) { slow = S_SWITCH; break inner; }
                         break;
                     }
                     case 195: { // monitorexit
                         int r = st[--sp];
                         if (r == 0) throw npe();
-                        mons.exit(th, r);
-                        int lb = st[fp + m.maxLocals + Frames.LOCKS], li = th.lockTop - 1;
-                        while (li >= lb && th.locks[li] != r) li--;
-                        if (li >= lb) { System.arraycopy(th.locks, li + 1, th.locks, li, th.lockTop - li - 1); th.lockTop--; }
+                        monitorExit(th, r, st[fp + m.maxLocals + Frames.LOCKS]);
                         break;
                     }
                     case 196: { // wide
-                        int op2 = code[pc] & 0xff;
-                        int idx = u16(code, pc + 1);
-                        if (op2 == 132) { st[fp + idx] += s16(code, pc + 3); pc += 5; break; }
-                        pc += 3;
-                        switch (op2) {
-                        case 21: case 23: case 25: st[sp++] = st[fp + idx]; break;
-                        case 22: case 24: st[sp++] = st[fp + idx]; st[sp++] = st[fp + idx + 1]; break;
-                        case 54: case 56: case 58: st[fp + idx] = st[--sp]; break;
-                        case 55: case 57: st[fp + idx + 1] = st[--sp]; st[fp + idx] = st[--sp]; break;
-                        case 169: pc = st[fp + idx]; break;
-                        default: throw Errors.error("java/lang/VerifyError", "bad wide opcode " + op2);
-                        }
+                        pc = wide(st, fp, sp, code, pc);
+                        sp = wsp;
                         break;
                     }
                     case 197: { // multianewarray
-                        ClassInfo ac = lk.resolveClass(cls, u16(code, pc));
-                        int dims = code[pc + 2] & 0xff;
-                        pc += 3;
-                        int[] counts = new int[dims];
-                        for (int i = dims - 1; i >= 0; i--) counts[i] = st[--sp];
-                        for (int i = 0; i < dims; i++) if (counts[i] < 0) throw new VmThrow("java/lang/NegativeArraySizeException", String.valueOf(counts[i]));
-                        sp += dims;   // the counts stay on the operand stack (as before the instruction) while the arrays are allocated
                         th.fp = fp; th.sp = sp; th.pc = ipc; th.method = m;
-                        sp -= dims;
-                        st[sp++] = multi(ac, counts, 0);
+                        sp = multiNew(th, st, sp, cls, code, pc);
+                        pc += 3;
                         break;
                     }
                     case 198: if (st[--sp] == 0) pc = ipc + s16(code, pc); else pc += 2; break;
@@ -643,10 +523,140 @@ public final class Interpreter {
                 th.fp = fp; th.sp = sp; th.method = m; th.pc = ipc;
                 slow = S_NONE;
                 int ex = vm.materialize(t, th);
+                if (DebugFlags.ENABLED && dbg != null) dbg.exception(th, ex);
                 if (!unwind(th, ex)) return Math.max(0, slice - budget);
                 fp = th.fp; sp = th.sp; pc = th.pc; m = th.method; code = m.code; cls = m.owner;
             }
         }
+    }
+
+
+    // ------------------------------------------------------------------ rare paths moved out of run() (T11a)
+
+    private int wsp, nsp, ncharge, nfrArg;
+    private RMethod nfr;
+    private ClassInfo nInit;
+
+    private static int arrayKind(int atype) {
+        switch (atype) {
+            case 4: return Heap.K_BOOLEAN; case 5: return Heap.K_CHAR; case 6: return Heap.K_FLOAT;
+            case 7: return Heap.K_DOUBLE; case 8: return Heap.K_BYTE; case 9: return Heap.K_SHORT;
+            case 10: return Heap.K_INT; default: return Heap.K_LONG;
+        }
+    }
+
+    /** ldc / ldc_w / ldc2_w: the caller published fp/sp/pc/method (GC safepoint). @return the new sp. */
+    private int ldc(int[] st, int sp, ClassInfo cls, int idx) {
+        ConstantPool cp = cls.cf.pool;
+        switch (cp.tag(idx)) {
+        case ConstantPool.INTEGER: st[sp++] = cp.intValue(idx); break;
+        case ConstantPool.FLOAT: st[sp++] = Float.floatToRawIntBits(cp.floatValue(idx)); break;
+        case ConstantPool.STRING: st[sp++] = lk.resolveString(cls, idx); break;
+        case ConstantPool.CLASS: st[sp++] = lk.mirror(lk.resolveClass(cls, idx)); break;
+        case ConstantPool.LONG: setL(st, sp, cp.longValue(idx)); sp += 2; break;
+        case ConstantPool.DOUBLE: setD(st, sp, cp.doubleValue(idx)); sp += 2; break;
+        default: throw Errors.error("java/lang/VerifyError", "bad ldc constant");
+        }
+        return sp;
+    }
+
+    /** Return from a synchronized method or with unbalanced monitorenter locks. */
+    private void returnChecks(VmThread th, int[] st, int hdr, int fp, int sp, RMethod m, int ipc) {
+        if (m.isSync) { int lockRef = st[hdr + Frames.SYNC]; if (lockRef != 0) mons.exit(th, lockRef); }
+        if (th.lockTop > st[hdr + Frames.LOCKS]) {
+            th.fp = fp; th.sp = sp; th.method = m; th.pc = ipc;
+            releaseFrameLocks(th, st[hdr + Frames.LOCKS]);
+            throw new VmThrow("java/lang/IllegalMonitorStateException", "method returned holding a monitor");
+        }
+    }
+
+    /**
+     * Invokes a native method. Results through the fields {@code nsp} (new sp), {@code ncharge} (extra bytecodes),
+     * {@code nInit}, {@code nfr}/{@code nfrArg}. @return 0 continue, 1 initialise {@code nInit} first, 2 push frame {@code nfr}, 3 leave the slice.
+     */
+    private int invokeNative(VmThread th, int[] st, int fp, int sp, RMethod m, int ipc, RMethod t) {
+        nsp = sp; ncharge = 0;
+        if (t.nat == null) throw Errors.error("java/lang/UnsatisfiedLinkError", t.nativeKey);
+        th.fp = fp; th.sp = sp; th.pc = ipc; th.method = m;
+        NativeCtx c = ctx;
+        c.begin(th, st, sp - t.argWords, t);
+        th.inNative = t;   // GC: the arguments are still on the operand stack
+        t.nat.invoke(c);
+        th.inNative = null;
+        if (c.exClass != null) throw new VmThrow(c.exClass, c.exMsg);
+        if (c.exRef != 0) throw new VmThrow(c.exRef);
+        if (c.initCls != null) { nInit = c.initCls; return 1; }
+        sp -= t.argWords;
+        if (c.callM != null) {
+            nfr = c.callM; nfrArg = c.callArg;
+            st[sp++] = nfrArg;
+            nsp = sp;
+            return 2;
+        }
+        if (c.blocker != null) {
+            // T15: the thread stays parked INSIDE the invoke: the arguments stay on its operand stack (the collector keeps and
+            // moves the references among them, th.inNative types them) so the blocker can still read them; completeBlocked pops them.
+            sp += t.argWords;
+            th.blocker = c.blocker; th.state = VmThread.BLOCKED_NATIVE; th.blockerRet = t.ret; th.excPc = ipc;
+            th.inNative = t; th.sp = sp; th.pc = ipc;
+            vm.sched.addBlockedNative(th);
+            nsp = sp;
+            return 3;
+        }
+        switch (t.ret) {
+        case 'V': break;
+        case 'J': case 'D': st[sp++] = c.rHi; st[sp++] = c.rLo; break;
+        default: st[sp++] = c.rLo; break;
+        }
+        nsp = sp; ncharge = c.charge;
+        if (th.state != VmThread.RUNNING || c.yield) { th.excPc = ipc; return 3; }
+        return 0;
+    }
+
+    private boolean monitorEnter(VmThread th, int r) {
+        if (th.lockTop == th.locks.length) th.locks = java.util.Arrays.copyOf(th.locks, th.lockTop * 2);
+        th.locks[th.lockTop++] = r;
+        return mons.enter(th, r);
+    }
+
+    private void monitorExit(VmThread th, int r, int lb) {
+        mons.exit(th, r);
+        int li = th.lockTop - 1;
+        while (li >= lb && th.locks[li] != r) li--;
+        if (li >= lb) { System.arraycopy(th.locks, li + 1, th.locks, li, th.lockTop - li - 1); th.lockTop--; }
+    }
+
+    /** wide prefix: @return the new pc, the new sp in {@code wsp}. */
+    private int wide(int[] st, int fp, int sp, byte[] code, int pc) {
+        int op2 = code[pc] & 0xff;
+        int idx = u16(code, pc + 1);
+        wsp = sp;
+        if (op2 == 132) { st[fp + idx] += s16(code, pc + 3); return pc + 5; }
+        pc += 3;
+        switch (op2) {
+        case 21: case 23: case 25: st[sp++] = st[fp + idx]; break;
+        case 22: case 24: st[sp++] = st[fp + idx]; st[sp++] = st[fp + idx + 1]; break;
+        case 54: case 56: case 58: st[fp + idx] = st[--sp]; break;
+        case 55: case 57: st[fp + idx + 1] = st[--sp]; st[fp + idx] = st[--sp]; break;
+        case 169: pc = st[fp + idx]; break;
+        default: throw Errors.error("java/lang/VerifyError", "bad wide opcode " + op2);
+        }
+        wsp = sp;
+        return pc;
+    }
+
+    /** multianewarray at {@code pc} (operands: u2 class, u1 dims; fp/sp/pc/method already published). @return the new sp. */
+    private int multiNew(VmThread th, int[] st, int sp, ClassInfo cls, byte[] code, int pc) {
+        ClassInfo ac = lk.resolveClass(cls, u16(code, pc));
+        int dims = code[pc + 2] & 0xff;
+        int[] counts = new int[dims];
+        for (int i = dims - 1; i >= 0; i--) counts[i] = st[--sp];
+        for (int i = 0; i < dims; i++) if (counts[i] < 0) throw new VmThrow("java/lang/NegativeArraySizeException", String.valueOf(counts[i]));
+        sp += dims;   // the counts stay on the operand stack (as before the instruction) while the arrays are allocated
+        sp -= dims;
+        if (DebugFlags.ENABLED && dbg != null) dbg.allocArray(th.method, th.pc, ac, counts[0]);
+        st[sp++] = multi(ac, counts, 0);
+        return sp;
     }
 
     private static int narrow(char kind, int v) {
@@ -731,10 +741,15 @@ public final class Interpreter {
 
     /** Completes a thread parked by {@code NativeContext.block}: @return true when it may run again. */
     public boolean completeBlocked(VmThread t) {
-        ctx.begin(t, t.stack, t.sp, null);
+        RMethod nat = t.inNative;
+        ctx.begin(t, t.stack, t.sp - nat.argWords, nat);   // the blocker may read the arguments (argInt/argRef...)
         if (!t.blocker.poll(ctx)) return false;
         t.blocker = null;
-        if (ctx.exClass != null) { t.pendingThrow = ctx.exClass; return true; }
+        t.inNative = null;
+        t.sp -= nat.argWords;
+        if (ctx.exClass != null) { t.pendingThrow = ctx.exClass; t.pendingMsg = ctx.exMsg; return true; }
+        byte[] pcode = t.method.code;
+        t.pc += (pcode[t.pc] & 0xff) == 185 ? 5 : 3;       // resume after the invoke instruction
         int[] st = t.stack;
         switch (t.blockerRet) {
             case 'V': break;

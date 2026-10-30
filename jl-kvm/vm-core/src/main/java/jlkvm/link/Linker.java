@@ -3,6 +3,7 @@ package jlkvm.link;
 import jlkvm.ClassSource;
 import jlkvm.Vm;
 import jlkvm.classfile.ClassFile;
+import jlkvm.debug.DebugFlags;
 import jlkvm.classfile.ClassFormatException;
 import jlkvm.classfile.ClassParser;
 import jlkvm.classfile.ConstantPool;
@@ -71,7 +72,7 @@ public final class Linker implements ClassHierarchy {
         if (b == null && app != null) {
             if (isProtectedPackage(n)) {
                 // CLDC 1.1 spec 3.4.2.2: an application cannot add classes to the system packages
-                if (app.readClass(n) != null && vm.config.debug) vm.host.log(2, "link", "refused app class in protected package: " + n);
+                if (app.readClass(n) != null && DebugFlags.ENABLED && vm.config.debug) vm.host.log(2, "link", "refused app class in protected package: " + n);
             } else b = app.readClass(n);
         }
         if (b == null) o = MISSING;
@@ -180,7 +181,7 @@ public final class Linker implements ClassHierarchy {
             classes.put(name, c);
             if (name.equals("java/lang/Object")) objectClass = c;
             if (name.equals("java/lang/Class")) classClass = c;
-            if (vm.config.debug) vm.host.log(1, "link", "loaded " + name + (fromRom ? " (rom)" : ""));
+            if (DebugFlags.ENABLED && vm.config.debug) vm.host.log(1, "link", "loaded " + name + (fromRom ? " (rom)" : ""));
             return c;
         } finally {
             loading.remove(name);
@@ -220,7 +221,10 @@ public final class Linker implements ClassHierarchy {
                 m.nativeKey = c.name + "." + m.name + m.desc;
                 NativeMethod nm = vm.registry.lookup(m.nativeKey);
                 m.nat = nm;
-                if (nm == null && vm.config.debug) vm.host.log(2, "link", "missing native " + m.nativeKey);
+                if (nm == null) {
+                    vm.missingNatives.add(m.nativeKey);   // T15: a call throws a guest Error; the debug build says so already at class load
+                    if (DebugFlags.ENABLED && vm.config.debug) vm.host.log(2, "link", "missing native " + m.nativeKey);
+                }
             } else if (m.name.equals("<clinit>") && m.desc.equals("()V") && m.code != null) c.clinit = m;
         }
         c.methods = ms;

@@ -91,6 +91,9 @@ public final class CoreNatives {
             if (ms == 0) { x(c).yield = true; return; }
             th.state = VmThread.SLEEPING;
             vm.sched.addTimed(th, vm.nanoTime() + ms * 1000000L); } });
+        r.register("java/lang/Thread.setPriority0(I)V", new NativeMethod() { public void invoke(NativeContext c) {
+            VmThread t = vm.sched.thread(heap.getInt(c.argRef(0), vm.threadVmIdSlot()));
+            if (t != null) vm.sched.setPriority(t, c.argInt(1)); } });
         r.register("java/lang/Thread.yield()V", new NativeMethod() { public void invoke(NativeContext c) { x(c).yield = true; } });
         r.register("java/lang/Thread.currentThread()Ljava/lang/Thread;", new NativeMethod() { public void invoke(NativeContext c) {
             c.retRef(x(c).th.threadObj); } });

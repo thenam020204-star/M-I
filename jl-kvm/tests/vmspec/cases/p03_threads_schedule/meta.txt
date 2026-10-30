@@ -1,0 +1,3 @@
+mode: spec-only
+source: spec: D5/D14 (PLAN): the schedule is a function of the bytecode count, priorities and the virtual clock; no other VM is asked.
+notes: the "# " lines (the whole schedule) are compared between runs by vm-core ThreadTest; expected.txt only has the final line.

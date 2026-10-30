@@ -1,5 +1,7 @@
 package jlkvm;
 
+import jlkvm.debug.Debug;
+import jlkvm.debug.DebugFlags;
 import jlkvm.gc.Gc;
 import jlkvm.heap.Heap;
 import jlkvm.heap.TempRoots;
@@ -37,9 +39,14 @@ public final class Vm implements ExecutionEngine, GuestServices {
     public final Scheduler sched;
     public final Monitors monitors;
     public final Interpreter interp;
+    /** D15 debug hooks (null in a release build / when no feature is on). */
+    public final jlkvm.debug.Debug debug;
+    private final jlkvm.debug.InputLog inputLog;
     public final Gc gc;
 
     public volatile boolean exitRequested;
+    /** Keys of the native methods of loaded classes that no host registered (T15). */
+    public final List<String> missingNatives = new ArrayList<String>();
     /** Bytecodes charged to the running slice by natives (see {@link #charge}). */
     public int charged;
     /** Class whose <clinit> the interpreter must run next (result 1 of {@link #initStep}). */
@@ -51,7 +58,7 @@ public final class Vm implements ExecutionEngine, GuestServices {
     /** Preallocated OutOfMemoryError (GC root: cell 0). */
     private final int[] oomCell = new int[1];
     private ClassInfo stringClass, throwableClass;
-    private int strValue, strOffset, strCount, thMessage, thTrace, threadVmId;
+    private int strValue, strOffset, strCount, thMessage, thTrace, threadVmId, threadPriority = -1;
 
     private Vm(VmConfig cfg, HostPlatform host, ClassSource app, DeviceProfile p) {
         this.config = cfg;
@@ -60,13 +67,15 @@ public final class Vm implements ExecutionEngine, GuestServices {
         this.app = app;
         this.heap = new Heap(p.heapBytes, cfg.hashSeed);
         this.baseNanos = host.hostNanoTime();
-        this.baseMillis = System.currentTimeMillis();
+        this.baseMillis = cfg.deterministic ? 1000000000000L : System.currentTimeMillis();   // D14: fixed epoch in deterministic mode
         registry.setServices(this);
         CoreNatives.register(this);
         host.registerNatives(registry);
         this.linker = new Linker(this, host.rom(), app);
         this.monitors = new Monitors(this);
         this.sched = new Scheduler(this);
+        this.debug = DebugFlags.ENABLED && Debug.wanted(cfg) ? new Debug(this) : null;
+        this.inputLog = DebugFlags.ENABLED && (cfg.recordInput != null || cfg.replayInput != null) ? new jlkvm.debug.InputLog(cfg.recordInput, cfg.replayInput) : null;
         this.interp = new Interpreter(this);
         this.gc = new Gc(this);
         heap.setCollector(gc);
@@ -92,6 +101,8 @@ public final class Vm implements ExecutionEngine, GuestServices {
         thMessage = throwableClass.findDeclaredField("message", null).slot;
         thTrace = throwableClass.findDeclaredField("trace", null).slot;
         threadVmId = th.findDeclaredField("vmId", null).slot;
+        jlkvm.link.RField pf = th.findDeclaredField("priority", null);
+        if (pf != null) threadPriority = pf.slot;
         ClassInfo oom = linker.find("java/lang/OutOfMemoryError");
         markInitialisedIfTrivial(oom);
         oomCell[0] = heap.allocObject(oom.id);
@@ -123,11 +134,28 @@ public final class Vm implements ExecutionEngine, GuestServices {
     public long idleUntilNanos() { return sched.idleUntilNanos(); }
 
     /** Thread-safe: queued for the guest event loop (D13). */
-    public void postEvent(int type, int a, int b, int c) { events.add(new int[] {type, a, b, c}); }
-    public int[] pollEvent() { return events.poll(); }
-    public void requestExit() { exitRequested = true; }
+    public void postEvent(int type, int a, int b, int c) {
+        if (DebugFlags.ENABLED && inputLog != null && inputLog.replaying()) return;   // D14: only the recorded input reaches the guest
+        events.add(new int[] {type, a, b, c});
+    }
+    /** The guest takes the next input event (vm-thread only); D14 record / replay hooks here. */
+    public int[] pollEvent() {
+        if (DebugFlags.ENABLED && inputLog != null) return inputLog.take(nanoTime() - baseNanos, inputLog.replaying() ? null : events.poll());
+        return events.poll();
+    }
+    /** D14 replay: virtual time of the next recorded event (Long.MAX_VALUE = none). */
+    public long nextReplayNanos() {
+        if (!DebugFlags.ENABLED || inputLog == null || !inputLog.replaying()) return Long.MAX_VALUE;
+        long n = inputLog.nextReplayNanos();
+        return n == Long.MAX_VALUE ? n : baseNanos + n;
+    }
+    public void requestExit() { exitRequested = true; if (DebugFlags.ENABLED && inputLog != null) inputLog.close(); }
 
-    public long nanoTime() { return host.hostNanoTime(); }
+    /** Virtual elapsed time of deterministic mode (D14), advanced by the scheduler. */
+    public long virtualNanos;
+    public long nanoTime() { return config.deterministic ? baseNanos + virtualNanos : host.hostNanoTime(); }
+    /** Text of the last deadlock / total stall reported in debug mode (null = none); tests read it. */
+    public String lastDeadlock;
     public long currentTimeMillis() { return baseMillis + (nanoTime() - baseNanos) / 1000000L; }
 
     // ------------------------------------------------------------------ launching threads
@@ -156,6 +184,10 @@ public final class Vm implements ExecutionEngine, GuestServices {
         VmThread t = sched.create();
         t.threadObj = threadObj;
         heap.putInt(threadObj, threadVmId, t.id);
+        if (threadPriority >= 0) {
+            int pr = heap.getInt(threadObj, threadPriority);
+            t.priority = pr < 1 ? 1 : pr > 10 ? 10 : pr;
+        } else if (sched.current != null) t.priority = sched.current.priority;
         enterFrame(t, run, threadObj);
         sched.makeRunnable(t);
     }
@@ -369,17 +401,45 @@ public final class Vm implements ExecutionEngine, GuestServices {
         if (arr == 0) return "";
         int n = heap.arrayLength(arr) / 2;
         for (int i = 0; i < n; i++) {
-            RMethod m = linker.method(heap.getIntElem(arr, 2 * i));
-            int pc = heap.getIntElem(arr, 2 * i + 1);
-            int line = m.lineAt(pc);
-            String file = m.owner.cf == null ? null : m.owner.cf.sourceFile;
-            sb.append("\tat ").append(m.owner.name.replace('/', '.')).append('.').append(m.name).append('(');
-            if (m.isNative) sb.append("Native Method");
-            else if (file != null) sb.append(file).append(line >= 0 ? ":" + line : "");
-            else sb.append("Unknown Source");
-            sb.append(")\n");
+            sb.append(frameText(linker.method(heap.getIntElem(arr, 2 * i)), heap.getIntElem(arr, 2 * i + 1)));
         }
         return sb.toString();
+    }
+
+    private static String frameText(RMethod m, int pc) {
+        StringBuilder sb = new StringBuilder();
+        int line = m.lineAt(pc);
+        String file = m.owner.cf == null ? null : m.owner.cf.sourceFile;
+        sb.append("\tat ").append(m.owner.name.replace('/', '.')).append('.').append(m.name).append('(');
+        if (m.isNative) sb.append("Native Method");
+        else if (file != null) sb.append(file).append(line >= 0 ? ":" + line : "");
+        else sb.append("Unknown Source");
+        return sb.append(")\n").toString();
+    }
+
+    /** Guest stack of a thread that is not running ("\tat ..." lines, innermost first). Debug dumps only. */
+    public String threadTrace(VmThread th) {
+        if (th.method == null || th.fp < 0) return "";
+        int[] st = th.stack;
+        int fp = th.fp, pc = th.pc;
+        RMethod m = th.method;
+        StringBuilder sb = new StringBuilder();
+        for (int n = 0; m != null && n < profile.maxTraceFrames; n++) {
+            sb.append(frameText(m, pc));
+            int hdr = fp + m.maxLocals;
+            int pfp = st[hdr + Frames.PREV_FP];
+            if (pfp < 0) break;
+            pc = st[hdr + Frames.PREV_PC];
+            m = linker.method(st[hdr + Frames.PREV_MID]);
+            fp = pfp;
+        }
+        return sb.toString();
+    }
+
+    /** Debug (D15): records and logs a deadlock / total stall. */
+    public void reportDeadlock(String text) {
+        lastDeadlock = text;
+        host.log(3, "vm", text);
     }
 
     /** Class name and message of a Throwable (no guest code is run). */
@@ -390,6 +450,7 @@ public final class Vm implements ExecutionEngine, GuestServices {
     }
 
     public void reportUncaught(VmThread th, int ex) {
+        if (DebugFlags.ENABLED && debug != null) debug.uncaught(th);
         host.log(3, "vm", "Uncaught exception in guest thread " + th.id + ": " + describe(ex) + "\n" + traceText(ex));
     }
 

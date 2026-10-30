@@ -1,0 +1,3 @@
+> T1 holds first
+> T2 holds first
+> main exits while T1 and T2 are deadlocked

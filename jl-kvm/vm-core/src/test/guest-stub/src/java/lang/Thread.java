@@ -19,6 +19,7 @@ public class Thread implements Runnable {
     private native void join0() throws InterruptedException;
     public final void join() throws InterruptedException { join0(); }
     public final int getPriority() { return priority; }
-    public final void setPriority(int p) { if (p < MIN_PRIORITY || p > MAX_PRIORITY) throw new IllegalArgumentException(); priority = p; }
+    public final void setPriority(int p) { if (p < MIN_PRIORITY || p > MAX_PRIORITY) throw new IllegalArgumentException(); priority = p; setPriority0(p); }
+    private native void setPriority0(int p);
     public String toString() { return "Thread"; }
 }

@@ -1,0 +1,5 @@
+mode: spec-only
+source: spec: D14 (PLAN): deterministic mode + record/replay of the input reproduce a run 100%; natives vmspec/Ev.* are provided by the test host, so the oracles cannot run it.
+notes: with no input the loop blocks forever, therefore run_vmspec.sh does not run it (see vm-core InputReplayTest); expected.txt only has the final line. no-gc-stress because the case is driven by the Java test.
+no-gc-stress: yes
+driven-by-test: InputReplayTest

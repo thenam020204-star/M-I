@@ -6,6 +6,14 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
+// D15: -Pjlkvm.release=true compiles src/release/.../DebugFlags.java (ENABLED = false) instead of the debug one
+if (project.hasProperty("jlkvm.release") && project.property("jlkvm.release") == "true") {
+    sourceSets.main {
+        java.exclude { it.file.invariantSeparatorsPath.contains("/src/main/") && it.name == "DebugFlags.java" }
+        java.srcDir("src/release/java")
+    }
+}
+
 tasks.withType<JavaCompile>().configureEach {
     options.release.set(8)   // runs on Android (ART) and desktop JVM
     options.encoding = "UTF-8"

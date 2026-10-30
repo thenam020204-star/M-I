@@ -27,7 +27,9 @@ public final class TempHost implements HostPlatform {
     public TempHost(ClassSource rom, VmConfig cfg) { this.rom = rom; this.cfg = cfg; }
 
     public long hostNanoTime() { return System.nanoTime(); }
-    public void log(int level, String tag, String msg) { System.err.println("[" + tag + "] " + msg); }
+    /** Everything the VM logged (tests read it). */
+    public final java.util.List<String> logs = java.util.Collections.synchronizedList(new java.util.ArrayList<String>());
+    public void log(int level, String tag, String msg) { logs.add("[" + tag + "] " + msg); System.err.println("[" + tag + "] " + msg); }
     public ClassSource rom() { return rom; }
 
     public void registerNatives(final NativeRegistry r) {
@@ -51,6 +53,49 @@ public final class TempHost implements HostPlatform {
         r.register("vmspec/Peer.detach0(I)V", new NativeMethod() { public void invoke(NativeContext c) { c.handles().release(c.argInt(1)); } });
         r.register("vmspec/Peer.live0()I", new NativeMethod() { public void invoke(NativeContext c) { c.retInt(c.handles().liveCount()); } });
         r.register("vmspec/Peer.disposed0()I", new NativeMethod() { public void invoke(NativeContext c) { c.retInt(gcDisposed); } });
+        // ---- T16 input events: blocks until the host posted one, fills int[4] {type, a, b, c}
+        r.register("vmspec/Ev.nextEvent([I)V", new NativeMethod() { public void invoke(NativeContext c) {
+            c.block(new jlkvm.natives.Blocker() { public boolean poll(NativeContext cc) {
+                int[] e = r.services().pollEvent();
+                if (e == null) return false;
+                for (int i = 0; i < 4; i++) cc.heap().putIntElem(cc.argRef(0), i, e[i]);
+                return true; } }); } });
+        // ---- T15 sample natives (tests/vmspec/cases/q01_natives)
+        r.register("vmspec/Nat.add(II)I", new NativeMethod() { public void invoke(NativeContext c) { c.retInt(c.argInt(0) + c.argInt(1)); } });
+        r.register("vmspec/Nat.mix(IJFD)D", new NativeMethod() { public void invoke(NativeContext c) {
+            c.retDouble(c.argInt(0) + c.argLong(1) + c.argFloat(2) + c.argDouble(3)); } });
+        r.register("vmspec/Nat.mixl(IJ)J", new NativeMethod() { public void invoke(NativeContext c) { c.retLong(c.argLong(1) * c.argInt(0)); } });
+        r.register("vmspec/Nat.fill([BI)I", new NativeMethod() { public void invoke(NativeContext c) {
+            int a = c.argRef(0), v = c.argInt(1);
+            if (a == 0) { c.throwNew("java/lang/NullPointerException", null); return; }
+            for (int i = 0; i < c.heap().arrayLength(a); i++) c.heap().putByte(a, i, (byte) (v + i));
+            c.retInt(c.heap().arrayLength(a)); } });
+        r.register("vmspec/Nat.fail(Ljava/lang/String;)V", new NativeMethod() { public void invoke(NativeContext c) {
+            c.throwNew("java/lang/IllegalArgumentException", r.services().string(c.argRef(0))); } });
+        r.register("vmspec/Nat.newString(I)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
+            c.retRef(r.services().newString("native-" + c.argInt(0))); } });
+        // blocks the calling guest thread for ms (a host thread finishes it); the byte[] argument is filled when it wakes up
+        r.register("vmspec/Nat.blockFill(I[B)I", new NativeMethod() { public void invoke(final NativeContext c) {
+            final int ms = c.argInt(0);
+            final jlkvm.natives.AsyncBlocker b = new jlkvm.natives.AsyncBlocker() {
+                protected void complete(NativeContext cc) {
+                    int a = cc.argRef(1);   // read again after the wake-up: the array may have been moved by a collection
+                    for (int i = 0; i < cc.heap().arrayLength(a); i++) cc.heap().putByte(a, i, (byte) (ms + i));
+                    cc.retInt(ms);
+                } };
+            c.block(b);
+            new Thread() { public void run() { try { Thread.sleep(ms); } catch (InterruptedException e) { } b.finish(); } }.start(); } });
+        // a polling blocker that fails: the exception is raised in the guest thread
+        r.register("vmspec/Nat.blockThrow(I)V", new NativeMethod() { public void invoke(final NativeContext c) {
+            final int[] n = {c.argInt(0)};
+            c.block(new jlkvm.natives.Blocker() { public boolean poll(NativeContext cc) {
+                if (--n[0] > 0) return false;
+                cc.throwNew("java/lang/IllegalArgumentException", "blocker failed"); return true; } }); } });
+        r.register("vmspec/Nat.blockLong(J)J", new NativeMethod() { public void invoke(final NativeContext c) {
+            final long end = System.nanoTime() + 50000000L;
+            c.block(new jlkvm.natives.Blocker() { public boolean poll(NativeContext cc) {
+                if (System.nanoTime() < end) return false;
+                cc.retLong(cc.argLong(0) * 2); return true; } }); } });
         r.register("javax/microedition/lcdui/Image.create0(II)I", new NativeMethod() { public void invoke(final NativeContext c) {
             int w = c.argInt(0), h = c.argInt(1);
             r.services().charge(w * h / 64);

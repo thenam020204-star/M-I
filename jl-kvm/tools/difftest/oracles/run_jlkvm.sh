@@ -7,12 +7,13 @@ set -uo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"; ROOT="$HERE/../../.."
 . "$ROOT/tools/env/lib.sh"; . "$ROOT/tools/env/versions.sh"
 JAR="$(realpath "$1")"; shift
-B="$ROOT/vm-core/build/jlkvm-cli"; ROM="$ROOT/vm-core/build/guest-stub/rom.jar"
+# JLKVM_RELEASE=1: compile vm-core with the RELEASE DebugFlags (D15/T16: every debug hook compiled out) into a separate class dir
+B="$ROOT/vm-core/build/jlkvm-cli"; [ -n "${JLKVM_RELEASE:-}" ] && B="$ROOT/vm-core/build/jlkvm-cli-release"; ROM="$ROOT/vm-core/build/guest-stub/rom.jar"
 mkdir -p "$B"
-if [ -n "$(find "$ROOT/vm-core/src/main" "$ROOT/vm-core/src/test/java/jlkvm/tmp" -name '*.java' -newer "$B/.stamp" 2>/dev/null | head -1)" ] || [ ! -f "$B/.stamp" ]; then
+if [ -n "$(find "$ROOT/vm-core/src/main" "$ROOT/vm-core/src/release" "$ROOT/vm-core/src/test/java/jlkvm/tmp" -name '*.java' -newer "$B/.stamp" 2>/dev/null | head -1)" ] || [ ! -f "$B/.stamp" ]; then
   rm -rf "$B/classes"; mkdir -p "$B/classes"
   env -u JAVA_TOOL_OPTIONS "$JDK8_HOME/bin/javac" -encoding UTF-8 -nowarn -d "$B/classes" \
-    $(find "$ROOT/vm-core/src/main" "$ROOT/vm-core/src/test/java/jlkvm/tmp" -name '*.java') 2>&1 | grep -v '^Picked up' >&2
+    $(if [ -n "${JLKVM_RELEASE:-}" ]; then find "$ROOT/vm-core/src/main" -name '*.java' ! -path '*/jlkvm/debug/DebugFlags.java'; find "$ROOT/vm-core/src/release" "$ROOT/vm-core/src/test/java/jlkvm/tmp" -name '*.java'; else find "$ROOT/vm-core/src/main" "$ROOT/vm-core/src/test/java/jlkvm/tmp" -name '*.java'; fi) 2>&1 | grep -v '^Picked up' >&2
   [ -f "$B/classes/jlkvm/tmp/RunJar.class" ] || { echo "engine build failed" >&2; exit 2; }
   touch "$B/.stamp"
 fi

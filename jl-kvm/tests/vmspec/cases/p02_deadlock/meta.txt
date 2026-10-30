@@ -1,0 +1,3 @@
+mode: spec-only
+source: spec: JLS/JVMS monitor semantics (a monitor is held until its block exits); two threads acquiring two locks in opposite order, each already holding one, can never proceed.
+notes: oracles are not asked to run it (Runtime.exit inside a MIDlet is not portable between them). The debug report is checked by vm-core ThreadTest.

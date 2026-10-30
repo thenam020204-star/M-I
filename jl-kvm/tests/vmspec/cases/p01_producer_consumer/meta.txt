@@ -1,0 +1,3 @@
+mode: oracle
+source: spec: CLDC 1.1 Object.wait/notifyAll and Thread.interrupt javadoc (monitor semantics); sum computed by hand = 3*(1+..+20) + 20*(0+100+200) = 630 + 6000 = 6630; oracle MicroEmulator/FreeJ2ME (to be confirmed by run_vmspec.sh).
+notes: totals independent of scheduling.
