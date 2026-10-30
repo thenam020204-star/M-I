@@ -156,13 +156,16 @@ val copyRomAssets by tasks.registering(Copy::class) {
     into(jlkvmAssets)
 }
 android.sourceSets.getByName("main").assets.srcDir(jlkvmAssets)
-tasks.matching { it.name.startsWith("merge") && it.name.endsWith("Assets") }.configureEach {
+tasks.matching {
+    it.name != "copyJarscanAssets" && it.name != "copyRomAssets" &&
+        ((it.name.startsWith("merge") && it.name.endsWith("Assets")) || it.name.contains("Lint", ignoreCase = true))
+}.configureEach {
     dependsOn(copyJarscanAssets, copyRomAssets)
 }
 
 dependencies {
-    // D17: the dex converter exists only in the debug build (the old engine, kept for A/B against the VM); release has no dex code at all
-    debugImplementation(projects.dexlib)
+    // D17: the dex converter is called only from app/src/debug (LegacyDex)
+    implementation(projects.dexlib)   // also holds zip4j and ru.woesss.util used everywhere; the dx converter in it is reachable only from the debug-only LegacyDex (R8 drops it in release)
     implementation(projects.hostAndroid)
     implementation(projects.tools.jarscan)
     implementation(projects.tools.apiSigs)

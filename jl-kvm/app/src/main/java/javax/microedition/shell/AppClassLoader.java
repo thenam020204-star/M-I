@@ -59,7 +59,7 @@ public class AppClassLoader extends DexClassLoader {
 	}
 
 	public static InputStream getResourceAsStream(Class<?> resClass, String resName) {
-		Log.d(TAG, "CUSTOM GET RES CALLED WITH PATH: " + resName);
+		if (BuildConfig.DEBUG) Log.d(TAG, "CUSTOM GET RES CALLED WITH PATH: " + resName);   // T35b: no heavy debug log in release
 		if (resName == null || resName.equals("")) {
 			Log.w(TAG, "Can't load res on empty path");
 			return null;

@@ -125,7 +125,7 @@ public class MicroLoader {
 		String jarSize = null;
 		Descriptor descriptor;
 		if (BuildConfig.FULL_EMULATOR) {
-			descriptor = new Descriptor(new File(appDir, Config.MIDLET_MANIFEST_FILE), false);
+			descriptor = new Descriptor(Config.manifestFile(appDir), false);
 			try {
 				File jar = new File(appDir, Config.MIDLET_RES_FILE);
 				jarSize = Long.toString(jar.length());
@@ -176,9 +176,19 @@ public class MicroLoader {
 	MIDlet loadMIDlet(String mainClass) throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException, NoSuchMethodException, InvocationTargetException, IOException {
 		if (BuildConfig.FULL_EMULATOR) {
+			if (!BuildConfig.DEBUG) {
+				throw new IllegalStateException("The dex engine exists only in the debug build (PLAN D17)");
+			}
 			File dexSource = new File(appDir, Config.MIDLET_DEX_ARCH);
 			if (!dexSource.exists()) {
-				dexSource = new File(appDir, Config.MIDLET_DEX_FILE);
+				// no converted.zip is made at install time any more (T34): the debug build converts on the first launch
+				try {
+					Class.forName("ru.woesss.j2me.legacy.LegacyDex")
+							.getMethod("convert", File.class, File.class)
+							.invoke(null, new File(appDir, Config.MIDLET_RES_FILE), dexSource);
+				} catch (ReflectiveOperationException e) {
+					throw new IOException("Dex conversion for the legacy engine failed: " + e, e);
+				}
 			}
 			File codeCacheDir = ContextCompat.getCodeCacheDir(ContextHolder.getActivity());
 			File dexOptDir = new File(codeCacheDir, Config.DEX_OPT_CACHE_DIR);
@@ -327,6 +337,10 @@ public class MicroLoader {
 	void loadMidlet(String clazz, String appName) {
 		MidletThread midletThread = new MidletThread(this, clazz);
 		midletThread.start();
+		noteLaunched(appName);
+	}
+
+	void noteLaunched(String appName) {
 		if (!BuildConfig.FULL_EMULATOR) {
 			return;
 		}

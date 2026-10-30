@@ -81,6 +81,7 @@ public final class CoreNatives {
             String p = vm.string(c.argRef(0));
             byte[] b = vm.app == null ? null : vm.app.readResource(p);
             if (b == null) b = vm.host.rom().readResource(p);
+            if (b == null) vm.host.log(2, "resource", p);   // game-errors.log (T35b): the host logs each path once
             c.retRef(b == null ? 0 : vm.newByteArray(b, 0, b.length)); } });
 
         // ---- Thread

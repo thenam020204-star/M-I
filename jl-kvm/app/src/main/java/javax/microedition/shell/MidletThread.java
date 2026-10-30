@@ -86,6 +86,18 @@ public class MidletThread extends HandlerThread implements Handler.Callback {
 
 	static void destroyApp() {
 		Thread.setDefaultUncaughtExceptionHandler(uncaughtExceptionHandler);
+		VmSession vm = VmSession.current();
+		if (vm != null) {
+			// jl-kvm engine: MIDlet.destroyApp(true) runs in the guest, the VM ends and the listener of the session finishes the Activity
+			vm.destroy(true);
+			new Thread(() -> {
+				try {
+					Thread.sleep(1500);
+				} catch (InterruptedException ignored) {}
+				Process.killProcess(Process.myPid());
+			}, "ForceDestroyTimer").start();
+			return;
+		}
 		new Thread(() -> {
 			try {
 				Thread.sleep(1000);
