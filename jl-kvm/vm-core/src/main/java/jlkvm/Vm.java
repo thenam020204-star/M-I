@@ -343,14 +343,27 @@ public final class Vm implements ExecutionEngine, GuestServices {
 
     public String className(int objRef) { return linker.byId(heap.classId(objRef)).name.replace('/', '.'); }
 
+    public void log(int level, String tag, String msg) { host.log(level, tag, msg); }
+
     public void charge(int bytecodes) { interp.nativeCtx().chargeBytecodes(bytecodes); }
 
     // ------------------------------------------------------------------ exceptions
 
-    public VmThrow oomThrow(String what) { return new VmThrow(oomCell[0]); }
+    public VmThrow oomThrow(String what) {
+        // game-errors.log (PLAN T35b): one line per OutOfMemoryError with the heap numbers
+        host.log(3, "oom", "OutOfMemoryError allocating " + what + ": heap free=" + heap.freeMemory() + "B total=" + heap.totalMemory() + "B");
+        return new VmThrow(oomCell[0]);
+    }
 
     public int materialize(VmThrow t, VmThread th) {
         if (t.ref != 0) return t.ref;
+        // linking errors raised by the VM (PLAN T35b): NoClassDefFoundError / NoSuchMethodError / NoSuchFieldError / VerifyError ...
+        if (t.guestClass != null && (t.guestClass.equals("java/lang/NoClassDefFoundError")
+                || (t.guestClass.equals("java/lang/Error") && t.msg != null && (t.msg.startsWith("NoSuchMethodError") || t.msg.startsWith("NoSuchFieldError")
+                || t.msg.startsWith("VerifyError") || t.msg.startsWith("IncompatibleClassChangeError") || t.msg.startsWith("UnsatisfiedLinkError")
+                || t.msg.startsWith("AbstractMethodError") || t.msg.startsWith("IllegalAccessError") || t.msg.startsWith("ClassFormatError"))))) {
+            host.log(2, "link", t.guestClass.substring(t.guestClass.lastIndexOf('/') + 1) + (t.msg == null ? "" : ": " + t.msg));
+        }
         return newThrowable(t.guestClass, t.msg, th);
     }
 

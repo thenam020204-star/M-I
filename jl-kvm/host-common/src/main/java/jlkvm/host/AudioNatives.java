@@ -117,6 +117,7 @@ public final class AudioNatives {
             Object[] s = sources.get(Integer.valueOf(c.argInt(0)));
             if (s == null) throw new VmThrow("java/lang/IllegalStateException", "bad audio source");
             int h = device.open((byte[]) s[0], (String) s[1]);
+            if (h <= 0) gs.log(2, "media", "audio cannot be played: " + s[1] + ", " + ((byte[]) s[0]).length + " bytes");
             if (h > 0) synchronized (AudioNatives.this) { clips.put(Integer.valueOf(h), new Wait()); }
             c.retInt(h > 0 ? h : -1); } });
         r.register(AUDIO + "duration0(I)J", new NativeMethod() { public void invoke(NativeContext c) { waitOf(c.argInt(0)); c.retLong(device.durationMs(c.argInt(0))); } });

@@ -58,7 +58,13 @@ public final class DesktopHost implements HostPlatform {
 
     public long hostNanoTime() { return clock.nanos(); }
 
+    private jlkvm.host.GameErrorLog errorLog;
+    /** The filtered {@code game-errors.log} of the run (T35b); default none. */
+    public void setErrorLog(jlkvm.host.GameErrorLog g) { this.errorLog = g; }
+
     public void log(int level, String tag, String msg) {
+        jlkvm.host.GameErrorLog g = errorLog;
+        if (g != null) g.log(level, tag, msg);
         String l = "[" + tag + "] " + msg;
         logs.add(l);
         if (logStream != null) logStream.println(l);

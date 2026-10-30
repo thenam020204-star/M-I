@@ -64,13 +64,10 @@ public class AppUtils {
 				}
 				continue;
 			}
-			File compressed = new File(appFolder, Config.MIDLET_DEX_ARCH);
-			if (!compressed.isFile()) {
-				File dex = new File(appFolder, Config.MIDLET_DEX_FILE);
-				if (!dex.isFile()) {
-					FileUtils.deleteDirectory(appFolder);
-					continue;
-				}
+			// PLAN T34: an installed game is its JAR (res.jar) + descriptor; there is no converted.zip / DEX any more
+			if (!new File(appFolder, Config.MIDLET_RES_FILE).isFile()) {
+				FileUtils.deleteDirectory(appFolder);
+				continue;
 			}
 			try {
 				AppItem item = getApp(appFolder);
@@ -84,7 +81,7 @@ public class AppUtils {
 	}
 
 	private static AppItem getApp(File appDir) throws IOException {
-		File mf = new File(appDir, Config.MIDLET_MANIFEST_FILE);
+		File mf = Config.manifestFile(appDir);
 		Descriptor params = new Descriptor(mf, false);
 		AppItem item = new AppItem(appDir.getName(), params.getName(),
 				params.getVendor(),

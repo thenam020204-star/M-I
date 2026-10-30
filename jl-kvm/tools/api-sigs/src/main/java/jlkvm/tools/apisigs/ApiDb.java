@@ -63,6 +63,11 @@ public final class ApiDb {
         }
     }
 
+    /** For hosts without java.nio.file (Android installer): the caller closes {@code r}. */
+    public static ApiDb read(Reader r) {
+        return gson().fromJson(r, ApiDb.class);
+    }
+
     public String constKey(FieldSig f) {
         return f.constant == null ? "-" : f.constantType + ":" + f.constant;
     }

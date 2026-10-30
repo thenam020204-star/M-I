@@ -18,4 +18,6 @@ android {
 
 dependencies {
     api(project(":vm-core"))
+    api(project(":host-common"))
+    api(project(":host-desktop"))   // DesktopHost / RomLayers / JarClassSource / VmRunner are plain Java (no AWT): the Android host reuses them
 }

@@ -64,6 +64,13 @@ android {
 
     lint.disable += "MissingTranslation"
 
+    testOptions.unitTests {
+        isReturnDefaultValues = true
+        all {
+            it.systemProperty("jlkvm.root", rootProject.layout.projectDirectory.asFile.path)
+        }
+    }
+
     flavorDimensions += "default"
     productFlavors {
         create("emulator") { // variant dimension for create emulator
@@ -127,8 +134,41 @@ fun getMidletManifestProperties(): Attributes = Manifest().let { mf ->
     return mf.mainAttributes
 }
 
+// PLAN T34/T35: assets built from the rest of the repository: the jarscan databases + profile (install-time scan) and the guest ROM layers
+// (vm-classlib) the VM loads; generated, never committed
+val jlkvmAssets = layout.buildDirectory.dir("generated/jlkvm-assets")
+val copyJarscanAssets by tasks.registering(Copy::class) {
+    from(rootProject.file("tools/api-sigs/db")) {
+        include("cldc-1.1.json", "midp-2.0.json", "s40dp2-nokia-ui.json", "s40dp2-wma-1.1.json", "jsr75-fc.json", "jsr75-pim.json")
+        into("jarscan/db")
+    }
+    from(rootProject.file("tools/jarscan/profiles/cldc11-midp20-nokiaui-jsr.json")) {
+        rename { "profile.json" }
+        into("jarscan")
+    }
+    from(rootProject.file("profiles/jlkvm-nokia.json")) { into("jlkvm") }
+    into(jlkvmAssets)
+}
+val copyRomAssets by tasks.registering(Copy::class) {
+    dependsOn(":vm-classlib:buildRom", ":vm-classlib:buildMidpRom", ":vm-classlib:buildJsr135Rom", ":vm-classlib:buildNokiaUiRom",
+        ":vm-classlib:buildWmaRom", ":vm-classlib:buildJsr75FcRom", ":vm-classlib:buildJsr75PimRom")
+    from(rootProject.file("vm-classlib/build/rom")) { include("rom*.jar"); into("jlkvm/rom") }
+    into(jlkvmAssets)
+}
+android.sourceSets.getByName("main").assets.srcDir(jlkvmAssets)
+tasks.matching {
+    it.name != "copyJarscanAssets" && it.name != "copyRomAssets" &&
+        ((it.name.startsWith("merge") && it.name.endsWith("Assets")) || it.name.contains("Lint", ignoreCase = true))
+}.configureEach {
+    dependsOn(copyJarscanAssets, copyRomAssets)
+}
+
 dependencies {
-    implementation(projects.dexlib)
+    // D17: the dex converter is called only from app/src/debug (LegacyDex)
+    implementation(projects.dexlib)   // also holds zip4j and ru.woesss.util used everywhere; the dx converter in it is reachable only from the debug-only LegacyDex (R8 drops it in release)
+    implementation(projects.hostAndroid)
+    implementation(projects.tools.jarscan)
+    implementation(projects.tools.apiSigs)
 
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)

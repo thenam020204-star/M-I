@@ -239,6 +239,11 @@ public class InstallerDialog extends DialogFragment {
 			if (drawable != null) {
 				dialog.setIcon(drawable);
 			}
+			String scan = installer.getScanReport();
+			if (scan != null) {
+				// PLAN T34: the jarscan report of the game just installed
+				dialog.setMessage(scan);
+			}
 			btnOk.setText(R.string.START_CMD);
 			btnOk.setOnClickListener(v -> {
 				Config.startApp(v.getContext(), app.getTitle(), app.getPathExt());

@@ -51,6 +51,8 @@ public final class HeadlessRunner {
         public File fsDir;
         /** A JL-Mod data directory whose record stores are imported before the run. */
         public File importJlMod;
+        /** The filtered game-errors.log of the run (T35b); null = none. */
+        public jlkvm.host.GameErrorLog errorLog;
     }
 
     public static final class Result {
@@ -136,6 +138,10 @@ public final class HeadlessRunner {
         host.setFileSystem(res.fs);
         res.records = rs;
         host.logStream = o.log;
+        if (o.errorLog != null) {
+            host.setErrorLog(o.errorLog);
+            o.errorLog.header("device=" + profile.name + " heap=" + profile.heapBytes + " game=" + suite.attributes.get("MIDlet-Name") + " midlet=" + entry.className);
+        }
         HeadlessUi hui = new HeadlessUi();
         host.setScreenHost(hui);
         res.ui = hui;

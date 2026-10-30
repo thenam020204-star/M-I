@@ -13,4 +13,6 @@ public interface GuestServices {
     int[] pollEvent();
     /** Charges {@code bytecodes} to the running time slice (long natives must not starve other threads). */
     void charge(int bytecodes);
+    /** Host diagnostics sink (HostPlatform.log): level 1 info, 2 warning, 3 error. game-errors.log keeps tags oom / link / resource / media / vm (PLAN T35b). */
+    void log(int level, String tag, String msg);
 }

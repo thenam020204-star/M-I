@@ -194,8 +194,10 @@ public final class MidpNatives {
                 c.retInt(c.handles().alloc(factory.decode(b, 0, len), 0));
             } catch (IOException e) {
                 c.retInt(0);
+                gs.log(2, "media", "image cannot be decoded: " + mediaDesc("image/" + sniff(b), len) + " (" + e + ")");
             } catch (RuntimeException e) {
                 c.retInt(0);   // a decoder bug on hostile data must not kill the VM
+                gs.log(2, "media", "image cannot be decoded: " + mediaDesc("image/" + sniff(b), len) + " (" + e + ")");
             } } });
         r.register(LCDUI + "Image.fromRgb0([IIIZ)I", new NativeMethod() { public void invoke(NativeContext c) {
             int w = c.argInt(2), h = c.argInt(3);
@@ -277,4 +279,14 @@ public final class MidpNatives {
         for (int i = 0; i < n; i++) r[i] = h.getChar(arr, off + i);
         return r;
     }
+
+    private static String sniff(byte[] b) {
+        if (b.length >= 4 && (b[0] & 0xFF) == 0x89 && b[1] == 'P') return "png";
+        if (b.length >= 3 && (b[0] & 0xFF) == 0xFF && (b[1] & 0xFF) == 0xD8) return "jpeg";
+        if (b.length >= 3 && b[0] == 'G' && b[1] == 'I' && b[2] == 'F') return "gif";
+        if (b.length >= 2 && b[0] == 'B' && b[1] == 'M') return "bmp";
+        return "unknown";
+    }
+
+    private static String mediaDesc(String mime, int len) { return mime + ", " + len + " bytes"; }
 }

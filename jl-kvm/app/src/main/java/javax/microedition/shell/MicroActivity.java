@@ -25,6 +25,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.media.MediaScannerConnection;
@@ -105,6 +106,7 @@ public class MicroActivity extends AppCompatActivity {
 	private int menuKey;
 	private String appPath;
 	private ActivityMicroBinding binding;
+	private VmSession vmSession;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -196,7 +198,27 @@ public class MicroActivity extends AppCompatActivity {
 	@Override
 	public void onPause() {
 		hideSoftInput();
+		if (vmSession != null) {
+			vmSession.pause();
+		}
 		super.onPause();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (vmSession != null) {
+			vmSession.resume();
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		if (vmSession != null) {
+			vmSession.release();
+			vmSession = null;
+		}
+		super.onDestroy();
 	}
 
 	private void hideSoftInput() {
@@ -240,10 +262,39 @@ public class MicroActivity extends AppCompatActivity {
 		if (size == 0) {
 			showErrorDialog("No MIDlets found");
 		} else if (size == 1) {
-			microLoader.loadMidlet(midletsClassArray[0], appName);
+			launch(midletsClassArray[0]);
 		} else {
 			showMidletDialog(midletsNameArray, midletsClassArray);
 		}
+	}
+
+	/** Debug build only (D17): run the game on the old dex engine instead of the VM, to compare the two (intent extra / preference "engine_dex"). */
+	private boolean useLegacyEngine() {
+		if (!BuildConfig.DEBUG) {
+			return false;
+		}
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		return getIntent().getBooleanExtra("engine_dex", false) || sp.getBoolean("pref_engine_dex", false);
+	}
+
+	private void launch(String clazz) {
+		if (useLegacyEngine()) {
+			microLoader.loadMidlet(clazz, appName);
+			return;
+		}
+		try {
+			vmSession = new VmSession(this, new File(appPath), appName, clazz);
+			vmSession.start();
+			microLoader.noteLaunched(appName);
+		} catch (Throwable e) {
+			Log.e("MicroActivity", "VM start failed", e);
+			showErrorDialog(e.toString());
+		}
+	}
+
+	/** Hands the lifecycle of the Activity to the VM (jlkvm AmsHost): pause / resume / destroy are queued for the guest. */
+	VmSession vmSession() {
+		return vmSession;
 	}
 
 	private void showMidletDialog(String[] names, final String[] classes) {
@@ -259,7 +310,7 @@ public class MicroActivity extends AppCompatActivity {
 					}
 					sb.append("Begin app: ").append(names[n]).append(", ").append(clazz);
 					errorReporter.putCustomData(Constants.KEY_APPCENTER_ATTACHMENT, sb.toString());
-					microLoader.loadMidlet(clazz, appName);
+					launch(clazz);
 				})
 				.setOnCancelListener(d -> {
 					d.dismiss();
