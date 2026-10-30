@@ -50,6 +50,7 @@ final class Dispatcher implements EventHandler {
                 if (d != null && !d.visible) d.onShow();
                 break;
             default:
+                if (type >= EventLoop.UI_COMMAND && type <= EventLoop.UI_CUSTOM) display.uiEvent(type, a, b, c);
                 break;
         }
     }
@@ -57,26 +58,36 @@ final class Dispatcher implements EventHandler {
     private void key(Displayable d, int type, int code) {
         if (d == null || !display.foreground || !d.visible) return;
         boolean left = code == Device.key0(Device.KEY_SOFT_LEFT), right = code == Device.key0(Device.KEY_SOFT_RIGHT);
-        if (d instanceof Alert) {
-            Alert al = (Alert) d;
-            if (type == EventLoop.KEY_PRESSED && (left || right || code == Device.key0(Device.KEY_SELECT))) {
-                Command cmd = al.commandForSoftKey(left || code == Device.key0(Device.KEY_SELECT));
-                if (cmd != null && !al.implicitDismiss()) al.fire(cmd);
-                else display.dismissAlert(al);
+        if (d instanceof Canvas && !((Canvas) d).fullScreen && d.commandCount() > 0) {
+            Canvas cv = (Canvas) d;
+            int n = d.commandCount();
+            boolean pressed = type == EventLoop.KEY_PRESSED;
+            if (cv.menuOpen) {
+                // the menu (more than two commands) owns the keys until it is closed
+                if (pressed) consumedKey = code;
+                if (pressed || (type == EventLoop.KEY_REPEATED && (code == Device.key0(Device.KEY_UP) || code == Device.key0(Device.KEY_DOWN)))) {
+                    Command chosen = cv.menuKey(code);
+                    if (chosen != null) d.fire(chosen);
+                }
+                else if (consumedKey == code && type == EventLoop.KEY_RELEASED) consumedKey = Integer.MIN_VALUE;
+                return;
             }
-            return;
-        }
-        if (d instanceof Canvas && (left || right) && !((Canvas) d).fullScreen && d.commandCount() > 0) {
-            if (type == EventLoop.KEY_PRESSED) {
-                Command cmd = d.commandForSoftKey(left);
-                if (cmd != null) {
+            if (left || right) {
+                if (pressed) {
+                    Command cmd;
+                    if (n > 2) {
+                        cmd = left ? null : d.backCommand();
+                        if (left) cv.openMenu();
+                    } else {
+                        cmd = d.commandForSoftKey(left);
+                    }
                     consumedKey = code;
-                    d.fire(cmd);
+                    if (cmd != null) d.fire(cmd);
+                    return;
+                } else if (consumedKey == code) {
+                    if (type == EventLoop.KEY_RELEASED) consumedKey = Integer.MIN_VALUE;
                     return;
                 }
-            } else if (consumedKey == code) {
-                if (type == EventLoop.KEY_RELEASED) consumedKey = Integer.MIN_VALUE;
-                return;
             }
         }
         d.onKey(type, code);

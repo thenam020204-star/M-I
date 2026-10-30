@@ -34,6 +34,17 @@ public class Graphics {
 
     private final boolean isScreen;
 
+    /** Back to the state of a new Graphics (Canvas reuses its screen Graphics for every paint: no allocation per frame). */
+    void reset() {
+        color = 0;
+        tx = ty = 0;
+        cx0 = cy0 = 0;
+        cx1 = tw;
+        cy1 = th;
+        stroke = SOLID;
+        font = Font.getDefaultFont();
+    }
+
     public void translate(int x, int y) {
         tx += x;
         ty += y;
@@ -188,18 +199,21 @@ public class Graphics {
     }
 
     public void drawString(String str, int x, int y, int anchor) {
-        char[] c = str.toCharArray();
-        text(c, 0, c.length, x, y, anchor);
+        textStr(str, 0, str.length(), x, y, anchor);
     }
 
     public void drawSubstring(String str, int offset, int len, int x, int y, int anchor) {
         if (offset < 0 || len < 0 || offset > str.length() - len) throw new StringIndexOutOfBoundsException();
-        char[] c = str.toCharArray();
-        text(c, offset, len, x, y, anchor);
+        textStr(str, offset, len, x, y, anchor);
     }
 
+    private char[] one;
+
     public void drawChar(char character, int x, int y, int anchor) {
-        text(new char[] {character}, 0, 1, x, y, anchor);
+        char[] c = one;
+        if (c == null) one = c = new char[1];
+        c[0] = character;
+        text(c, 0, 1, x, y, anchor);
     }
 
     public void drawChars(char[] data, int offset, int length, int x, int y, int anchor) {
@@ -221,12 +235,26 @@ public class Graphics {
         drawChars0(target, color, cx0, cy0, cx1, cy1, font.key(), c, off, len, x + tx, y + ty);
     }
 
+    /** Same as text() for a String: the host reads the characters itself, so nothing is allocated per call. */
+    private void textStr(String str, int off, int len, int x, int y, int anchor) {
+        int h = anchor & (LEFT | HCENTER | RIGHT), v = anchor & (TOP | BASELINE | BOTTOM | VCENTER);
+        if ((h != LEFT && h != HCENTER && h != RIGHT) || (v != TOP && v != BASELINE && v != BOTTOM) || (anchor & ~(h | v)) != 0)
+            throw new IllegalArgumentException("anchor");
+        if (empty() || len == 0) return;
+        int w = font.advanceOf(str, off, len);
+        if (h == HCENTER) x -= w >> 1;
+        else if (h == RIGHT) x -= w;
+        if (v == BASELINE) y -= font.getBaselinePosition();
+        else if (v == BOTTOM) y -= font.getHeight();
+        drawStr0(target, color, cx0, cy0, cx1, cy1, font.key(), str, off, len, x + tx, y + ty);
+    }
+
     public void drawImage(Image img, int x, int y, int anchor) {
         if (img == null) throw new NullPointerException();
         int w = img.getWidth(), h = img.getHeight();
-        int[] p = place(x, y, w, h, anchor, false);
+        int px = placeX(x, w, anchor), py = placeY(y, h, anchor);
         if (empty()) return;
-        drawRegion0(target, cx0, cy0, cx1, cy1, img.peer, 0, 0, w, h, 0, p[0] + tx, p[1] + ty);
+        drawRegion0(target, cx0, cy0, cx1, cy1, img.peer, 0, 0, w, h, 0, px + tx, py + ty);
     }
 
     public void drawRegion(Image src, int x_src, int y_src, int width, int height, int transform, int x_dest, int y_dest, int anchor) {
@@ -236,9 +264,9 @@ public class Graphics {
                 || x_src + width < 0 || y_src + height < 0) throw new IllegalArgumentException("region");
         if (src == image) throw new IllegalArgumentException("source is the destination");
         boolean swap = transform >= 4;
-        int[] p = place(x_dest, y_dest, swap ? height : width, swap ? width : height, anchor, false);
+        int px = placeX(x_dest, swap ? height : width, anchor), py = placeY(y_dest, swap ? width : height, anchor);
         if (empty() || width == 0 || height == 0) return;
-        drawRegion0(target, cx0, cy0, cx1, cy1, src.peer, x_src, y_src, width, height, transform, p[0] + tx, p[1] + ty);
+        drawRegion0(target, cx0, cy0, cx1, cy1, src.peer, x_src, y_src, width, height, transform, px + tx, py + ty);
     }
 
     public void drawRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height, boolean processAlpha) {
@@ -258,21 +286,22 @@ public class Graphics {
         if (isScreen) throw new IllegalStateException("copyArea needs an Image destination");
         if (width < 0 || height < 0 || x_src + tx < 0 || y_src + ty < 0 || x_src + tx + width > tw || y_src + ty + height > th)
             throw new IllegalArgumentException("region");
-        int[] p = place(x_dest, y_dest, width, height, anchor, false);
+        int px = placeX(x_dest, width, anchor), py = placeY(y_dest, height, anchor);
         if (empty() || width == 0 || height == 0) return;
-        copyArea0(target, cx0, cy0, cx1, cy1, x_src + tx, y_src + ty, width, height, p[0] + tx, p[1] + ty);
+        copyArea0(target, cx0, cy0, cx1, cy1, x_src + tx, y_src + ty, width, height, px + tx, py + ty);
     }
 
-    /** Anchor handling of images / copyArea (BASELINE is invalid there): returns the top-left corner. */
-    private static int[] place(int x, int y, int w, int h, int anchor, boolean text) {
+    /** Anchor handling of images / copyArea (BASELINE is invalid there): x / y of the top-left corner. The checks are in placeX (called first). */
+    private static int placeX(int x, int w, int anchor) {
         int hh = anchor & (LEFT | HCENTER | RIGHT), vv = anchor & (TOP | VCENTER | BOTTOM);
         if ((hh != LEFT && hh != HCENTER && hh != RIGHT) || (vv != TOP && vv != VCENTER && vv != BOTTOM) || (anchor & ~(hh | vv)) != 0)
             throw new IllegalArgumentException("anchor");
-        if (hh == HCENTER) x -= w >> 1;
-        else if (hh == RIGHT) x -= w;
-        if (vv == VCENTER) y -= h >> 1;
-        else if (vv == BOTTOM) y -= h;
-        return new int[] {x, y};
+        return hh == HCENTER ? x - (w >> 1) : hh == RIGHT ? x - w : x;
+    }
+
+    private static int placeY(int y, int h, int anchor) {
+        int vv = anchor & (TOP | VCENTER | BOTTOM);
+        return vv == VCENTER ? y - (h >> 1) : vv == BOTTOM ? y - h : y;
     }
 
     private static native void drawLine0(int t, int rgb, int cx0, int cy0, int cx1, int cy1, int x1, int y1, int x2, int y2, int stroke);
@@ -290,6 +319,8 @@ public class Graphics {
     private static native void fillArc0(int t, int rgb, int cx0, int cy0, int cx1, int cy1, int x, int y, int w, int h, int start, int arc);
 
     private static native void fillTriangle0(int t, int rgb, int cx0, int cy0, int cx1, int cy1, int x1, int y1, int x2, int y2, int x3, int y3);
+
+    private static native void drawStr0(int t, int rgb, int cx0, int cy0, int cx1, int cy1, int fontKey, String s, int off, int len, int x, int y);
 
     private static native void drawChars0(int t, int rgb, int cx0, int cy0, int cx1, int cy1, int fontKey, char[] c, int off, int len, int x, int y);
 

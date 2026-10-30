@@ -4,7 +4,7 @@
  */
 package javax.microedition.lcdui;
 
-/** Model part of Gauge (values and their validation); rendering is T24. */
+
 public class Gauge extends Item {
     public static final int INDEFINITE = -1;
     public static final int CONTINUOUS_IDLE = 0, INCREMENTAL_IDLE = 1, CONTINUOUS_RUNNING = 2, INCREMENTAL_UPDATING = 3;
@@ -33,6 +33,7 @@ public class Gauge extends Item {
         } else {
             this.value = value < 0 ? 0 : value > maxValue ? maxValue : value;
         }
+        changed();
     }
 
     public int getValue() {
@@ -51,6 +52,7 @@ public class Gauge extends Item {
             if (wasIndefinite) value = 0;
             if (value > maxValue) value = maxValue;
         }
+        changed();
     }
 
     public int getMaxValue() {
@@ -59,6 +61,37 @@ public class Gauge extends Item {
 
     public boolean isInteractive() {
         return interactive;
+    }
+
+    int uiKind() {
+        return ScreenCodec.I_GAUGE;
+    }
+
+    void encode() {
+        ScreenCodec.w(interactive ? 1 : 0);
+        ScreenCodec.w(maxValue);
+        ScreenCodec.w(value);
+    }
+
+    int calcPrefW() {
+        return availW();
+    }
+
+    int calcPrefH() {
+        return labelH() + Font.getDefaultFont().getHeight();
+    }
+
+    int calcMinW() {
+        return Math.min(availW(), 40);
+    }
+
+    int calcMinH() {
+        return calcPrefH();
+    }
+
+    /** Event thread: the user moved an interactive gauge. */
+    void hostValue(int v) {
+        if (interactive && maxValue != INDEFINITE) value = v < 0 ? 0 : v > maxValue ? maxValue : v;
     }
 
     public void setLabel(String label) {

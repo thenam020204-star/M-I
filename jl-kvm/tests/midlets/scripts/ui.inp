@@ -1,0 +1,39 @@
+# T24: drives tests/midlets/ui through the HeadlessUi verbs
+100 ui dump list
+150 ui select 1
+200 ui dump form
+250 ui item 0 cmd Press
+300 ui item 1 text xyz
+350 ui item 2 choice 2
+400 ui item 3 choice 0
+450 ui item 3 choice 2
+500 ui item 3 choice 0
+550 ui item 4 gauge 7
+600 ui item 5 date 86400000
+650 ui item 7 custom 4 53
+700 ui item 7 custom 32 65546
+750 ui item 7 custom 1 2
+800 ui item 7 custom 2 6
+850 ui dump form2
+900 ui cmd Back
+950 ui dump box
+1000 ui text 12x
+1050 ui text 456
+1100 ui dump box2
+1150 ui cmd OK
+1200 ui dump alert
+1250 ui dismiss
+1300 ui dump canvas
+1350 key tap -6
+1400 shot menu
+1450 key tap -2
+1500 key tap -5
+1550 key tap -6
+1600 key tap -7
+1650 key tap 53
+1700 key tap -6
+1750 key tap -2
+1800 key tap -2
+1850 key tap -2
+1900 key tap -5
+2000 key tap -7

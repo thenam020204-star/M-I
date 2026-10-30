@@ -1,0 +1,33 @@
+> one-shot before: runs=0
+> one-shot after: runs=1 delayed>=150=true scheduledTime==start(approx)=true
+> one-shot cancel after run returns false
+> rate: scheduled times 100 100 100 first=true
+> rate: run 2 and 3 caught up (started within 90 ms of the previous): true true
+> rate: cancel in run returned true
+> delay: next run is due period after the START of the previous one (already past after a 250 ms run, so it follows at once): gap true
+> delay: gap start3-start2 >= 100: true true
+> delay: scheduledExecutionTime == start (approx): true
+> cancel scheduled: true second cancel: false
+> cancelled task ran=0 other ran=1
+> schedule cancelled task -> IllegalStateException
+> schedule task twice -> IllegalStateException
+> after Timer.cancel runs=0 task cancel returns true
+> schedule on cancelled timer -> IllegalStateException
+> scheduleAtFixedRate on cancelled timer -> IllegalStateException
+> task behind a throwing task ran=0
+> schedule after a task threw -> IllegalStateException
+> negative delay -> IllegalArgumentException
+> negative delay (periodic) -> IllegalArgumentException
+> zero period -> IllegalArgumentException
+> negative period -> IllegalArgumentException
+> zero period (Date) -> IllegalArgumentException
+> negative time -> IllegalArgumentException
+> null task -> NullPointerException
+> null date -> NullPointerException
+> past date ran=1 within 150ms=true
+> future date before=0
+> future date after=1
+> Date fixed rate grid: 80 80
+> order of delays 400,100,250: abc
+> independent timers: quick ran=1
+> done

@@ -1,0 +1,4 @@
+mode: oracle
+source: MIDP 2.0 javadoc of TiledLayer (cells, animated tiles, static tile set changes) and FreeJ2ME (paint checksums, cell rules identical)
+diverges: microemu
+notes: MicroEmulator: ArrayIndexOutOfBoundsException for cell ranges, setStaticTileSet(null) accepted, a smaller tile set keeps cells and animated tiles. The animated tile index errors are IndexOutOfBoundsException (both oracles; jl-kvm follows them). A mutable tile image is NOT copied (both oracles; UNVERIFIED on devices).

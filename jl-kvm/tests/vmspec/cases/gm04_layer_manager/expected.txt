@@ -1,0 +1,22 @@
+> size / order -> ok 3 truetrue
+> index 0 is on top: RRRRR......./RRRRR......./RRRRRGG...../RRRRRGG...../RRRRRGGBB.../..GGGGGBB.../..GGGGGBB.../....BBBBB.../
+> insert b at 0 -> ok 3 truetruetrue
+> after insert: RRRRR......./RRRRR......./RRRRRGG...../RRRRRGG...../RRRRBBBBB.../..GGBBBBB.../..GGBBBBB.../....BBBBB.../
+> append moves an existing layer to the end -> ok 3 true
+> insert at size -> IndexOutOfBoundsException
+> insert index > size after the removal -> IndexOutOfBoundsException
+> insert negative index -> IndexOutOfBoundsException
+> insert null -> NullPointerException
+> append null -> NullPointerException
+> remove null -> NullPointerException
+> remove a layer that is not in the manager -> ok 1
+> remove -> ok 1 true
+> getLayerAt out of range -> IndexOutOfBoundsException
+> getLayerAt negative -> IndexOutOfBoundsException
+> setViewWindow negative -> IllegalArgumentException
+> paint(null) -> NullPointerException
+> view window (1,1,6,4) at (3,2): ............/............/...RRRR...../...RRRRGG.../...RRRRGG.../...RRRRGG.../............/............/
+> huge view window at (2,1): ............/..RRRRR...../..RRRRR...../..RRRRRGG.../..RRRRRGG.../..RRRRRGGBB./....GGGGGBB./....GGGGGBB./
+> invisible layer skipped, translate / clip: ............/............/............/...GGGGG..../...GGGGG..../...GGGGGBB../...GGGGGBB../............/
+> state restored: translate 1,1 clip 1,1,8x5
+> done

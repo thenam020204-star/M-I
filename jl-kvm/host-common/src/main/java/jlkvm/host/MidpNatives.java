@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Map;
 import jlkvm.DeviceProfile;
 import jlkvm.heap.Heap;
+import jlkvm.host.ui.ScreenHost;
+import jlkvm.host.ui.ScreenModel;
 import jlkvm.host.ui.Surface;
 import jlkvm.host.ui.SurfaceFactory;
 import jlkvm.natives.Blocker;
@@ -22,10 +24,16 @@ public final class MidpNatives {
     private final Map<String, String> appProps;
     private final SurfaceFactory factory;
     private final PlatformServices svc;
+    private final ScreenHost ui;
     /** Set by EventLoop.wake0: a guest thread posted a job while the event thread may be blocked. */
     private boolean wake;
 
     public MidpNatives(DeviceProfile profile, Map<String, String> appProperties, SurfaceFactory factory, PlatformServices svc) {
+        this(profile, appProperties, factory, svc, ScreenHost.NONE);
+    }
+
+    public MidpNatives(DeviceProfile profile, Map<String, String> appProperties, SurfaceFactory factory, PlatformServices svc, ScreenHost ui) {
+        this.ui = ui;
         this.profile = profile;
         this.appProps = appProperties;
         this.factory = factory;
@@ -99,11 +107,35 @@ public final class MidpNatives {
         r.register(LCDUI + "Display.present0(I)V", new NativeMethod() { public void invoke(NativeContext c) {
             svc.present(surf(c, c.argInt(0)));
             gs.charge(profile.screenWidth * profile.screenHeight / 256); } });
+        // ------------------------------------------------------------ high-level screens (T24)
+        r.register("jlkvm/internal/Ui.sync0([II[Ljava/lang/String;I)V", new NativeMethod() { public void invoke(NativeContext c) {
+            Heap h = c.heap();
+            int n = c.argInt(1), ns = c.argInt(3);
+            int[] d = ints(h, c.argRef(0), 0, n);
+            String[] s = new String[ns];
+            for (int i = 0; i < ns; i++) s[i] = gs.string(h.getRefElem(c.argRef(2), i));
+            ScreenModel m;
+            try {
+                m = ScreenModel.decode(d, s);
+            } catch (IllegalArgumentException e) {
+                throw new jlkvm.link.VmThrow("java/lang/IllegalStateException", "bad screen description: " + e.getMessage());
+            }
+            ui.screen(m);
+            gs.charge(n / 4 + 8); } });
+        r.register("jlkvm/internal/Ui.text0(I)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
+            String t = ui.text(c.argInt(0));
+            c.retRef(t == null ? 0 : gs.newString(t)); } });
+        r.register("jlkvm/internal/Ui.traverse0(IIIIIII)V", new NativeMethod() { public void invoke(NativeContext c) {
+            ui.traverseResult(c.argInt(0), c.argInt(1), c.argInt(2) != 0, c.argInt(3), c.argInt(4), c.argInt(5), c.argInt(6)); } });
         // ------------------------------------------------------------ font
         r.register(LCDUI + "Font.metrics0(I)I", new NativeMethod() { public void invoke(NativeContext c) { c.retInt(factory.fontMetrics(c.argInt(0))); } });
         r.register(LCDUI + "Font.charWidth0(IC)I", new NativeMethod() { public void invoke(NativeContext c) { c.retInt(factory.charWidth(c.argInt(0), (char) c.argInt(1))); } });
         r.register(LCDUI + "Font.charsWidth0(I[CII)I", new NativeMethod() { public void invoke(NativeContext c) {
             c.retInt(factory.charsWidth(c.argInt(0), chars(c.heap(), c.argRef(1), c.argInt(2), c.argInt(3)), 0, c.argInt(3))); } });
+        r.register(LCDUI + "Font.strWidth0(ILjava/lang/String;II)I", new NativeMethod() { public void invoke(NativeContext c) {
+            String str = gs.string(c.argRef(1));
+            int off = c.argInt(2), len = c.argInt(3);
+            c.retInt(factory.charsWidth(c.argInt(0), str.substring(off, off + len).toCharArray(), 0, len)); } });
         // ------------------------------------------------------------ image
         r.register(LCDUI + "Image.create0(II)I", new NativeMethod() { public void invoke(NativeContext c) {
             int w = c.argInt(1), h = c.argInt(2);
@@ -167,6 +199,11 @@ public final class MidpNatives {
         r.register(LCDUI + "Graphics.drawChars0(IIIIIII[CIIII)V", new NativeMethod() { public void invoke(NativeContext c) {
             int len = c.argInt(9);
             char[] ch = chars(c.heap(), c.argRef(7), c.argInt(8), len);
+            surf(c, c.argInt(0)).drawChars(c.argInt(1), c.argInt(2), c.argInt(3), c.argInt(4), c.argInt(5), c.argInt(6), ch, 0, len, c.argInt(10), c.argInt(11));
+            gs.charge(len * 2); } });
+        r.register(LCDUI + "Graphics.drawStr0(IIIIIIILjava/lang/String;IIII)V", new NativeMethod() { public void invoke(NativeContext c) {
+            int off = c.argInt(8), len = c.argInt(9);
+            char[] ch = gs.string(c.argRef(7)).substring(off, off + len).toCharArray();
             surf(c, c.argInt(0)).drawChars(c.argInt(1), c.argInt(2), c.argInt(3), c.argInt(4), c.argInt(5), c.argInt(6), ch, 0, len, c.argInt(10), c.argInt(11));
             gs.charge(len * 2); } });
         r.register(LCDUI + "Graphics.drawRegion0(IIIIIIIIIIIII)V", new NativeMethod() { public void invoke(NativeContext c) {

@@ -34,7 +34,7 @@ public class DebugHooksTest {
         final java.util.List<String> logs = new java.util.ArrayList<String>();
         final long[] gcs = new long[1];
         RunJar.run(ROM.getPath(), ex.getPath(), false, false, false, true, 60, new PrintStream(new ByteArrayOutputStream()), 0, false, 32L << 20,
-                new RunJar.Inspector() { public void inspect(Vm vm) { report[0] = vm.debug.report(10); logs.addAll(((TempHost) vm.host).logs); } });
+                new RunJar.Inspector() { public void inspect(Vm vm) { report[0] = vm.debug.report(40); logs.addAll(((TempHost) vm.host).logs); } });
         StringBuilder all = new StringBuilder();
         for (String l : logs) all.append(l).append('\n');
         String log = all.toString();

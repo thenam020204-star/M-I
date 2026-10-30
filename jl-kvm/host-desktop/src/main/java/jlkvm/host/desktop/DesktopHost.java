@@ -10,6 +10,7 @@ import jlkvm.DeviceProfile;
 import jlkvm.HostPlatform;
 import jlkvm.host.MidpNatives;
 import jlkvm.host.PlatformServices;
+import jlkvm.host.ui.ScreenHost;
 import jlkvm.host.ui.SurfaceFactory;
 import jlkvm.natives.NativeContext;
 import jlkvm.natives.NativeMethod;
@@ -24,6 +25,7 @@ public final class DesktopHost implements HostPlatform {
     private final Map<String, String> appProps;
     private final PlatformServices services;
     private final SurfaceFactory surfaces;
+    private ScreenHost ui = ScreenHost.NONE;
     /** Everything the VM logged ("[tag] message"), for tests and the CLI report. */
     public final List<String> logs = Collections.synchronizedList(new ArrayList<String>());
     public PrintStream logStream;
@@ -34,6 +36,9 @@ public final class DesktopHost implements HostPlatform {
                        SurfaceFactory surfaces, PrintStream guestOut) {
         this.rom = rom; this.clock = clock; this.profile = profile; this.appProps = appProps; this.services = services; this.surfaces = surfaces; this.out = guestOut;
     }
+
+    /** The high-level UI (Form / List / TextBox / Alert); set before the VM runs. */
+    public void setScreenHost(ScreenHost ui) { this.ui = ui; }
 
     public long hostNanoTime() { return clock.nanos(); }
 
@@ -59,6 +64,6 @@ public final class DesktopHost implements HostPlatform {
                 out.write(b, 0, b.length);
                 out.flush();
             } } });
-        new MidpNatives(profile, appProps, surfaces, services).register(r);
+        new MidpNatives(profile, appProps, surfaces, services, ui).register(r);
     }
 }

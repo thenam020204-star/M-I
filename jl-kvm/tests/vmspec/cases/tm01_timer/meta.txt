@@ -1,0 +1,6 @@
+mode: oracle
+source: MIDP 2.0 javadoc of java.util.Timer/TimerTask (exceptions, fixed-delay vs fixed-rate, cancel semantics); compared with MicroEmulator 2.0.4 and FreeJ2ME-Plus (both use the JDK Timer in real time, so only order and wide-margin inequalities are printed)
+no-gc-stress: yes
+notes: MicroEmulator ships its own simplistic Timer (no argument checks, no IllegalStateException, runs fixed-rate on the wrong grid, cancel results differ, a throwing task does not end the timer) - recorded from FreeJ2ME (JDK Timer, the J2SE reference of the MIDP javadoc). real-time margins are wide (>= 90 ms) because the oracles are not deterministic; "# " lines (measured times) are compared between runs only in deterministic mode by vm-core TimerTest. no-gc-stress because gc-stress slows the 100 ms margins.
+diverges: microemu
+realtime: yes (the case measures wall-clock intervals; vm-core TimerTest runs it on the virtual clock)

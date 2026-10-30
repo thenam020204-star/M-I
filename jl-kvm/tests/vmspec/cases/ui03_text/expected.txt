@@ -1,0 +1,62 @@
+> TextField ctor ok -> ok hi
+> TextField ctor null text -> ok []
+> TextField ctor maxSize 0 -> IllegalArgumentException
+> TextField ctor text longer than maxSize -> IllegalArgumentException
+> TextField ctor bad constraints 6 -> IllegalArgumentException
+> TextField ctor bad constraint bit -> IllegalArgumentException
+> TextField ctor NUMERIC with letters -> IllegalArgumentException
+> TextField ctor NUMERIC -12 -> ok -12
+> TextField ctor NUMERIC 1-2 -> IllegalArgumentException
+> TextField ctor DECIMAL -1.5 -> ok -1.5
+> TextField ctor DECIMAL 1.5.2 -> IllegalArgumentException
+> TextField ctor NUMERIC with '.' -> IllegalArgumentException
+> TextField ctor PHONENUMBER +49 #1* -> ok +490#1*
+> TextField ctor PHONENUMBER letters -> IllegalArgumentException
+> TextField ctor EMAILADDR / URL / flags -> ok ok
+> TextBox ctor ok -> ok hi
+> TextBox ctor null text -> ok []
+> TextBox ctor maxSize 0 -> IllegalArgumentException
+> TextBox ctor text longer than maxSize -> IllegalArgumentException
+> TextBox ctor bad constraints 6 -> IllegalArgumentException
+> TextBox ctor bad constraint bit -> IllegalArgumentException
+> TextBox ctor NUMERIC with letters -> IllegalArgumentException
+> TextBox ctor NUMERIC -12 -> ok -12
+> TextBox ctor NUMERIC 1-2 -> IllegalArgumentException
+> TextBox ctor DECIMAL -1.5 -> ok -1.5
+> TextBox ctor DECIMAL 1.5.2 -> IllegalArgumentException
+> TextBox ctor NUMERIC with '.' -> IllegalArgumentException
+> TextBox ctor PHONENUMBER +49 #1* -> ok +490#1*
+> TextBox ctor PHONENUMBER letters -> IllegalArgumentException
+> TextBox ctor EMAILADDR / URL / flags -> ok ok
+> size / maxSize / constraints -> ok 5 8 0 5 8
+> setString -> ok abc
+> setString null empties -> ok [] 0
+> setString too long -> IllegalArgumentException
+> insert in the middle -> ok abcd
+> insert position -3 -> 0 -> ok Xabcd
+> insert position 99 -> end -> ok XabcdY
+> insert exceeding maxSize -> IllegalArgumentException
+> insert null -> NullPointerException
+> insert chars -> ok bc
+> insert chars bad range -> ArrayIndexOutOfBoundsException
+> insert chars null -> NullPointerException
+> delete -> ok aef
+> delete bad range -> StringIndexOutOfBoundsException
+> delete negative -> StringIndexOutOfBoundsException
+> getChars -> ok 3 aef
+> getChars too short -> ArrayIndexOutOfBoundsException
+> getChars null -> NullPointerException
+> setChars -> ok yz
+> setChars null empties -> ok []
+> setChars bad range -> ArrayIndexOutOfBoundsException
+> setMaxSize(3) truncates -> ok 3 abc 3
+> setMaxSize(0) -> IllegalArgumentException
+> setMaxSize(100) -> ok true
+> setConstraints keeps matching text -> ok 123
+> setConstraints clears text that no longer matches -> ok []
+> setConstraints bad -> IllegalArgumentException
+> setString violating constraints -> IllegalArgumentException
+> setInitialInputMode -> ok ok
+> TextBox title / ticker -> ok newtk
+> TextBox insert / delete -> ok 3ab45
+> done

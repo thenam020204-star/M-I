@@ -4,7 +4,7 @@
  */
 package javax.microedition.lcdui;
 
-/** Base of the high-level screens (T24 adds Form, List, TextBox). */
+/** Base of the high-level screens (Form, List, TextBox, Alert): model in the guest, presentation by the host (docs/midp.md section 6). */
 public abstract class Screen extends Displayable {
     Screen() {
     }

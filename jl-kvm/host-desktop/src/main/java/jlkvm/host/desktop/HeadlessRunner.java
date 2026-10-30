@@ -45,6 +45,7 @@ public final class HeadlessRunner {
         public String stdout;
         public final Map<String, String> shots = new LinkedHashMap<String, String>();
         public RecordingServices services;
+        public HeadlessUi ui;
         public Vm vm;
         public DesktopHost host;
         public long virtualMs;
@@ -86,6 +87,9 @@ public final class HeadlessRunner {
         res.services = svc;
         DesktopHost host = new DesktopHost(new RomLayers(romDir, profile), clock, profile, cfg.appProperties, svc, new SoftRaster(), out);
         host.logStream = o.log;
+        HeadlessUi hui = new HeadlessUi();
+        host.setScreenHost(hui);
+        res.ui = hui;
         res.host = host;
         Vm vm = Vm.create(cfg, host, app, profile);
         res.vm = vm;
@@ -114,6 +118,7 @@ public final class HeadlessRunner {
                 script.take();
                 if (e.type == ScriptedInput.QUIT) { quit = true; break; }
                 if (e.type == ScriptedInput.SHOT) { settle(vm); res.shots.put(e.name, shotHash(svc)); }
+                else if (e.type == ScriptedInput.UI) { settle(vm); if (hui.perform(e.name, vm)) posted = true; }
                 else { vm.postEvent(e.type, e.a, e.b, 0); posted = true; }
             }
             if (posted) continue;   // let the guest take the input before anything else is decided
@@ -174,6 +179,8 @@ public final class HeadlessRunner {
         o.out = System.out;
         o.log = System.err;
         Result r = run(o);
+        for (String d : r.ui.dumps) for (String l : d.split("\n")) System.out.println("# ui " + l);
+        for (String e : r.ui.errors) System.out.println("# ui error: " + e);
         for (Map.Entry<String, String> s : r.shots.entrySet()) System.out.println("# shot " + s.getKey() + " " + s.getValue());
         System.out.println("# ended: " + new String[] {"exited", "idle", "script-end", "timeout"}[r.exitKind] + " at " + r.virtualMs + " ms, frames=" + r.services.frames);
         System.exit(r.exitKind == Result.TIMEOUT ? 124 : 0);

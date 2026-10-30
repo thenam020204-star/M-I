@@ -1,0 +1,84 @@
+list
+screen LIST title="Menu"
+  command "Exit" type=7 prio=1
+  command "" type=1 prio=0 select
+  choice IMPLICIT fit=0
+    [0] *"Alpha"
+    [1]  "Beta"
+    [2]  "Gamma"
+form
+screen FORM title="Form"
+  command "Back" type=2 prio=1
+  command "One" type=1 prio=2
+  item 0 STRING label="Act"
+    text="Press me" mode=2
+    command "Press" type=8 prio=1 default
+  item 1 TEXT label="Name"
+    text "abc" constraints=0x0 max=10 caret=3
+  item 2 CHOICE label="One of"
+    choice EXCLUSIVE fit=0
+      [0] *"a"
+      [1]  "b"
+      [2]  "c"
+  item 3 CHOICE label="Some of"
+    choice MULTIPLE fit=0
+      [0]  "x"
+      [1]  "y"
+      [2]  "z"
+  item 4 GAUGE label="Level"
+    gauge interactive value=3/10
+  item 5 DATE label="When"
+    date mode=3 value=null
+  item 6 SPACER label=null
+    spacer 5x7
+  item 7 CUSTOM label="Custom"
+    custom content=40x20 modes=31
+  item 8 STRING label=null
+    text="plain text" mode=0
+form2
+screen FORM title="Form"
+  command "Back" type=2 prio=1
+  command "One" type=1 prio=2
+  item 0 STRING label="Act"
+    text="Press me" mode=2
+    command "Press" type=8 prio=1 default
+  item 1 TEXT label="Name"
+    text "xyz" constraints=0x0 max=10 caret=3
+  item 2 CHOICE label="One of"
+    choice EXCLUSIVE fit=0
+      [0]  "a"
+      [1]  "b"
+      [2] *"c"
+  item 3 CHOICE label="Some of"
+    choice MULTIPLE fit=0
+      [0]  "x"
+      [1]  "y"
+      [2] *"z"
+  item 4 GAUGE label="Level"
+    gauge interactive value=7/10
+  item 5 DATE label="When"
+    date mode=3 value=86400000
+  item 6 SPACER label=null
+    spacer 5x7
+  item 7 CUSTOM label="Custom"
+    custom content=40x20 modes=31
+  item 8 STRING label=null
+    text="plain text" mode=0
+box
+screen TEXTBOX title="Number"
+  command "OK" type=4 prio=1
+  text "12" constraints=0x2 max=8 caret=2
+box2
+screen TEXTBOX title="Number"
+  command "OK" type=4 prio=1
+  text "456" constraints=0x2 max=8 caret=2
+alert
+screen ALERT title="Done"
+  command "Done" type=4 prio=0 dismiss
+  alert type=INFO text="All fine" timeout=-2 modal
+canvas
+screen CANVAS title=null
+  command "Exit" type=7 prio=1
+  command "One" type=1 prio=2
+  command "Two" type=1 prio=3
+  command "Three" type=1 prio=4

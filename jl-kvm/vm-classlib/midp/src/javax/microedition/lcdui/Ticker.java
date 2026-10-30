@@ -15,6 +15,7 @@ public class Ticker {
     public void setString(String str) {
         if (str == null) throw new NullPointerException();
         text = str;
+        Display.touchCurrent();
     }
 
     public String getString() {

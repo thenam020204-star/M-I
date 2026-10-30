@@ -8,6 +8,7 @@ import javax.microedition.midlet.MIDlet;
 import jlkvm.internal.Ams;
 import jlkvm.internal.Device;
 import jlkvm.internal.EventLoop;
+import jlkvm.internal.Ui;
 
 public class Display {
     public static final int LIST_ELEMENT = 1, CHOICE_GROUP_ELEMENT = 2, ALERT = 3;
@@ -21,6 +22,7 @@ public class Display {
     /** false while the application is in the background (Android onPause). */
     volatile boolean foreground = true;
     private Displayable afterAlert;
+    private int alertGen;
 
     static {
         screenW = Device.info0(Device.SCREEN_W);
@@ -105,20 +107,21 @@ public class Display {
         if (alert == null) throw new NullPointerException();
         if (nextDisplayable instanceof Alert) throw new IllegalArgumentException("nextDisplayable is an Alert");
         if (nextDisplayable == null && current == null) throw new NullPointerException();
+        final int gen;
         synchronized (this) {
-            afterAlert = nextDisplayable != null ? nextDisplayable : current;
+            afterAlert = nextDisplayable != null ? nextDisplayable : current instanceof Alert ? afterAlert : current;
+            gen = ++alertGen;
         }
         switchTo(alert);
-        int t = alert.getTimeout();
-        if (t != Alert.FOREVER && alert.implicitDismiss()) {
-            final int ms = t;
+        final int ms = alert.getTimeout();
+        if (!alert.modal()) {
             new Thread() {
                 public void run() {
                     try {
                         Thread.sleep(ms);
                     } catch (InterruptedException e) {
                     }
-                    dismissAlert(alert);
+                    if (alertGen == gen && !alert.modal()) dismissAlert(alert);
                 }
             }.start();
         }
@@ -129,6 +132,7 @@ public class Display {
         synchronized (this) {
             if (current != a) return;
             next = afterAlert;
+            alertGen++;
         }
         if (next != null) switchTo(next);
     }
@@ -150,8 +154,72 @@ public class Display {
 
     public void setCurrentItem(Item item) {
         if (item == null) throw new NullPointerException();
-        if (item.owner == null) throw new IllegalStateException("item is not owned by a Form");
-        setCurrent(item.owner);
+        if (!(item.owner instanceof Form)) throw new IllegalStateException("item is not owned by a Form");
+        Form f = (Form) item.owner;
+        f.focus = item;
+        f.touch();
+        setCurrent(f);
+    }
+
+    /** A Ticker (shared by displayables) changed: re-send the current displayable. */
+    static void touchCurrent() {
+        Display d = instance;
+        Displayable c = d == null ? null : d.current;
+        if (c != null) c.touch();
+    }
+
+    /** Event thread: an event of the host screen protocol (a = screen / item id). Stale events (other screen) are ignored. */
+    void uiEvent(int type, int a, int b, int c) {
+        Displayable d = current;
+        if (d == null || !d.visible || !foreground) return;
+        Item it;
+        switch (type) {
+            case EventLoop.UI_COMMAND:
+                if (d.sid == a) d.onUiCommand(b);
+                break;
+            case EventLoop.UI_ITEM_COMMAND:
+                it = d.findItem(a);
+                if (it != null) {
+                    Command cmd = it.findCommand(b);
+                    if (cmd != null) it.fire(cmd);
+                }
+                break;
+            case EventLoop.UI_CHOICE:
+                if (d.sid == a && d instanceof List) {
+                    ((List) d).onUiChoice(b, c != 0);
+                } else if ((it = d.findItem(a)) instanceof ChoiceGroup) {
+                    ((ChoiceGroup) it).hostSelect(b, c != 0);
+                    d.itemChanged(it);
+                }
+                break;
+            case EventLoop.UI_TEXT: {
+                String t = Ui.text0(a);
+                if (d.sid == a && d instanceof TextBox) {
+                    ((TextBox) d).onUiText(t);
+                } else if ((it = d.findItem(a)) instanceof TextField && ((TextField) it).m.hostSet(t)) {
+                    d.itemChanged(it);
+                }
+                break;
+            }
+            case EventLoop.UI_GAUGE:
+                if ((it = d.findItem(a)) instanceof Gauge && ((Gauge) it).isInteractive()) {
+                    ((Gauge) it).hostValue(b);
+                    d.itemChanged(it);
+                }
+                break;
+            case EventLoop.UI_DATE:
+            case EventLoop.UI_DATE_CLEAR:
+                if ((it = d.findItem(a)) instanceof DateField) {
+                    ((DateField) it).hostSet(type == EventLoop.UI_DATE, ((long) b << 32) | (c & 0xFFFFFFFFL));
+                    d.itemChanged(it);
+                }
+                break;
+            case EventLoop.UI_CUSTOM:
+                if ((it = d.findItem(a)) instanceof CustomItem) ((CustomItem) it).onUiEvent(b, c);
+                break;
+            default:
+                break;
+        }
     }
 
     public void callSerially(Runnable r) {

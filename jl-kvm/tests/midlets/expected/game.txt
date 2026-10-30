@@ -1,0 +1,27 @@
+> A showNotify
+> A initial buffer pixel: ffffffff
+> flush shown: true
+> A keys 2
+> A keys 0
+> A keys 4
+> A keys 24
+> A keys 20
+> A keys 0
+> A keyPressed 42 ET
+> A keys 100
+> A keyReleased 42
+> A keys 0
+> A keys 40
+> B showNotify
+> B shown: true
+> B keyPressed 49 ET
+> B keys 200
+> B keyReleased 49
+> B keys 0
+> B keyPressed 50 ET
+> B keys 2
+> B keyPressed 42 ET
+> B keyReleased 42
+> hits in 200 frames: 200
+> heap bytes allocated by 200 frames of flush / paint / collision: 0
+> final pixel: ff0000ff

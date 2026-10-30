@@ -17,6 +17,9 @@ public final class EventLoop implements Runnable {
             POINTER_RELEASED = 6, DISPLAY_SIZE = 7, REPAINT_ALL = 8;
     /** Life cycle requests of the host (Android onPause / onResume / back key): a = unconditional for DESTROY. */
     public static final int PAUSE = 20, RESUME = 21, DESTROY = 22;
+    /** Screen protocol events of the host (docs/midp.md section 6): a = screen / item id, b, c = parameters. */
+    public static final int UI_COMMAND = 30, UI_ITEM_COMMAND = 31, UI_CHOICE = 32, UI_TEXT = 33, UI_GAUGE = 34, UI_DATE = 35, UI_DATE_CLEAR = 36,
+            UI_CUSTOM = 37;
     /** Posted internally to the UI handler (the display lost / regained the foreground). */
     public static final int UI_HIDE = 100, UI_SHOW = 101;
 

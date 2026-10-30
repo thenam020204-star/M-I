@@ -14,7 +14,9 @@
 #   diverges: microemu|freej2me|...          oracles known to deviate from expected.txt (reason in notes:)
 #   jlkvm-args: extra options for run_jlkvm.sh (e.g. --noverify for jsr/ret classes)
 #   driven-by-test: <test name>   the case needs a host driver (input events...): the jar is only built here, a vm-core test runs it
+#   realtime: yes   the case measures wall-clock time: the in-process vm-core VmSpecTest skips it (run here only)
 #   no-gc-stress: yes   do not add env JLKVM_ARGS (e.g. "--gc-stress 1 --gc-verify") to this case
+#   realtime: yes   the case measures wall-clock time: the in-process vm-core VmSpecTest skips it (run here only)
 #   notes: free text
 # Exit status: 0 when every case passes, 1 otherwise.
 set -uo pipefail

@@ -5,14 +5,32 @@
 package javax.microedition.lcdui;
 
 import jlkvm.internal.Device;
+import jlkvm.internal.Access;
+import jlkvm.internal.CanvasAccess;
 import jlkvm.internal.EventLoop;
+import jlkvm.internal.KeyTap;
 
 public abstract class Canvas extends Displayable {
     public static final int KEY_NUM0 = 48, KEY_NUM1 = 49, KEY_NUM2 = 50, KEY_NUM3 = 51, KEY_NUM4 = 52, KEY_NUM5 = 53, KEY_NUM6 = 54, KEY_NUM7 = 55,
             KEY_NUM8 = 56, KEY_NUM9 = 57, KEY_STAR = 42, KEY_POUND = 35;
     public static final int UP = 1, DOWN = 6, LEFT = 2, RIGHT = 5, FIRE = 8, GAME_A = 9, GAME_B = 10, GAME_C = 11, GAME_D = 12;
 
+    static {
+        // friend access for javax.microedition.lcdui.game.GameCanvas (key states), see jlkvm.internal.Access
+        Access.canvas = new CanvasAccess() {
+            public void setTap(Object canvas, KeyTap tap) {
+                ((Canvas) canvas).tap = tap;
+            }
+        };
+    }
+
     boolean fullScreen;
+    /** Sees every key event first (GameCanvas); set through {@link Access}. */
+    KeyTap tap;
+    private Graphics gfx;
+    /** Menu of the commands (more than two): open, highlighted entry. Drawn over the canvas by the library. */
+    boolean menuOpen;
+    private int menuSel;
     private Image buffer;
     private boolean repaintPending, painting;
     private int dirtyX0, dirtyY0, dirtyX1, dirtyY1;
@@ -200,10 +218,15 @@ public abstract class Canvas extends Displayable {
         }
         try {
             int w = getWidth(), h = getHeight();
-            if (buffer == null || buffer.getWidth() != w || buffer.getHeight() != h) buffer = Image.createImage(w, h);
-            Graphics g = new Graphics(buffer, true);
+            if (buffer == null || buffer.getWidth() != w || buffer.getHeight() != h) {
+                buffer = Image.createImage(w, h);
+                gfx = new Graphics(buffer, true);
+            }
+            Graphics g = gfx;
+            g.reset();
             g.setClip(x0, y0, x1 - x0, y1 - y0);
             paint(g);
+            if (menuOpen) paintMenu(g, w, h);
             Display.present(buffer);
         } catch (Throwable t) {
             t.printStackTrace();
@@ -248,11 +271,13 @@ public abstract class Canvas extends Displayable {
             t.printStackTrace();
         }
         visible = true;
+        sendNow();
         repaint();
     }
 
     void onHide() {
         visible = false;
+        menuOpen = false;
         try {
             hideNotify();
         } catch (Throwable t) {
@@ -263,7 +288,76 @@ public abstract class Canvas extends Displayable {
         }
     }
 
+    /** Commands the menu lists: all except the one the right soft key takes. */
+    private Command menuCommand(int i) {
+        Command back = backCommand();
+        synchronized (commands) {
+            for (int k = 0; k < commands.size(); k++) {
+                Command c = (Command) commands.elementAt(k);
+                if (c == back) continue;
+                if (i-- == 0) return c;
+            }
+        }
+        return null;
+    }
+
+    private int menuSize() {
+        int n = commandCount();
+        return backCommand() != null ? n - 1 : n;
+    }
+
+    void openMenu() {
+        menuOpen = true;
+        menuSel = 0;
+        repaint();
+    }
+
+    /** Event thread: a key while the menu is open. @return the command to fire, or null (the menu stays open or was closed). */
+    Command menuKey(int code) {
+        int n = menuSize();
+        if (code == Device.key0(Device.KEY_UP)) {
+            menuSel = menuSel == 0 ? n - 1 : menuSel - 1;
+        } else if (code == Device.key0(Device.KEY_DOWN)) {
+            menuSel = menuSel + 1 >= n ? 0 : menuSel + 1;
+        } else if (code == Device.key0(Device.KEY_SELECT) || code == Device.key0(Device.KEY_SOFT_LEFT)) {
+            menuOpen = false;
+            repaint();
+            return menuCommand(menuSel);
+        } else if (code == Device.key0(Device.KEY_SOFT_RIGHT) || code == Device.key0(Device.KEY_CLEAR)) {
+            menuOpen = false;
+            repaint();
+            return null;
+        }
+        repaint();
+        return null;
+    }
+
+    private void paintMenu(Graphics g, int w, int h) {
+        Font f = Font.getDefaultFont();
+        int n = menuSize(), rowH = f.getHeight() + 2, boxW = w * 3 / 4, boxH = n * rowH + 4;
+        int x = 2, y = h - boxH - 2;
+        g.setClip(0, 0, w, h);
+        g.setFont(f);
+        g.setColor(0xFFFFFF);
+        g.fillRect(x, y, boxW, boxH);
+        g.setColor(0);
+        g.drawRect(x, y, boxW - 1, boxH - 1);
+        for (int i = 0; i < n; i++) {
+            Command c = menuCommand(i);
+            if (i == menuSel) {
+                g.setColor(0x000080);
+                g.fillRect(x + 1, y + 2 + i * rowH, boxW - 2, rowH);
+                g.setColor(0xFFFFFF);
+            } else {
+                g.setColor(0);
+            }
+            if (c != null) g.drawString(c.getLabel(), x + 3, y + 3 + i * rowH, Graphics.TOP | Graphics.LEFT);
+        }
+    }
+
     void onKey(int type, int code) {
+        KeyTap k = tap;
+        if (k != null && k.key(type, code)) return;
         try {
             if (type == EventLoop.KEY_PRESSED) keyPressed(code);
             else if (type == EventLoop.KEY_RELEASED) keyReleased(code);

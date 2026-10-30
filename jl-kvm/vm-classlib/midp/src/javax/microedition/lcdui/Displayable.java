@@ -5,6 +5,7 @@
 package javax.microedition.lcdui;
 
 import java.util.Vector;
+import jlkvm.internal.EventLoop;
 
 public abstract class Displayable {
     String title;
@@ -14,12 +15,25 @@ public abstract class Displayable {
     CommandListener listener;
     /** Event thread state: showNotify delivered and hideNotify not yet (D13). */
     boolean visible;
+    /** Id in the host screen protocol. */
+    final int sid = Ids.next();
+    /** The model changed since it was last sent to the host. */
+    private boolean uiDirty;
+    private final Runnable syncJob = new Runnable() {
+        public void run() {
+            synchronized (Displayable.this) {
+                uiDirty = false;
+            }
+            if (visible && onScreen()) ScreenCodec.send(Displayable.this);
+        }
+    };
 
     Displayable() {
     }
 
     public void setTitle(String s) {
         title = s;
+        touch();
     }
 
     public String getTitle() {
@@ -28,6 +42,7 @@ public abstract class Displayable {
 
     public void setTicker(Ticker t) {
         ticker = t;
+        touch();
     }
 
     public Ticker getTicker() {
@@ -74,6 +89,7 @@ public abstract class Displayable {
             while (i < commands.size() && ((Command) commands.elementAt(i)).getPriority() <= cmd.getPriority()) i++;
             commands.insertElementAt(cmd, i);
         }
+        touch();
     }
 
     public void removeCommand(Command cmd) {
@@ -81,6 +97,7 @@ public abstract class Displayable {
         synchronized (commands) {
             commands.removeElement(cmd);
         }
+        touch();
     }
 
     public void setCommandListener(CommandListener l) {
@@ -127,9 +144,71 @@ public abstract class Displayable {
         }
     }
 
+    /** The model changed: the host gets the new description on the event thread (coalesced, only while this is the current displayable). */
+    void touch() {
+        synchronized (this) {
+            if (uiDirty) return;
+            uiDirty = true;
+        }
+        if (onScreen()) EventLoop.post(syncJob);
+    }
+
+    /** Event thread: sends the whole description now. */
+    void sendNow() {
+        synchronized (this) {
+            uiDirty = false;
+        }
+        ScreenCodec.send(this);
+    }
+
+    /** Kind code of the host protocol (ScreenCodec.K_*). */
+    int uiKind() {
+        return ScreenCodec.K_CANVAS;
+    }
+
+    void encodeBody() {
+    }
+
+    Item findItem(int iid) {
+        return null;
+    }
+
+    Command findCommand(int cid) {
+        synchronized (commands) {
+            for (int i = 0; i < commands.size(); i++) {
+                Command c = (Command) commands.elementAt(i);
+                if (c.cid == cid) return c;
+            }
+        }
+        return null;
+    }
+
+    /** Event thread: the host activated a screen command. */
+    void onUiCommand(int cid) {
+        Command c = findCommand(cid);
+        if (c != null) fire(c);
+    }
+
+    /** Event thread: an interactive item of this screen changed its state on the host. */
+    void itemChanged(Item item) {
+    }
+
+    /** First BACK / CANCEL / EXIT / STOP command (the one a right soft key takes), or null. */
+    Command backCommand() {
+        synchronized (commands) {
+            for (int i = 0; i < commands.size(); i++) {
+                Command c = (Command) commands.elementAt(i);
+                int t = c.getCommandType();
+                if (t == Command.BACK || t == Command.CANCEL || t == Command.EXIT || t == Command.STOP) return c;
+            }
+        }
+        return null;
+    }
+
     /** Event thread: this displayable became visible (showNotify) / invisible (hideNotify). */
     void onShow() {
         visible = true;
+        sendNow();
     }
 
     void onHide() {

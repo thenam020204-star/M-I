@@ -1,0 +1,50 @@
+> size -> ok 16x12 cells 4x3 tile 4x4
+> ctor columns 0 -> IllegalArgumentException
+> ctor rows 0 -> IllegalArgumentException
+> ctor tile width 0 -> IllegalArgumentException
+> ctor tile size not a divisor -> IllegalArgumentException
+> ctor null image -> NullPointerException
+> cells start empty -> ok 0
+> setCell / getCell -> ok 3
+> setCell column out of range -> IndexOutOfBoundsException
+> setCell row out of range -> IndexOutOfBoundsException
+> getCell out of range -> IndexOutOfBoundsException
+> setCell tile 4 (last) -> ok 4
+> setCell tile 5 (too big) -> IndexOutOfBoundsException
+> setCell negative without animated tile -> IndexOutOfBoundsException
+> fillCells -> ok 4220220
+> fillCells outside -> IndexOutOfBoundsException
+> fillCells negative size -> IllegalArgumentException
+> fillCells empty region -> ok ok
+> fillCells bad tile -> IndexOutOfBoundsException
+> createAnimatedTile -> ok -1 -2 -3
+> createAnimatedTile bad static index -> IndexOutOfBoundsException
+> createAnimatedTile negative -> IndexOutOfBoundsException
+> getAnimatedTile -> ok 1 0 4
+> getAnimatedTile 0 -> IndexOutOfBoundsException
+> getAnimatedTile not created -> IndexOutOfBoundsException
+> getAnimatedTile positive -> IndexOutOfBoundsException
+> setAnimatedTile -> ok 3
+> setAnimatedTile bad animated index -> IndexOutOfBoundsException
+> setAnimatedTile bad static index -> IndexOutOfBoundsException
+> setCell animated -> ok -2
+> setCell animated not created -> IndexOutOfBoundsException
+> paint all: 4f932453
+> animated tile -> 2: 66f04524
+> positioned (2,3): 5d484524
+> positioned (-5,-2): 1dc74dc3
+> translated (3,1): 484524
+> clipped (5,2,7,6): 182165de
+> clipped to one pixel (4,4,1,1): 54c44866
+> clip outside the layer: 9a52d157
+> invisible: 9a52d157
+> paint(null) -> NullPointerException
+> empty cell leaves the target alone -> ok eb9f09df
+> setStaticTileSet with the same number of tiles keeps cells -> ok -1 3 2
+> setStaticTileSet with more tiles keeps cells and changes the size -> ok 3 4x8 2
+> setStaticTileSet with fewer tiles clears everything -> ok 0 0 8x8
+> animated tiles deleted by the smaller set -> IndexOutOfBoundsException
+> setStaticTileSet bad size -> IllegalArgumentException
+> setStaticTileSet null -> NullPointerException
+> Layer position -> ok 2,5 true
+> done

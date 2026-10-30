@@ -1,0 +1,26 @@
+> setCurrent list
+> commandAction SELECT on list selected=1 isSelectCommand=true ET
+> setCurrent form
+> item commandAction Press ET
+> itemStateChanged gauge=9 ET
+> itemStateChanged field=xyz ET
+> itemStateChanged single=2 ET
+> itemStateChanged multi=truefalsefalse ET
+> itemStateChanged multi=truefalsetrue ET
+> itemStateChanged multi=falsefalsetrue ET
+> itemStateChanged gauge=7 ET
+> itemStateChanged date=86400000 ET
+> custom keyPressed 53 action=8 ET
+> custom pointerPressed 1,10 ET
+> custom traverse 2 ET
+> custom traverse 6 ET
+> commandAction Back on form ET
+> form: field=xyz single=2 multi=falsefalsetrue gauge=7 date=86400000
+> commandAction OK on box ET
+> box text=456
+> commandAction DISMISS on alert ET
+> current is canvas: false
+> commandAction Two on canvas ET
+> canvas keyPressed 53 ET
+> commandAction One on canvas ET
+> commandAction Exit on canvas ET

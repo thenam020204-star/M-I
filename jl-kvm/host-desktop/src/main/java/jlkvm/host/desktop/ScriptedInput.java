@@ -11,10 +11,10 @@ import jlkvm.host.HostEvents;
  * Scripted keyboard / pointer / life cycle input (the *.inp format of tests/games/README.md). Times are virtual milliseconds from the
  * start of the VM. {@code key tap C [hold]} expands to press + release; {@code key hold C ms} to press, repeats (every
  * {@code repeatInterval} after {@code repeatDelay}, the profile's key repeat timing) and release. Extra commands for tests:
- * {@code destroy [0|1]} (AMS destroyApp request), {@code size W H}, {@code repaint}. Entries with the same time keep file order.
+ * {@code ui ...} (high-level UI actions, see {@link HeadlessUi}), {@code destroy [0|1]} (AMS destroyApp request), {@code size W H}, {@code repaint}. Entries with the same time keep file order.
  */
 public final class ScriptedInput {
-    public static final int SHOT = 100, QUIT = 101;
+    public static final int SHOT = 100, QUIT = 101, UI = 102;
 
     public static final class Entry {
         public final long ms;
@@ -65,6 +65,7 @@ public final class ScriptedInput {
                 else if (cmd.equals("size")) s.add(ms, HostEvents.DISPLAY_SIZE, Integer.parseInt(t[2]), Integer.parseInt(t[3]), null);
                 else if (cmd.equals("repaint")) s.add(ms, HostEvents.REPAINT_ALL, 0, 0, null);
                 else if (cmd.equals("shot")) s.add(ms, SHOT, 0, 0, t[2]);
+                else if (cmd.equals("ui")) s.add(ms, UI, 0, 0, line.trim().substring(line.trim().indexOf("ui") + 2).trim());
                 else if (cmd.equals("quit")) s.add(ms, QUIT, 0, 0, null);
                 else throw new IllegalArgumentException("command " + cmd);
             } catch (RuntimeException e) {

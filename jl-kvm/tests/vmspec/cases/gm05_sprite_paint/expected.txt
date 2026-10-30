@@ -1,0 +1,17 @@
+> frame 0: bd34ab28
+> frame 1: 9439c4d0
+> frame 2: be1a1f7c
+> transform 0 at ref (2,1) on (3,5)+...: 9439c4d0 pos=3,5
+> transform 1 at ref (2,1) on (3,5)+...: 5416c4d0 pos=3,4
+> transform 2 at ref (2,1) on (3,5)+...: fa6cc4d0 pos=3,5
+> transform 3 at ref (2,1) on (3,5)+...: ba49c4d0 pos=3,4
+> transform 4 at ref (2,1) on (3,5)+...: df77c4d0 pos=4,4
+> transform 5 at ref (2,1) on (3,5)+...: b81c4d0 pos=3,4
+> transform 6 at ref (2,1) on (3,5)+...: 4310c4d0 pos=4,4
+> transform 7 at ref (2,1) on (3,5)+...: 6f0bc4d0 pos=3,4
+> sequence {2,0}: 9fce4b23
+> clip + translate: 76d03384
+> invisible: adf67f81 adf67f81
+> partly outside: e770f74f
+> paint(null) NullPointerException
+> done

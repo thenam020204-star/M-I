@@ -1,0 +1,69 @@
+> Sprite(img) single frame -> ok 32x6 frames=1 seq=1
+> Sprite(img, 8, 6) -> ok 8x6 frames=4 seq=4 frame=0
+> Sprite(null) -> NullPointerException
+> Sprite(null, 8, 6) -> NullPointerException
+> Sprite(null Sprite) -> NullPointerException
+> frame width 0 -> IllegalArgumentException
+> frame height -1 -> IllegalArgumentException
+> frame width not a divisor -> IllegalArgumentException
+> frame height not a divisor -> IllegalArgumentException
+> frames 2D (16x6 in 32x12) -> ok 4
+> setFrame(3) -> ok 3
+> setFrame(4) -> IndexOutOfBoundsException
+> setFrame(-1) -> IndexOutOfBoundsException
+> nextFrame wraps -> ok 0
+> prevFrame wraps -> ok 3
+> setFrameSequence({2,0,2}) -> ok 3 frame=0
+> sequence: setFrame(2), nextFrame -> ok 0
+> sequence: setFrame(3) -> IndexOutOfBoundsException
+> raw frame count unchanged -> ok 4
+> setFrameSequence({4}) -> ArrayIndexOutOfBoundsException
+> setFrameSequence({-1}) -> ArrayIndexOutOfBoundsException
+> setFrameSequence({}) -> IllegalArgumentException
+> setFrameSequence(null) restores -> ok 4 frame=0
+> sequence is copied -> ok 0
+> position -> ok pos=7,25 size=8x6 ref=7,25
+> visible -> ok false true
+> default ref pixel (0,0) -> ok pos=7,25 size=8x6 ref=7,25
+> transform 0 ref(2,1) at (10,20) -> ok pos=10,20 size=8x6 ref=12,21
+> transform 1 ref(2,1) at (10,20) -> ok pos=10,17 size=8x6 ref=12,21
+> transform 2 ref(2,1) at (10,20) -> ok pos=7,20 size=8x6 ref=12,21
+> transform 3 ref(2,1) at (10,20) -> ok pos=7,17 size=8x6 ref=12,21
+> transform 4 ref(2,1) at (10,20) -> ok pos=11,19 size=6x8 ref=12,21
+> transform 5 ref(2,1) at (10,20) -> ok pos=8,19 size=6x8 ref=12,21
+> transform 6 ref(2,1) at (10,20) -> ok pos=11,16 size=6x8 ref=12,21
+> transform 7 ref(2,1) at (10,20) -> ok pos=8,16 size=6x8 ref=12,21
+> transform 0 setRefPixelPosition(50,60) -> ok pos=48,59 size=8x6 ref=50,60
+> transform 1 setRefPixelPosition(50,60) -> ok pos=48,56 size=8x6 ref=50,60
+> transform 2 setRefPixelPosition(50,60) -> ok pos=45,59 size=8x6 ref=50,60
+> transform 3 setRefPixelPosition(50,60) -> ok pos=45,56 size=8x6 ref=50,60
+> transform 4 setRefPixelPosition(50,60) -> ok pos=49,58 size=6x8 ref=50,60
+> transform 5 setRefPixelPosition(50,60) -> ok pos=46,58 size=6x8 ref=50,60
+> transform 6 setRefPixelPosition(50,60) -> ok pos=49,55 size=6x8 ref=50,60
+> transform 7 setRefPixelPosition(50,60) -> ok pos=46,55 size=6x8 ref=50,60
+> setTransform(8) -> IllegalArgumentException
+> setTransform(-1) -> IllegalArgumentException
+> ref pixel outside the frame -> ok pos=5,-20 size=8x6 ref=0,0
+> defineCollisionRectangle negative width -> IllegalArgumentException
+> defineCollisionRectangle negative height -> IllegalArgumentException
+> rect collision, transform 0 -> ok .........../.........../..#####..../..#####..../..#####..../..#####..../.........../.........../.........../.........../.........../
+> rect collision, transform 1 -> ok ..#####..../..#####..../.........../.........../.........../.........../.........../.........../.........../.........../.........../
+> rect collision, transform 2 -> ok .........../.........../##........./##........./##........./##........./.........../.........../.........../.........../.........../
+> rect collision, transform 3 -> ok ##........./##........./.........../.........../.........../.........../.........../.........../.........../.........../.........../
+> rect collision, transform 4 -> ok .........../.........../..####...../..####...../..####...../..####...../..####...../.........../.........../.........../.........../
+> rect collision, transform 5 -> ok .........../.........../##........./##........./##........./##........./##........./.........../.........../.........../.........../
+> rect collision, transform 6 -> ok ..####...../..####...../.........../.........../.........../.........../.........../.........../.........../.........../.........../
+> rect collision, transform 7 -> ok ##........./##........./.........../.........../.........../.........../.........../.........../.........../.........../.........../
+> invisible sprites never collide -> ok false
+> collidesWith(null Sprite) -> NullPointerException
+> collidesWith(null TiledLayer) -> NullPointerException
+> collidesWith(null Image) -> NullPointerException
+> setImage same frame size, more frames keeps sequence and frame -> ok 6 seq=2 frame=1
+> setImage fewer frames resets -> ok 2 seq=2 frame=0
+> setImage new frame size keeps the reference pixel -> ok pos=10,10 size=10x10 ref=14,13
+> setImage new frame size resets the collision rectangle -> ok true
+> setImage same size keeps the collision rectangle -> ok false
+> setImage bad size -> IllegalArgumentException
+> setImage null -> NullPointerException
+> Sprite(Sprite) copies the state -> ok pos=1,5 size=6x8 ref=4,6 frame=1 seq=2
+> done

@@ -1,0 +1,31 @@
+> sprite/sprite pixel, A transform 0: ........./........./..#....../..##...../..###..../..#..#.../........./........./........./
+> sprite/sprite pixel, A transform 1: ..###..../..##...../..#....../........./........./........./........./........./........./
+> sprite/sprite pixel, A transform 2: ........./........./..#....../.##....../###....../..#....../........./........./........./
+> sprite/sprite pixel, A transform 3: ###....../.##....../..#....../........./........./........./........./........./........./
+> sprite/sprite pixel, A transform 4: ........./........./..####.../...##..../....#..../.....#.../........./........./........./
+> sprite/sprite pixel, A transform 5: ........./........./###....../##......./#......../........./........./........./........./
+> sprite/sprite pixel, A transform 6: ....#..../...##..../..####.../........./........./........./........./........./........./
+> sprite/sprite pixel, A transform 7: #......../##......./###....../........./........./........./........./........./........./
+> both transformed: ......#../.....#.../....##.../...####../........./........./........./........./........./
+> pixel inside a custom collision rectangle (1,1,3,2): ........./........./........./...#...../...##..../........./........./........./........./
+> rect only, same sprites: ........./........./........./...####../...####../...####../........./........./........./
+> frames 0..3 (X. / .. / .. / .X): #.|..|..|.#|
+> frame 2 / 3 -> sequence {2,1}: ..|..|
+> alpha 0x01 / 0x80 / 0: .../
+> self check transform 0: painted pixels 16, disagreements 0
+> self check transform 1: painted pixels 16, disagreements 0
+> self check transform 2: painted pixels 16, disagreements 0
+> self check transform 3: painted pixels 16, disagreements 0
+> self check transform 4: painted pixels 16, disagreements 0
+> self check transform 5: painted pixels 16, disagreements 0
+> self check transform 6: painted pixels 16, disagreements 0
+> self check transform 7: painted pixels 16, disagreements 0
+> invisible: false false
+> sprite/image pixel: ........./........./..#....../..##...../..###..../..####.../...#..#../........./........./
+> sprite/image rect: ........./........./..#####../..#####../..#####../..#####../..#####../........./........./
+> tiled layer (cells: full, animated->L, L at row 1) rect: .............../.............../.#########...../.#########...../.#########...../.#########...../.#############./.........#####./.........#####./.........#####./.........#####./.............../.............../
+> tiled layer pixel: .............../.............../.#####........./.######......../.#######......./.#####..#....../.........#...../.........##..../.........###.../.........#..#../.............../.............../.............../
+> animated tile -> full tile: ...../#####/#####/#####/#####/...../
+> invisible layer: false
+> empty cells never collide: 1 false
+> done

@@ -1,0 +1,17 @@
+# T25: key states of a GameCanvas (MIDP latching) and the sample game loop. The loop polls getKeyStates every 50 ms.
+# canvas A (suppressKeyEvents = true), shown from 0 to ~1000 ms
+110 key press 50
+115 key release 50
+310 key press 52
+420 key press 54
+520 key release 52
+610 key release 54
+710 key press 53
+715 key release 53
+715 key tap 42
+900 key press 56
+# canvas B (events delivered), from ~1100 ms
+1350 key press 49
+1355 key release 49
+1500 key press 50
+1700 key tap 42

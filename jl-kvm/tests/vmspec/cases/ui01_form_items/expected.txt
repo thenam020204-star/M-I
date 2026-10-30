@@ -1,0 +1,87 @@
+> append item -> ok 0
+> append item again -> IllegalStateException
+> append null item -> NullPointerException
+> append null string -> NullPointerException
+> append null image -> NullPointerException
+> append string -> ok 1
+> append image -> ok 2
+> size -> ok 3
+> get(1) is a StringItem with null label and text plain -> ok null/plain
+> get(2) is an ImageItem -> ok true
+> get(3) -> IndexOutOfBoundsException
+> get(-1) -> IndexOutOfBoundsException
+> insert(0, s2) -> ok true
+> insert(size+1) -> IndexOutOfBoundsException
+> insert(size) -> ok 5
+> insert owned item -> IllegalStateException
+> set(1, new) -> ok true
+> set(0, s1): s1 was replaced earlier, free again -> ok
+> set out of range -> IndexOutOfBoundsException
+> s1 is owned by f now: a second form refuses it -> IllegalStateException
+> delete(size) -> IndexOutOfBoundsException
+> delete(0) -> ok 4
+> deleted item reusable -> ok
+> deleteAll -> ok 0
+> Form(title, items) with null element -> NullPointerException
+> Form(title, items) -> ok 2
+> Form(title, null items) -> ok 0
+> Form title -> ok T
+> Form no title -> ok
+> getLabel -> ok lab
+> setLabel(null) -> ok
+> default layout -> ok 0
+> setLayout(CENTER|NEWLINE_AFTER) -> ok 515
+> setLayout(invalid 1<<20) -> IllegalArgumentException
+> setPreferredSize(-2, 5) -> IllegalArgumentException
+> setPreferredSize(30, 20) locks -> ok 30x20
+> minimum <= preferred -> ok true
+> addCommand(null) -> NullPointerException
+> StringItem ctor bad mode -> IllegalArgumentException
+> StringItem appearance -> ok 1
+> StringItem font default non-null -> ok true
+> StringItem setText(null) -> ok
+> notifyStateChanged without form -> IllegalStateException
+> notifyStateChanged in a form -> ok
+> setDefaultCommand adds it -> ok
+> ImageItem null image -> ok null/alt/3
+> ImageItem invalid layout -> IllegalArgumentException
+> ImageItem mutable image is copied -> ok true
+> ImageItem immutable kept -> ok true
+> ImageItem bad mode -> IllegalArgumentException
+> Spacer sizes -> ok 10x20
+> Spacer negative -> IllegalArgumentException
+> Spacer.setMinimumSize negative -> IllegalArgumentException
+> Spacer.addCommand -> IllegalStateException
+> Spacer.setLabel -> IllegalStateException
+> Spacer.setDefaultCommand -> IllegalStateException
+> Gauge interactive max 0 -> IllegalArgumentException
+> Gauge indefinite interactive -> IllegalArgumentException
+> Gauge non-interactive indefinite -> ok -1/2
+> Gauge value clamp -> ok 0/10
+> Gauge setMaxValue lowers value -> ok 5/5
+> Gauge setMaxValue(0) interactive -> IllegalArgumentException
+> Gauge isInteractive -> ok true
+> DateField bad mode -> IllegalArgumentException
+> DateField uninitialised -> ok
+> DateField date-time round trip -> ok 1000000000000
+> DateField DATE mode: time of day zero -> ok 0
+> DateField TIME mode: date 1 Jan 1970 -> ok true
+> DateField setInputMode bad -> IllegalArgumentException
+> DateField setDate(null) -> ok
+> DateField getInputMode -> ok 2
+> Command bad type -> IllegalArgumentException
+> Command null label -> NullPointerException
+> Command accessors -> ok slong53
+> Ticker null -> NullPointerException
+> Ticker -> ok b
+> Alert defaults -> ok text true true true
+> Alert.setTimeout(0) -> IllegalArgumentException
+> Alert.setTimeout(FOREVER) -> ok -2
+> Alert indicator interactive -> IllegalArgumentException
+> Alert indicator ok -> ok true
+> Alert indicator owned by a form -> IllegalStateException
+> Alert indicator null -> ok
+> Alert image mutable copied -> ok true
+> Alert.DISMISS_COMMAND not addable -> ok
+> Alert type / string setters -> ok null n
+> done

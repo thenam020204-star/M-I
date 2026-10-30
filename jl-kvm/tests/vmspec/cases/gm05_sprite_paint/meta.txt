@@ -1,0 +1,4 @@
+mode: oracle
+source: MIDP 2.0 javadoc of Sprite.paint (frame from the sequence, transform, position); checksums compared with the oracles
+diverges: microemu
+notes: jl-kvm == FreeJ2ME on every line (frames, 8 transforms with the reference pixel, sequences, clip + translate, partly outside); MicroEmulator repositions the sprite wrongly after setTransform and paints other pixels.

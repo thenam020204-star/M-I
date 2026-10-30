@@ -39,6 +39,7 @@ public class VmSpecTest {
             File jar = new File(built, c.getName() + "/" + c.getName() + ".jar"), exp = new File(c, "expected.txt");
             if (!jar.isFile() || !exp.isFile()) continue;
             String meta = new String(Files.readAllBytes(new File(c, "meta.txt").toPath()), "UTF-8");
+            if (meta.contains("realtime:")) continue;   // wall-clock margins: run by run_vmspec.sh, and in deterministic mode by its own test (TimerTest)
             if (meta.contains("driven-by-test:")) continue;   // needs a host driver: has its own test (T16 InputReplayTest)
             boolean cldc10 = meta.contains("cldc: cldc10"), noverify = meta.contains("--noverify");
             if (stress > 0 && (noverify || c.getName().startsWith("g0"))) continue;   // no type maps without verification; g0x have their own stress tests (GcTest)

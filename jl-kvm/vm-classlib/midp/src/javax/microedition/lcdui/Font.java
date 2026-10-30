@@ -91,14 +91,12 @@ public final class Font {
     }
 
     public int stringWidth(String str) {
-        char[] c = str.toCharArray();
-        return charsWidth0(key, c, 0, c.length);
+        return strWidth0(key, str, 0, str.length());
     }
 
     public int substringWidth(String str, int offset, int len) {
         if (offset < 0 || len < 0 || offset > str.length() - len) throw new StringIndexOutOfBoundsException();
-        char[] c = str.toCharArray();
-        return charsWidth0(key, c, offset, len);
+        return strWidth0(key, str, offset, len);
     }
 
     int key() {
@@ -108,6 +106,12 @@ public final class Font {
     int advanceOf(char[] c, int off, int len) {
         return charsWidth0(key, c, off, len);
     }
+
+    int advanceOf(String s, int off, int len) {
+        return strWidth0(key, s, off, len);
+    }
+
+    private static native int strWidth0(int key, String s, int off, int len);
 
     private static native int metrics0(int key);
 

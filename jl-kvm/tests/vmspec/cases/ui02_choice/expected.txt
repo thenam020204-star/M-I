@@ -1,0 +1,65 @@
+> ChoiceGroup(EXCLUSIVE) -> ok  idx=-1
+> List(EXCLUSIVE) -> ok  idx=-1
+> ChoiceGroup(EXCLUSIVE, abc) -> ok 100 idx=0
+> List(EXCLUSIVE, abc) -> ok 100 idx=0
+> ChoiceGroup(MULTIPLE) -> ok  idx=-1
+> List(MULTIPLE) -> ok  idx=-1
+> ChoiceGroup(MULTIPLE, abc) -> ok 000 idx=-1
+> List(MULTIPLE, abc) -> ok 000 idx=-1
+> ChoiceGroup(IMPLICIT) -> IllegalArgumentException
+> List(IMPLICIT) -> ok  idx=-1
+> ChoiceGroup(IMPLICIT, abc) -> IllegalArgumentException
+> List(IMPLICIT, abc) -> ok 100 idx=0
+> ChoiceGroup(POPUP) -> ok  idx=-1
+> List(POPUP) -> IllegalArgumentException
+> ChoiceGroup(POPUP, abc) -> ok 100 idx=0
+> List(POPUP, abc) -> IllegalArgumentException
+> ChoiceGroup bad type -> IllegalArgumentException
+> List bad type -> IllegalArgumentException
+> ctor null strings -> NullPointerException
+> ctor null element -> NullPointerException
+> ctor image length mismatch -> IllegalArgumentException
+> exclusive setSelectedIndex(2,true) -> ok 001 idx=2
+> exclusive setSelectedIndex(2,false) ignored -> ok 001 idx=2
+> multiple setSelectedIndex(0,true),(2,true) -> ok 101 idx=-1
+> multiple setSelectedIndex(0,false) -> ok 001 idx=-1
+> implicit setSelectedIndex(1,true) -> ok 010 idx=1
+> setSelectedIndex out of range -> IndexOutOfBoundsException
+> isSelected(-1) -> IndexOutOfBoundsException
+> getSelectedFlags -> ok 1 falsefalsetruefalsefalse
+> getSelectedFlags too short -> IllegalArgumentException
+> getSelectedFlags null -> NullPointerException
+> setSelectedFlags multiple -> ok 110 idx=-1
+> setSelectedFlags exclusive: none true -> ok 100 idx=0
+> setSelectedFlags too short -> IllegalArgumentException
+> setSelectedFlags null -> NullPointerException
+> append to empty exclusive selects it -> ok 0 1 idx=0
+> append second -> ok 1 10 idx=0
+> insert before the selected keeps it selected -> ok 010 idx=1 wxy
+> insert(size) -> ok 4 z
+> insert(size+1) -> IndexOutOfBoundsException
+> insert null string -> NullPointerException
+> append null string -> NullPointerException
+> set(1) -> ok X 0100 idx=1
+> set out of range -> IndexOutOfBoundsException
+> set null -> NullPointerException
+> getString out of range -> IndexOutOfBoundsException
+> getImage -> ok
+> getImage out of range -> IndexOutOfBoundsException
+> delete out of range -> IndexOutOfBoundsException
+> delete an unselected element before the selected -> ok 100 idx=0 X
+> deleteAll -> ok 0  idx=-1
+> mutable image is copied -> ok true
+> fit policy default -> ok 0
+> setFitPolicy(TEXT_WRAP_OFF) -> ok 2
+> setFitPolicy(9) -> IllegalArgumentException
+> getFont default not null -> ok true
+> setFont / getFont -> ok true
+> setFont(null) restores default -> ok true
+> setFont out of range -> IndexOutOfBoundsException
+> SELECT_COMMAND -> ok 1
+> setSelectCommand(c1) on implicit -> ok
+> setSelectCommand(null) -> ok
+> setSelectCommand on exclusive list ignored -> ok
+> List title / ticker -> ok Tk
+> done

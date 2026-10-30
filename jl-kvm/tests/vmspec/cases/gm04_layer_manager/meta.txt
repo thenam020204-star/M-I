@@ -1,0 +1,3 @@
+mode: spec-only
+source: MIDP 2.0 javadoc of LayerManager (index 0 on top, append / insert move an existing layer, view window, Graphics state restored)
+notes: the view window / invisible layer / state restored lines are identical in MicroEmulator and FreeJ2ME (computed on a fresh manager). Differences in the list rules: FreeJ2ME throws IndexOutOfBoundsException when an appended layer is already in the manager; MicroEmulator's size/insert/remove/getLayerAt rules are wrong (size after insert, no IndexOutOfBoundsException, ArrayIndexOutOfBoundsException instead).

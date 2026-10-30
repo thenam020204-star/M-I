@@ -1,0 +1,3 @@
+mode: spec-only
+source: MIDP 2.0 javadoc of Sprite.collidesWith (pixel-level: opaque pixels inside the collision rectangle, the frame / transform shown); the hit maps are checked against the rasteriser itself ("self check" lines: the pixels Sprite.paint draws for every transform == the pixels the pixel-level test calls opaque)
+notes: opaque = alpha 255 (both oracles agree; "alpha 0x01 / 0x80 / 0" line; UNVERIFIED on devices). FreeJ2ME's pixel-level test ignores some transforms (A transform 1, 2, 4, 7 and "both transformed" differ from the painted pixels), MicroEmulator's results are wrong for most transforms, so the hit maps are not comparable: the self check lines are the authority. TiledLayer / Image collision lines also differ in FreeJ2ME.
