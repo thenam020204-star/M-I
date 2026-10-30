@@ -97,3 +97,93 @@ The three games that use it (jarscan, `docs/games-api-scan.md`) call only `PIM.g
   `receive`, listener on a guest thread, message queued before the listener; FileConnection with a real symlink inside the suite directory and `..` URLs (outside file untouched, nothing created outside);
   `HostFs` (both implementations) against ~13 bad paths, rename out of the directory and the quota.
 * host-common `PolicyNativesTest`: the natives refuse by themselves (sms deny/offline, file read/deny).
+
+
+# JSR-82 Bluetooth, JSR-179 Location, JSR-256 Sensor, JSR-234 AMMS (PLAN T32 rest, A9)
+
+Four more ROM layers in the same style as above (own jar each, only loaded when the profile lists the api, D10; `RomLayers`; flat test ROM = all of them;
+`stubs:` of the vmspec runner = this project's own layer jar, whose surface romgen already checked against the DB):
+
+| profile api | jar | sources | gradle task | surface == | DB source |
+|---|---|---|---|---|---|
+| `jsr82` | `rom-jsr82.jar` | `vm-classlib/jsr82/src` | `buildJsr82Rom` | cldc-1.1 + midp-2.0 + `s40dp2-jsr82.json` | Nokia S40 DP2.0 SDK 1.1 `classes.zip`, **verified source** (javadoc local: `tools/env/cache/nokia-sdk/sdk/api/Bluetooth_1.0`, not copied) |
+| `jsr179` | `rom-jsr179.jar` | `vm-classlib/jsr179/src` | `buildJsr179Rom` | cldc-1.1 + midp-2.0 + `jsr179-location.json` (**UNVERIFIED**) | `javax/microedition/location/**` of the stubs in `freej2me_plus.jar` (local, GPL, signatures only, 13 classes), **corrected by hand** (below) |
+| `jsr256` | `rom-jsr256.jar` | `vm-classlib/jsr256/src` | `buildJsr256Rom` | cldc-1.1 + midp-2.0 + `jsr256-sensor.json` (**UNVERIFIED**) | `javax/microedition/sensor/**` of the same jar (16 classes) |
+| `jsr234` | `rom-jsr234.jar` | `vm-classlib/jsr234/src` | `buildJsr234Rom` | cldc-1.1 + midp-2.0 + `jsr234-amms.json` (**UNVERIFIED**) | `javax/microedition/amms/**` of the same jar (43 classes) |
+
+The SDK DB of JSR-82 has no `javax.obex` and no `RFCOMM` classes of its own (RFCOMM = `StreamConnectionNotifier`/`StreamConnection` of CLDC): scheme `btgoep://` has no
+handler (`ConnectionNotFoundException`). The two public inner thread classes of `DiscoveryAgent` (`InquiryListenerThread`, `ServiceSearchListenerThread`, an artefact of the
+SDK implementation that is in its DB) are real inner classes here and are what delivers the events.
+
+## JSR-82 (`javax.bluetooth`)
+
+* **Profile `bluetooth{mode, address, name}`** (`DeviceProfile.bluetoothMode/Address/Name`, `ProfileLoader`): `none` (default) | `simulate`.
+  The schemes `btspp`, `btl2cap`, `btgoep` are `LOCAL_SCHEMES` (they never go through the `network{}` policy, there is no network code behind them).
+* **No hardware (`none`)** - javadoc: `LocalDevice.getLocalDevice()` "BluetoothStateException - if the Bluetooth system could not be initialized": thrown on every call, so
+  the application never reaches any other instance method; `LocalDevice.getProperty` "null if the property is not defined": null; `Connector.open("btspp://..." | "btl2cap://...")`
+  -> `BluetoothStateException` (an `IOException`, so the usual `catch (IOException)` of games handles it). Test: vmspec `bt01_nohw`.
+* **Simulated adapter (`simulate`)**: ONE local adapter with the profile's address/name, **no peers**. `getLocalDevice()` returns one object; discoverable mode kept per javadoc
+  (valid: GIAC, LIAC, NOT_DISCOVERABLE, 0x9E8B00..0x9E8B3F, else `IllegalArgumentException`; always granted); `getProperty` answers the ten mandatory property names
+  (api.version "1.0", master.switch "false", sd.attr.retrievable.max "8", connected.devices.max "7", l2cap.receiveMTU.max "672", sd.trans.max "1", the four connected.* "false";
+  values UNVERIFIED). Inquiry: runs 1000 ms of (virtual) time on a guest thread and ends `inquiryCompleted(INQUIRY_COMPLETED)` without a `deviceDiscovered`; `cancelInquiry(listener)`
+  only for the starting listener, ends with `INQUIRY_TERMINATED`; a second inquiry while one runs is a `BluetoothStateException`; `retrieveDevices` is `null` ("null if no devices meet
+  the criteria"). Service search: argument checks per javadoc (null/empty/duplicate/out of range), positive transaction id, at most 1 at a time (`bluetooth.sd.trans.max`), ends after
+  200 ms with `SERVICE_SEARCH_DEVICE_NOT_REACHABLE` (a peer is only an address, nothing answers); `cancelServiceSearch` -> `SERVICE_SEARCH_TERMINATED`; `selectService` -> `null`
+  ("null if no service could be found"). `RemoteDevice`: 12 hex characters, equals/hashCode on the address, no security state ever set, `getFriendlyName(false)` null /
+  `(true)` IOException, `getRemoteDevice(conn)`/`authorize`/`encrypt`/`isAuthorized` -> `IllegalArgumentException` (no Bluetooth connection exists). `Connector.open` client URL ->
+  `BluetoothConnectionException(TIMEOUT)`, server URL (`btspp://localhost:UUID`) -> `ConnectionNotFoundException` (accepting connections is not simulated).
+  Value classes `UUID`, `DataElement` (full javadoc tables), `DeviceClass` are complete and need no hardware. Tests: vmspec `bt02_values`, `bt03_sim` (profile.json).
+* **Host interface for the real adapter (M6) - NOT done**: `jlkvm.host.BluetoothNatives` (`mode0/address0/name0` of the ROM-private `jlkvm.internal.bt.Hw`) is the single plug point;
+  a mode `host` would be added there together with natives for inquiry / service search / connections (`ServiceRecord` is only an interface here, no implementation exists, no
+  service can be registered, `L2CAPConnection(Notifier)` have no implementation). Nothing touches a radio.
+* UNVERIFIED (not in the SDK javadoc, the project's own reading): everything listed as "values UNVERIFIED" above; the order NPE before IAE in `startInquiry`; the durations 1000/200 ms;
+  `UUID.toString()` = 32 upper-case digits (also for 16/32-bit UUIDs) and left zero padding of a short 128-bit string; `DeviceClass` accessors keep the bits in place (masks 0xFFE000 /
+  0x1F00 / 0xFC); the class of device of the local phone 0x20020C; `DataElement.clone()` (in the SDK DB, no javadoc) = deep copy; `BluetoothConnectionException(int)` accepts 1..6.
+
+## JSR-179 Location (`javax.microedition.location`)
+
+* **Source of the API: no spec, javadoc or SDK for JSR-179/256/234 is in the repo** (the Nokia S40 DP2.0 SDK predates them; PLAN V15). Signatures come from the freej2me stubs (GPL jar,
+  local; nothing copied; no JSR-179 stub exists on Maven Central under `org.microemu`). Everything is **UNVERIFIED** and to be redone when an SDK with the API is supplied
+  (S40 6th edition / S60 SDKs carry JSR-179 and JSR-256): replace the DB, run the diff again, re-read the lists below.
+* The stub looked like a copy of an implementation, so `jsr179-location.json` was corrected by hand against the API as remembered (the `source` field of the DB says so):
+  `Coordinates` has no public fields, `setLatitude/setLongitude(double)` (the stub had `float`: games call them with doubles, a `float` DB would have been a `NoSuchMethodError`), `convert(double,int)`
+  static; `Location()` takes no arguments; `LandmarkStore` has no public constructor.
+* **No position source** (this is every device the project can describe today; the Android host, M6, would add one - NOT done): `LocationProvider.getInstance(criteria)` answers **`null`**
+  (the contract: "null if no provider ... can be found"; `LocationException` is for providers that exist but are all out of service), `getLastKnownLocation()` `null`, `Orientation.getOrientation()` `null`,
+  `addProximityListener` -> `LocationException` after the argument checks (NPE, `IllegalArgumentException` for a radius <= 0), `removeProximityListener(null)` NPE. `Location` is concrete with a protected
+  constructor: the instance a host would hand out subclasses it; the base one is the invalid location (`isValid()` false, speed and course NaN, no coordinates). Test: vmspec `loc01_nohw`.
+* Data classes complete (vmspec `loc02_values`): `Coordinates` (range checks, `convert` both directions with `DD:MM:SS.sss` / `DD:MM.mmm`, spherical `distance` radius 6378137 m and `azimuthTo` with
+  an `atan` written in the guest because CLDC 1.1 `Math` has none, `jlkvm.internal.loc.Geo`), `QualifiedCoordinates`, `Criteria` (defaults NO_REQUIREMENT, cost allowed), `AddressInfo`, `Orientation`, `Landmark`.
+  `LandmarkStore` is in memory for the run only (no persistence, the default store always exists, `listLandmarkStores()` has it as entry `null`, `getLandmarks` returns `null` when nothing matches).
+* UNVERIFIED: every point above (text format of `convert`, spherical distance, in-memory stores, `null` rather than `LocationException` from `getInstance`, accuracy checks).
+
+## JSR-256 Mobile Sensor (`javax.microedition.sensor`)
+
+* Source as for JSR-179 (freej2me stub, no spec / javadoc / SDK here, everything UNVERIFIED). Corrections to the DB by hand (its `source` field says so): `SensorManager` and `Unit` have no
+  public constructor, `LimitCondition` has the public constructor `(double limit, String operator)`; the six classes `javax/microedition/sensor/control/*` of the stub (a copy of
+  `Control`/`Controllable`/... that is not part of JSR-256) are not in the DB.
+* **No sensor** (a host would register some - Android M6, NOT done): `SensorManager.findSensors(quantity, contextType)` and `findSensors(url)` answer an **empty array** (the contract for "nothing matches";
+  `NullPointerException` for a null quantity / url, `IllegalArgumentException` for a URL that is not `sensor:...`), `addSensorListener` keeps the listener and never calls it, `Connector.open("sensor:...")`
+  (scheme `sensor` is a `LOCAL_SCHEME`, handler `jlkvm.internal.io.sensor.Protocol`) is a `ConnectionNotFoundException`. There is no `SensorInfo`/`SensorConnection`/`Channel`/`Data` implementation (they
+  are interfaces; no object of them is ever created); the host interface is therefore not even a native yet - the M6 task is: a `Sensors` host service + natives and implementations of those interfaces.
+* Data classes complete: `LimitCondition` / `RangeCondition` / `ObjectCondition` (operators `eq ge gt le lt`), `MeasurementRange`, `Unit` (one object per name). Test: vmspec `sen01_nosensor`.
+* UNVERIFIED: all of it; the project's readings: `RangeCondition` needs lower <= upper, lower op `gt`/`ge`, upper op `lt`/`le`; `LimitCondition.isMet(Object)` and `ObjectCondition.isMet(double)` are false.
+
+## JSR-234 AMMS (`javax.microedition.amms`) - surface level
+
+* Source as for JSR-179 / 256 (freej2me stub, nothing verified). Corrections to the DB by hand (its `source` field says so): `GlobalManager` is final with no public constructor, `Spectator` is an interface
+  that only inherits `Controllable`. The 43 classes are the interfaces of the controls (`control/**`: audio effects, 3D audio, camera, image effects, tuner) plus `Module`, `EffectModule`, `SoundSource3D`,
+  `MediaProcessor`, `MediaProcessorListener`, `Spectator`; they compile on top of the MIDP `javax.microedition.media` subset (`Control`, `Controllable`, `Player`, `MediaException`), so the layer needs only
+  `midp-2.0` in the profile (`ProfileValidator`).
+* **No service** (the profile has no AMMS hardware; a host would add effects / 3D audio / camera control - Android M6, NOT done): `GlobalManager.getSpectator()`, `createSoundSource3D()`, `createEffectModule()`,
+  `createMediaProcessor(type)` -> `MediaException` ("not supported"), `getSupportedSoundSource3DPlayerTypes()` / `getSupportedMediaProcessorInputTypes()` / `getControls()` -> empty arrays, `getControl(type)` -> `null`;
+  null arguments of `createMediaProcessor` / `getControl` -> `NullPointerException`. No `Control` or `Module` implementation exists, so no game can obtain one. `Manager.getControl` of the MIDP media
+  subset is unchanged (no AMMS control is reachable through a `Player` either). Test: vmspec `amms01_nosupport`.
+* Not done: any implementation of the control interfaces (they would have to drive the host audio / camera), `javax.microedition.media` JSR-135 full (`Manager.createPlayer` for the media processor).
+* UNVERIFIED: all of it.
+
+## Not done in T32 (priority P2 / out of reach, recorded)
+
+JSR-120 2.0 (WMA 2.0 / MMS: `MultipartMessage`, `MessagePart`, `mms://`) - no source for the API; JSR-226 SVG and JSR-172 (XML/JAX-RPC) - no stub on Maven Central under `org.microemu`, and the
+freej2me jar carries only `javax/microedition/m2g` (JSR-226 draft, 7 classes) and `javax/microedition/xml` / `javax/xml/rpc` (JSR-172) stubs that were not turned into a layer; `docs/games-api-scan.md` (68 games) lists
+none of them as used. Same procedure as above would apply (`api-sigs extract` from the stub, `registerLayer`, `RomLayers`, vmspec case).

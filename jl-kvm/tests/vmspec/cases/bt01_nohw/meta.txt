@@ -1,0 +1,5 @@
+mode: spec-only
+stubs: jsr82
+source: JSR-82 javadoc (S40 DP2.0 SDK 1.1: tools/env/cache/nokia-sdk/sdk/api/Bluetooth_1.0, not copied into the repo): LocalDevice.getLocalDevice "BluetoothStateException - if the Bluetooth system could not be initialized"; LocalDevice.getProperty "null if the property is not defined"; Connector.open of a Bluetooth URL needs the Bluetooth system.
+notes: UNVERIFIED (docs/jsr.md): that a device WITHOUT Bluetooth hardware answers getLocalDevice with the exception on every call is this project's reading of "could not be initialized"; that getProperty is null without hardware; BluetoothStateException (an IOException) from Connector.open btspp / btl2cap without hardware; btgoep (OBEX) has no handler (no javax.obex layer) = ConnectionNotFoundException. The oracles are not run.
+diverges: phoneme|kemulator

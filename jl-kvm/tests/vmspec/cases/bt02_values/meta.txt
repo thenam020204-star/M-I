@@ -1,0 +1,5 @@
+mode: spec-only
+stubs: jsr82
+source: JSR-82 javadoc (S40 DP2.0 SDK 1.1: tools/env/cache/nokia-sdk/sdk/api/Bluetooth_1.0, not copied into the repo): UUID (constructors: ranges [0, 2^32-1], string length 1..8 / 1..32, hex only without 0x, NumberFormatException / IllegalArgumentException / NullPointerException; equals on the 128 bit value), DataElement (constructor tables of value ranges per type, getLong / getBoolean / getValue / getSize ClassCastException, insertElementAt index range, removeElement compares references, getValue copies), DeviceClass (bits 24..31 -> IllegalArgumentException), DiscoveryAgent constants, BluetoothConnectionException.getStatus.
+notes: UNVERIFIED (docs/jsr.md): toString() is 32 upper-case digits (javadoc: "string representation of the 128-bit UUID"), a 128-bit string shorter than 32 digits is padded with zeros on the left, DeviceClass masks (service 0xFFE000, major 0x1F00, minor 0xFC, kept in place), DataElement.clone() deep copy (in the SDK signature DB without javadoc). The oracles are not run.
+diverges: phoneme|kemulator

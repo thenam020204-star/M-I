@@ -16,5 +16,12 @@ mkdir -p "$D"
 "$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/wma/src" --base "$D/nokiaui-rom.jar" --out "$D/wma-rom.jar" >&2
 "$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/jsr75-fc/src" --base "$D/wma-rom.jar" --out "$D/fc-rom.jar" >&2
 "$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/jsr75-pim/src" --base "$D/fc-rom.jar" --out "$D/pim-rom.jar" >&2
-"$ROOT/tools/romgen/romgen" --src "$HERE/src" --base "$D/pim-rom.jar" --out "$OUT" >&2
+# JSR-82 / 179 / 256 / 234 layers (T32): same story, the profile (bluetooth.mode) decides what a game sees
+PREV="$D/pim-rom.jar"
+for L in jsr82 jsr179 jsr256 jsr234; do
+  [ -d "$ROOT/vm-classlib/$L/src" ] || continue
+  "$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/$L/src" --base "$PREV" --out "$D/$L-rom.jar" >&2
+  PREV="$D/$L-rom.jar"
+done
+"$ROOT/tools/romgen/romgen" --src "$HERE/src" --base "$PREV" --out "$OUT" >&2
 echo "built $OUT ($(unzip -l "$OUT" | grep -c '\.class') classes)"

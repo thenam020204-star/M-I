@@ -1,0 +1,12 @@
+> getInstance(default criteria): null
+> getInstance(strict criteria): null
+> getInstance(null): null
+> last known: null
+> orientation: null
+> proximity: LocationException
+> proximity null listener: NullPointerException
+> proximity null coordinates: NullPointerException
+> proximity radius 0: IllegalArgumentException
+> remove proximity: ok
+> remove null: NullPointerException
+> empty location: valid false coords null ts 0 speed nan true course nan true method 0 addr null extra null

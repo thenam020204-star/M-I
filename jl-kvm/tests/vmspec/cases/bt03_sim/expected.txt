@@ -1,0 +1,53 @@
+> same instance: true
+> address: 00112233AABB name: TestPhone
+> class: true agent same: true true
+> discoverable at start: 0
+> set GIAC: true now 9e8b33
+> set 0x9E8B10: true now 9e8b10
+> set off: true now 0
+> set 5: IllegalArgumentException
+> set 0x9E8B40: IllegalArgumentException
+> api.version: 1.0 master.switch: false unknown: null null: null
+> getRecord(null): NullPointerException
+> getRecord(other): IllegalArgumentException
+> updateRecord(null): NullPointerException
+> retrieve CACHED: null PREKNOWN: null
+> retrieve 2: IllegalArgumentException
+> inquiry null listener: NullPointerException
+> inquiry bad code: IllegalArgumentException
+> start inquiry: true completed yet: false
+> second inquiry: BluetoothStateException
+> cancel other listener: false
+> cancel null: NullPointerException
+> inquiry result: 0 devices 0 other thread true
+> cancel finished inquiry: false
+> cancel running inquiry: true again false
+> terminated result: 5 other thread true
+> peer: AABBCCDDEEFF equals true false trusted false auth false enc false
+> peer short: IllegalArgumentException
+> peer nonhex: IllegalArgumentException
+> peer null: NullPointerException
+> peer = local: IllegalArgumentException
+> name cached: null
+> name asked: IOException
+> authenticate: IOException
+> getRemoteDevice(other): IllegalArgumentException
+> search empty uuids: IllegalArgumentException
+> search null device: NullPointerException
+> search empty attrs: IllegalArgumentException
+> search duplicate attrs: IllegalArgumentException
+> search attr id too big: IllegalArgumentException
+> search duplicate uuids: IllegalArgumentException
+> search null uuid: NullPointerException
+> search id positive: true
+> second search: BluetoothStateException
+> search result: 6 id matches true services 0 other thread true
+> cancel finished search: false
+> cancel search: true wrong id false
+> terminated search: 2
+> selectService: null
+> selectService bad security: IllegalArgumentException
+> selectService null: NullPointerException
+> client open: BluetoothConnectionException status 5
+> l2cap client open: BluetoothConnectionException
+> server open: ConnectionNotFoundException

@@ -1,0 +1,5 @@
+mode: spec-only
+stubs: jsr256
+source: JSR-256 (Mobile Sensor API 1.0) as remembered - there is no javadoc or SDK for it in the repo (PLAN V15 line): SensorManager.findSensors "returns an empty array if no sensor matches" (NullPointerException for a null quantity / url, IllegalArgumentException for a malformed sensor URL), Connector.open of a "sensor:" URL that names no sensor = ConnectionNotFoundException, LimitCondition / RangeCondition / ObjectCondition operators "eq" "ge" "gt" "le" "lt" (IllegalArgumentException otherwise), MeasurementRange (smallest <= largest, resolution >= 0), Unit.getUnit returns the same object per name.
+notes: UNVERIFIED (docs/jsr.md): all of it; the project's readings: RangeCondition needs lower <= upper and lower op gt/ge, upper op lt/le; LimitCondition.isMet(Object) and ObjectCondition.isMet(double) are false; removeSensorListener of an unknown listener is silent. The oracles are not run.
+diverges: phoneme|kemulator

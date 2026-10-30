@@ -138,3 +138,10 @@ fun registerLayer(taskName: String, srcName: String, jarName: String, layerDb: S
 registerLayer("buildWmaRom", "wma", "rom-wma.jar", "s40dp2-wma-1.1.json", "T32a")
 registerLayer("buildJsr75FcRom", "jsr75-fc", "rom-jsr75-fc.jar", "jsr75-fc.json", "T32a")
 registerLayer("buildJsr75PimRom", "jsr75-pim", "rom-jsr75-pim.jar", "jsr75-pim.json", "T32a")
+
+// ---- JSR-82 layer (T32 rest, D10: profile api "jsr82"), in its OWN jar, built like the WMA / JSR-75 ones; signature DB = Nokia S40 DP2.0 SDK classes.zip (verified source).
+registerLayer("buildJsr82Rom", "jsr82", "rom-jsr82.jar", "s40dp2-jsr82.json", "T32")
+// JSR-179 / 256 / 234: signature DBs from open-source stubs (freej2me), UNVERIFIED, see docs/jsr.md
+registerLayer("buildJsr179Rom", "jsr179", "rom-jsr179.jar", "jsr179-location.json", "T32")
+registerLayer("buildJsr256Rom", "jsr256", "rom-jsr256.jar", "jsr256-sensor.json", "T32")
+registerLayer("buildJsr234Rom", "jsr234", "rom-jsr234.jar", "jsr234-amms.json", "T32")

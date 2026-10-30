@@ -1,0 +1,5 @@
+mode: spec-only
+stubs: jsr179
+source: JSR-179 (Location API 1.0) as remembered - there is no javadoc or SDK for it in the repo (PLAN V15 line): LocationProvider.getInstance "returns a LocationProvider ... null if no provider is available that can meet the criteria" (a device without a position source has none; LocationException is for "all available providers out of service"), getLastKnownLocation "null if no location is known", Orientation.getOrientation "null if the orientation cannot be determined", addProximityListener "LocationException - if the platform does not support proximity monitoring" / NullPointerException / IllegalArgumentException for a radius <= 0, Location.isValid / getSpeed and getCourse NaN when unknown.
+notes: UNVERIFIED (docs/jsr.md): all of it, since no spec text is available; the API signatures come from the freej2me stub (corrected, see docs/jsr.md). removeProximityListener(null) = NullPointerException is the project's reading. The oracles are not run.
+diverges: phoneme|kemulator
