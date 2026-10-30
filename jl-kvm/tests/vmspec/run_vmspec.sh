@@ -23,7 +23,7 @@
 #   no-gc-stress: yes   do not add env JLKVM_ARGS (e.g. "--gc-stress 1 --gc-verify") to this case
 #   realtime: yes   the case measures wall-clock time: the in-process vm-core VmSpecTest skips it; --engine jlkvm runs it with --deterministic (D14 virtual
 #                   clock, T22a-f1) so the result does not depend on machine load (the real-time oracles still depend on it)
-#   stubs: nokia-ui wma jsr75-fc jsr75-pim   (any of them) compile also against that API stub (MicroEmulator microemu-nokiaui / jsr-120 / jsr-75 jars, compile-time only;
+#   stubs: nokia-ui wma jsr75-fc jsr75-pim jsr82 jsr179 jsr256 jsr234   (any of them) compile also against that API stub (MicroEmulator microemu-nokiaui / jsr-120 / jsr-75 jars, compile-time only;
 #                    jsr75-pim = vm-classlib/build/rom/rom-jsr75-pim.jar of this project; the VM uses its own ROM layers)
 #   (file profile.json in the case directory: --engine jlkvm runs the case with that device profile, e.g. sms.mode)
 #   notes: free text
@@ -78,6 +78,7 @@ for id in "${IDS[@]}"; do
       wma) j="$(mvn_fetch org.microemu microemu-jsr-120 "$MICROEMU_VER")" ;;
       jsr75-fc) j="$(mvn_fetch org.microemu microemu-jsr-75 "$MICROEMU_VER")" ;;
       jsr75-pim) j="$ROOT/vm-classlib/build/rom/rom-jsr75-pim.jar" ;;   # no open-source PIM stub on Maven Central: this project's own interfaces (checked against jsr75-pim.json by romgen)
+      jsr82|jsr179|jsr256|jsr234) j="$ROOT/vm-classlib/build/rom/rom-$st.jar" ;;   # T32: this project's own layer jar (its surface is checked against the signature DB by romgen)
       *) echo "unknown stubs: $st" >&2; j="" ;;
     esac
     J2MEC_EXTRA="${J2MEC_EXTRA:+$J2MEC_EXTRA:}$j"

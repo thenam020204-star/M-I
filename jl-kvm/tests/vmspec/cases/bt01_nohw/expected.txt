@@ -1,0 +1,9 @@
+> getLocalDevice: BluetoothStateException
+> getLocalDevice again: BluetoothStateException
+> api.version: null
+> unknown property: null
+> open 0: BluetoothStateException
+> open 1: BluetoothStateException
+> open 2: BluetoothStateException
+> btgoep: ConnectionNotFoundException
+> UUID class: javax.bluetooth.UUID

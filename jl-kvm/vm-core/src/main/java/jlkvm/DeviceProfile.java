@@ -30,7 +30,7 @@ public final class DeviceProfile {
      */
     public String networkDefault = "offline";
     public final Map<String, String> network = new HashMap<String, String>();
-    public static final String[] LOCAL_SCHEMES = {"file", "comm", "resource", "storage"};
+    public static final String[] LOCAL_SCHEMES = {"file", "comm", "resource", "storage", "btspp", "btl2cap", "btgoep"};
     /** Default TimeZone (TimeZone.getDefault): id and raw offset in milliseconds. CLDC itself only requires GMT. */
     public String timeZoneId = "GMT";
     public int timeZoneOffsetMillis = 0;
@@ -84,6 +84,12 @@ public final class DeviceProfile {
     public long fileQuotaBytes = 8L << 20;
     /** JSR-75 PIM (layer "jsr75-pim"), profile {@code pim{permission}}: "allow" (default) | "deny" (SecurityException at openPIMList / listPIMLists). */
     public String pimPermission = "allow";
+    /**
+     * JSR-82 (layer "jsr82"), profile {@code bluetooth{mode, address, name}}: "none" (default: no Bluetooth hardware, {@code LocalDevice.getLocalDevice()} throws
+     * BluetoothStateException) | "simulate" (one lone local adapter with this 12-hex-digit address and friendly name, no peers; inquiries find nothing).
+     * A real adapter ("host" mode) is the Android host's job (M6), not done. UNVERIFIED defaults (docs/jsr.md).
+     */
+    public String bluetoothMode = "none", bluetoothAddress = "001122334455", bluetoothName = "jl-kvm";
 
     // ---- T33 / T30 (device identity and limits). 0 = unlimited / not enforced.
     /** Informational identity: platform family ("s40"), edition ("dp2.0") and the model the numbers come from. */

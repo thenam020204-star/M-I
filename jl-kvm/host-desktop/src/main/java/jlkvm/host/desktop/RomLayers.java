@@ -26,6 +26,10 @@ public final class RomLayers implements ClassSource {
             else if (api.equals("wma-1.1")) f = "rom-wma.jar";
             else if (api.equals("jsr75-fc")) f = "rom-jsr75-fc.jar";
             else if (api.equals("jsr75-pim")) f = "rom-jsr75-pim.jar";
+            else if (api.equals("jsr82")) f = "rom-jsr82.jar";
+            else if (api.equals("jsr179")) f = "rom-jsr179.jar";
+            else if (api.equals("jsr256")) f = "rom-jsr256.jar";
+            else if (api.equals("jsr234")) f = "rom-jsr234.jar";
             else throw new IOException("no ROM layer for api '" + api + "' yet");
             layers.add(new JarClassSource(new File(romDir, f)));
         }

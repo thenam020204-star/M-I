@@ -1,0 +1,56 @@
+> uuid16: 0000110100001000800000805F9B34FB
+> uuid32: ABCDEF1200001000800000805F9B34FB
+> uuid string short: 0000110100001000800000805F9B34FB equals true
+> uuid string 128: 0000110100001000800000805F9B34FB equals true
+> uuid short pad: 00000000000000000000000000000001
+> uuid equals null/other: false false hash true
+> uuid other: false
+> neg: IllegalArgumentException
+> 2^32: IllegalArgumentException
+> empty: IllegalArgumentException
+> 9 chars short: IllegalArgumentException
+> 34 chars: IllegalArgumentException
+> non-hex: NumberFormatException
+> 0x prefix: NumberFormatException
+> null: NullPointerException
+> base: 00001000800000805F9B34FB
+> u1: 8 255
+> u1 256: IllegalArgumentException
+> i1 -129: IllegalArgumentException
+> i4 min: -2147483648
+> u4 max: 4294967295
+> u4 2^32: IllegalArgumentException
+> i8: -9223372036854775808
+> string with long: IllegalArgumentException
+> bool: true false type 40
+> null type: 0
+> ctor(STRING): IllegalArgumentException
+> string: hi 32
+> url: btspp://x
+> uuid elem: true
+> uuid elem with String: IllegalArgumentException
+> null value: IllegalArgumentException
+> u8 copy: 0102030405060708
+> u8 len 7: IllegalArgumentException
+> i16: ok
+> getLong on string: ClassCastException
+> getBoolean on string: ClassCastException
+> getSize on string: ClassCastException
+> getValue on u1: ClassCastException
+> seq size: 3
+> seq types: 9 0 40
+> insert at 4: IndexOutOfBoundsException
+> insert at -1: IndexOutOfBoundsException
+> insert at size: 4
+> add null: NullPointerException
+> remove other equal: false
+> remove a: true size 3
+> remove a again: true size 2
+> add to u1: ClassCastException
+> alt: 56 size 0
+> ctor(33): IllegalArgumentException
+> clone is deep copy: 2 3
+> deviceclass: 5a0000 200 c
+> bit 24: IllegalArgumentException
+> constants: 9e8b33 9e8b00 0 0 1
+> exception: 5 m true

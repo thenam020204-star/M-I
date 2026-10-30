@@ -97,3 +97,42 @@ The three games that use it (jarscan, `docs/games-api-scan.md`) call only `PIM.g
   `receive`, listener on a guest thread, message queued before the listener; FileConnection with a real symlink inside the suite directory and `..` URLs (outside file untouched, nothing created outside);
   `HostFs` (both implementations) against ~13 bad paths, rename out of the directory and the quota.
 * host-common `PolicyNativesTest`: the natives refuse by themselves (sms deny/offline, file read/deny).
+
+
+# JSR-82 Bluetooth, JSR-179 Location, JSR-256 Sensor, JSR-234 AMMS (PLAN T32 rest, A9)
+
+Four more ROM layers in the same style as above (own jar each, only loaded when the profile lists the api, D10; `RomLayers`; flat test ROM = all of them;
+`stubs:` of the vmspec runner = this project's own layer jar, whose surface romgen already checked against the DB):
+
+| profile api | jar | sources | gradle task | surface == | DB source |
+|---|---|---|---|---|---|
+| `jsr82` | `rom-jsr82.jar` | `vm-classlib/jsr82/src` | `buildJsr82Rom` | cldc-1.1 + midp-2.0 + `s40dp2-jsr82.json` | Nokia S40 DP2.0 SDK 1.1 `classes.zip`, **verified source** (javadoc local: `tools/env/cache/nokia-sdk/sdk/api/Bluetooth_1.0`, not copied) |
+
+The SDK DB of JSR-82 has no `javax.obex` and no `RFCOMM` classes of its own (RFCOMM = `StreamConnectionNotifier`/`StreamConnection` of CLDC): scheme `btgoep://` has no
+handler (`ConnectionNotFoundException`). The two public inner thread classes of `DiscoveryAgent` (`InquiryListenerThread`, `ServiceSearchListenerThread`, an artefact of the
+SDK implementation that is in its DB) are real inner classes here and are what delivers the events.
+
+## JSR-82 (`javax.bluetooth`)
+
+* **Profile `bluetooth{mode, address, name}`** (`DeviceProfile.bluetoothMode/Address/Name`, `ProfileLoader`): `none` (default) | `simulate`.
+  The schemes `btspp`, `btl2cap`, `btgoep` are `LOCAL_SCHEMES` (they never go through the `network{}` policy, there is no network code behind them).
+* **No hardware (`none`)** - javadoc: `LocalDevice.getLocalDevice()` "BluetoothStateException - if the Bluetooth system could not be initialized": thrown on every call, so
+  the application never reaches any other instance method; `LocalDevice.getProperty` "null if the property is not defined": null; `Connector.open("btspp://..." | "btl2cap://...")`
+  -> `BluetoothStateException` (an `IOException`, so the usual `catch (IOException)` of games handles it). Test: vmspec `bt01_nohw`.
+* **Simulated adapter (`simulate`)**: ONE local adapter with the profile's address/name, **no peers**. `getLocalDevice()` returns one object; discoverable mode kept per javadoc
+  (valid: GIAC, LIAC, NOT_DISCOVERABLE, 0x9E8B00..0x9E8B3F, else `IllegalArgumentException`; always granted); `getProperty` answers the ten mandatory property names
+  (api.version "1.0", master.switch "false", sd.attr.retrievable.max "8", connected.devices.max "7", l2cap.receiveMTU.max "672", sd.trans.max "1", the four connected.* "false";
+  values UNVERIFIED). Inquiry: runs 1000 ms of (virtual) time on a guest thread and ends `inquiryCompleted(INQUIRY_COMPLETED)` without a `deviceDiscovered`; `cancelInquiry(listener)`
+  only for the starting listener, ends with `INQUIRY_TERMINATED`; a second inquiry while one runs is a `BluetoothStateException`; `retrieveDevices` is `null` ("null if no devices meet
+  the criteria"). Service search: argument checks per javadoc (null/empty/duplicate/out of range), positive transaction id, at most 1 at a time (`bluetooth.sd.trans.max`), ends after
+  200 ms with `SERVICE_SEARCH_DEVICE_NOT_REACHABLE` (a peer is only an address, nothing answers); `cancelServiceSearch` -> `SERVICE_SEARCH_TERMINATED`; `selectService` -> `null`
+  ("null if no service could be found"). `RemoteDevice`: 12 hex characters, equals/hashCode on the address, no security state ever set, `getFriendlyName(false)` null /
+  `(true)` IOException, `getRemoteDevice(conn)`/`authorize`/`encrypt`/`isAuthorized` -> `IllegalArgumentException` (no Bluetooth connection exists). `Connector.open` client URL ->
+  `BluetoothConnectionException(TIMEOUT)`, server URL (`btspp://localhost:UUID`) -> `ConnectionNotFoundException` (accepting connections is not simulated).
+  Value classes `UUID`, `DataElement` (full javadoc tables), `DeviceClass` are complete and need no hardware. Tests: vmspec `bt02_values`, `bt03_sim` (profile.json).
+* **Host interface for the real adapter (M6) - NOT done**: `jlkvm.host.BluetoothNatives` (`mode0/address0/name0` of the ROM-private `jlkvm.internal.bt.Hw`) is the single plug point;
+  a mode `host` would be added there together with natives for inquiry / service search / connections (`ServiceRecord` is only an interface here, no implementation exists, no
+  service can be registered, `L2CAPConnection(Notifier)` have no implementation). Nothing touches a radio.
+* UNVERIFIED (not in the SDK javadoc, the project's own reading): everything listed as "values UNVERIFIED" above; the order NPE before IAE in `startInquiry`; the durations 1000/200 ms;
+  `UUID.toString()` = 32 upper-case digits (also for 16/32-bit UUIDs) and left zero padding of a short 128-bit string; `DeviceClass` accessors keep the bits in place (masks 0xFFE000 /
+  0x1F00 / 0xFC); the class of device of the local phone 0x20020C; `DataElement.clone()` (in the SDK DB, no javadoc) = deep copy; `BluetoothConnectionException(int)` accepts 1..6.

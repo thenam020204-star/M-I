@@ -58,7 +58,7 @@ public final class ProfileValidator {
         // consistency
         if (p.name == null || p.name.length() == 0 || p.name.equals("generic")) errs.add("name missing");
         if (!p.apis.contains("cldc-1.1")) errs.add("apis must contain cldc-1.1");
-        String[][] needs = {{"nokia-ui", "midp-2.0"}, {"wma-1.1", "midp-2.0"}, {"jsr-135", "midp-2.0"}, {"jsr75-fc", "cldc-1.1"}, {"jsr75-pim", "cldc-1.1"}};
+        String[][] needs = {{"nokia-ui", "midp-2.0"}, {"wma-1.1", "midp-2.0"}, {"jsr-135", "midp-2.0"}, {"jsr75-fc", "cldc-1.1"}, {"jsr75-pim", "cldc-1.1"}, {"jsr82", "cldc-1.1"}, {"jsr179", "cldc-1.1"}, {"jsr256", "cldc-1.1"}, {"jsr234", "midp-2.0"}};
         for (int i = 0; i < needs.length; i++) if (p.apis.contains(needs[i][0]) && !p.apis.contains(needs[i][1])) errs.add("api " + needs[i][0] + " needs " + needs[i][1]);
         boolean midp = p.apis.contains("midp-2.0");
         String prof = p.properties.get("microedition.profiles");

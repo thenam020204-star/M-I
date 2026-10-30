@@ -96,6 +96,7 @@ public final class MidpNatives {
         sms().register(r);
         new FileNatives(profile, fs != null ? fs : new jlkvm.host.fs.MemoryFs(profile.fileRoots, profile.fileQuotaBytes)).register(r);
         new PimNatives(profile).register(r);
+        new BluetoothNatives(profile).register(r);
         // ------------------------------------------------------------ AMS
         r.register("jlkvm/internal/Ams.property0(Ljava/lang/String;)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
             String k = gs.string(c.argRef(0)), v = null;

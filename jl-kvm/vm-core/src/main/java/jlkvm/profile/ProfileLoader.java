@@ -194,6 +194,21 @@ public final class ProfileLoader {
                         p.pimPermission = m;
                     } else throw new IllegalArgumentException("profile: unknown key pim." + n);
                 }
+            } else if (k.equals("bluetooth")) {
+                for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
+                    String n = te.getKey();
+                    if (n.startsWith("_")) continue;
+                    if (n.equals("mode")) {
+                        String m = str("bluetooth.mode", te.getValue());
+                        if (!m.equals("none") && !m.equals("simulate")) throw new IllegalArgumentException("profile: bluetooth.mode '" + m + "'");
+                        p.bluetoothMode = m;
+                    } else if (n.equals("address")) {
+                        String a = str("bluetooth.address", te.getValue());
+                        if (!a.matches("[0-9A-F]{12}")) throw new IllegalArgumentException("profile: bluetooth.address must be 12 upper-case hex digits");
+                        p.bluetoothAddress = a;
+                    } else if (n.equals("name")) p.bluetoothName = str("bluetooth.name", te.getValue());
+                    else throw new IllegalArgumentException("profile: unknown key bluetooth." + n);
+                }
             } else if (k.equals("timeZone")) {
                 for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
                     if (te.getKey().startsWith("_")) continue;
