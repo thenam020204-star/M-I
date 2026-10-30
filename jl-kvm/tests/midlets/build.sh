@@ -18,4 +18,9 @@ if [ -f "$M/nokiaui" ]; then
   . "$D/../../tools/env/lib.sh"; . "$D/../../tools/env/versions.sh"
   export J2MEC_EXTRA="${J2MEC_EXTRA:+$J2MEC_EXTRA:}$(mvn_fetch org.microemu microemu-nokiaui "$MICROEMU_VER")"
 fi
+# T32a: files `wma`, `jsr75-fc`, `jsr75-pim` next to MANIFEST.MF add the stubs of those APIs (MicroEmulator jsr-120 / jsr-75 jars: compile time only; PIM: the interfaces of this project's own ROM layer)
+. "$D/../../tools/env/lib.sh"; . "$D/../../tools/env/versions.sh"
+[ -f "$M/wma" ] && export J2MEC_EXTRA="${J2MEC_EXTRA:+$J2MEC_EXTRA:}$(mvn_fetch org.microemu microemu-jsr-120 "$MICROEMU_VER")"
+[ -f "$M/jsr75-fc" ] && export J2MEC_EXTRA="${J2MEC_EXTRA:+$J2MEC_EXTRA:}$(mvn_fetch org.microemu microemu-jsr-75 "$MICROEMU_VER")"
+[ -f "$M/jsr75-pim" ] && export J2MEC_EXTRA="${J2MEC_EXTRA:+$J2MEC_EXTRA:}$D/../../vm-classlib/build/rom/rom-jsr75-pim.jar"
 "$D/../../tools/env/j2mec.sh" "$W/src" "$M/MANIFEST.MF" "$OUT" "${3:-cldc11}"

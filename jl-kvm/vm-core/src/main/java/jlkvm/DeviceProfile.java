@@ -70,11 +70,27 @@ public final class DeviceProfile {
     /** Key repeat: first repeat after {@code keyRepeatDelayMs}, then every {@code keyRepeatIntervalMs} (host drivers use them). */
     public int keyRepeatDelayMs = 500, keyRepeatIntervalMs = 100;
 
+    /**
+     * WMA (T32a, layer "wma-1.1"), profile {@code sms{mode}}: "deny" (default; SecurityException at open), "simulate" (nothing leaves the host: the host logs
+     * the message and send succeeds) or "offline" (IOException). Governs the schemes sms and cbs. UNVERIFIED defaults (docs/jsr.md).
+     */
+    public String smsMode = "deny";
+    /**
+     * JSR-75 FileConnection (layer "jsr75-fc"), profile {@code file{roots[], permission, quotaBytes}}: the virtual roots ("name/"), "readwrite" (default) | "read" | "deny",
+     * and the size of each root. UNVERIFIED defaults (docs/jsr.md).
+     */
+    public final java.util.List<String> fileRoots = new java.util.ArrayList<String>(java.util.Arrays.asList("c:/", "e:/", "root1/"));
+    public String filePermission = "readwrite";
+    public long fileQuotaBytes = 8L << 20;
+    /** JSR-75 PIM (layer "jsr75-pim"), profile {@code pim{permission}}: "allow" (default) | "deny" (SecurityException at openPIMList / listPIMLists). */
+    public String pimPermission = "allow";
+
     public static final int NET_DENY = 0, NET_OFFLINE = 1, NET_ALLOW = 2, NET_LOCAL = 3;
 
     /** @return NET_DENY / NET_OFFLINE / NET_ALLOW, or NET_LOCAL for a scheme that does not use the network. */
     public int networkPolicy(String scheme) {
         String s = scheme.toLowerCase();
+        if (s.equals("sms") || s.equals("cbs")) return smsMode.equals("simulate") ? NET_ALLOW : smsMode.equals("offline") ? NET_OFFLINE : NET_DENY;
         for (int i = 0; i < LOCAL_SCHEMES.length; i++) if (LOCAL_SCHEMES[i].equals(s)) return NET_LOCAL;
         String v = network.get(s);
         if (v == null) v = networkDefault;

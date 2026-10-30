@@ -61,6 +61,18 @@ public final class MidpNatives {
     /** The Nokia DeviceControl features (T28); default: a {@code RecordingNokiaDevice} (logs). */
     public MidpNatives nokiaDevice(jlkvm.host.nokia.NokiaDevice d) { this.nokia = d; return this; }
 
+    private SmsNatives sms;
+
+    /** The SMS / CBS adapter of WMA (T32a): created on first use from the profile ({@code sms.mode}); a test host pushes incoming messages through it. */
+    public synchronized SmsNatives sms() { if (sms == null) sms = new SmsNatives(profile); return sms; }
+
+    public MidpNatives sms(SmsNatives s) { this.sms = s; return this; }
+
+    private jlkvm.host.fs.HostFs fs;
+
+    /** The file system behind JSR-75 FileConnection (T32a); default: in memory ({@code MemoryFs}), lost at exit. */
+    public MidpNatives fileSystem(jlkvm.host.fs.HostFs f) { this.fs = f; return this; }
+
     private static final String LCDUI = "javax/microedition/lcdui/";
 
     private Surface surf(NativeContext c, int id) {
@@ -81,6 +93,9 @@ public final class MidpNatives {
         new NetNatives(profile, http).register(r);
         new AudioNatives(profile, audio).register(r);
         new NokiaNatives(profile, nokia).register(r);
+        sms().register(r);
+        new FileNatives(profile, fs != null ? fs : new jlkvm.host.fs.MemoryFs(profile.fileRoots, profile.fileQuotaBytes)).register(r);
+        new PimNatives(profile).register(r);
         // ------------------------------------------------------------ AMS
         r.register("jlkvm/internal/Ams.property0(Ljava/lang/String;)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
             String k = gs.string(c.argRef(0)), v = null;

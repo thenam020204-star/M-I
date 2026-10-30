@@ -12,5 +12,9 @@ mkdir -p "$D"
 "$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/jsr135/src" --base "$D/midp-rom.jar" --out "$D/jsr135-rom.jar" >&2
 # Nokia UI layer (FullCanvas, DirectGraphics...): present in the flat test ROM; a profile without "nokia-ui" does not get it from the desktop host (RomLayers)
 "$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/nokiaui/src" --base "$D/jsr135-rom.jar" --out "$D/nokiaui-rom.jar" >&2
-"$ROOT/tools/romgen/romgen" --src "$HERE/src" --base "$D/nokiaui-rom.jar" --out "$OUT" >&2
+# WMA / JSR-75 layers (T32a): present in the flat test ROM; the policy of the profile (sms.mode, file.permission, pim.permission) decides what a game can do
+"$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/wma/src" --base "$D/nokiaui-rom.jar" --out "$D/wma-rom.jar" >&2
+"$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/jsr75-fc/src" --base "$D/wma-rom.jar" --out "$D/fc-rom.jar" >&2
+"$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/jsr75-pim/src" --base "$D/fc-rom.jar" --out "$D/pim-rom.jar" >&2
+"$ROOT/tools/romgen/romgen" --src "$HERE/src" --base "$D/pim-rom.jar" --out "$OUT" >&2
 echo "built $OUT ($(unzip -l "$OUT" | grep -c '\.class') classes)"

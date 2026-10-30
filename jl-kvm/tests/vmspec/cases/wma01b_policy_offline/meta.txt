@@ -1,0 +1,4 @@
+mode: spec-only
+stubs: wma
+source: WMA 1.1 javadoc (S40 DP2.0 SDK 1.1, MessageConnection / Connector.open: "IOException - if some other kind of I/O error occurs"); PLAN T32a: profile sms.mode offline = no messaging network, IOException at open; nothing is sent.
+notes: the oracles have their own SMS handling, so the case is not run on them (profile.json is read by --engine jlkvm only).

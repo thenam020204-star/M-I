@@ -109,3 +109,32 @@ val buildNokiaUiRom = tasks.register<JavaExec>("buildNokiaUiRom") {
 }
 tasks.named("assemble") { dependsOn(buildNokiaUiRom) }
 tasks.named("check") { dependsOn(buildNokiaUiRom) }
+
+// ---- WMA 1.1 / JSR-75 layers (T32a, D10: profile apis "wma-1.1", "jsr75-fc", "jsr75-pim"): three small layers, each in its OWN jar (a profile can
+// have the SMS API without the file system, and the three have different permission models). Base = CLDC + MIDP merged. Surface check:
+// cldc-1.1 + midp-2.0 + the layer's DB (wma = Nokia S40 DP2.0 SDK; jsr75-* = open-source stubs, UNVERIFIED, see docs/jsr.md).
+fun registerLayer(taskName: String, srcName: String, jarName: String, layerDb: String, what: String): TaskProvider<JavaExec> {
+    val jar = layout.buildDirectory.file("rom/$jarName")
+    val t = tasks.register<JavaExec>(taskName) {
+        group = "build"
+        description = "Compiles vm-classlib/$srcName/src on top of the CLDC + MIDP ROM into $jarName ($what)"
+        dependsOn(midpBaseJar)
+        val srcDir = layout.projectDirectory.dir("$srcName/src")
+        val dbDir = rootProject.layout.projectDirectory.dir("tools/api-sigs/db")
+        inputs.dir(srcDir)
+        inputs.file(midpBaseJar.flatMap { it.archiveFile })
+        inputs.dir(dbDir)
+        outputs.file(jar)
+        classpath = romgen
+        mainClass.set("jlkvm.tools.romgen.RomGen")
+        args("--src", srcDir.asFile.path, "--base", layout.buildDirectory.file("rom/base-midp.jar").get().asFile.path, "--delta", "--out", jar.get().asFile.path,
+            "--api-db", dbDir.file("cldc-1.1.json").asFile.path, "--api-db", dbDir.file("midp-2.0.json").asFile.path,
+            "--api-db", dbDir.file(layerDb).asFile.path, "--api-ignore", "jlkvm/internal/")
+    }
+    tasks.named("assemble") { dependsOn(t) }
+    tasks.named("check") { dependsOn(t) }
+    return t
+}
+registerLayer("buildWmaRom", "wma", "rom-wma.jar", "s40dp2-wma-1.1.json", "T32a")
+registerLayer("buildJsr75FcRom", "jsr75-fc", "rom-jsr75-fc.jar", "jsr75-fc.json", "T32a")
+registerLayer("buildJsr75PimRom", "jsr75-pim", "rom-jsr75-pim.jar", "jsr75-pim.json", "T32a")

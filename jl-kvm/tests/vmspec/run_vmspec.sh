@@ -17,7 +17,9 @@
 #   realtime: yes   the case measures wall-clock time: the in-process vm-core VmSpecTest skips it (run here only)
 #   no-gc-stress: yes   do not add env JLKVM_ARGS (e.g. "--gc-stress 1 --gc-verify") to this case
 #   realtime: yes   the case measures wall-clock time: the in-process vm-core VmSpecTest skips it (run here only)
-#   stubs: nokia-ui   compile also against the Nokia UI API stub (MicroEmulator microemu-nokiaui jar, compile-time only; the VM uses its own rom-nokiaui layer)
+#   stubs: nokia-ui wma jsr75-fc jsr75-pim   (any of them) compile also against that API stub (MicroEmulator microemu-nokiaui / jsr-120 / jsr-75 jars, compile-time only;
+#                    jsr75-pim = vm-classlib/build/rom/rom-jsr75-pim.jar of this project; the VM uses its own ROM layers)
+#   (file profile.json in the case directory: --engine jlkvm runs the case with that device profile, e.g. sms.mode)
 #   notes: free text
 # Exit status: 0 when every case passes, 1 otherwise.
 set -uo pipefail
@@ -54,7 +56,18 @@ for id in "${IDS[@]}"; do
     MF="$W/MANIFEST.MF"
     printf 'MIDlet-Name: %s\nMIDlet-Version: 1.0.0\nMIDlet-Vendor: jl-kvm\nMIDlet-1: %s,,vmspec.%s\nMicroEdition-Configuration: CLDC-1.1\nMicroEdition-Profile: MIDP-2.0\n' "$id" "$id" "$MAIN" > "$MF"
   fi
-  if [ "$(meta "$id" stubs)" = nokia-ui ]; then J2MEC_EXTRA="$(mvn_fetch org.microemu microemu-nokiaui "$MICROEMU_VER")"; export J2MEC_EXTRA; else unset J2MEC_EXTRA; fi
+  J2MEC_EXTRA=""
+  for st in $(meta "$id" stubs); do
+    case "$st" in
+      nokia-ui) j="$(mvn_fetch org.microemu microemu-nokiaui "$MICROEMU_VER")" ;;
+      wma) j="$(mvn_fetch org.microemu microemu-jsr-120 "$MICROEMU_VER")" ;;
+      jsr75-fc) j="$(mvn_fetch org.microemu microemu-jsr-75 "$MICROEMU_VER")" ;;
+      jsr75-pim) j="$ROOT/vm-classlib/build/rom/rom-jsr75-pim.jar" ;;   # no open-source PIM stub on Maven Central: this project's own interfaces (checked against jsr75-pim.json by romgen)
+      *) echo "unknown stubs: $st" >&2; j="" ;;
+    esac
+    J2MEC_EXTRA="${J2MEC_EXTRA:+$J2MEC_EXTRA:}$j"
+  done
+  if [ -n "$J2MEC_EXTRA" ]; then export J2MEC_EXTRA; else unset J2MEC_EXTRA; fi
   JAR="$W/$id.jar"
   if [ -x "$C/build.sh" ]; then
     "$C/build.sh" "$C" "$JAR" > "$W/build.log" 2>&1 || { echo "FAIL  $id (build.sh failed, see $W/build.log)"; fail=$((fail+1)); continue; }
@@ -83,7 +96,7 @@ for id in "${IDS[@]}"; do
   if [ "$ENGINE" = jlkvm ]; then
     o=jlkvm
     ja="${JLKVM_ARGS:-}"; [ -n "$(meta "$id" no-gc-stress)" ] && ja=""   # env JLKVM_ARGS="--gc-stress 1 --gc-verify": GC torture for the whole corpus
-    JLKVM_ARGS="$ja" "$ORA/run_jlkvm.sh" "$JAR" $( [ "$cldc" = cldc10 ] && echo --cldc10 ) $(meta "$id" jlkvm-args) > "$W/$o.raw" 2> "$W/$o.err"
+    JLKVM_ARGS="$ja" "$ORA/run_jlkvm.sh" "$JAR" $( [ "$cldc" = cldc10 ] && echo --cldc10 ) $(meta "$id" jlkvm-args) $( [ -f "$C/profile.json" ] && echo --profile-json "$C/profile.json" ) > "$W/$o.raw" 2> "$W/$o.err"
     norm < "$W/$o.raw" > "$W/$o.out"; outs+=("$o")
   else
   for o in microemu freej2me; do

@@ -1,0 +1,339 @@
+{
+  "format": 1,
+  "name": "jsr75-fc",
+  "source": "MicroEmulator 2.0.4 org.microemu:microemu-jsr-75 (Maven Central) javax.microedition.io.file.* signatures only (LGPL implementation classes org/microemu/** excluded); UNVERIFIED against a JSR-75 SDK (PLAN T32a)",
+  "classes": [
+    {
+      "name": "javax/microedition/io/file/ConnectionClosedException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/io/file/FileConnection",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/io/StreamConnection"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "availableSize",
+          "desc": "()J",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "canRead",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "canWrite",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "create",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "delete",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "directorySize",
+          "desc": "(Z)J",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "exists",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "fileSize",
+          "desc": "()J",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "getName",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getPath",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getURL",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isDirectory",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isHidden",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isOpen",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "lastModified",
+          "desc": "()J",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "list",
+          "desc": "()Ljava/util/Enumeration;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "list",
+          "desc": "(Ljava/lang/String;Z)Ljava/util/Enumeration;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "mkdir",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "openDataInputStream",
+          "desc": "()Ljava/io/DataInputStream;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "openDataOutputStream",
+          "desc": "()Ljava/io/DataOutputStream;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "openInputStream",
+          "desc": "()Ljava/io/InputStream;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "openOutputStream",
+          "desc": "()Ljava/io/OutputStream;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "openOutputStream",
+          "desc": "(J)Ljava/io/OutputStream;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "rename",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "setFileConnection",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "setHidden",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "setReadable",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "setWritable",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "totalSize",
+          "desc": "()J",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "truncate",
+          "desc": "(J)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "usedSize",
+          "desc": "()J",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/io/file/FileSystemListener",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "ROOT_ADDED",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "ROOT_REMOVED",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "rootChanged",
+          "desc": "(ILjava/lang/String;)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/io/file/FileSystemRegistry",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "addFileSystemListener",
+          "desc": "(Ljavax/microedition/io/file/FileSystemListener;)Z",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "listRoots",
+          "desc": "()Ljava/util/Enumeration;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "removeFileSystemListener",
+          "desc": "(Ljavax/microedition/io/file/FileSystemListener;)Z",
+          "access": 9,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/io/file/IllegalModeException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    }
+  ]
+}

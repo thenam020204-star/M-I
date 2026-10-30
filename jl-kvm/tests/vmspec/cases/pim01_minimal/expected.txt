@@ -1,0 +1,33 @@
+> same instance true constants 123 123
+> contact lists 1 Contacts event lists Calendar todo lists ToDo
+> bad type: IllegalArgumentException
+> bad mode: IllegalArgumentException
+> null name: NullPointerException
+> unknown name: PIMException reason 3
+> list name Contacts items 0 search 0
+> items after close: PIMException reason 2
+> close twice: PIMException reason 2
+> fields 19 TEL supported true type 4 NAME type 5 array size 5 max TEL -1 max NAME 1 max categories 0
+> unsupported field: UnsupportedFieldException 1106
+> new contact: modified false fields 0 list ok true
+> second NAME: FieldFullException 106
+> array of the wrong size: IllegalArgumentException
+> index 5: IndexOutOfBoundsException
+> wrong type: IllegalArgumentException
+> null value: NullPointerException
+> modified true fields 3 TEL count 2 preferred 1 attrs 16 name[0] Liddell categories 0
+> after commit: modified false list has 1
+> edited but not committed: stored tel 0123 working copy 9999
+> committed again: stored tel 9999 still 1 item; search 'ali' 1 'zzz' 0
+> match template 1
+> after removeValue: count 1
+> addToCategory: PIMException reason 4
+> removed: 0
+> remove twice: PIMException
+> commit on read only: SecurityException
+> items on write only: SecurityException
+> event: 10110 repeat true fields 3 freq 16 end 5000 false supported 3
+> bad range: IllegalArgumentException
+> todo: all 2 open 1 done 1
+> serial formats 0
+> fromSerialFormat: PIMException reason 0

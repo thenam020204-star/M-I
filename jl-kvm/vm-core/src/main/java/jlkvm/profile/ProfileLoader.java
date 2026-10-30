@@ -117,6 +117,47 @@ public final class ProfileLoader {
                         } else throw new IllegalArgumentException("profile: unknown key nokia." + n);
                     }
                 }
+            } else if (k.equals("sms")) {
+                for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
+                    String n = te.getKey();
+                    if (n.startsWith("_")) continue;
+                    if (n.equals("mode")) {
+                        String m = str("sms.mode", te.getValue());
+                        if (!m.equals("deny") && !m.equals("simulate") && !m.equals("offline")) throw new IllegalArgumentException("profile: sms.mode '" + m + "'");
+                        p.smsMode = m;
+                    } else throw new IllegalArgumentException("profile: unknown key sms." + n);
+                }
+            } else if (k.equals("file")) {
+                for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
+                    String n = te.getKey();
+                    if (n.startsWith("_")) continue;
+                    if (n.equals("roots")) {
+                        if (!(te.getValue() instanceof java.util.List)) throw new IllegalArgumentException("profile: file.roots must be an array");
+                        p.fileRoots.clear();
+                        for (Object ro : (java.util.List<Object>) te.getValue()) {
+                            String r = str("file.roots[]", ro);
+                            if (r.length() < 2 || !r.endsWith("/") || r.indexOf('/') != r.length() - 1 || r.indexOf('\\') >= 0 || r.equals("./") || r.equals("../")) throw new IllegalArgumentException("profile: file.roots entry '" + r + "' must be one name followed by '/'");
+                            p.fileRoots.add(r);
+                        }
+                    } else if (n.equals("permission")) {
+                        String m = str("file.permission", te.getValue());
+                        if (!m.equals("readwrite") && !m.equals("read") && !m.equals("deny")) throw new IllegalArgumentException("profile: file.permission '" + m + "'");
+                        p.filePermission = m;
+                    } else if (n.equals("quotaBytes")) {
+                        p.fileQuotaBytes = num("file.quotaBytes", te.getValue());
+                        if (p.fileQuotaBytes < 0) throw new IllegalArgumentException("profile: file.quotaBytes < 0");
+                    } else throw new IllegalArgumentException("profile: unknown key file." + n);
+                }
+            } else if (k.equals("pim")) {
+                for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
+                    String n = te.getKey();
+                    if (n.startsWith("_")) continue;
+                    if (n.equals("permission")) {
+                        String m = str("pim.permission", te.getValue());
+                        if (!m.equals("allow") && !m.equals("deny")) throw new IllegalArgumentException("profile: pim.permission '" + m + "'");
+                        p.pimPermission = m;
+                    } else throw new IllegalArgumentException("profile: unknown key pim." + n);
+                }
             } else if (k.equals("timeZone")) {
                 for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
                     if (te.getKey().startsWith("_")) continue;

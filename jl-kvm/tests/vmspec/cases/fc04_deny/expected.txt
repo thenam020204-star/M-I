@@ -1,0 +1,7 @@
+> roots: SecurityException
+> addFileSystemListener: SecurityException
+> addFileSystemListener(null): NullPointerException
+> READ: SecurityException
+> WRITE: SecurityException
+> READ_WRITE: SecurityException
+> open default mode: SecurityException

@@ -1,0 +1,37 @@
+> roots c:/ e:/ root1/ 
+> root list: exists true dir true name '' path / url file:///
+> root list entries c:/ e:/ root1/ 
+> file:///root1/: opened file:///root1/
+> file://localhost/root1/: opened file:///root1/
+> file:///ROOT1/: opened file:///root1/
+> file:///c:/dir/file.txt: opened file:///c:/dir/file.txt
+> file:///root1/a%20b/c%C3%A9: opened file:///root1/a%20b/c%C3%A9
+> file:///root1/../x: IllegalArgumentException
+> file:///root1/a/../../x: IllegalArgumentException
+> file:///../x: IllegalArgumentException
+> file:///root1/./x: IllegalArgumentException
+> file:///root1/a%2e%2e/x: opened file:///root1/a../x
+> file:///root1/%2E%2E/x: IllegalArgumentException
+> file:///c:/%2e%2e/%2e%2e/etc/passwd: IllegalArgumentException
+> file:///root1/a\b: IllegalArgumentException
+> file:///root1/a%5cb: IllegalArgumentException
+> file:///root1//x: IllegalArgumentException
+> file:///root1/a:b: IllegalArgumentException
+> file:///root1/x%00y: IllegalArgumentException
+> file:///root1/x%zz: IllegalArgumentException
+> file:///etc/passwd: ConnectionNotFoundException
+> file:////etc/passwd: IllegalArgumentException
+> file:///tmp/x: ConnectionNotFoundException
+> file://evilhost/root1/: IllegalArgumentException
+> file:root1/: IllegalArgumentException
+> file://: IllegalArgumentException
+> file:///root1/x;y=z: opened file:///root1/x
+> after setFileConnection(a): file:///root1/a/ path /root1/a/ name a/
+> ../x: IllegalArgumentException
+> b/c: IllegalArgumentException
+> missing: IOException
+> null: NullPointerException
+> after ..: file:///root1/
+> above the root: IOException
+> still at file:///root1/
+> c exists true, e exists false

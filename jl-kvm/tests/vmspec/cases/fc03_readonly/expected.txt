@@ -1,0 +1,7 @@
+> roots c:/ e:/ root1/ 
+> addFileSystemListener true
+> addFileSystemListener(null): NullPointerException
+> READ: opened, exists true
+> WRITE: SecurityException
+> READ_WRITE: SecurityException
+> open default mode: SecurityException

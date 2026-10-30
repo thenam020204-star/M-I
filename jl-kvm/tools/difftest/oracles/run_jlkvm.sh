@@ -17,7 +17,7 @@ if [ -n "$(find "$ROOT/vm-core/src/main" "$ROOT/vm-core/src/release" "$ROOT/vm-c
   [ -f "$B/classes/jlkvm/tmp/RunJar.class" ] || { echo "engine build failed" >&2; exit 2; }
   touch "$B/.stamp"
 fi
-if [ ! -f "$ROM" ] || [ -n "$(find "$ROOT/vm-core/src/test/guest-stub/src" "$ROOT/vm-classlib/src" "$ROOT/vm-classlib/midp/src" "$ROOT/vm-classlib/jsr135/src" "$ROOT/vm-classlib/nokiaui/src" -name '*.java' -newer "$ROM" | head -1)" ]; then
+if [ ! -f "$ROM" ] || [ -n "$(find "$ROOT/vm-core/src/test/guest-stub/src" "$ROOT/vm-classlib/src" "$ROOT/vm-classlib/midp/src" "$ROOT/vm-classlib/jsr135/src" "$ROOT/vm-classlib/nokiaui/src" "$ROOT/vm-classlib/wma/src" "$ROOT/vm-classlib/jsr75-fc/src" "$ROOT/vm-classlib/jsr75-pim/src" -name '*.java' -newer "$ROM" | head -1)" ]; then
   "$ROOT/vm-core/src/test/guest-stub/build.sh" "$ROM" >&2 || exit 2
 fi
 # JLKVM_ARGS (e.g. "--gc-stress 1 --gc-verify") is added to every run except --noverify ones: without a verified method there is no GC type map

@@ -1,0 +1,51 @@
+> root: total 8388608 used 0 available 8388608 list '' size 0
+> dir before: exists false isDirectory false name data/ path /root1/data/
+> dir after mkdir: exists true isDirectory true name data/ url file:///root1/data/
+> mkdir twice: IOException
+> file before: exists false size -1 lastModified 0 canRead false canWrite false
+> read missing: IOException
+> write missing: IOException
+> create twice: IOException
+> file after create: exists true isDirectory false size 0 name save.dat path /root1/data/ canRead true canWrite true
+> size after flush 6
+> read 6: 123456 next -1 available 0
+> size after overwrite 6
+> offset beyond the end: IOException
+> negative offset: IllegalArgumentException
+> data: 9934567 size 7
+> data again: 16909060 hi size 8
+> size after truncate(3) 3
+> size after truncate(50) 3
+> truncate(-1): IllegalArgumentException
+> used 3 directorySize 3/0
+> hidden true false
+> list: Game.sav save.dat sub/ 
+> list(*.sav, false): Game.sav | list(*.sa*, true): Game.sav | list(*, true): Game.sav hidden.tmp save.dat sub/ | list(sub, true): sub/ | list(save.dat, false): save.dat 
+> list of a file: IOException
+> delete non-empty: IOException
+> canWrite after setWritable(false): false canRead true
+> write read-only file: SecurityException
+> read unreadable file: SecurityException
+> renamed: file:///root1/data/save2.dat exists true old exists false
+> rename onto an existing file: IOException
+> rename with a path: IllegalArgumentException
+> rename ..: IllegalArgumentException
+> READ mode openOutputStream: IllegalModeException
+> READ mode delete: IllegalModeException
+> WRITE mode openInputStream: IllegalModeException
+> WRITE mode fileSize: IllegalModeException
+> READ mode fileSize 3
+> stream after close: 1
+> read closed stream: IOException
+> Connector.openInputStream: 1
+> isOpen false name still save2.dat
+> exists on closed: ConnectionClosedException
+> fileSize on closed: ConnectionClosedException
+> list on closed: ConnectionClosedException
+> delete twice: IOException
+> end: list '' used 0
+> create without parent: IOException
+> read a directory: IOException
+> delete a root: IOException
+> types true true
+> exceptions true true

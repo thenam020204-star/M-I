@@ -21,7 +21,7 @@ import jlkvm.profile.ProfileLoader;
  * Runs a game JAR on the desktop VM without a window (PLAN T21-T23): AMS (JAD + manifest, MIDlet selection), software raster,
  * scripted input (tests/games/README.md format) on a virtual clock (D14) or on the wall clock. This is the vm-thread: it calls
  * {@code runSlice} in a loop and is the only thread that enters the guest; input is handed over with {@code Vm.postEvent}.
- * <pre>HeadlessRunner [--jad F] [--profile F.json] [--rom-dir DIR] [--script F.inp] [--rms-dir DIR] [--import-jlmod-rms DIR] [--midlet N] [--realtime] [--max-ms N] [--debug] GAME.jar</pre>
+ * <pre>HeadlessRunner [--jad F] [--profile F.json] [--rom-dir DIR] [--script F.inp] [--rms-dir DIR] [--fs-dir DIR] [--import-jlmod-rms DIR] [--midlet N] [--realtime] [--max-ms N] [--debug] GAME.jar</pre>
  */
 public final class HeadlessRunner {
     private HeadlessRunner() {}
@@ -44,6 +44,11 @@ public final class HeadlessRunner {
         public jlkvm.host.audio.AudioDevice audio;
         /** Nokia DeviceControl features (T28); null = a {@link jlkvm.host.nokia.RecordingNokiaDevice} (returned in {@link Result#nokia}). */
         public jlkvm.host.nokia.NokiaDevice nokia;
+        /** SMS adapter of WMA (T32a); null = one made from the profile (returned in {@link Result#sms}). */
+        public jlkvm.host.SmsNatives sms;
+        /** JSR-75 FileConnection (T32a): the host file system; null = a directory {@link #fsDir} if set (one subdirectory per suite), else memory only. */
+        public jlkvm.host.fs.HostFs fs;
+        public File fsDir;
         /** A JL-Mod data directory whose record stores are imported before the run. */
         public File importJlMod;
     }
@@ -57,6 +62,8 @@ public final class HeadlessRunner {
         public HeadlessUi ui;
         public jlkvm.host.audio.AudioDevice audio;
         public jlkvm.host.nokia.NokiaDevice nokia;
+        public jlkvm.host.SmsNatives sms;
+        public jlkvm.host.fs.HostFs fs;
         public Vm vm;
         public DesktopHost host;
         public long virtualMs;
@@ -115,6 +122,12 @@ public final class HeadlessRunner {
         res.audio = ad;
         res.nokia = o.nokia != null ? o.nokia : new jlkvm.host.nokia.RecordingNokiaDevice();
         host.setNokiaDevice(res.nokia);
+        res.sms = o.sms != null ? o.sms : new jlkvm.host.SmsNatives(profile);
+        res.sms.sink(new jlkvm.host.SmsNatives.Sink() { public void sent(String line) { host.log(1, "sms", "sent " + line); } });
+        host.setSms(res.sms);
+        res.fs = o.fs != null ? o.fs : o.fsDir != null ? new jlkvm.host.fs.DirFs(new File(o.fsDir, jlkvm.host.RmsNatives.suiteKey(suite.attributes).replaceAll("[^A-Za-z0-9._-]", "_")), profile.fileRoots, profile.fileQuotaBytes)
+                : new jlkvm.host.fs.MemoryFs(profile.fileRoots, profile.fileQuotaBytes);
+        host.setFileSystem(res.fs);
         res.records = rs;
         host.logStream = o.log;
         HeadlessUi hui = new HeadlessUi();
@@ -155,6 +168,19 @@ public final class HeadlessRunner {
                         ((jlkvm.host.audio.RecordingAudioDevice) ad).finishClip(Integer.parseInt(w[1]));
                         posted = true;
                     } else throw new IllegalArgumentException("script: audio " + e.name);
+                }
+                else if (e.type == ScriptedInput.SMS) {
+                    settle(vm);
+                    String[] w = e.name.split("\\s+", 4);
+                    boolean ok;
+                    if (w.length == 4 && (w[0].equals("text") || w[0].equals("cbs"))) ok = res.sms.deliverText(w[0].equals("cbs"), Integer.parseInt(w[1]), w[2], w[3], now / 1000000L);
+                    else if (w.length == 4 && w[0].equals("binary")) {
+                        byte[] d = new byte[w[3].length() / 2];
+                        for (int i = 0; i < d.length; i++) d[i] = (byte) Integer.parseInt(w[3].substring(2 * i, 2 * i + 2), 16);
+                        ok = res.sms.deliverBinary(false, Integer.parseInt(w[1]), w[2], d, now / 1000000L);
+                    } else throw new IllegalArgumentException("script: sms " + e.name);
+                    host.log(1, "sms", "deliver " + e.name + " -> " + (ok ? "accepted" : "dropped"));
+                    posted = true;
                 }
                 else if (e.type == ScriptedInput.UI) { settle(vm); if (hui.perform(e.name, vm)) posted = true; }
                 else { vm.postEvent(e.type, e.a, e.b, 0); posted = true; }
@@ -209,6 +235,7 @@ public final class HeadlessRunner {
             else if (a[i].equals("--script")) o.script = new File(a[++i]);
             else if (a[i].equals("--midlet")) o.midlet = Integer.parseInt(a[++i]);
             else if (a[i].equals("--rms-dir")) o.rmsDir = new File(a[++i]);
+            else if (a[i].equals("--fs-dir")) o.fsDir = new File(a[++i]);
             else if (a[i].equals("--import-jlmod-rms")) o.importJlMod = new File(a[++i]);
             else if (a[i].equals("--realtime")) o.realtime = true;
             else if (a[i].equals("--max-ms")) o.maxVirtualMs = Long.parseLong(a[++i]);

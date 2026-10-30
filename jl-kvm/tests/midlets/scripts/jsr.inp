@@ -1,0 +1,6 @@
+# T32a (JsrHostTest): the test host pushes incoming messages into the connections that reserved a port
+100 sms text 6000 sms://+84900000001:5001 first message
+150 sms text 7777 sms://+84900000009:5001 nobody listens on this port
+300 sms text 6000 sms://+84900000002:5002 second message
+400 sms binary 6000 sms://+84900000003:5003 00ff10
+1000 sms cbs 2000 cell-broadcast CBS text

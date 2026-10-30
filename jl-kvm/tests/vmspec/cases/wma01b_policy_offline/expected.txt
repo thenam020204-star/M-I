@@ -1,0 +1,9 @@
+> sms://+84901234567: IOException
+> sms://+84901234567:5000: IOException
+> sms://:5000: IOException
+> cbs://:2000: IOException
+> sms:garbage: IOException
+> SMS://+1: IOException
+> stream: IOException
+> MessageConnection true
+> mms: IOException

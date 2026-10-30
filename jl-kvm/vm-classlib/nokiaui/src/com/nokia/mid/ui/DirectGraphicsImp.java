@@ -29,6 +29,8 @@ final class DirectGraphicsImp implements DirectGraphics {
     private int[] buf = new int[0];
     private int[] buf2 = new int[0];
     private int[] cross = new int[16];
+    /** The visible part reported by {@link #read} (reused: no allocation per getPixels, T28-f1). */
+    private final int[] vis = new int[4];
 
     DirectGraphicsImp(Graphics g, LcduiAccess acc) {
         this.g = g;
@@ -300,7 +302,7 @@ final class DirectGraphicsImp implements DirectGraphics {
     }
 
     // ------------------------------------------------------------------ pixels out
-    /** Reads the region into buf; the part outside the surface is not read. @return {x0, y0, x1, y1} visible part in region coordinates, or null when empty */
+    /** Reads the region into buf; the part outside the surface is not read. @return {x0, y0, x1, y1} visible part in region coordinates (an array owned by this wrapper, valid until the next read), or null when empty */
     private int[] read(int x, int y, int w, int h) {
         int tw = acc.targetWidth(g), th = acc.targetHeight(g);
         int tx = g.getTranslateX(), ty = g.getTranslateY();
@@ -309,7 +311,11 @@ final class DirectGraphicsImp implements DirectGraphics {
         if (i1 <= i0 || j1 <= j0) return null;
         int[] b = scratch(w * h);
         acc.getRgb(g, b, 0, w, x + i0, y + j0, i1 - i0, j1 - j0);   // rows of (i1 - i0) pixels at stride w, from the visible corner
-        return new int[] {i0, j0, i1, j1};
+        vis[0] = i0;
+        vis[1] = j0;
+        vis[2] = i1;
+        vis[3] = j1;
+        return vis;
     }
 
     private static void checkGet(Object pixels, int x, int y, int width, int height) {

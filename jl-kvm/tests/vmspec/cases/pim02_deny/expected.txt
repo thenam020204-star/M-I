@@ -1,0 +1,4 @@
+> list: SecurityException
+> open: SecurityException
+> open named: SecurityException
+> bad type: IllegalArgumentException

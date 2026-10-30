@@ -1,0 +1,1928 @@
+{
+  "format": 1,
+  "name": "jsr75-pim",
+  "source": "javax.microedition.pim.* signatures only, taken from the abstract/interface stub classes in freej2me_plus.jar (local, GPL, not redistributed; no code copied); no PIM stub exists on Maven Central (microemu-jsr-75 has none); UNVERIFIED against a JSR-75 SDK (PLAN T32a)",
+  "classes": [
+    {
+      "name": "javax/microedition/pim/Contact",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/pim/PIMItem"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "ADDR",
+          "desc": "I",
+          "access": 25,
+          "constant": "100",
+          "constantType": "I"
+        },
+        {
+          "name": "ADDR_COUNTRY",
+          "desc": "I",
+          "access": 25,
+          "constant": "6",
+          "constantType": "I"
+        },
+        {
+          "name": "ADDR_EXTRA",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "ADDR_LOCALITY",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "ADDR_POBOX",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "ADDR_POSTALCODE",
+          "desc": "I",
+          "access": 25,
+          "constant": "5",
+          "constantType": "I"
+        },
+        {
+          "name": "ADDR_REGION",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "ADDR_STREET",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "ATTR_ASST",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "ATTR_AUTO",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "ATTR_FAX",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "ATTR_HOME",
+          "desc": "I",
+          "access": 25,
+          "constant": "8",
+          "constantType": "I"
+        },
+        {
+          "name": "ATTR_MOBILE",
+          "desc": "I",
+          "access": 25,
+          "constant": "16",
+          "constantType": "I"
+        },
+        {
+          "name": "ATTR_OTHER",
+          "desc": "I",
+          "access": 25,
+          "constant": "32",
+          "constantType": "I"
+        },
+        {
+          "name": "ATTR_PAGER",
+          "desc": "I",
+          "access": 25,
+          "constant": "64",
+          "constantType": "I"
+        },
+        {
+          "name": "ATTR_PREFERRED",
+          "desc": "I",
+          "access": 25,
+          "constant": "128",
+          "constantType": "I"
+        },
+        {
+          "name": "ATTR_SMS",
+          "desc": "I",
+          "access": 25,
+          "constant": "256",
+          "constantType": "I"
+        },
+        {
+          "name": "ATTR_WORK",
+          "desc": "I",
+          "access": 25,
+          "constant": "512",
+          "constantType": "I"
+        },
+        {
+          "name": "BIRTHDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "101",
+          "constantType": "I"
+        },
+        {
+          "name": "CLASS",
+          "desc": "I",
+          "access": 25,
+          "constant": "102",
+          "constantType": "I"
+        },
+        {
+          "name": "CLASS_CONFIDENTIAL",
+          "desc": "I",
+          "access": 25,
+          "constant": "200",
+          "constantType": "I"
+        },
+        {
+          "name": "CLASS_PRIVATE",
+          "desc": "I",
+          "access": 25,
+          "constant": "201",
+          "constantType": "I"
+        },
+        {
+          "name": "CLASS_PUBLIC",
+          "desc": "I",
+          "access": 25,
+          "constant": "202",
+          "constantType": "I"
+        },
+        {
+          "name": "EMAIL",
+          "desc": "I",
+          "access": 25,
+          "constant": "103",
+          "constantType": "I"
+        },
+        {
+          "name": "FORMATTED_ADDR",
+          "desc": "I",
+          "access": 25,
+          "constant": "104",
+          "constantType": "I"
+        },
+        {
+          "name": "FORMATTED_NAME",
+          "desc": "I",
+          "access": 25,
+          "constant": "105",
+          "constantType": "I"
+        },
+        {
+          "name": "NAME",
+          "desc": "I",
+          "access": 25,
+          "constant": "106",
+          "constantType": "I"
+        },
+        {
+          "name": "NAME_FAMILY",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "NAME_GIVEN",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "NAME_OTHER",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "NAME_PREFIX",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "NAME_SUFFIX",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "NICKNAME",
+          "desc": "I",
+          "access": 25,
+          "constant": "107",
+          "constantType": "I"
+        },
+        {
+          "name": "NOTE",
+          "desc": "I",
+          "access": 25,
+          "constant": "108",
+          "constantType": "I"
+        },
+        {
+          "name": "ORG",
+          "desc": "I",
+          "access": 25,
+          "constant": "109",
+          "constantType": "I"
+        },
+        {
+          "name": "PHOTO",
+          "desc": "I",
+          "access": 25,
+          "constant": "110",
+          "constantType": "I"
+        },
+        {
+          "name": "PHOTO_URL",
+          "desc": "I",
+          "access": 25,
+          "constant": "111",
+          "constantType": "I"
+        },
+        {
+          "name": "PUBLIC_KEY",
+          "desc": "I",
+          "access": 25,
+          "constant": "112",
+          "constantType": "I"
+        },
+        {
+          "name": "PUBLIC_KEY_STRING",
+          "desc": "I",
+          "access": 25,
+          "constant": "113",
+          "constantType": "I"
+        },
+        {
+          "name": "REVISION",
+          "desc": "I",
+          "access": 25,
+          "constant": "114",
+          "constantType": "I"
+        },
+        {
+          "name": "TEL",
+          "desc": "I",
+          "access": 25,
+          "constant": "115",
+          "constantType": "I"
+        },
+        {
+          "name": "TITLE",
+          "desc": "I",
+          "access": 25,
+          "constant": "116",
+          "constantType": "I"
+        },
+        {
+          "name": "UID",
+          "desc": "I",
+          "access": 25,
+          "constant": "117",
+          "constantType": "I"
+        },
+        {
+          "name": "URL",
+          "desc": "I",
+          "access": 25,
+          "constant": "118",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getPreferredIndex",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/pim/ContactList",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/pim/PIMList"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "createContact",
+          "desc": "()Ljavax/microedition/pim/Contact;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "importContact",
+          "desc": "(Ljavax/microedition/pim/Contact;)Ljavax/microedition/pim/Contact;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/NullPointerException"
+          ]
+        },
+        {
+          "name": "removeContact",
+          "desc": "(Ljavax/microedition/pim/Contact;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/NullPointerException",
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/pim/Event",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/pim/PIMItem"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "ALARM",
+          "desc": "I",
+          "access": 25,
+          "constant": "100",
+          "constantType": "I"
+        },
+        {
+          "name": "CLASS",
+          "desc": "I",
+          "access": 25,
+          "constant": "101",
+          "constantType": "I"
+        },
+        {
+          "name": "CLASS_CONFIDENTIAL",
+          "desc": "I",
+          "access": 25,
+          "constant": "200",
+          "constantType": "I"
+        },
+        {
+          "name": "CLASS_PRIVATE",
+          "desc": "I",
+          "access": 25,
+          "constant": "201",
+          "constantType": "I"
+        },
+        {
+          "name": "CLASS_PUBLIC",
+          "desc": "I",
+          "access": 25,
+          "constant": "202",
+          "constantType": "I"
+        },
+        {
+          "name": "END",
+          "desc": "I",
+          "access": 25,
+          "constant": "102",
+          "constantType": "I"
+        },
+        {
+          "name": "LOCATION",
+          "desc": "I",
+          "access": 25,
+          "constant": "103",
+          "constantType": "I"
+        },
+        {
+          "name": "NOTE",
+          "desc": "I",
+          "access": 25,
+          "constant": "104",
+          "constantType": "I"
+        },
+        {
+          "name": "REVISION",
+          "desc": "I",
+          "access": 25,
+          "constant": "105",
+          "constantType": "I"
+        },
+        {
+          "name": "START",
+          "desc": "I",
+          "access": 25,
+          "constant": "106",
+          "constantType": "I"
+        },
+        {
+          "name": "SUMMARY",
+          "desc": "I",
+          "access": 25,
+          "constant": "107",
+          "constantType": "I"
+        },
+        {
+          "name": "UID",
+          "desc": "I",
+          "access": 25,
+          "constant": "108",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getRepeat",
+          "desc": "()Ljavax/microedition/pim/RepeatRule;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setRepeat",
+          "desc": "(Ljavax/microedition/pim/RepeatRule;)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/pim/EventList",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/pim/PIMList"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "ENDING",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "OCCURRING",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "STARTING",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "createEvent",
+          "desc": "()Ljavax/microedition/pim/Event;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedRepeatRuleFields",
+          "desc": "(I)[I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "importEvent",
+          "desc": "(Ljavax/microedition/pim/Event;)Ljavax/microedition/pim/Event;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/NullPointerException"
+          ]
+        },
+        {
+          "name": "items",
+          "desc": "(IJJZ)Ljava/util/Enumeration;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "removeEvent",
+          "desc": "(Ljavax/microedition/pim/Event;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/NullPointerException",
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/pim/FieldEmptyException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getField",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/pim/FieldFullException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getField",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/pim/PIM",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1025,
+      "fields": [
+        {
+          "name": "CONTACT_LIST",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "EVENT_LIST",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "READ_ONLY",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "READ_WRITE",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "TODO_LIST",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "WRITE_ONLY",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 4,
+          "exceptions": []
+        },
+        {
+          "name": "fromSerialFormat",
+          "desc": "(Ljava/io/InputStream;Ljava/lang/String;)[Ljavax/microedition/pim/PIMItem;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/UnsupportedEncodingException",
+            "java/lang/NullPointerException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "getInstance",
+          "desc": "()Ljavax/microedition/pim/PIM;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "listPIMLists",
+          "desc": "(I)[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/SecurityException"
+          ]
+        },
+        {
+          "name": "openPIMList",
+          "desc": "(II)Ljavax/microedition/pim/PIMList;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "openPIMList",
+          "desc": "(IILjava/lang/String;)Ljavax/microedition/pim/PIMList;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/NullPointerException",
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "supportedSerialFormats",
+          "desc": "(I)[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "toSerialFormat",
+          "desc": "(Ljavax/microedition/pim/PIMItem;Ljava/io/OutputStream;Ljava/lang/String;Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/UnsupportedEncodingException",
+            "java/lang/IllegalArgumentException",
+            "java/lang/NullPointerException",
+            "javax/microedition/pim/PIMException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/pim/PIMException",
+      "superName": "java/lang/Exception",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "FEATURE_NOT_SUPPORTED",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "GENERAL_ERROR",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "LIST_CLOSED",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "LIST_NOT_ACCESSIBLE",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "MAX_CATEGORIES_EXCEEDED",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "UNSUPPORTED_VERSION",
+          "desc": "I",
+          "access": 25,
+          "constant": "5",
+          "constantType": "I"
+        },
+        {
+          "name": "UPDATE_ERROR",
+          "desc": "I",
+          "access": 25,
+          "constant": "6",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getReason",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/pim/PIMItem",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "ATTR_NONE",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "BINARY",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "BOOLEAN",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "DATE",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "EXTENDED_ATTRIBUTE_MIN_VALUE",
+          "desc": "I",
+          "access": 25,
+          "constant": "16777216",
+          "constantType": "I"
+        },
+        {
+          "name": "EXTENDED_FIELD_MIN_VALUE",
+          "desc": "I",
+          "access": 25,
+          "constant": "16777216",
+          "constantType": "I"
+        },
+        {
+          "name": "INT",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "STRING",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "STRING_ARRAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "5",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "addBinary",
+          "desc": "(II[BII)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/NullPointerException",
+            "javax/microedition/pim/FieldFullException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "addBoolean",
+          "desc": "(IIZ)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "javax/microedition/pim/FieldFullException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "addDate",
+          "desc": "(IIJ)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "javax/microedition/pim/FieldFullException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "addInt",
+          "desc": "(III)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "javax/microedition/pim/FieldFullException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "addString",
+          "desc": "(IILjava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/NullPointerException",
+            "javax/microedition/pim/FieldFullException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "addStringArray",
+          "desc": "(II[Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/NullPointerException",
+            "javax/microedition/pim/FieldFullException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "addToCategory",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/NullPointerException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "commit",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "countValues",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "getAttributes",
+          "desc": "(II)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IndexOutOfBoundsException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "getBinary",
+          "desc": "(II)[B",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IndexOutOfBoundsException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "getBoolean",
+          "desc": "(II)Z",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IndexOutOfBoundsException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "getCategories",
+          "desc": "()[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getDate",
+          "desc": "(II)J",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IndexOutOfBoundsException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "getFields",
+          "desc": "()[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getInt",
+          "desc": "(II)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IndexOutOfBoundsException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "getPIMList",
+          "desc": "()Ljavax/microedition/pim/PIMList;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getString",
+          "desc": "(II)Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IndexOutOfBoundsException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "getStringArray",
+          "desc": "(II)[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IndexOutOfBoundsException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "isModified",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "maxCategories",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "removeFromCategory",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/NullPointerException"
+          ]
+        },
+        {
+          "name": "removeValue",
+          "desc": "(II)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IndexOutOfBoundsException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "setBinary",
+          "desc": "(III[BII)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IndexOutOfBoundsException",
+            "java/lang/NullPointerException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "setBoolean",
+          "desc": "(IIIZ)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IndexOutOfBoundsException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "setDate",
+          "desc": "(IIIJ)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IndexOutOfBoundsException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "setInt",
+          "desc": "(IIII)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IndexOutOfBoundsException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "setString",
+          "desc": "(IIILjava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IndexOutOfBoundsException",
+            "java/lang/NullPointerException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "setStringArray",
+          "desc": "(III[Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IndexOutOfBoundsException",
+            "java/lang/NullPointerException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/pim/PIMList",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "UNCATEGORIZED",
+          "desc": "Ljava/lang/String;",
+          "access": 25
+        }
+      ],
+      "methods": [
+        {
+          "name": "addCategory",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/NullPointerException",
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "close",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "deleteCategory",
+          "desc": "(Ljava/lang/String;Z)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/NullPointerException",
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "getArrayElementLabel",
+          "desc": "(II)Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "getAttributeLabel",
+          "desc": "(I)Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "getCategories",
+          "desc": "()[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "getFieldDataType",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "getFieldLabel",
+          "desc": "(I)Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "getName",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedArrayElements",
+          "desc": "(I)[I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "getSupportedAttributes",
+          "desc": "(I)[I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "javax/microedition/pim/UnsupportedFieldException"
+          ]
+        },
+        {
+          "name": "getSupportedFields",
+          "desc": "()[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isCategory",
+          "desc": "(Ljava/lang/String;)Z",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/NullPointerException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "isSupportedArrayElement",
+          "desc": "(II)Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isSupportedAttribute",
+          "desc": "(II)Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isSupportedField",
+          "desc": "(I)Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "items",
+          "desc": "()Ljava/util/Enumeration;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "items",
+          "desc": "(Ljava/lang/String;)Ljava/util/Enumeration;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/NullPointerException",
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "items",
+          "desc": "(Ljavax/microedition/pim/PIMItem;)Ljava/util/Enumeration;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/NullPointerException",
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "itemsByCategory",
+          "desc": "(Ljava/lang/String;)Ljava/util/Enumeration;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "maxCategories",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "maxValues",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "renameCategory",
+          "desc": "(Ljava/lang/String;Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/NullPointerException",
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "stringArraySize",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/pim/RepeatRule",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "APRIL",
+          "desc": "I",
+          "access": 25,
+          "constant": "1048576",
+          "constantType": "I"
+        },
+        {
+          "name": "AUGUST",
+          "desc": "I",
+          "access": 25,
+          "constant": "16777216",
+          "constantType": "I"
+        },
+        {
+          "name": "COUNT",
+          "desc": "I",
+          "access": 25,
+          "constant": "32",
+          "constantType": "I"
+        },
+        {
+          "name": "DAILY",
+          "desc": "I",
+          "access": 25,
+          "constant": "16",
+          "constantType": "I"
+        },
+        {
+          "name": "DAY_IN_MONTH",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "DAY_IN_WEEK",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "DAY_IN_YEAR",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "DECEMBER",
+          "desc": "I",
+          "access": 25,
+          "constant": "268435456",
+          "constantType": "I"
+        },
+        {
+          "name": "END",
+          "desc": "I",
+          "access": 25,
+          "constant": "64",
+          "constantType": "I"
+        },
+        {
+          "name": "FEBRUARY",
+          "desc": "I",
+          "access": 25,
+          "constant": "262144",
+          "constantType": "I"
+        },
+        {
+          "name": "FIFTH",
+          "desc": "I",
+          "access": 25,
+          "constant": "16",
+          "constantType": "I"
+        },
+        {
+          "name": "FIFTHLAST",
+          "desc": "I",
+          "access": 25,
+          "constant": "512",
+          "constantType": "I"
+        },
+        {
+          "name": "FIRST",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "FOURTH",
+          "desc": "I",
+          "access": 25,
+          "constant": "8",
+          "constantType": "I"
+        },
+        {
+          "name": "FOURTHLAST",
+          "desc": "I",
+          "access": 25,
+          "constant": "256",
+          "constantType": "I"
+        },
+        {
+          "name": "FREQUENCY",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "FRIDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "2048",
+          "constantType": "I"
+        },
+        {
+          "name": "INTERVAL",
+          "desc": "I",
+          "access": 25,
+          "constant": "128",
+          "constantType": "I"
+        },
+        {
+          "name": "JANUARY",
+          "desc": "I",
+          "access": 25,
+          "constant": "131072",
+          "constantType": "I"
+        },
+        {
+          "name": "JULY",
+          "desc": "I",
+          "access": 25,
+          "constant": "8388608",
+          "constantType": "I"
+        },
+        {
+          "name": "JUNE",
+          "desc": "I",
+          "access": 25,
+          "constant": "4194304",
+          "constantType": "I"
+        },
+        {
+          "name": "LAST",
+          "desc": "I",
+          "access": 25,
+          "constant": "32",
+          "constantType": "I"
+        },
+        {
+          "name": "MARCH",
+          "desc": "I",
+          "access": 25,
+          "constant": "524288",
+          "constantType": "I"
+        },
+        {
+          "name": "MAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "2097152",
+          "constantType": "I"
+        },
+        {
+          "name": "MONDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "32768",
+          "constantType": "I"
+        },
+        {
+          "name": "MONTHLY",
+          "desc": "I",
+          "access": 25,
+          "constant": "18",
+          "constantType": "I"
+        },
+        {
+          "name": "MONTH_IN_YEAR",
+          "desc": "I",
+          "access": 25,
+          "constant": "8",
+          "constantType": "I"
+        },
+        {
+          "name": "NOVEMBER",
+          "desc": "I",
+          "access": 25,
+          "constant": "134217728",
+          "constantType": "I"
+        },
+        {
+          "name": "OCTOBER",
+          "desc": "I",
+          "access": 25,
+          "constant": "67108864",
+          "constantType": "I"
+        },
+        {
+          "name": "SATURDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "1024",
+          "constantType": "I"
+        },
+        {
+          "name": "SECOND",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "SECONDLAST",
+          "desc": "I",
+          "access": 25,
+          "constant": "64",
+          "constantType": "I"
+        },
+        {
+          "name": "SEPTEMBER",
+          "desc": "I",
+          "access": 25,
+          "constant": "33554432",
+          "constantType": "I"
+        },
+        {
+          "name": "SUNDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "65536",
+          "constantType": "I"
+        },
+        {
+          "name": "THIRD",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "THIRDLAST",
+          "desc": "I",
+          "access": 25,
+          "constant": "128",
+          "constantType": "I"
+        },
+        {
+          "name": "THURSDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "4096",
+          "constantType": "I"
+        },
+        {
+          "name": "TUESDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "16384",
+          "constantType": "I"
+        },
+        {
+          "name": "WEDNESDAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "8192",
+          "constantType": "I"
+        },
+        {
+          "name": "WEEKLY",
+          "desc": "I",
+          "access": 25,
+          "constant": "17",
+          "constantType": "I"
+        },
+        {
+          "name": "WEEK_IN_MONTH",
+          "desc": "I",
+          "access": 25,
+          "constant": "16",
+          "constantType": "I"
+        },
+        {
+          "name": "YEARLY",
+          "desc": "I",
+          "access": 25,
+          "constant": "19",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "addExceptDate",
+          "desc": "(J)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "dates",
+          "desc": "(JJJ)Ljava/util/Enumeration;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getDate",
+          "desc": "(I)J",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getExceptDates",
+          "desc": "()Ljava/util/Enumeration;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getFields",
+          "desc": "()[I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getInt",
+          "desc": "(I)I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "removeExceptDate",
+          "desc": "(J)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setDate",
+          "desc": "(IJ)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setInt",
+          "desc": "(II)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/pim/ToDo",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/pim/PIMItem"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "CLASS",
+          "desc": "I",
+          "access": 25,
+          "constant": "100",
+          "constantType": "I"
+        },
+        {
+          "name": "CLASS_CONFIDENTIAL",
+          "desc": "I",
+          "access": 25,
+          "constant": "200",
+          "constantType": "I"
+        },
+        {
+          "name": "CLASS_PRIVATE",
+          "desc": "I",
+          "access": 25,
+          "constant": "201",
+          "constantType": "I"
+        },
+        {
+          "name": "CLASS_PUBLIC",
+          "desc": "I",
+          "access": 25,
+          "constant": "202",
+          "constantType": "I"
+        },
+        {
+          "name": "COMPLETED",
+          "desc": "I",
+          "access": 25,
+          "constant": "101",
+          "constantType": "I"
+        },
+        {
+          "name": "COMPLETION_DATE",
+          "desc": "I",
+          "access": 25,
+          "constant": "102",
+          "constantType": "I"
+        },
+        {
+          "name": "DUE",
+          "desc": "I",
+          "access": 25,
+          "constant": "103",
+          "constantType": "I"
+        },
+        {
+          "name": "NOTE",
+          "desc": "I",
+          "access": 25,
+          "constant": "104",
+          "constantType": "I"
+        },
+        {
+          "name": "PRIORITY",
+          "desc": "I",
+          "access": 25,
+          "constant": "105",
+          "constantType": "I"
+        },
+        {
+          "name": "REVISION",
+          "desc": "I",
+          "access": 25,
+          "constant": "106",
+          "constantType": "I"
+        },
+        {
+          "name": "SUMMARY",
+          "desc": "I",
+          "access": 25,
+          "constant": "107",
+          "constantType": "I"
+        },
+        {
+          "name": "UID",
+          "desc": "I",
+          "access": 25,
+          "constant": "108",
+          "constantType": "I"
+        }
+      ],
+      "methods": []
+    },
+    {
+      "name": "javax/microedition/pim/ToDoList",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/pim/PIMList"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "createToDo",
+          "desc": "()Ljavax/microedition/pim/ToDo;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "importToDo",
+          "desc": "(Ljavax/microedition/pim/ToDo;)Ljavax/microedition/pim/ToDo;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/NullPointerException"
+          ]
+        },
+        {
+          "name": "items",
+          "desc": "(IJJ)Ljava/util/Enumeration;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        },
+        {
+          "name": "removeToDo",
+          "desc": "(Ljavax/microedition/pim/ToDo;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/NullPointerException",
+            "java/lang/SecurityException",
+            "javax/microedition/pim/PIMException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/pim/UnsupportedFieldException",
+      "superName": "java/lang/RuntimeException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getField",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    }
+  ]
+}

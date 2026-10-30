@@ -29,8 +29,25 @@
   "apis": [
     "cldc-1.1",
     "midp-2.0",
-    "nokia-ui"
+    "nokia-ui",
+    "wma-1.1",
+    "jsr75-fc",
+    "jsr75-pim"
   ],
+  "sms": {
+    "_source": "UNVERIFIED (T32a): deny = a game that sends an SMS gets a SecurityException (the user refused); simulate = nothing leaves the host, the host logs it and send succeeds; offline = IOException. See docs/jsr.md",
+    "mode": "deny"
+  },
+  "file": {
+    "_source": "UNVERIFIED (T32a): root names, permission and size of the virtual file system behind JSR-75 FileConnection (the roots are mapped to a private directory of the suite on the host). See docs/jsr.md",
+    "roots": ["c:/", "e:/", "root1/"],
+    "permission": "readwrite",
+    "quotaBytes": 8388608
+  },
+  "pim": {
+    "_source": "UNVERIFIED (T32a): allow = the PIM lists exist (empty, in memory); deny = SecurityException. See docs/jsr.md",
+    "permission": "allow"
+  },
   "rms": {
     "_source": "UNVERIFIED (T26): per-suite quota and the bytes a store / record occupy besides the data are placeholders; T33 gives them a source tag",
     "quotaBytes": 262144,

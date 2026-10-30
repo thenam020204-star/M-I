@@ -1,0 +1,39 @@
+> constants text binary
+> text is TextMessage true BinaryMessage false; binary is TextMessage false BinaryMessage true
+> address sms://+84901234567:5000 timestamp null payload null null
+> explicit address sms://+1
+> other type: IllegalArgumentException
+> null type: IllegalArgumentException
+> same array true
+> text segments: empty 1 hello 1 160a 1 161a 2 306a 2 307a 3
+> extension chars count 2: 80x{ 1 81x{ 2
+> UCS-2: 70 1 71 2 134 2 135 3 one such char among 160a 3
+> binary segments without port: 140 1 141 2 268 2 269 3; with port: 133 1 134 2 256 2 257 3
+> too long: 0 ok: 255
+> sent text
+> sent binary
+> send null: NullPointerException
+> send no address: IllegalArgumentException
+> send bad address: IllegalArgumentException
+> send bad number: IllegalArgumentException
+> send too long: IllegalArgumentException
+> client receive: IOException
+> client listener: IOException
+> send closed: IOException
+> receive closed: IOException
+> sms://: IllegalArgumentException
+> sms:+123: IllegalArgumentException
+> sms://+12ab: IllegalArgumentException
+> sms://+123:99999: IllegalArgumentException
+> sms://+123:x: IllegalArgumentException
+> sms://+: IllegalArgumentException
+> cbs://+123: IllegalArgumentException
+> sms://:: IllegalArgumentException
+> sms://abc: IllegalArgumentException
+> server new message address null
+> same port: IOException
+> server sent
+> listener closed: IOException
+> port reusable after close
+> cbs send: IOException
+> done

@@ -1,0 +1,4 @@
+mode: spec-only
+stubs: jsr75-pim
+source: PLAN T32a: profile pim.permission (allow default | deny); JSR-75 PIM: SecurityException from PIM.listPIMLists / openPIMList "if the application is not allowed to access the list" (signatures: tools/api-sigs/db/jsr75-pim.json).
+notes: UNVERIFIED (docs/jsr.md): the type argument is validated before the permission (bad type = IllegalArgumentException even when denied). The oracles are not used.

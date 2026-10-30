@@ -45,6 +45,12 @@ public final class DesktopHost implements HostPlatform {
     /** The audio output (T27); default: a silent logging device on the host clock. */
     public void setAudioDevice(jlkvm.host.audio.AudioDevice d) { this.audio = d; }
     private jlkvm.host.nokia.NokiaDevice nokia;
+    private jlkvm.host.SmsNatives sms;
+    private jlkvm.host.fs.HostFs fileSystem;
+    /** The SMS adapter of WMA (T32a); default: one made from the profile (sms.mode). Set before the VM runs. */
+    public void setSms(jlkvm.host.SmsNatives s) { this.sms = s; }
+    /** The file system behind JSR-75 FileConnection (T32a); default: in memory. */
+    public void setFileSystem(jlkvm.host.fs.HostFs f) { this.fileSystem = f; }
     public void setNokiaDevice(jlkvm.host.nokia.NokiaDevice d) { this.nokia = d; }
 
     /** The high-level UI (Form / List / TextBox / Alert); set before the VM runs. */
@@ -77,6 +83,8 @@ public final class DesktopHost implements HostPlatform {
         MidpNatives mn = new MidpNatives(profile, appProps, surfaces, services, ui, records != null ? records : new jlkvm.host.rms.MemoryRecordStorage(profile));
         if (audio != null) mn.audioDevice(audio);
         if (nokia != null) mn.nokiaDevice(nokia);
+        if (sms != null) mn.sms(sms);
+        if (fileSystem != null) mn.fileSystem(fileSystem);
         mn.register(r);
     }
 }
