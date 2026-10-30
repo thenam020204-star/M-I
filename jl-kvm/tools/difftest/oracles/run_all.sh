@@ -12,6 +12,7 @@ run() { # name script...
 run microemu "$D/run_microemu.sh" "$JAR"
 run freej2me "$D/run_freej2me.sh" "$JAR"
 [ -x "$D/run_phoneme.sh" ] && [ -d "${PHONEME_DIR:-$D/../../env/cache/phoneme}" ] && run phoneme "$D/run_phoneme.sh" "$JAR"
+[ -x "$D/run_kemulator.sh" ] && [ -f "${KEMULATOR_DIR:-$D/../../env/cache/kemulator}/KEmulator.jar" ] && run kemulator "$D/run_kemulator.sh" "$JAR"
 echo "oracles ran: ${ran[*]:-none}"
 [ ${#ran[@]} -ge 2 ] || { echo "need >= 2 oracles" >&2; exit 2; }
 rc=0
