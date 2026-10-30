@@ -19,7 +19,6 @@ package ru.woesss.j2me.installer;
 import android.net.Uri;
 import android.util.Log;
 
-import com.android.dx.command.dexer.Main;
 
 import net.lingala.zip4j.io.inputstream.ZipInputStream;
 import net.lingala.zip4j.model.FileHeader;
@@ -75,6 +74,7 @@ public class AppInstaller {
 	private File tmpDir;
 	private AppItem currentApp;
 	private File srcFile;
+	private String scanReport;
 
 	AppInstaller(File jar, Uri uri, AppListModel appListModel) {
 		id = -1;
@@ -107,7 +107,7 @@ public class AppInstaller {
 		if (id != -1) {
 			currentApp = appListModel.getApp(id);
 			srcJar = new File(currentApp.getPathExt(), Config.MIDLET_RES_FILE);
-			newDesc = new Descriptor(new File(currentApp.getPathExt(), Config.MIDLET_MANIFEST_FILE), false);
+			newDesc = new Descriptor(Config.manifestFile(new File(currentApp.getPathExt())), false);
 			appDirName = currentApp.getPath();
 			targetDir = new File(Config.getAppDir(), appDirName);
 			emitter.onSuccess(STATUS_EQUAL);
@@ -269,31 +269,12 @@ public class AppInstaller {
 				return;
 			}
 		}
-		try {
-			Main.main(new String[]{"--no-optimize",
-					"--output=" + tmpDir + Config.MIDLET_DEX_ARCH,
-					srcJar.getAbsolutePath()});
-		} catch (Throwable e) {
-			throw new ConverterException("Dexing error", e);
-		}
+		// PLAN T34 / D1: no dexing. The game stays the JAR it came in (res.jar); the VM interprets it in place.
 		if (manifest != null) {
 			manifest.merge(newDesc);
 			newDesc = manifest;
 		}
-		File resJar = new File(tmpDir, Config.MIDLET_RES_FILE);
-		FileUtils.copyFileUsingChannel(srcJar, resJar);
-		String icon = newDesc.getIcon();
-		File iconFile = new File(tmpDir, Config.MIDLET_ICON_FILE);
-		if (icon != null) {
-			try {
-				ZipUtils.unzipEntry(resJar, icon, iconFile);
-			} catch (IOException e) {
-				Log.w(TAG, "Can't unzip icon: " + icon, e);
-				//noinspection ResultOfMethodCallIgnored
-				iconFile.delete();
-			}
-		}
-		newDesc.writeTo(new File(tmpDir, Config.MIDLET_MANIFEST_FILE));
+		scanReport = writeGameFiles(tmpDir, srcJar, newDesc);
 		FileUtils.deleteDirectory(targetDir);
 		if (!tmpDir.renameTo(targetDir)) {
 			throw new ConverterException("Can't move '" + tmpDir + "' to '" + targetDir + "'");
@@ -327,6 +308,31 @@ public class AppInstaller {
 		clearCache();
 		deleteTemp();
 		emitter.onSuccess(STATUS_SUCCESS);
+	}
+
+	/**
+	 * PLAN T34: what an installed game is - and nothing else: the JAR as it came ({@code res.jar}), the icon, the merged descriptor
+	 * ({@code midlet.conf}) and the jarscan report. No converted.zip / DEX. Plain java.io, unit tested without a device.
+	 *
+	 * @return the jarscan summary for the installer dialog, null when the scan itself failed
+	 */
+	static String writeGameFiles(File dir, File srcJar, Descriptor desc) throws IOException {
+		File resJar = new File(dir, Config.MIDLET_RES_FILE);
+		FileUtils.copyFileUsingChannel(srcJar, resJar);
+		String icon = desc.getIcon();
+		File iconFile = new File(dir, Config.MIDLET_ICON_FILE);
+		if (icon != null) {
+			try {
+				ZipUtils.unzipEntry(resJar, icon, iconFile);
+			} catch (IOException e) {
+				Log.w(TAG, "Can't unzip icon: " + icon, e);
+				//noinspection ResultOfMethodCallIgnored
+				iconFile.delete();
+			}
+		}
+		desc.writeTo(new File(dir, Config.MIDLET_MANIFEST_FILE));
+		// jarscan runs at install time; the report is kept next to the game and shown by the installer dialog
+		return JarScan.scanToFile(resJar, new File(dir, Config.MIDLET_SCAN_REPORT_FILE));
 	}
 
 	private Descriptor loadManifest(File jar) throws IOException {
@@ -378,7 +384,7 @@ public class AppInstaller {
 			return STATUS_EQUAL;
 		}
 		try {
-			Descriptor oldDesc = new Descriptor(new File(targetDir, Config.MIDLET_MANIFEST_FILE), false);
+			Descriptor oldDesc = new Descriptor(Config.manifestFile(targetDir), false);
 			if (!oldDesc.containsAllAttributes(newDesc)) {
 				return STATUS_EQUAL;
 			}
@@ -475,6 +481,11 @@ public class AppInstaller {
 		if (tmpDir != null) {
 			FileUtils.deleteDirectory(tmpDir);
 		}
+	}
+
+	/** The jarscan report (Markdown) of the game just installed; null before install or when the scan itself failed. */
+	String getScanReport() {
+		return scanReport;
 	}
 
 	public File getJar() {

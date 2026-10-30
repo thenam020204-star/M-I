@@ -35,23 +35,11 @@ public final class Main {
         ScanProfile profile = ScanProfile.read(profileP);
         List<ApiDb> dbs = new ArrayList<>();
         for (String a : profile.apis) dbs.add(ApiDb.read(dbDir.resolve(a + ".json")));
-        Scanner s = new Scanner(profile, dbs);
-        s.scan(jar);
-        boolean err = s.hasErrors();
+        Scanner sc = new Scanner(profile, dbs);
+        sc.scan(jar);
+        boolean err = sc.hasErrors();
 
-        StringBuilder md = new StringBuilder("# jarscan: " + jar.getFileName() + "\n\nProfile: `" + profile.name + "`\n\n");
-        md.append(err ? "**Result: NOT J2ME-SAFE**\n\n" : "**Result: OK**\n\n");
-        for (Finding.Level lv : Finding.Level.values()) {
-            md.append("## ").append(lv).append("\n\n");
-            int n = 0;
-            for (Finding f : s.findings()) {
-                if (f.level != lv) continue;
-                md.append("- `").append(f.code).append("` ").append(f.where).append(": ").append(f.message).append('\n');
-                n++;
-            }
-            if (n == 0) md.append("(none)\n");
-            md.append('\n');
-        }
+        String md = Report.markdown(jar.getFileName().toString(), profile, sc);
         System.out.print(md);
         if (outDir != null) {
             Files.createDirectories(outDir);
@@ -59,10 +47,10 @@ public final class Main {
             js.put("jar", jar.toString());
             js.put("profile", profile.name);
             js.put("j2meSafe", !err);
-            js.put("stats", s.stats);
-            js.put("findings", s.findings());
+            js.put("stats", sc.stats);
+            js.put("findings", sc.findings());
             Files.write(outDir.resolve("report.json"), new GsonBuilder().setPrettyPrinting().create().toJson(js).getBytes(StandardCharsets.UTF_8));
-            Files.write(outDir.resolve("report.md"), md.toString().getBytes(StandardCharsets.UTF_8));
+            Files.write(outDir.resolve("report.md"), md.getBytes(StandardCharsets.UTF_8));
         }
         System.exit(err ? 1 : 0);
     }

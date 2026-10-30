@@ -38,16 +38,31 @@ import javax.microedition.util.ContextHolder;
 import ru.playsoftware.j2meloader.R;
 
 public class Config {
+	/** The descriptor file of an installed game: {@link #MIDLET_MANIFEST_FILE}, or the pre-T34 name when only that exists. */
+	public static java.io.File manifestFile(java.io.File appDir) {
+		java.io.File f = new java.io.File(appDir, MIDLET_MANIFEST_FILE);
+		if (f.isFile()) return f;
+		java.io.File old = new java.io.File(appDir, MIDLET_MANIFEST_FILE_LEGACY);
+		return old.isFile() ? old : f;
+	}
+
 	public static final String APPS_DB_NAME = "/J2ME-apps.db";
 	public static final String DEX_OPT_CACHE_DIR = "dex_opt";
 	public static final String MIDLET_CONFIGS_DIR = "/configs/";
 	public static final String MIDLET_CONFIG_FILE = "/config.json";
 	public static final String MIDLET_DATA_DIR = "/data/";
+	/** Only the debug build (D17, old engine for A/B) creates these, lazily, on first launch with the dex engine. */
 	public static final String MIDLET_DEX_ARCH = "/converted.zip";
 	public static final String MIDLET_DEX_FILE = "/converted.dex";
 	public static final String MIDLET_ICON_FILE = "/icon.png";
 	public static final String MIDLET_KEY_LAYOUT_FILE = "/VirtualKeyboardLayout";
-	public static final String MIDLET_MANIFEST_FILE = MIDLET_DEX_FILE + ".conf";
+	/** The merged JAD + manifest of the installed game (PLAN T34: nothing of it is dex any more). */
+	public static final String MIDLET_MANIFEST_FILE = "/midlet.conf";
+	/** Name used by installs made before T34; read as a fallback by {@link #manifestFile}. */
+	public static final String MIDLET_MANIFEST_FILE_LEGACY = MIDLET_DEX_FILE + ".conf";
+	/** The jarscan report written by the installer (PLAN T34). */
+	public static final String MIDLET_SCAN_REPORT_FILE = "/jarscan-report.md";
+	public static final String GAME_ERRORS_LOG = "game-errors.log";
 	public static final String MIDLET_RES_DIR = "/res";
 	public static final String MIDLET_RES_FILE = "/res.jar";
 	public static final String SCREENSHOTS_DIR;

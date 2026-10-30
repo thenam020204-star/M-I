@@ -67,9 +67,14 @@ public final class Scanner {
     }
 
     public void scan(Path jar) throws IOException {
+        scan(jar.toFile());
+    }
+
+    /** Same as {@link #scan(Path)}; java.io only, so the Android installer (minSdk below 26, no java.nio.file) can run it. */
+    public void scan(java.io.File jar) throws IOException {
         List<byte[]> blobs = new ArrayList<>();
         List<String> names = new ArrayList<>();
-        try (ZipFile z = new ZipFile(jar.toFile())) {
+        try (ZipFile z = new ZipFile(jar)) {
             java.util.Enumeration<? extends ZipEntry> en = z.entries();
             Set<String> seen = new HashSet<>();
             while (en.hasMoreElements()) {
