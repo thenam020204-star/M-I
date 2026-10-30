@@ -107,6 +107,8 @@ public class MicroActivity extends AppCompatActivity {
 	private String appPath;
 	private ActivityMicroBinding binding;
 	private VmSession vmSession;
+	/** UI thread only: a Form / List / TextBox panel of the VM replaces the canvas (the guest made a high-level screen current). */
+	private boolean panelShown;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -232,7 +234,7 @@ public class MicroActivity extends AppCompatActivity {
 	public void onWindowFocusChanged(boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 		if (hasFocus && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
-				current instanceof Canvas) {
+				current instanceof Canvas && !panelShown) {
 			hideSystemUI();
 		}
 	}
@@ -359,6 +361,54 @@ public class MicroActivity extends AppCompatActivity {
 		}
 	}
 
+	/** Where the VM's Form / List / TextBox widgets are shown (PLAN T35c). Called on the UI thread. */
+	jlkvm.host.android.AndroidScreenHost.Presenter guestPresenter() {
+		return new jlkvm.host.android.AndroidScreenHost.Presenter() {
+			@Override
+			public void showCanvas() {
+				if (!panelShown) {
+					return;
+				}
+				panelShown = false;
+				ViewHandler.postEvent(new SetCurrentEvent(null, current, null, null));
+				VmSession s = vmSession;
+				if (s != null) {
+					ViewHandler.postEvent(s::canvasShown);
+				}
+			}
+
+			@Override
+			public void showPanel(View panel, String title) {
+				Displayable leaving = panelShown ? null : current;
+				panelShown = true;
+				ViewHandler.postEvent(new SetCurrentEvent(leaving, null, panel, title));
+			}
+		};
+	}
+
+	/** Nokia-MIDlet-App-Orientation (T30): lock the Activity to the orientation the JAD asks for. */
+	void applyNokiaOrientation(String orientation) {
+		if ("portrait".equals(orientation)) {
+			setOrientation(ORIENTATION_PORTRAIT);
+		} else if ("landscape".equals(orientation)) {
+			setOrientation(ORIENTATION_LANDSCAPE);
+		}
+	}
+
+	/** Nokia-MIDlet-On-Screen-Keypad=no (T30): no touch keypad over the game. */
+	void applyNokiaKeypadNone() {
+		VirtualKeyboard vk = ContextHolder.getVk();
+		if (vk != null) {
+			binding.overlay.removeLayer(vk);
+			ContextHolder.setVk(null);
+		}
+	}
+
+	/** The profile of this game (JL-Mod settings: virtual screen, scaling...). */
+	ru.playsoftware.j2meloader.config.ProfileModel profileParams() {
+		return microLoader.params;
+	}
+
 	public void setCurrent(Displayable displayable) {
 		ViewHandler.postEvent(new SetCurrentEvent(current, displayable));
 		current = displayable;
@@ -435,6 +485,11 @@ public class MicroActivity extends AppCompatActivity {
 
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && vmSession != null && vmSession.handleBack()
+				&& (event.getFlags() & (KeyEvent.FLAG_LONG_PRESS | KeyEvent.FLAG_CANCELED)) == 0) {
+			// a Form / List / TextBox / Alert of the game: Back runs its Back / Cancel / Exit command
+			return true;
+		}
 		if ((keyCode == menuKey || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_MENU)
 				&& (event.getFlags() & (KeyEvent.FLAG_LONG_PRESS | KeyEvent.FLAG_CANCELED)) == 0) {
 			openOptionsMenu();
@@ -462,7 +517,7 @@ public class MicroActivity extends AppCompatActivity {
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		if (current instanceof Canvas) {
+		if (current instanceof Canvas && !panelShown) {
 			menu.setGroupVisible(R.id.action_group_canvas, true);
 			VirtualKeyboard vk = ContextHolder.getVk();
 			if (vk != null) {
@@ -703,10 +758,18 @@ public class MicroActivity extends AppCompatActivity {
 	private class SetCurrentEvent extends SimpleEvent {
 		private final Displayable current;
 		private final Displayable next;
+		private final View panel;
+		private final String panelTitle;
 
 		private SetCurrentEvent(Displayable current, Displayable next) {
+			this(current, next, null, null);
+		}
+
+		private SetCurrentEvent(Displayable current, Displayable next, View panel, String panelTitle) {
 			this.current = current;
 			this.next = next;
+			this.panel = panel;
+			this.panelTitle = panelTitle;
 		}
 
 		@Override
@@ -719,6 +782,20 @@ public class MicroActivity extends AppCompatActivity {
 			ActionBar actionBar = Objects.requireNonNull(getSupportActionBar());
 			LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) binding.toolbar.getLayoutParams();
 			int toolbarHeight = 0;
+			if (panel != null) {
+				// a widget screen of the VM: title bar, no virtual keyboard
+				showSystemUI();
+				actionBar.show();
+				actionBar.setTitle(panelTitle == null ? appName : panelTitle);
+				toolbarHeight = (int) getToolBarHeight();
+				layoutParams.height = toolbarHeight;
+				binding.overlay.setLocation(0, toolbarHeight);
+				binding.overlay.setVisibility(false);
+				binding.toolbar.setLayoutParams(layoutParams);
+				binding.displayableContainer.addView(panel);
+				return;
+			}
+			binding.overlay.setVisibility(true);
 			if (next instanceof Canvas) {
 				hideSystemUI();
 				if (!actionBarEnabled) {

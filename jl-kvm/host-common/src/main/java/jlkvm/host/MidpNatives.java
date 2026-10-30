@@ -160,7 +160,11 @@ public final class MidpNatives {
             } catch (IllegalArgumentException e) {
                 throw new jlkvm.link.VmThrow("java/lang/IllegalStateException", "bad screen description: " + e.getMessage());
             }
-            ui.screen(m);
+            final NativeContext fc = c;
+            m.images = new ScreenModel.Images() { public Surface surface(int handle) {
+                try { Object o = fc.handles().get(handle); return o instanceof Surface ? (Surface) o : null; }
+                catch (RuntimeException e) { return null; } } };
+            try { ui.screen(m); } finally { m.images = null; }
             gs.charge(n / 4 + 8); } });
         r.register("jlkvm/internal/Ui.text0(I)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
             String t = ui.text(c.argInt(0));

@@ -94,6 +94,21 @@ public final class ScreenModel {
     public boolean modal;
     public Item indicator;
 
+    /** Finds the pixels behind an Image handle of the description. */
+    public interface Images {
+        /** @return the surface of {@code handle} or null. */
+        Surface surface(int handle);
+    }
+
+    /** Set by the natives while {@link ScreenHost#screen} runs (vm-thread): the host copies the images it needs there ({@link #image}); never use it later. */
+    public Images images;
+
+    /** @return a copy of the pixels of the Image handle {@code h} (0 = none), or null. */
+    public ImageSnap image(int h) {
+        Images i = images;
+        return h == 0 || i == null ? null : ImageSnap.of(i.surface(h));
+    }
+
     private static final class Reader {
         final int[] d;
         final String[] s;

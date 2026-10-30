@@ -74,4 +74,36 @@ public class VmRunnerTest {
         assertEquals(s, -1, s.indexOf("deliberate failure", first + 1));
         log.delete();
     }
+
+    private static File tempJad(String extra, String jarSize) throws Exception {
+        File f = File.createTempFile("vmrunner", ".jad");
+        f.deleteOnExit();
+        Files.write(f.toPath(), ("MIDlet-Name: EventsTest\nMIDlet-Version: 1.0.0\nMIDlet-Vendor: jl-kvm\nMIDlet-1: Events,,ev.EventsMIDlet\n"
+                + "MIDlet-Jar-URL: events.jar\nMIDlet-Jar-Size: " + jarSize + "\n" + extra).getBytes("UTF-8"));
+        return f;
+    }
+
+    /** T35c / T30 on the Android path: VmRunner refuses a JAR over the device limit and applies the JAD frame plan before the guest boots. */
+    @Test public void nokiaJadPlanAndInstallLimit() throws Exception {
+        String dp2 = new String(Files.readAllBytes(new File(DesktopTestSupport.root(), "profiles/nokia-s40-dp2.0.json").toPath()), "UTF-8");
+        VmRunner.Options o = new VmRunner.Options();
+        o.jar = DesktopTestSupport.midlet("events");
+        o.romDir = HeadlessRunner.findRomDir();
+        o.services = new RecordingServices();
+        o.profileJson = dp2;
+        o.jad = tempJad("", "357001");
+        VmRunner big = new VmRunner(o);
+        try { big.start(); fail("refused"); } catch (java.io.IOException e) { assertTrue(e.getMessage(), e.getMessage().contains("357000")); }
+        // a profile that honours Original-Display-Size: the plan is applied to the guest-visible profile
+        String s6 = new String(Files.readAllBytes(new File(DesktopTestSupport.root(), "profiles/nokia-s40-6th.json").toPath()), "UTF-8");
+        o.profileJson = s6;
+        o.jad = tempJad("Nokia-MIDlet-Original-Display-Size: 176,208\n", "1000");
+        ByteArrayOutputStream cap = new ByteArrayOutputStream();
+        o.out = new PrintStream(cap, true, "UTF-8");
+        VmRunner r = new VmRunner(o);
+        r.start();
+        assertEquals(176, r.nokiaPlan().screenW);
+        assertEquals(208, r.nokiaPlan().screenH);
+        assertTrue(r.stop(true, 5000));
+    }
 }

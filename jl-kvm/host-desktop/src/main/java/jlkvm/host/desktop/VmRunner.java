@@ -75,6 +75,7 @@ public final class VmRunner {
     private MidletSuite suite;
     private Thread thread;
     private Listener listener;
+    private volatile jlkvm.host.ams.NokiaJad.Plan nokiaPlan;
     private volatile Throwable failure;
 
     public VmRunner(Options o) { this.o = o; }
@@ -90,6 +91,11 @@ public final class VmRunner {
         byte[] jad = o.jad == null ? null : Files.readAllBytes(o.jad.toPath());
         suite = MidletSuite.load(mf, jad);
         MidletSuite.Entry entry = suite.midlet(o.midlet);
+        // T30: the device limits and the Nokia JAD attributes the profile honours (the host shows the frame the plan asks for)
+        String refused = jlkvm.host.ams.NokiaJad.checkInstall(profile, suite.attributes);
+        if (refused != null) throw new IOException("install refused: " + refused);
+        nokiaPlan = jlkvm.host.ams.NokiaJad.plan(profile, suite.attributes);
+        jlkvm.host.ams.NokiaJad.apply(profile, nokiaPlan);
         VmConfig cfg = new VmConfig();
         cfg.deterministic = false;
         cfg.debug = o.debug;
@@ -161,6 +167,8 @@ public final class VmRunner {
 
     // ------------------------------------------------------------------ host -> guest (any thread; only queue events, D13)
 
+    /** The Nokia JAD plan applied at start (null before {@link #start}). */
+    public jlkvm.host.ams.NokiaJad.Plan nokiaPlan() { return nokiaPlan; }
     public AmsHost ams() { return ams; }
     public Vm vm() { return vm; }
     public DesktopHost host() { return host; }

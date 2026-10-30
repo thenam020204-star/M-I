@@ -27,6 +27,7 @@ import javax.microedition.util.ContextHolder;
 
 import jlkvm.host.GameErrorLog;
 import jlkvm.host.android.AndroidAudioDevice;
+import jlkvm.host.android.AndroidScreenHost;
 import jlkvm.host.android.AndroidNokiaDevice;
 import jlkvm.host.android.AndroidServices;
 import jlkvm.host.ams.MidletSuite;
@@ -51,6 +52,8 @@ final class VmSession {
     private VmRunner runner;
     private VmCanvas canvas;
     private AndroidAudioDevice audio;
+    private AndroidScreenHost screens;
+    private jlkvm.host.ams.NokiaJad.Plan nokiaPlan;
     private GameErrorLog errorLog;
     private File errorLogFile;
 
@@ -91,12 +94,16 @@ final class VmSession {
         boolean vibration = android.preference.PreferenceManager.getDefaultSharedPreferences(ctx)
                 .getBoolean(ru.playsoftware.j2meloader.util.Constants.PREF_VIBRATION, true);
         o.manifest = readFile(Config.manifestFile(appDir));
+        applyNokiaPlan(o);
         canvas = new VmCanvas(this);
         AndroidServices services = new AndroidServices(ctx, canvas);
         services.setVibration(vibration);
         o.services = services;
-        audio = new AndroidAudioDevice(ctx);
+        String soundBank = MicroLoader.getSoundBank();
+        audio = new AndroidAudioDevice(ctx, VmSynth.forClips(soundBank), VmSynth.forRaw(soundBank));
         o.audio = audio;
+        screens = new AndroidScreenHost(activity, activity.guestPresenter());
+        o.screenHost = screens;
         AndroidNokiaDevice nokia = new AndroidNokiaDevice(ctx);
         nokia.setVibration(vibration);
         o.nokia = nokia;
@@ -112,6 +119,8 @@ final class VmSession {
         o.errorLog = errorLog;
         o.midlet = midletNumber();
         runner = new VmRunner(o);
+        final VmRunner fr = runner;
+        screens.bind((type, a, b, c) -> fr.post(type, a, b, c));
         runner.setListener(error -> activity.runOnUiThread(() -> {
             if (error != null) Log.e(TAG, "VM stopped by a host error", error);
             MidletThread.notifyDestroyed();
@@ -144,6 +153,41 @@ final class VmSession {
         if (r == null || r.isFinished()) return;
         r.resume();
         r.repaint();
+        if (audio != null) audio.resumeAll();
+    }
+
+    /** The Back key of a widget screen of the game (UI thread). */
+    boolean handleBack() {
+        return screens != null && screens.onBack();
+    }
+
+    /** The canvas view is on screen again after a Form / List: ask the guest for a full frame. */
+    void canvasShown() {
+        VmRunner r = runner;
+        if (r != null && !r.isFinished()) r.repaint();
+    }
+
+    /**
+     * T30: the JAD attributes the profile honours decide the frame the game sees (Original-Display-Size, orientation turn), the touch
+     * keypad ("no" hides it) and the orientation lock; a JAR bigger than the device limit is refused. The scale, centring and aspect
+     * are JL-Mod's own screen scaling of the virtual screen (its settings stay in force when the JAD says nothing).
+     */
+    private void applyNokiaPlan(VmRunner.Options o) throws IOException {
+        jlkvm.DeviceProfile profile = jlkvm.profile.ProfileLoader.fromJson(o.profileJson);
+        MidletSuite suite = MidletSuite.load(o.manifest, null);
+        String refused = jlkvm.host.ams.NokiaJad.checkInstall(profile, suite.attributes);
+        if (refused != null) throw new IOException("install refused: " + refused);
+        int w = profile.screenWidth, h = profile.screenHeight;
+        nokiaPlan = jlkvm.host.ams.NokiaJad.plan(profile, suite.attributes);
+        jlkvm.host.ams.NokiaJad.Plan p = nokiaPlan;
+        if (p.orientation != null) activity.applyNokiaOrientation(p.orientation);
+        if ("no".equals(p.keypad)) activity.applyNokiaKeypadNone();
+        ru.playsoftware.j2meloader.config.ProfileModel params = activity.profileParams();
+        if (params != null && (p.screenW != w || p.screenH != h)) {
+            params.screenWidth = p.screenW;     // the JL-Mod virtual screen has the size the game must see; JL-Mod scales it to the display
+            params.screenHeight = p.screenH;
+        }
+        if (!p.ignored.isEmpty()) Log.i(TAG, "JAD attributes not acted on: " + p.ignored);
     }
 
     /** The back key / "exit" menu / force close: MIDlet.destroyApp, then the process ends (same as JL-Mod). */
