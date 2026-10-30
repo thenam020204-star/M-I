@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * api-sigs extract --name N [--source S] [--note T] -o OUT.json JAR...
- * api-sigs diff A.json B.json          (exit 1 when different)
+ * api-sigs diff [--ignore INTERNAL_NAME_PREFIX]... A.json B.json   (exit 1 when different)
  * api-sigs count DB.json
  */
 public final class Main {
@@ -33,8 +33,13 @@ public final class Main {
                 break;
             }
             case "diff": {
-                if (args.length != 3) usage();
-                List<String> d = Differ.diff(ApiDb.read(Paths.get(args[1])), ApiDb.read(Paths.get(args[2])));
+                List<String> files = new ArrayList<>(), ignore = new ArrayList<>();
+                for (int i = 1; i < args.length; i++) {
+                    if (args[i].equals("--ignore")) ignore.add(args[++i]);
+                    else files.add(args[i]);
+                }
+                if (files.size() != 2) usage();
+                List<String> d = Differ.diff(ApiDb.read(Paths.get(files.get(0))), ApiDb.read(Paths.get(files.get(1))), ignore.toArray(new String[0]));
                 for (String s : d) System.out.println(s);
                 System.out.println(d.size() + " difference(s)");
                 System.exit(d.isEmpty() ? 0 : 1);
@@ -49,7 +54,7 @@ public final class Main {
     }
 
     private static void usage() {
-        System.err.println("usage: api-sigs extract --name N [--source S] [--note T] -o OUT.json JAR... | diff A.json B.json | count DB.json");
+        System.err.println("usage: api-sigs extract --name N [--source S] [--note T] -o OUT.json JAR... | diff [--ignore PREFIX]... A.json B.json | count DB.json");
         System.exit(2);
     }
 }

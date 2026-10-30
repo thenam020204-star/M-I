@@ -11,9 +11,21 @@ public final class Differ {
     private Differ() {
     }
 
+    /**
+     * Method access bits that are implementation details, not API surface: ACC_SYNCHRONIZED (0x20), ACC_NATIVE (0x100) and ACC_STRICT (0x800).
+     * The official javadoc never shows them, a caller cannot observe them through linking, and the guest library implements methods
+     * natively (PLAN D8) where the stub jars have Java bodies. Everything else (public/protected/static/final/abstract) is compared (D9).
+     */
+    static final int IMPL_BITS = 0x20 | 0x100 | 0x800;
+
     public static List<String> diff(ApiDb a, ApiDb b) {
+        return diff(a, b, new String[0]);
+    }
+
+    /** @param ignorePrefixes internal-name prefixes (e.g. "jlkvm/internal/") of classes excluded from both sides: ROM-private helper classes. */
+    public static List<String> diff(ApiDb a, ApiDb b, String[] ignorePrefixes) {
         List<String> out = new ArrayList<>();
-        Map<String, ApiDb.ClassSig> ma = index(a), mb = index(b);
+        Map<String, ApiDb.ClassSig> ma = index(a, ignorePrefixes), mb = index(b, ignorePrefixes);
         TreeSet<String> all = new TreeSet<>(ma.keySet());
         all.addAll(mb.keySet());
         for (String n : all) {
@@ -47,7 +59,7 @@ public final class Differ {
                 if (y == null) out.add("- method " + n + "." + k);
                 else if (x == null) out.add("+ method " + n + "." + k);
                 else {
-                    if (x.access != y.access) out.add("~ method " + n + "." + k + " access: 0x" + Integer.toHexString(x.access) + " -> 0x" + Integer.toHexString(y.access));
+                    if ((x.access & ~IMPL_BITS) != (y.access & ~IMPL_BITS)) out.add("~ method " + n + "." + k + " access: 0x" + Integer.toHexString(x.access) + " -> 0x" + Integer.toHexString(y.access));
                     if (!x.exceptions.equals(y.exceptions)) out.add("~ method " + n + "." + k + " exceptions: " + x.exceptions + " -> " + y.exceptions);
                 }
             }
@@ -55,9 +67,13 @@ public final class Differ {
         return out;
     }
 
-    private static Map<String, ApiDb.ClassSig> index(ApiDb d) {
+    private static Map<String, ApiDb.ClassSig> index(ApiDb d, String[] ignore) {
         Map<String, ApiDb.ClassSig> m = new LinkedHashMap<>();
-        for (ApiDb.ClassSig c : d.classes) m.put(c.name, c);
+        outer:
+        for (ApiDb.ClassSig c : d.classes) {
+            for (String p : ignore) if (c.name.startsWith(p)) continue outer;
+            m.put(c.name, c);
+        }
         return m;
     }
 

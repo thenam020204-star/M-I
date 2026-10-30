@@ -12,11 +12,19 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 dependencies {
+    implementation(project(":vm-core"))
+    implementation(project(":tools:api-sigs"))
     implementation(libs.asm)
     implementation(libs.google.gson)
+    // D11: ProGuard -microedition is the preverifier (PLAN V1; WTK `preverify` is not used)
+    implementation("com.guardsquare:proguard-base:7.5.0")
     testImplementation(libs.junit)
 }
 
 tasks.test {
     useJUnit()
+}
+
+application {
+    mainClass.set("jlkvm.tools.romgen.RomGen")
 }

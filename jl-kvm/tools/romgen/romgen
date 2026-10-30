@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Launcher: builds the tool on first use, then runs it. Usage: tools/romgen/romgen --src DIR... --out ROM.jar [options] (see RomGen.java)
+D="$(cd "$(dirname "$0")" && pwd)"; ROOT="$D/../.."
+LIB="$D/build/install/romgen/lib"
+if [ ! -d "$LIB" ] || [ -n "$(find "$D/src" "$ROOT/vm-core/src/main" "$ROOT/tools/api-sigs/src/main" -name '*.java' -newer "$LIB" 2>/dev/null | head -1)" ]; then
+  (cd "$ROOT" && env -u JAVA_HOME ./gradlew --no-daemon -q :tools:romgen:installDist >&2) || exit 1
+  touch "$LIB"
+fi
+exec java -cp "$LIB/*" jlkvm.tools.romgen.RomGen "$@" 2> >(grep -v '^Picked up' >&2)
