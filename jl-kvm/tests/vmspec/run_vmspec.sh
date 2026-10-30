@@ -62,6 +62,15 @@ for id in "${IDS[@]}"; do
     [ -d "$C/res" ] && (cd "$C/res" && "$JDK8_HOME/bin/jar" uf "$JAR" . 2>&1 | grep -v '^Picked up')
   fi
   MAINCLS="$(unzip -p "$JAR" META-INF/MANIFEST.MF | tr -d '\r' | sed -n 's/^MIDlet-1:[^,]*,[^,]*,[ ]*//p' | head -1)"
+  # a case driven by a host test (input events...) is only built here; in oracle mode it has no expected.txt of its own (the test holds the
+  # expectation), so it must not fall into the expected.txt checks below. A spec-only one must still cite its source.
+  if [ -n "$(meta "$id" driven-by-test)" ] && [ "$ENGINE" != jlkvm ]; then
+    if [ "$mode" = spec-only ]; then
+      if [ -n "$(meta "$id" source)" ]; then echo "SPEC  $id (driven by a host test: $(meta "$id" driven-by-test); expected from: $(meta "$id" source))"; specs=$((specs+1))
+      else echo "FAIL  $id (spec-only case needs a meta source)"; fail=$((fail+1)); fi
+    else echo "BUILT $id (driven by a host test: $(meta "$id" driven-by-test))"; fi
+    continue
+  fi
   if [ "$mode" = spec-only ] && [ "$ENGINE" != jlkvm ]; then
     if [ -s "$C/expected.txt" ] && [ -n "$(meta "$id" source)" ]; then echo "SPEC  $id (expected from: $(meta "$id" source))"; specs=$((specs+1))
     else echo "FAIL  $id (spec-only case needs expected.txt and meta source)"; fail=$((fail+1)); fi

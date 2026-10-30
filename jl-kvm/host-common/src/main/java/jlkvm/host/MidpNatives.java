@@ -27,6 +27,7 @@ public final class MidpNatives {
     private final ScreenHost ui;
     private final jlkvm.host.rms.RecordStorage records;
     private jlkvm.host.net.HttpTransport http = new jlkvm.host.net.JavaHttpTransport();
+    private jlkvm.host.audio.AudioDevice audio = new jlkvm.host.audio.RecordingAudioDevice();
     /** Set by EventLoop.wake0: a guest thread posted a job while the event thread may be blocked. */
     private boolean wake;
 
@@ -52,6 +53,9 @@ public final class MidpNatives {
     /** The HTTP of the host for the "http" connections (T26b); default {@code JavaHttpTransport} (used only when the profile allows "http"). */
     public MidpNatives httpTransport(jlkvm.host.net.HttpTransport t) { this.http = t; return this; }
 
+    /** The audio output (T27); default: a {@code RecordingAudioDevice} (silent, logs). */
+    public MidpNatives audioDevice(jlkvm.host.audio.AudioDevice d) { this.audio = d; return this; }
+
     private static final String LCDUI = "javax/microedition/lcdui/";
 
     private Surface surf(NativeContext c, int id) {
@@ -70,6 +74,7 @@ public final class MidpNatives {
         final GuestServices gs = r.services();
         new RmsNatives(records, profile, appProps).register(r);
         new NetNatives(profile, http).register(r);
+        new AudioNatives(profile, audio).register(r);
         // ------------------------------------------------------------ AMS
         r.register("jlkvm/internal/Ams.property0(Ljava/lang/String;)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
             String k = gs.string(c.argRef(0)), v = null;

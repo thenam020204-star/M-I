@@ -1,0 +1,167 @@
+{
+  "format": 1,
+  "name": "jsr-135-extra",
+  "source": "JSR-135 (MMAPI) classes MIDIControl, RateControl, TempoControl not in the MIDP 2.0 subset: public signatures read from the compiled interfaces of JL-Mod (app/src/main/java/javax/microedition/media/control, Apache-2.0); UNVERIFIED against the JSR-135 javadoc (not in the repo)",
+  "classes": [
+    {
+      "name": "javax/microedition/media/control/MIDIControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "CONTROL_CHANGE",
+          "desc": "I",
+          "access": 25,
+          "constant": "176",
+          "constantType": "I"
+        },
+        {
+          "name": "NOTE_ON",
+          "desc": "I",
+          "access": 25,
+          "constant": "144",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getBankList",
+          "desc": "(Z)[I",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getChannelVolume",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getKeyName",
+          "desc": "(III)Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getProgram",
+          "desc": "(I)[I",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getProgramList",
+          "desc": "(I)[I",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getProgramName",
+          "desc": "(II)Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "isBankQuerySupported",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "longMidiEvent",
+          "desc": "([BII)I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setChannelVolume",
+          "desc": "(II)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setProgram",
+          "desc": "(III)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "shortMidiEvent",
+          "desc": "(III)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/control/RateControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getMaxRate",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMinRate",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getRate",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setRate",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/control/TempoControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/control/RateControl"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getTempo",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setTempo",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    }
+  ]
+}

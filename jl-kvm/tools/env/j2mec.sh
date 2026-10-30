@@ -8,6 +8,7 @@ SRC="$1"; MF="$2"; OUT="$(realpath -m "$3")"; CLDC="${4:-cldc11}"
 SRC="$(realpath "$SRC")"; MF="$(realpath "$MF")"
 M="$CACHE/maven"
 STUBS="${J2MEC_LIBS:-$M/${CLDC/cldc/cldcapi}-$MICROEMU_VER.jar:$M/midpapi20-$MICROEMU_VER.jar}"   # J2MEC_LIBS: override (negative tests only)
+STUBS="$STUBS${J2MEC_EXTRA:+:$J2MEC_EXTRA}"   # J2MEC_EXTRA: more API jars (e.g. the JSR-135 interfaces, tests/midlets/build.sh)
 W="$(mktemp -d)"; trap 'rm -rf "$W"' EXIT
 mkdir -p "$W/raw" "$W/pv"
 find "$SRC" -name '*.java' > "$W/srcs.txt"

@@ -1,0 +1,32 @@
+> MIDIControl: true bank query false
+> channel volume unknown: -1
+> channel volume: 90
+> channel volume by event: 33
+> program unknown: MediaException
+> program: [129,5]
+> long event: 6 / part 2
+> channel 16: IllegalArgumentException
+> channel -1: IllegalArgumentException
+> volume 128: IllegalArgumentException
+> program 128: IllegalArgumentException
+> bank 16384: IllegalArgumentException
+> status 0x70: IllegalArgumentException
+> status 0xF0: IllegalArgumentException
+> data 128: IllegalArgumentException
+> long null: IllegalArgumentException
+> long range: IllegalArgumentException
+> bank list: MediaException
+> program list: MediaException
+> program name: MediaException
+> key name: MediaException
+> tempo/rate are one object: true
+> tempo 120000 rate 100000 range 10000..1000000
+> setTempo(90000) -> 90000 now 90000
+> setRate(200000) -> 200000
+> setRate(1) -> 10000 (clamped to the minimum), setRate(99999999) -> 1000000
+> tone tempo 240000 rate 100000
+> tone has MIDIControl: true
+> normal speed took about 250 ms: true
+> setTempo(120000) -> 120000 rate 50000
+> half tempo took about 500 ms: true
+> setRate(400000) -> 400000 tempo 960000

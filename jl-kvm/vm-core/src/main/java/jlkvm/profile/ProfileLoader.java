@@ -7,7 +7,7 @@ import jlkvm.DeviceProfile;
  * Loads a device profile from JSON text (PLAN T20 minimal schema; T33 extends it and adds a validator). Keys:
  * name, heapBytes, timesliceBytecodes, priorityScheduling, threadStackWords, cldc11, maxTraceFrames,
  * properties{key:string} (System.getProperty), network{scheme|"default": "allow"|"deny"|"offline"},
- * timeZone{id, offsetMillis}, apis[string] (ROM layers), imagesCountInHeap, rms{quotaBytes,storeOverheadBytes,recordOverheadBytes}, keyRepeat{delayMs,intervalMs},
+ * timeZone{id, offsetMillis}, apis[string] (ROM layers), imagesCountInHeap, rms{quotaBytes,storeOverheadBytes,recordOverheadBytes}, media{contentTypes[],protocols[],tone}, keyRepeat{delayMs,intervalMs},
  * display{width,height,canvasWidth,canvasHeight,color,numColors,numAlphaLevels,pointerEvents,pointerMotionEvents,repeatEvents,doubleBuffered},
  * keys{name:int} (names of DeviceProfile.keys). Keys starting with "_" (comments, source tags) are ignored. Unknown keys are an error.
  */
@@ -81,6 +81,18 @@ public final class ProfileLoader {
                     else if (te.getKey().equals("storeOverheadBytes")) p.rmsStoreOverheadBytes = (int) n;
                     else if (te.getKey().equals("recordOverheadBytes")) p.rmsRecordOverheadBytes = (int) n;
                     else throw new IllegalArgumentException("profile: unknown key rms." + te.getKey());
+                }
+            } else if (k.equals("media")) {
+                for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
+                    String n = te.getKey();
+                    if (n.startsWith("_")) continue;
+                    if (n.equals("contentTypes") || n.equals("protocols")) {
+                        if (!(te.getValue() instanceof java.util.List)) throw new IllegalArgumentException("profile: media." + n + " must be an array");
+                        java.util.List<String> dst = n.equals("contentTypes") ? p.mediaContentTypes : p.mediaProtocols;
+                        dst.clear();
+                        for (Object mo : (java.util.List<Object>) te.getValue()) dst.add(str("media." + n + "[]", mo).trim().toLowerCase());
+                    } else if (n.equals("tone")) p.mediaTone = bool("media.tone", te.getValue());
+                    else throw new IllegalArgumentException("profile: unknown key media." + n);
                 }
             } else if (k.equals("timeZone")) {
                 for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {

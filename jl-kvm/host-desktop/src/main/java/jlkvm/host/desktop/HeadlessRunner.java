@@ -40,6 +40,8 @@ public final class HeadlessRunner {
         /** RMS (T26): the record stores of the run; null = a directory {@link #rmsDir} if set, else memory only. */
         public jlkvm.host.rms.RecordStorage records;
         public File rmsDir;
+        /** Audio output (T27); null = a silent {@link jlkvm.host.audio.RecordingAudioDevice} on the virtual clock (returned in {@link Result#audio}). */
+        public jlkvm.host.audio.AudioDevice audio;
         /** A JL-Mod data directory whose record stores are imported before the run. */
         public File importJlMod;
     }
@@ -51,6 +53,7 @@ public final class HeadlessRunner {
         public final Map<String, String> shots = new LinkedHashMap<String, String>();
         public RecordingServices services;
         public HeadlessUi ui;
+        public jlkvm.host.audio.AudioDevice audio;
         public Vm vm;
         public DesktopHost host;
         public long virtualMs;
@@ -100,6 +103,13 @@ public final class HeadlessRunner {
             res.rmsImport = ir;
         }
         host.setRecordStorage(rs);
+        final Result fres = res;
+        java.util.function.LongSupplier vclock = new java.util.function.LongSupplier() {
+            public long getAsLong() { return fres.vm == null ? 0 : (fres.vm.nanoTime() - fres.vm.baseNanos()) / 1000000L; } };
+        jlkvm.host.audio.AudioDevice ad = o.audio != null ? o.audio : new jlkvm.host.audio.RecordingAudioDevice(vclock);
+        if (ad instanceof jlkvm.host.audio.RecordingAudioDevice) ((jlkvm.host.audio.RecordingAudioDevice) ad).setClock(vclock);
+        host.setAudioDevice(ad);
+        res.audio = ad;
         res.records = rs;
         host.logStream = o.log;
         HeadlessUi hui = new HeadlessUi();
@@ -133,6 +143,14 @@ public final class HeadlessRunner {
                 script.take();
                 if (e.type == ScriptedInput.QUIT) { quit = true; break; }
                 if (e.type == ScriptedInput.SHOT) { settle(vm); res.shots.put(e.name, shotHash(svc)); }
+                else if (e.type == ScriptedInput.AUDIO) {
+                    settle(vm);
+                    String[] w = e.name.split("\\s+");
+                    if (w.length == 2 && w[0].equals("end") && ad instanceof jlkvm.host.audio.RecordingAudioDevice) {
+                        ((jlkvm.host.audio.RecordingAudioDevice) ad).finishClip(Integer.parseInt(w[1]));
+                        posted = true;
+                    } else throw new IllegalArgumentException("script: audio " + e.name);
+                }
                 else if (e.type == ScriptedInput.UI) { settle(vm); if (hui.perform(e.name, vm)) posted = true; }
                 else { vm.postEvent(e.type, e.a, e.b, 0); posted = true; }
             }

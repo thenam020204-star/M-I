@@ -8,5 +8,7 @@ D="$(dirname "$OUT")"
 mkdir -p "$D"
 "$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/src" --out "$D/cldc-rom.jar" --api-db "$ROOT/tools/api-sigs/db/cldc-1.1.json" --api-ignore jlkvm/internal/ >&2
 "$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/midp/src" --base "$D/cldc-rom.jar" --out "$D/midp-rom.jar" >&2   # surface check: gradle :vm-classlib:buildMidpRom
-"$ROOT/tools/romgen/romgen" --src "$HERE/src" --base "$D/midp-rom.jar" --out "$OUT" >&2
+# JSR-135 layer (MIDIControl...): present in the flat test ROM; the profile (api "jsr-135") decides whether Manager hands the controls out
+"$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/jsr135/src" --base "$D/midp-rom.jar" --out "$D/jsr135-rom.jar" >&2
+"$ROOT/tools/romgen/romgen" --src "$HERE/src" --base "$D/jsr135-rom.jar" --out "$OUT" >&2
 echo "built $OUT ($(unzip -l "$OUT" | grep -c '\.class') classes)"

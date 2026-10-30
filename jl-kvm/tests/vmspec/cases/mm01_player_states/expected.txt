@@ -1,0 +1,69 @@
+> new: UNREALIZED
+> unrealized getContentType: IllegalStateException
+> unrealized getControl: IllegalStateException
+> unrealized getControls: IllegalStateException
+> unrealized setMediaTime: IllegalStateException
+> unrealized duration: -1
+> loop 0: IllegalArgumentException
+> loop -1 / 1 / 3: ok
+> realize: REALIZED
+> realize again: REALIZED
+> content type: audio/x-tone-seq
+> ToneControl: true same by full name: true
+> VolumeControl: true
+> unknown control: null / midi: null
+> getControl(null): IllegalArgumentException
+> controls: 2 true
+> setSequence(null): IllegalArgumentException
+> setSequence(bad): IllegalArgumentException
+> duration: 250000 TIME_UNKNOWN=-1
+> prefetch: PREFETCHED
+> setSequence prefetched: IllegalStateException
+> start: STARTED
+> start again: STARTED
+> loop started: IllegalStateException
+> setSequence started: IllegalStateException
+> stop: PREFETCHED
+> stop again: PREFETCHED
+> media time after stop in (0, duration): true
+> first run events: started(Long) stopped(Long)
+> setMediaTime(-5): 0 now 0
+> setMediaTime(100000): 100000 now 100000
+> setMediaTime(1e9): 250000 duration 250000
+> deallocate: REALIZED
+> deallocate again: REALIZED
+> prefetch again: PREFETCHED
+> start from realized: STARTED
+> after the end: PREFETCHED media time = duration: true
+> play to end events: started(Long) endOfMedia(Long)
+> loop 2 after 350 ms: STARTED
+> loop 2 after 700 ms: PREFETCHED
+> loop 2 events: started(Long) endOfMedia(Long)
+> deallocate started: REALIZED
+> deallocate started events: started(Long) stopped(Long)
+> start stop events: started(Long) stopped(Long)
+> volume default muted=false
+> setLevel 50 -> 50 getLevel 50
+> setLevel 150 -> 100
+> setLevel -3 -> 0
+> mute: true level 70
+> unmute: false level 70
+> without listener events: -
+> close: CLOSED
+> close again: CLOSED
+> closed realize: IllegalStateException
+> closed prefetch: IllegalStateException
+> closed start: IllegalStateException
+> closed stop: IllegalStateException
+> closed deallocate: IllegalStateException
+> closed getDuration: IllegalStateException
+> closed getMediaTime: IllegalStateException
+> closed setMediaTime: IllegalStateException
+> closed getContentType: IllegalStateException
+> closed setLoopCount: IllegalStateException
+> closed addPlayerListener: IllegalStateException
+> closed removePlayerListener: IllegalStateException
+> closed getControl: IllegalStateException
+> closed getControls: IllegalStateException
+> closed getState: 0
+> listeners ran off the main thread only: true

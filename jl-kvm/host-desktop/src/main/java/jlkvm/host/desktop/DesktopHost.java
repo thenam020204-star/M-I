@@ -27,6 +27,7 @@ public final class DesktopHost implements HostPlatform {
     private final SurfaceFactory surfaces;
     private ScreenHost ui = ScreenHost.NONE;
     private jlkvm.host.rms.RecordStorage records;
+    private jlkvm.host.audio.AudioDevice audio;
     /** Everything the VM logged ("[tag] message"), for tests and the CLI report. */
     public final List<String> logs = Collections.synchronizedList(new ArrayList<String>());
     public PrintStream logStream;
@@ -40,6 +41,9 @@ public final class DesktopHost implements HostPlatform {
 
     /** Where the RMS keeps the record stores (T26); default: memory only. Set before the VM runs. */
     public void setRecordStorage(jlkvm.host.rms.RecordStorage r) { this.records = r; }
+
+    /** The audio output (T27); default: a silent logging device on the host clock. */
+    public void setAudioDevice(jlkvm.host.audio.AudioDevice d) { this.audio = d; }
 
     /** The high-level UI (Form / List / TextBox / Alert); set before the VM runs. */
     public void setScreenHost(ScreenHost ui) { this.ui = ui; }
@@ -68,6 +72,8 @@ public final class DesktopHost implements HostPlatform {
                 out.write(b, 0, b.length);
                 out.flush();
             } } });
-        new MidpNatives(profile, appProps, surfaces, services, ui, records != null ? records : new jlkvm.host.rms.MemoryRecordStorage(profile)).register(r);
+        MidpNatives mn = new MidpNatives(profile, appProps, surfaces, services, ui, records != null ? records : new jlkvm.host.rms.MemoryRecordStorage(profile));
+        if (audio != null) mn.audioDevice(audio);
+        mn.register(r);
     }
 }

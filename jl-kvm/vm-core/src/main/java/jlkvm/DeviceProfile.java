@@ -46,6 +46,14 @@ public final class DeviceProfile {
     public int rmsStoreOverheadBytes = 16;
     /** RMS: bytes each record adds to the store size besides its data. */
     public int rmsRecordOverheadBytes = 8;
+    /**
+     * MMAPI (T27), profile {@code media{}}: content types and protocols {@code Manager} reports and accepts, and whether the tone generator
+     * ({@code Manager.playTone}, device://tone) exists. UNVERIFIED defaults (a typical Series 40 list is not known).
+     */
+    public final java.util.List<String> mediaContentTypes = new java.util.ArrayList<String>(java.util.Arrays.asList(
+            "audio/x-tone-seq", "audio/midi", "audio/sp-midi", "audio/x-wav", "audio/mpeg", "audio/amr", "audio/x-rtttl", "text/x-rtttl"));
+    public final java.util.List<String> mediaProtocols = new java.util.ArrayList<String>(java.util.Arrays.asList("device", "http", "https", "file", "resource"));
+    public boolean mediaTone = true;
     /** Full-screen size and the size of a normal (non full-screen) Canvas, in pixels. */
     public int screenWidth = 240, screenHeight = 320, canvasWidth = 240, canvasHeight = 294;
     public boolean isColor = true, pointerEvents = false, pointerMotionEvents = false, repeatEvents = true, doubleBuffered = true;

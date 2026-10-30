@@ -35,9 +35,7 @@ tasks.named("check") { dependsOn(buildRom) }
 // of the CLDC 1.1 and MIDP 2.0 signature DBs. The classes of the MIDP DB that later tasks write are listed in `pending` (ignored
 // on both sides until their task ticks; the list must shrink to nothing by M4 acceptance).
 val midpRomJar = layout.buildDirectory.file("rom/rom-midp.jar")
-val pending = listOf(
-    "javax/microedition/media/",                                                                                                                       // T27
-)
+val pending = listOf<String>()   // empty since T27: the whole MIDP 2.0 DB is in the ROM
 val buildMidpRom = tasks.register<JavaExec>("buildMidpRom") {
     group = "build"
     description = "Compiles vm-classlib/midp/src on top of the CLDC ROM into rom-midp.jar (T21-T23)"
@@ -57,3 +55,34 @@ val buildMidpRom = tasks.register<JavaExec>("buildMidpRom") {
 }
 tasks.named("assemble") { dependsOn(buildMidpRom) }
 tasks.named("check") { dependsOn(buildMidpRom) }
+
+// ---- JSR-135 layer (T27, D10: profile api "jsr-135"): MIDIControl / RateControl / TempoControl and their implementation, in their OWN
+// jar. Base = CLDC + MIDP merged; the surface is checked against cldc-1.1 + midp-2.0 + jsr-135-extra (signatures taken from the compiled
+// JL-Mod interfaces, Apache-2.0, see docs/midp.md section 10).
+val jsr135RomJar = layout.buildDirectory.file("rom/rom-jsr135.jar")
+val midpBaseJar = tasks.register<Zip>("midpBaseJar") {
+    description = "cldc + midp ROM merged (build input of the JSR-135 layer)"
+    dependsOn(buildMidpRom)
+    from(zipTree(romJar))
+    from(zipTree(midpRomJar))
+    destinationDirectory.set(layout.buildDirectory.dir("rom"))
+    archiveFileName.set("base-midp.jar")
+}
+val buildJsr135Rom = tasks.register<JavaExec>("buildJsr135Rom") {
+    group = "build"
+    description = "Compiles vm-classlib/jsr135/src on top of the CLDC + MIDP ROM into rom-jsr135.jar (T27)"
+    dependsOn(midpBaseJar)
+    val srcDir = layout.projectDirectory.dir("jsr135/src")
+    val dbDir = rootProject.layout.projectDirectory.dir("tools/api-sigs/db")
+    inputs.dir(srcDir)
+    inputs.file(midpBaseJar.flatMap { it.archiveFile })
+    inputs.dir(dbDir)
+    outputs.file(jsr135RomJar)
+    classpath = romgen
+    mainClass.set("jlkvm.tools.romgen.RomGen")
+    args("--src", srcDir.asFile.path, "--base", layout.buildDirectory.file("rom/base-midp.jar").get().asFile.path, "--delta", "--out", jsr135RomJar.get().asFile.path,
+        "--api-db", dbDir.file("cldc-1.1.json").asFile.path, "--api-db", dbDir.file("midp-2.0.json").asFile.path,
+        "--api-db", dbDir.file("jsr-135-extra.json").asFile.path, "--api-ignore", "jlkvm/internal/")
+}
+tasks.named("assemble") { dependsOn(buildJsr135Rom) }
+tasks.named("check") { dependsOn(buildJsr135Rom) }

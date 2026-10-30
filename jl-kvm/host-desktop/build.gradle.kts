@@ -20,7 +20,7 @@ dependencies {
 // the tests run the guest on the real ROM layers and on MIDlet jars built by tests/midlets/build.sh
 tasks.test {
     useJUnit()
-    dependsOn(":vm-classlib:buildMidpRom")
+    dependsOn(":vm-classlib:buildMidpRom", ":vm-classlib:buildJsr135Rom")
     systemProperty("jlkvm.rom.dir", rootProject.layout.projectDirectory.dir("vm-classlib/build/rom").asFile.path)
     systemProperty("jlkvm.root", rootProject.layout.projectDirectory.asFile.path)
     jvmArgs("-Xss4m")

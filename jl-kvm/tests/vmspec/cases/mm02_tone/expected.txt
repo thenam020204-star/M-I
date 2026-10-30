@@ -1,0 +1,41 @@
+> TONE_DEVICE_LOCATOR device://tone
+> all types non-null, has tone-seq: true
+> types of device: [audio/x-tone-seq]
+> types of unknown protocol: []
+> all protocols has device: true
+> protocols of tone-seq has device: true
+> protocols of unknown type: []
+> rtttl listed: true
+> createPlayer(null): IllegalArgumentException
+> createPlayer(stream null): IllegalArgumentException
+> createPlayer(malformed): MediaException
+> createPlayer(capture): MediaException
+> createPlayer(device://nothing): MediaException
+> createPlayer(unsupported type): MediaException
+> createPlayer(unknown content): MediaException
+> createPlayer(tone device): ok
+> playTone(60,100,100): ok
+> playTone(0..127): ok
+> playTone volume clamped: ok
+> playTone(-1): IllegalArgumentException
+> playTone(128): IllegalArgumentException
+> playTone(duration 0): IllegalArgumentException
+> playTone(duration -5): IllegalArgumentException
+> default tempo 120 bpm: quarter = 500000
+> silence counts: 1000000
+> tempo 60 res 16: 250000
+> empty sequence: 0
+> blocks + repeat: 1375000
+> tempo change in the middle: 750000
+> invalid sequences rejected: IIIIIIIIIIIIIII
+> invalid sequence as a stream: MediaException
+> rtttl audio/x-rtttl: duration 1000000 type audio/x-rtttl
+> rtttl text/x-rtttl: duration 1000000 type text/x-rtttl
+> rtttl sniffed: duration 2000000 type audio/x-rtttl
+> rtttl upper case and blanks: duration 1000000 type audio/x-rtttl
+> rtttl without defaults: duration 1904760 type audio/x-rtttl
+> rtttl dotted: duration 2250000 type audio/x-rtttl
+> rtttl bad note: MediaException at realize
+> rtttl bad duration: MediaException at realize
+> rtttl no colon: MediaException at realize
+> rtttl has no ToneControl: ok
