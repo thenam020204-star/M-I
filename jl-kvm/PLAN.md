@@ -208,6 +208,8 @@ Thuộc tính JAD/manifest riêng Nokia cần hỗ trợ [XM giá trị và ng�
 ## Checklist
 Phân công đợt 1: **A1 chạy T01–T20 và T13b** (M0–M3, 21 task). **A2 chỉ đọc trước T21–T27** (M4), chỉ bắt đầu làm khi quản đốc xác nhận A1 ≥ 90% (≥ 19/21 task đã tick). T28 trở đi: quản đốc giao ở đợt sau.
 
+**Phân công đợt 2 (người dùng xác nhận 2026-10-30):** A2 implement M4 (T21–T27) theo thứ tự T21 → T22 → T23 → T24 → T25 → T26 → T27, mỗi lần quản đốc giao một cụm; A1 không còn task (T13b chờ Android). Chỉ một công nhân chạy thật tại một thời điểm.
+
 **Luật thay công nhân (người dùng, 2026-10-29):** công nhân nào có ngữ cảnh vượt **400k token** thì quản đốc cho dừng và thay bằng công nhân mới (cùng vai A1/A2, cùng model Sonnet 5.5). Trước khi bàn giao, công nhân cũ phải đưa file về trạng thái nhất quán và ghi vào Nhật ký dòng `BÀN GIAO: đang ở Txx, đã xong …, bước tiếp theo …, lưu ý …`. Công nhân mới bắt đầu bằng việc đọc lại toàn bộ PLAN.md, không dựa vào lịch sử chat của người cũ. Quản đốc theo dõi mức ngữ cảnh khi nhận báo cáo; công nhân tự thấy mình gần 400k thì chủ động ghi BÀN GIAO rồi dừng.
 
 ### M0 — Nền móng
