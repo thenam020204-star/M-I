@@ -1,0 +1,1054 @@
+{
+  "format": 1,
+  "name": "s40dp2-jsr82",
+  "source": "Nokia Series 40 Developer Platform 2.0 SDK 1.1 (2004-12-20), classes.zip; signatures only, SDK not redistributed",
+  "classes": [
+    {
+      "name": "javax/bluetooth/BluetoothConnectionException",
+      "superName": "java/io/IOException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "FAILED_NOINFO",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "NO_RESOURCES",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "SECURITY_BLOCK",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "TIMEOUT",
+          "desc": "I",
+          "access": 25,
+          "constant": "5",
+          "constantType": "I"
+        },
+        {
+          "name": "UNACCEPTABLE_PARAMS",
+          "desc": "I",
+          "access": 25,
+          "constant": "6",
+          "constantType": "I"
+        },
+        {
+          "name": "UNKNOWN_PSM",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(ILjava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getStatus",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/bluetooth/BluetoothStateException",
+      "superName": "java/io/IOException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/bluetooth/DataElement",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "BOOL",
+          "desc": "I",
+          "access": 25,
+          "constant": "40",
+          "constantType": "I"
+        },
+        {
+          "name": "DATALT",
+          "desc": "I",
+          "access": 25,
+          "constant": "56",
+          "constantType": "I"
+        },
+        {
+          "name": "DATSEQ",
+          "desc": "I",
+          "access": 25,
+          "constant": "48",
+          "constantType": "I"
+        },
+        {
+          "name": "INT_1",
+          "desc": "I",
+          "access": 25,
+          "constant": "16",
+          "constantType": "I"
+        },
+        {
+          "name": "INT_16",
+          "desc": "I",
+          "access": 25,
+          "constant": "20",
+          "constantType": "I"
+        },
+        {
+          "name": "INT_2",
+          "desc": "I",
+          "access": 25,
+          "constant": "17",
+          "constantType": "I"
+        },
+        {
+          "name": "INT_4",
+          "desc": "I",
+          "access": 25,
+          "constant": "18",
+          "constantType": "I"
+        },
+        {
+          "name": "INT_8",
+          "desc": "I",
+          "access": 25,
+          "constant": "19",
+          "constantType": "I"
+        },
+        {
+          "name": "NULL",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "STRING",
+          "desc": "I",
+          "access": 25,
+          "constant": "32",
+          "constantType": "I"
+        },
+        {
+          "name": "URL",
+          "desc": "I",
+          "access": 25,
+          "constant": "64",
+          "constantType": "I"
+        },
+        {
+          "name": "UUID",
+          "desc": "I",
+          "access": 25,
+          "constant": "24",
+          "constantType": "I"
+        },
+        {
+          "name": "U_INT_1",
+          "desc": "I",
+          "access": 25,
+          "constant": "8",
+          "constantType": "I"
+        },
+        {
+          "name": "U_INT_16",
+          "desc": "I",
+          "access": 25,
+          "constant": "12",
+          "constantType": "I"
+        },
+        {
+          "name": "U_INT_2",
+          "desc": "I",
+          "access": 25,
+          "constant": "9",
+          "constantType": "I"
+        },
+        {
+          "name": "U_INT_4",
+          "desc": "I",
+          "access": 25,
+          "constant": "10",
+          "constantType": "I"
+        },
+        {
+          "name": "U_INT_8",
+          "desc": "I",
+          "access": 25,
+          "constant": "11",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(IJ)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(ILjava/lang/Object;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Z)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "addElement",
+          "desc": "(Ljavax/bluetooth/DataElement;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "clone",
+          "desc": "()Ljavax/bluetooth/DataElement;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getBoolean",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getDataType",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getLong",
+          "desc": "()J",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getSize",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getValue",
+          "desc": "()Ljava/lang/Object;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "insertElementAt",
+          "desc": "(Ljavax/bluetooth/DataElement;I)V",
+          "access": 1,
+          "exceptions": [
+            "java/lang/IndexOutOfBoundsException"
+          ]
+        },
+        {
+          "name": "removeElement",
+          "desc": "(Ljavax/bluetooth/DataElement;)Z",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/bluetooth/DeviceClass",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getMajorDeviceClass",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getMinorDeviceClass",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getServiceClasses",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/bluetooth/DiscoveryAgent",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "CACHED",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "GIAC",
+          "desc": "I",
+          "access": 25,
+          "constant": "10390323",
+          "constantType": "I"
+        },
+        {
+          "name": "LIAC",
+          "desc": "I",
+          "access": 25,
+          "constant": "10390272",
+          "constantType": "I"
+        },
+        {
+          "name": "NOT_DISCOVERABLE",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "PREKNOWN",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "cancelInquiry",
+          "desc": "(Ljavax/bluetooth/DiscoveryListener;)Z",
+          "access": 1,
+          "exceptions": [
+            "java/lang/NullPointerException"
+          ]
+        },
+        {
+          "name": "cancelServiceSearch",
+          "desc": "(I)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "retrieveDevices",
+          "desc": "(I)[Ljavax/bluetooth/RemoteDevice;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "searchServices",
+          "desc": "([I[Ljavax/bluetooth/UUID;Ljavax/bluetooth/RemoteDevice;Ljavax/bluetooth/DiscoveryListener;)I",
+          "access": 1,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/NullPointerException",
+            "javax/bluetooth/BluetoothStateException"
+          ]
+        },
+        {
+          "name": "selectService",
+          "desc": "(Ljavax/bluetooth/UUID;IZ)Ljava/lang/String;",
+          "access": 1,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/NullPointerException",
+            "javax/bluetooth/BluetoothStateException"
+          ]
+        },
+        {
+          "name": "startInquiry",
+          "desc": "(ILjavax/bluetooth/DiscoveryListener;)Z",
+          "access": 1,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/NullPointerException",
+            "javax/bluetooth/BluetoothStateException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/bluetooth/DiscoveryAgent$InquiryListenerThread",
+      "superName": "java/lang/Thread",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(Ljavax/bluetooth/DiscoveryAgent;ILjavax/bluetooth/DiscoveryListener;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getListener",
+          "desc": "()Ljavax/bluetooth/DiscoveryListener;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "run",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/bluetooth/DiscoveryAgent$ServiceSearchListenerThread",
+      "superName": "java/lang/Thread",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(Ljavax/bluetooth/DiscoveryAgent;Ljavax/bluetooth/RemoteDevice;IILjavax/bluetooth/DiscoveryListener;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getTransID",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "run",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/bluetooth/DiscoveryListener",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "INQUIRY_COMPLETED",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "INQUIRY_ERROR",
+          "desc": "I",
+          "access": 25,
+          "constant": "7",
+          "constantType": "I"
+        },
+        {
+          "name": "INQUIRY_TERMINATED",
+          "desc": "I",
+          "access": 25,
+          "constant": "5",
+          "constantType": "I"
+        },
+        {
+          "name": "SERVICE_SEARCH_COMPLETED",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "SERVICE_SEARCH_DEVICE_NOT_REACHABLE",
+          "desc": "I",
+          "access": 25,
+          "constant": "6",
+          "constantType": "I"
+        },
+        {
+          "name": "SERVICE_SEARCH_ERROR",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "SERVICE_SEARCH_NO_RECORDS",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "SERVICE_SEARCH_TERMINATED",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "deviceDiscovered",
+          "desc": "(Ljavax/bluetooth/RemoteDevice;Ljavax/bluetooth/DeviceClass;)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "inquiryCompleted",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "serviceSearchCompleted",
+          "desc": "(II)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "servicesDiscovered",
+          "desc": "(I[Ljavax/bluetooth/ServiceRecord;)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/bluetooth/L2CAPConnection",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/io/Connection"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "DEFAULT_MTU",
+          "desc": "I",
+          "access": 25,
+          "constant": "672",
+          "constantType": "I"
+        },
+        {
+          "name": "MINIMUM_MTU",
+          "desc": "I",
+          "access": 25,
+          "constant": "48",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getReceiveMTU",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "getTransmitMTU",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "ready",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "receive",
+          "desc": "([B)I",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "send",
+          "desc": "([B)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/bluetooth/L2CAPConnectionNotifier",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/io/Connection"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "acceptAndOpen",
+          "desc": "()Ljavax/bluetooth/L2CAPConnection;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/bluetooth/LocalDevice",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getBluetoothAddress",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getDeviceClass",
+          "desc": "()Ljavax/bluetooth/DeviceClass;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getDiscoverable",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getDiscoveryAgent",
+          "desc": "()Ljavax/bluetooth/DiscoveryAgent;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getFriendlyName",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getLocalDevice",
+          "desc": "()Ljavax/bluetooth/LocalDevice;",
+          "access": 9,
+          "exceptions": [
+            "javax/bluetooth/BluetoothStateException"
+          ]
+        },
+        {
+          "name": "getProperty",
+          "desc": "(Ljava/lang/String;)Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getRecord",
+          "desc": "(Ljavax/microedition/io/Connection;)Ljavax/bluetooth/ServiceRecord;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setDiscoverable",
+          "desc": "(I)Z",
+          "access": 1,
+          "exceptions": [
+            "javax/bluetooth/BluetoothStateException"
+          ]
+        },
+        {
+          "name": "updateRecord",
+          "desc": "(Ljavax/bluetooth/ServiceRecord;)V",
+          "access": 1,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/NullPointerException",
+            "javax/bluetooth/ServiceRegistrationException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/bluetooth/RemoteDevice",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 4,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/NullPointerException"
+          ]
+        },
+        {
+          "name": "authenticate",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "authorize",
+          "desc": "(Ljavax/microedition/io/Connection;)Z",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException",
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "desc": "(Ljavax/microedition/io/Connection;Z)Z",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException",
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getBluetoothAddress",
+          "desc": "()Ljava/lang/String;",
+          "access": 17,
+          "exceptions": []
+        },
+        {
+          "name": "getFriendlyName",
+          "desc": "(Z)Ljava/lang/String;",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "getRemoteDevice",
+          "desc": "(Ljavax/microedition/io/Connection;)Ljavax/bluetooth/RemoteDevice;",
+          "access": 9,
+          "exceptions": [
+            "java/io/IOException",
+            "java/lang/IllegalArgumentException",
+            "java/lang/NullPointerException"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isAuthenticated",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isAuthorized",
+          "desc": "(Ljavax/microedition/io/Connection;)Z",
+          "access": 1,
+          "exceptions": [
+            "java/io/IOException",
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "isEncrypted",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "isTrustedDevice",
+          "desc": "()Z",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/bluetooth/ServiceRecord",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "AUTHENTICATE_ENCRYPT",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "AUTHENTICATE_NOENCRYPT",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "L2CAP_UUID",
+          "desc": "I",
+          "access": 25,
+          "constant": "256",
+          "constantType": "I"
+        },
+        {
+          "name": "NOAUTHENTICATE_NOENCRYPT",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "PROTOCOL_DESCRIPTOR_LIST_ID",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "RFCOMM_UUID",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "SERIAL_PORT_UUID",
+          "desc": "I",
+          "access": 25,
+          "constant": "4353",
+          "constantType": "I"
+        },
+        {
+          "name": "SERVICE_CLASS_IDLIST_ID",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "SERVICE_ID",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "SERVICE_NAME_ID",
+          "desc": "I",
+          "access": 25,
+          "constant": "256",
+          "constantType": "I"
+        },
+        {
+          "name": "SERVICE_RECORD_HANDLE_ID",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "SERVICE_RECORD_STATE_ID",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getAttributeIDs",
+          "desc": "()[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getAttributeValue",
+          "desc": "(I)Ljavax/bluetooth/DataElement;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getConnectionURL",
+          "desc": "(IZ)Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getHostDevice",
+          "desc": "()Ljavax/bluetooth/RemoteDevice;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "populateRecord",
+          "desc": "([I)Z",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "setAttributeValue",
+          "desc": "(ILjavax/bluetooth/DataElement;)Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setDeviceServiceClasses",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/bluetooth/ServiceRegistrationException",
+      "superName": "java/io/IOException",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/bluetooth/UUID",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "baseUUID",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "00001000800000805F9B34FB",
+          "constantType": "Ljava/lang/String;"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(J)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;Z)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "equals",
+          "desc": "(Ljava/lang/Object;)Z",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "hashCode",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "toString",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    }
+  ]
+}

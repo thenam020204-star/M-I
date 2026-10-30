@@ -1,0 +1,522 @@
+{
+  "format": 1,
+  "name": "s40dp2-nokiaui",
+  "source": "Nokia Series 40 Developer Platform 2.0 SDK 1.1 (2004-12-20), classes.zip; signatures only, SDK not redistributed",
+  "classes": [
+    {
+      "name": "com/nokia/mid/sound/Sound",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [
+        {
+          "name": "FORMAT_TONE",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "FORMAT_WAV",
+          "desc": "I",
+          "access": 25,
+          "constant": "5",
+          "constantType": "I"
+        },
+        {
+          "name": "SOUND_PLAYING",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "SOUND_STOPPED",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "SOUND_UNINITIALIZED",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(IJ)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "([BI)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getConcurrentSoundCount",
+          "desc": "(I)I",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getGain",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getState",
+          "desc": "()I",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedFormats",
+          "desc": "()[I",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "init",
+          "desc": "(IJ)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "init",
+          "desc": "([BI)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "play",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "release",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "resume",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setGain",
+          "desc": "(I)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setSoundListener",
+          "desc": "(Lcom/nokia/mid/sound/SoundListener;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "stop",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "com/nokia/mid/sound/SoundListener",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "soundStateChanged",
+          "desc": "(Lcom/nokia/mid/sound/Sound;I)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "com/nokia/mid/ui/DeviceControl",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "flashLights",
+          "desc": "(J)V",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "setLights",
+          "desc": "(II)V",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "startVibra",
+          "desc": "(IJ)V",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "stopVibra",
+          "desc": "()V",
+          "access": 9,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "com/nokia/mid/ui/DirectGraphics",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "FLIP_HORIZONTAL",
+          "desc": "I",
+          "access": 25,
+          "constant": "8192",
+          "constantType": "I"
+        },
+        {
+          "name": "FLIP_VERTICAL",
+          "desc": "I",
+          "access": 25,
+          "constant": "16384",
+          "constantType": "I"
+        },
+        {
+          "name": "ROTATE_180",
+          "desc": "I",
+          "access": 25,
+          "constant": "180",
+          "constantType": "I"
+        },
+        {
+          "name": "ROTATE_270",
+          "desc": "I",
+          "access": 25,
+          "constant": "270",
+          "constantType": "I"
+        },
+        {
+          "name": "ROTATE_90",
+          "desc": "I",
+          "access": 25,
+          "constant": "90",
+          "constantType": "I"
+        },
+        {
+          "name": "TYPE_BYTE_1_GRAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "TYPE_BYTE_1_GRAY_VERTICAL",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1",
+          "constantType": "I"
+        },
+        {
+          "name": "TYPE_BYTE_2_GRAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "TYPE_BYTE_332_RGB",
+          "desc": "I",
+          "access": 25,
+          "constant": "332",
+          "constantType": "I"
+        },
+        {
+          "name": "TYPE_BYTE_4_GRAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "TYPE_BYTE_8_GRAY",
+          "desc": "I",
+          "access": 25,
+          "constant": "8",
+          "constantType": "I"
+        },
+        {
+          "name": "TYPE_INT_8888_ARGB",
+          "desc": "I",
+          "access": 25,
+          "constant": "8888",
+          "constantType": "I"
+        },
+        {
+          "name": "TYPE_INT_888_RGB",
+          "desc": "I",
+          "access": 25,
+          "constant": "888",
+          "constantType": "I"
+        },
+        {
+          "name": "TYPE_USHORT_1555_ARGB",
+          "desc": "I",
+          "access": 25,
+          "constant": "1555",
+          "constantType": "I"
+        },
+        {
+          "name": "TYPE_USHORT_4444_ARGB",
+          "desc": "I",
+          "access": 25,
+          "constant": "4444",
+          "constantType": "I"
+        },
+        {
+          "name": "TYPE_USHORT_444_RGB",
+          "desc": "I",
+          "access": 25,
+          "constant": "444",
+          "constantType": "I"
+        },
+        {
+          "name": "TYPE_USHORT_555_RGB",
+          "desc": "I",
+          "access": 25,
+          "constant": "555",
+          "constantType": "I"
+        },
+        {
+          "name": "TYPE_USHORT_565_RGB",
+          "desc": "I",
+          "access": 25,
+          "constant": "565",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "drawImage",
+          "desc": "(Ljavax/microedition/lcdui/Image;IIII)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "drawPixels",
+          "desc": "([B[BIIIIIIII)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "drawPixels",
+          "desc": "([IZIIIIIIII)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "drawPixels",
+          "desc": "([SZIIIIIIII)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "drawPolygon",
+          "desc": "([II[IIII)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "drawTriangle",
+          "desc": "(IIIIIII)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "fillPolygon",
+          "desc": "([II[IIII)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "fillTriangle",
+          "desc": "(IIIIIII)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getAlphaComponent",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getNativePixelFormat",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getPixels",
+          "desc": "([B[BIIIIIII)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getPixels",
+          "desc": "([IIIIIIII)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getPixels",
+          "desc": "([SIIIIIII)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setARGBColor",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "com/nokia/mid/ui/DirectUtils",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "createImage",
+          "desc": "(III)Ljavax/microedition/lcdui/Image;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "createImage",
+          "desc": "([BII)Ljavax/microedition/lcdui/Image;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getDirectGraphics",
+          "desc": "(Ljavax/microedition/lcdui/Graphics;)Lcom/nokia/mid/ui/DirectGraphics;",
+          "access": 9,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "com/nokia/mid/ui/FullCanvas",
+      "superName": "javax/microedition/lcdui/Canvas",
+      "interfaces": [],
+      "access": 1025,
+      "fields": [
+        {
+          "name": "KEY_DOWN_ARROW",
+          "desc": "I",
+          "access": 25,
+          "constant": "-2",
+          "constantType": "I"
+        },
+        {
+          "name": "KEY_END",
+          "desc": "I",
+          "access": 25,
+          "constant": "-11",
+          "constantType": "I"
+        },
+        {
+          "name": "KEY_LEFT_ARROW",
+          "desc": "I",
+          "access": 25,
+          "constant": "-3",
+          "constantType": "I"
+        },
+        {
+          "name": "KEY_RIGHT_ARROW",
+          "desc": "I",
+          "access": 25,
+          "constant": "-4",
+          "constantType": "I"
+        },
+        {
+          "name": "KEY_SEND",
+          "desc": "I",
+          "access": 25,
+          "constant": "-10",
+          "constantType": "I"
+        },
+        {
+          "name": "KEY_SOFTKEY1",
+          "desc": "I",
+          "access": 25,
+          "constant": "-6",
+          "constantType": "I"
+        },
+        {
+          "name": "KEY_SOFTKEY2",
+          "desc": "I",
+          "access": 25,
+          "constant": "-7",
+          "constantType": "I"
+        },
+        {
+          "name": "KEY_SOFTKEY3",
+          "desc": "I",
+          "access": 25,
+          "constant": "-5",
+          "constantType": "I"
+        },
+        {
+          "name": "KEY_UP_ARROW",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 4,
+          "exceptions": []
+        },
+        {
+          "name": "addCommand",
+          "desc": "(Ljavax/microedition/lcdui/Command;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "setCommandListener",
+          "desc": "(Ljavax/microedition/lcdui/CommandListener;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    }
+  ]
+}

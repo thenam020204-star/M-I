@@ -1,0 +1,165 @@
+{
+  "format": 1,
+  "name": "s40dp2-wma",
+  "source": "Nokia Series 40 Developer Platform 2.0 SDK 1.1 (2004-12-20), classes.zip; signatures only, SDK not redistributed",
+  "classes": [
+    {
+      "name": "javax/wireless/messaging/BinaryMessage",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/wireless/messaging/Message"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getPayloadData",
+          "desc": "()[B",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setPayloadData",
+          "desc": "([B)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/wireless/messaging/Message",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getAddress",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getTimestamp",
+          "desc": "()Ljava/util/Date;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setAddress",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/wireless/messaging/MessageConnection",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/io/Connection"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "BINARY_MESSAGE",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "binary",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "TEXT_MESSAGE",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "text",
+          "constantType": "Ljava/lang/String;"
+        }
+      ],
+      "methods": [
+        {
+          "name": "newMessage",
+          "desc": "(Ljava/lang/String;)Ljavax/wireless/messaging/Message;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "newMessage",
+          "desc": "(Ljava/lang/String;Ljava/lang/String;)Ljavax/wireless/messaging/Message;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "numberOfSegments",
+          "desc": "(Ljavax/wireless/messaging/Message;)I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "receive",
+          "desc": "()Ljavax/wireless/messaging/Message;",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException",
+            "java/io/InterruptedIOException"
+          ]
+        },
+        {
+          "name": "send",
+          "desc": "(Ljavax/wireless/messaging/Message;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException",
+            "java/io/InterruptedIOException"
+          ]
+        },
+        {
+          "name": "setMessageListener",
+          "desc": "(Ljavax/wireless/messaging/MessageListener;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/wireless/messaging/MessageListener",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "notifyIncomingMessage",
+          "desc": "(Ljavax/wireless/messaging/MessageConnection;)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/wireless/messaging/TextMessage",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/wireless/messaging/Message"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getPayloadText",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setPayloadText",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    }
+  ]
+}

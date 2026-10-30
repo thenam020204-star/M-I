@@ -1,0 +1,1230 @@
+{
+  "format": 1,
+  "name": "s40dp2-jsr135",
+  "source": "Nokia Series 40 Developer Platform 2.0 SDK 1.1 (2004-12-20), classes.zip; signatures only, SDK not redistributed",
+  "classes": [
+    {
+      "name": "javax/microedition/media/Control",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [],
+      "methods": []
+    },
+    {
+      "name": "javax/microedition/media/Controllable",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getControl",
+          "desc": "(Ljava/lang/String;)Ljavax/microedition/media/Control;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getControls",
+          "desc": "()[Ljavax/microedition/media/Control;",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/Manager",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [
+        {
+          "name": "MIDI_DEVICE_LOCATOR",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "device://midi",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "TONE_DEVICE_LOCATOR",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "device://tone",
+          "constantType": "Ljava/lang/String;"
+        }
+      ],
+      "methods": [
+        {
+          "name": "createPlayer",
+          "desc": "(Ljava/io/InputStream;Ljava/lang/String;)Ljavax/microedition/media/Player;",
+          "access": 9,
+          "exceptions": [
+            "java/io/IOException",
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "createPlayer",
+          "desc": "(Ljava/lang/String;)Ljavax/microedition/media/Player;",
+          "access": 9,
+          "exceptions": [
+            "java/io/IOException",
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "createPlayer",
+          "desc": "(Ljavax/microedition/media/protocol/DataSource;)Ljavax/microedition/media/Player;",
+          "access": 9,
+          "exceptions": [
+            "java/io/IOException",
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getSupportedContentTypes",
+          "desc": "(Ljava/lang/String;)[Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedProtocols",
+          "desc": "(Ljava/lang/String;)[Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getSystemTimeBase",
+          "desc": "()Ljavax/microedition/media/TimeBase;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "playTone",
+          "desc": "(III)V",
+          "access": 9,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/MediaException",
+      "superName": "java/lang/Exception",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "()V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/Player",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Controllable"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "CLOSED",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "PREFETCHED",
+          "desc": "I",
+          "access": 25,
+          "constant": "300",
+          "constantType": "I"
+        },
+        {
+          "name": "REALIZED",
+          "desc": "I",
+          "access": 25,
+          "constant": "200",
+          "constantType": "I"
+        },
+        {
+          "name": "STARTED",
+          "desc": "I",
+          "access": 25,
+          "constant": "400",
+          "constantType": "I"
+        },
+        {
+          "name": "TIME_UNKNOWN",
+          "desc": "J",
+          "access": 25,
+          "constant": "-1",
+          "constantType": "J"
+        },
+        {
+          "name": "UNREALIZED",
+          "desc": "I",
+          "access": 25,
+          "constant": "100",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "addPlayerListener",
+          "desc": "(Ljavax/microedition/media/PlayerListener;)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "close",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "deallocate",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getContentType",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getDuration",
+          "desc": "()J",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMediaTime",
+          "desc": "()J",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getState",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getTimeBase",
+          "desc": "()Ljavax/microedition/media/TimeBase;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "prefetch",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "realize",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "removePlayerListener",
+          "desc": "(Ljavax/microedition/media/PlayerListener;)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setLoopCount",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setMediaTime",
+          "desc": "(J)J",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setTimeBase",
+          "desc": "(Ljavax/microedition/media/TimeBase;)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "start",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "stop",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/PlayerListener",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "BUFFERING_STARTED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "bufferingStarted",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "BUFFERING_STOPPED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "bufferingStopped",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "CLOSED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "closed",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "DEVICE_AVAILABLE",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "deviceAvailable",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "DEVICE_UNAVAILABLE",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "deviceUnavailable",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "DURATION_UPDATED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "durationUpdated",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "END_OF_MEDIA",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "endOfMedia",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "ERROR",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "error",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "RECORD_ERROR",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "recordError",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "RECORD_STARTED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "recordStarted",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "RECORD_STOPPED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "recordStopped",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "SIZE_CHANGED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "sizeChanged",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "STARTED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "started",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "STOPPED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "stopped",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "STOPPED_AT_TIME",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "stoppedAtTime",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "VOLUME_CHANGED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "volumeChanged",
+          "constantType": "Ljava/lang/String;"
+        }
+      ],
+      "methods": [
+        {
+          "name": "playerUpdate",
+          "desc": "(Ljavax/microedition/media/Player;Ljava/lang/String;Ljava/lang/Object;)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/TimeBase",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getTime",
+          "desc": "()J",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/control/FramePositioningControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "mapFrameToTime",
+          "desc": "(I)J",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "mapTimeToFrame",
+          "desc": "(J)I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "seek",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "skip",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/control/GUIControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "USE_GUI_PRIMITIVE",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "initDisplayMode",
+          "desc": "(ILjava/lang/Object;)Ljava/lang/Object;",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/control/MIDIControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "CONTROL_CHANGE",
+          "desc": "I",
+          "access": 25,
+          "constant": "176",
+          "constantType": "I"
+        },
+        {
+          "name": "NOTE_ON",
+          "desc": "I",
+          "access": 25,
+          "constant": "144",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getBankList",
+          "desc": "(Z)[I",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getChannelVolume",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getKeyName",
+          "desc": "(III)Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getProgram",
+          "desc": "(I)[I",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getProgramList",
+          "desc": "(I)[I",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getProgramName",
+          "desc": "(II)Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "isBankQuerySupported",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "longMidiEvent",
+          "desc": "([BII)I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setChannelVolume",
+          "desc": "(II)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setProgram",
+          "desc": "(III)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "shortMidiEvent",
+          "desc": "(III)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/control/MetaDataControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "AUTHOR_KEY",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "author",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "COPYRIGHT_KEY",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "copyright",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "DATE_KEY",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "date",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "TITLE_KEY",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "title",
+          "constantType": "Ljava/lang/String;"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getKeyValue",
+          "desc": "(Ljava/lang/String;)Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getKeys",
+          "desc": "()[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/control/PitchControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getMaxPitch",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMinPitch",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getPitch",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setPitch",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/control/RateControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getMaxRate",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMinRate",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getRate",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setRate",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/control/RecordControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "commit",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "getContentType",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "reset",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "setRecordLocation",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException",
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setRecordSizeLimit",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setRecordStream",
+          "desc": "(Ljava/io/OutputStream;)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "startRecord",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "stopRecord",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/control/StopTimeControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "RESET",
+          "desc": "J",
+          "access": 25,
+          "constant": "9223372036854775807",
+          "constantType": "J"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getStopTime",
+          "desc": "()J",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setStopTime",
+          "desc": "(J)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/control/TempoControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/control/RateControl"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getTempo",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setTempo",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/control/ToneControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "BLOCK_END",
+          "desc": "B",
+          "access": 25,
+          "constant": "-6",
+          "constantType": "B"
+        },
+        {
+          "name": "BLOCK_START",
+          "desc": "B",
+          "access": 25,
+          "constant": "-5",
+          "constantType": "B"
+        },
+        {
+          "name": "C4",
+          "desc": "B",
+          "access": 25,
+          "constant": "60",
+          "constantType": "B"
+        },
+        {
+          "name": "PLAY_BLOCK",
+          "desc": "B",
+          "access": 25,
+          "constant": "-7",
+          "constantType": "B"
+        },
+        {
+          "name": "REPEAT",
+          "desc": "B",
+          "access": 25,
+          "constant": "-9",
+          "constantType": "B"
+        },
+        {
+          "name": "RESOLUTION",
+          "desc": "B",
+          "access": 25,
+          "constant": "-4",
+          "constantType": "B"
+        },
+        {
+          "name": "SET_VOLUME",
+          "desc": "B",
+          "access": 25,
+          "constant": "-8",
+          "constantType": "B"
+        },
+        {
+          "name": "SILENCE",
+          "desc": "B",
+          "access": 25,
+          "constant": "-1",
+          "constantType": "B"
+        },
+        {
+          "name": "TEMPO",
+          "desc": "B",
+          "access": 25,
+          "constant": "-3",
+          "constantType": "B"
+        },
+        {
+          "name": "VERSION",
+          "desc": "B",
+          "access": 25,
+          "constant": "-2",
+          "constantType": "B"
+        }
+      ],
+      "methods": [
+        {
+          "name": "setSequence",
+          "desc": "([B)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/control/VideoControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/control/GUIControl"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "USE_DIRECT_VIDEO",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getDisplayHeight",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getDisplayWidth",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getDisplayX",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getDisplayY",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSnapshot",
+          "desc": "(Ljava/lang/String;)[B",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getSourceHeight",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSourceWidth",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "initDisplayMode",
+          "desc": "(ILjava/lang/Object;)Ljava/lang/Object;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setDisplayFullScreen",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setDisplayLocation",
+          "desc": "(II)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setDisplaySize",
+          "desc": "(II)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setVisible",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/control/VolumeControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getLevel",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isMuted",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setLevel",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setMute",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/protocol/ContentDescriptor",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getContentType",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/protocol/DataSource",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Controllable"
+      ],
+      "access": 1025,
+      "fields": [],
+      "methods": [
+        {
+          "name": "<init>",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "connect",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "disconnect",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getContentType",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getLocator",
+          "desc": "()Ljava/lang/String;",
+          "access": 1,
+          "exceptions": []
+        },
+        {
+          "name": "getStreams",
+          "desc": "()[Ljavax/microedition/media/protocol/SourceStream;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "start",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "stop",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/media/protocol/SourceStream",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Controllable"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "NOT_SEEKABLE",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "RANDOM_ACCESSIBLE",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "SEEKABLE_TO_START",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getContentDescriptor",
+          "desc": "()Ljavax/microedition/media/protocol/ContentDescriptor;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getContentLength",
+          "desc": "()J",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSeekType",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getTransferSize",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "read",
+          "desc": "([BII)I",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "seek",
+          "desc": "(J)J",
+          "access": 1025,
+          "exceptions": [
+            "java/io/IOException"
+          ]
+        },
+        {
+          "name": "tell",
+          "desc": "()J",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    }
+  ]
+}
