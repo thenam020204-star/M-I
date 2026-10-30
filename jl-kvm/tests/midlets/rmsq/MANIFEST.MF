@@ -1,0 +1,6 @@
+MIDlet-Name: RmsQ
+MIDlet-Version: 1.0.0
+MIDlet-Vendor: jl-q
+MIDlet-1: RmsQ,,rms.RmsQ
+MicroEdition-Configuration: CLDC-1.1
+MicroEdition-Profile: MIDP-2.0

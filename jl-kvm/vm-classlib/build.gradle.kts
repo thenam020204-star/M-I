@@ -36,9 +36,7 @@ tasks.named("check") { dependsOn(buildRom) }
 // on both sides until their task ticks; the list must shrink to nothing by M4 acceptance).
 val midpRomJar = layout.buildDirectory.file("rom/rom-midp.jar")
 val pending = listOf(
-    "javax/microedition/rms/",                                                                                                                         // T26
     "javax/microedition/media/",                                                                                                                       // T27
-    "javax/microedition/pki/", "javax/microedition/io/"                                                                                                // T26b (MIDP GCF part, pki)
 )
 val buildMidpRom = tasks.register<JavaExec>("buildMidpRom") {
     group = "build"

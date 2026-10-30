@@ -26,6 +26,7 @@ public final class DesktopHost implements HostPlatform {
     private final PlatformServices services;
     private final SurfaceFactory surfaces;
     private ScreenHost ui = ScreenHost.NONE;
+    private jlkvm.host.rms.RecordStorage records;
     /** Everything the VM logged ("[tag] message"), for tests and the CLI report. */
     public final List<String> logs = Collections.synchronizedList(new ArrayList<String>());
     public PrintStream logStream;
@@ -36,6 +37,9 @@ public final class DesktopHost implements HostPlatform {
                        SurfaceFactory surfaces, PrintStream guestOut) {
         this.rom = rom; this.clock = clock; this.profile = profile; this.appProps = appProps; this.services = services; this.surfaces = surfaces; this.out = guestOut;
     }
+
+    /** Where the RMS keeps the record stores (T26); default: memory only. Set before the VM runs. */
+    public void setRecordStorage(jlkvm.host.rms.RecordStorage r) { this.records = r; }
 
     /** The high-level UI (Form / List / TextBox / Alert); set before the VM runs. */
     public void setScreenHost(ScreenHost ui) { this.ui = ui; }
@@ -64,6 +68,6 @@ public final class DesktopHost implements HostPlatform {
                 out.write(b, 0, b.length);
                 out.flush();
             } } });
-        new MidpNatives(profile, appProps, surfaces, services, ui).register(r);
+        new MidpNatives(profile, appProps, surfaces, services, ui, records != null ? records : new jlkvm.host.rms.MemoryRecordStorage(profile)).register(r);
     }
 }

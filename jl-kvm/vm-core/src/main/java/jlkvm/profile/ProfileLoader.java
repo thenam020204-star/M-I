@@ -7,7 +7,7 @@ import jlkvm.DeviceProfile;
  * Loads a device profile from JSON text (PLAN T20 minimal schema; T33 extends it and adds a validator). Keys:
  * name, heapBytes, timesliceBytecodes, priorityScheduling, threadStackWords, cldc11, maxTraceFrames,
  * properties{key:string} (System.getProperty), network{scheme|"default": "allow"|"deny"|"offline"},
- * timeZone{id, offsetMillis}, apis[string] (ROM layers), imagesCountInHeap, keyRepeat{delayMs,intervalMs},
+ * timeZone{id, offsetMillis}, apis[string] (ROM layers), imagesCountInHeap, rms{quotaBytes,storeOverheadBytes,recordOverheadBytes}, keyRepeat{delayMs,intervalMs},
  * display{width,height,canvasWidth,canvasHeight,color,numColors,numAlphaLevels,pointerEvents,pointerMotionEvents,repeatEvents,doubleBuffered},
  * keys{name:int} (names of DeviceProfile.keys). Keys starting with "_" (comments, source tags) are ignored. Unknown keys are an error.
  */
@@ -71,6 +71,16 @@ public final class ProfileLoader {
                     else if (n.equals("repeatEvents")) p.repeatEvents = bool(w, x);
                     else if (n.equals("doubleBuffered")) p.doubleBuffered = bool(w, x);
                     else throw new IllegalArgumentException("profile: unknown key " + w);
+                }
+            } else if (k.equals("rms")) {
+                for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
+                    if (te.getKey().startsWith("_")) continue;
+                    long n = num("rms." + te.getKey(), te.getValue());
+                    if (n < 0 || n > Integer.MAX_VALUE) throw new IllegalArgumentException("profile: rms." + te.getKey() + " out of range");
+                    if (te.getKey().equals("quotaBytes")) p.rmsQuotaBytes = (int) n;
+                    else if (te.getKey().equals("storeOverheadBytes")) p.rmsStoreOverheadBytes = (int) n;
+                    else if (te.getKey().equals("recordOverheadBytes")) p.rmsRecordOverheadBytes = (int) n;
+                    else throw new IllegalArgumentException("profile: unknown key rms." + te.getKey());
                 }
             } else if (k.equals("timeZone")) {
                 for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {

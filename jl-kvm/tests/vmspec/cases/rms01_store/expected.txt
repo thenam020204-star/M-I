@@ -1,0 +1,69 @@
+> empty list: null
+> open missing, create=false: RecordStoreNotFoundException
+> name empty: IllegalArgumentException
+> name 33 chars: IllegalArgumentException
+> name 32 chars ok: ok
+> name null: NullPointerException
+> bad authmode: IllegalArgumentException
+> delete missing: RecordStoreNotFoundException
+> list after failures: null
+> name=Alpha records=0 nextId=1
+> list: Alpha
+> ids 1,2,3 records=3 nextId=4
+> content: one,twotwo,three sizes 3,6,5
+> version increased: true size grew by >= 14: true available shrank by >= 14: true lastModified >=: true
+> getRecord(buf): n=6 buf=twotwo untouched=true
+> buffer too small: ArrayIndexOutOfBoundsException
+> buffer offset too big: ArrayIndexOutOfBoundsException
+> add offset/length: ArrayIndexOutOfBoundsException ArrayIndexOutOfBoundsException ArrayIndexOutOfBoundsException
+> records still 3
+> null data, 0 bytes: ok 4
+> empty record: size=0 data=null buf n=0
+> null data, 3 bytes: NullPointerException
+> records now 4 nextId=5
+> deleted 2: getRecord=InvalidRecordIDException size=InvalidRecordIDException delete again=InvalidRecordIDException set=InvalidRecordIDException
+> new id after delete: 5 (not 2) records=4
+> bad ids: InvalidRecordIDException InvalidRecordIDException InvalidRecordIDException
+> setRecord grow: longer-one size grew by 7: true nextId unchanged=6
+> setRecord shrink: 1 size=59 == before-2: true
+> setRecord null: size=0 data=null
+> listener log: A6 C6 D6 (ids 6) same thread=true same store=true
+> listener thread = the changing thread: true A7 .
+> removed listener silent: true
+> all: n=5
+> all contents (sorted here): apple banana fig kiwi pear
+> filter+comparator: n=4 order=apple banana kiwi pear
+> at end: hasNext=false hasPrevious=true
+> next at end: InvalidRecordIDException / InvalidRecordIDException
+> previous: pear kiwi then next: kiwi
+> reset: previous at start: hasPrevious=false InvalidRecordIDException first=apple then previous=apple
+> comparator only: apple banana fig kiwi pear
+> ids ascending by comparator: 2 4
+> filter only: n=4 as set=apple banana kiwi pear
+> nothing matches: n=0 hasNext=false hasPrevious=false
+> isKeptUpdated: true false
+> after add 'zebra': kept n=6 not kept n=5
+> after rebuild: not kept n=6
+> after delete: kept n=5 not kept n=6 stale walk=apple banana fig kiwi pear InvalidRecordIDException
+> keepUpdated(true) rebuilds: 5
+> keepUpdated(false): kept n=5 nk n=6
+> after destroy: IllegalStateException
+> filter throws: IllegalStateException
+> second open is the same object: true name=Enum
+> after 1st close still open: records=6
+> delete while open: RecordStoreException
+> closed: getNumRecords=RecordStoreNotOpenException getName=RecordStoreNotOpenException add=RecordStoreNotOpenException getRecord=RecordStoreNotOpenException enumerate=RecordStoreNotOpenException
+> close again: RecordStoreNotOpenException
+> old enumeration after close: nextRecord=RecordStoreNotOpenException
+> deleted; list=null delete again=RecordStoreNotFoundException
+> reopen: records=1 nextId=3 data=a
+> names are case sensitive: list=Keep,keep other records=0
+> create=true on existing keeps data: 1
+> setMode bad: IllegalArgumentException
+> filling ends with RecordStoreFullException: true available < 1100: true
+> store still consistent: records=260 == count true last readable=true
+> small record may still fit or not, no other exception: true
+> space freed by delete can be reused: true
+> setRecord beyond quota: RecordStoreFullException record 2 intact: true
+> quota freed by delete: true
+> end: null

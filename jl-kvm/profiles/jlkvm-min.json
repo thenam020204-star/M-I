@@ -30,6 +30,12 @@
     "cldc-1.1",
     "midp-2.0"
   ],
+  "rms": {
+    "_source": "UNVERIFIED (T26): per-suite quota and the bytes a store / record occupy besides the data are placeholders; T33 gives them a source tag",
+    "quotaBytes": 262144,
+    "storeOverheadBytes": 16,
+    "recordOverheadBytes": 8
+  },
   "imagesCountInHeap": false,
   "_imagesCountInHeap": "UNVERIFIED: whether the pixel memory of an Image is charged to the Java heap is a device property (PLAN \"R\u00e0ng bu\u1ed9c\"); false = host memory only",
   "display": {

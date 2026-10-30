@@ -25,6 +25,8 @@ public final class MidpNatives {
     private final SurfaceFactory factory;
     private final PlatformServices svc;
     private final ScreenHost ui;
+    private final jlkvm.host.rms.RecordStorage records;
+    private jlkvm.host.net.HttpTransport http = new jlkvm.host.net.JavaHttpTransport();
     /** Set by EventLoop.wake0: a guest thread posted a job while the event thread may be blocked. */
     private boolean wake;
 
@@ -33,12 +35,22 @@ public final class MidpNatives {
     }
 
     public MidpNatives(DeviceProfile profile, Map<String, String> appProperties, SurfaceFactory factory, PlatformServices svc, ScreenHost ui) {
+        this(profile, appProperties, factory, svc, ui, new jlkvm.host.rms.MemoryRecordStorage(profile));
+    }
+
+    /** {@code records}: where the RMS (T26) keeps the record stores (host-desktop: a directory; default: memory only). */
+    public MidpNatives(DeviceProfile profile, Map<String, String> appProperties, SurfaceFactory factory, PlatformServices svc, ScreenHost ui,
+                       jlkvm.host.rms.RecordStorage records) {
+        this.records = records;
         this.ui = ui;
         this.profile = profile;
         this.appProps = appProperties;
         this.factory = factory;
         this.svc = svc;
     }
+
+    /** The HTTP of the host for the "http" connections (T26b); default {@code JavaHttpTransport} (used only when the profile allows "http"). */
+    public MidpNatives httpTransport(jlkvm.host.net.HttpTransport t) { this.http = t; return this; }
 
     private static final String LCDUI = "javax/microedition/lcdui/";
 
@@ -56,6 +68,8 @@ public final class MidpNatives {
 
     public void register(final NativeRegistry r) {
         final GuestServices gs = r.services();
+        new RmsNatives(records, profile, appProps).register(r);
+        new NetNatives(profile, http).register(r);
         // ------------------------------------------------------------ AMS
         r.register("jlkvm/internal/Ams.property0(Ljava/lang/String;)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
             String k = gs.string(c.argRef(0)), v = null;

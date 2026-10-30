@@ -21,7 +21,7 @@ import jlkvm.profile.ProfileLoader;
  * Runs a game JAR on the desktop VM without a window (PLAN T21-T23): AMS (JAD + manifest, MIDlet selection), software raster,
  * scripted input (tests/games/README.md format) on a virtual clock (D14) or on the wall clock. This is the vm-thread: it calls
  * {@code runSlice} in a loop and is the only thread that enters the guest; input is handed over with {@code Vm.postEvent}.
- * <pre>HeadlessRunner [--jad F] [--profile F.json] [--rom-dir DIR] [--script F.inp] [--midlet N] [--realtime] [--max-ms N] [--debug] GAME.jar</pre>
+ * <pre>HeadlessRunner [--jad F] [--profile F.json] [--rom-dir DIR] [--script F.inp] [--rms-dir DIR] [--import-jlmod-rms DIR] [--midlet N] [--realtime] [--max-ms N] [--debug] GAME.jar</pre>
  */
 public final class HeadlessRunner {
     private HeadlessRunner() {}
@@ -37,6 +37,11 @@ public final class HeadlessRunner {
         /** VM diagnostics ("[tag] msg" lines); null = only collected. */
         public PrintStream log;
         public String scriptText;
+        /** RMS (T26): the record stores of the run; null = a directory {@link #rmsDir} if set, else memory only. */
+        public jlkvm.host.rms.RecordStorage records;
+        public File rmsDir;
+        /** A JL-Mod data directory whose record stores are imported before the run. */
+        public File importJlMod;
     }
 
     public static final class Result {
@@ -50,6 +55,8 @@ public final class HeadlessRunner {
         public DesktopHost host;
         public long virtualMs;
         public MidletSuite suite;
+        public jlkvm.host.rms.RecordStorage records;
+        public jlkvm.host.rms.JlModRmsImport.Result rmsImport;
     }
 
     public static File findRomDir() {
@@ -86,6 +93,14 @@ public final class HeadlessRunner {
         RecordingServices svc = new RecordingServices();
         res.services = svc;
         DesktopHost host = new DesktopHost(new RomLayers(romDir, profile), clock, profile, cfg.appProperties, svc, new SoftRaster(), out);
+        jlkvm.host.rms.RecordStorage rs = o.records;
+        if (rs == null) rs = o.rmsDir != null ? new jlkvm.host.rms.FileRecordStorage(o.rmsDir, profile) : new jlkvm.host.rms.MemoryRecordStorage(profile);
+        if (o.importJlMod != null) {
+            jlkvm.host.rms.JlModRmsImport.Result ir = jlkvm.host.rms.JlModRmsImport.importDir(o.importJlMod, rs, jlkvm.host.RmsNatives.suiteKey(suite.attributes));
+            res.rmsImport = ir;
+        }
+        host.setRecordStorage(rs);
+        res.records = rs;
         host.logStream = o.log;
         HeadlessUi hui = new HeadlessUi();
         host.setScreenHost(hui);
@@ -170,12 +185,14 @@ public final class HeadlessRunner {
             else if (a[i].equals("--rom-dir")) o.romDir = new File(a[++i]);
             else if (a[i].equals("--script")) o.script = new File(a[++i]);
             else if (a[i].equals("--midlet")) o.midlet = Integer.parseInt(a[++i]);
+            else if (a[i].equals("--rms-dir")) o.rmsDir = new File(a[++i]);
+            else if (a[i].equals("--import-jlmod-rms")) o.importJlMod = new File(a[++i]);
             else if (a[i].equals("--realtime")) o.realtime = true;
             else if (a[i].equals("--max-ms")) o.maxVirtualMs = Long.parseLong(a[++i]);
             else if (a[i].equals("--debug")) o.debug = true;
             else o.jar = new File(a[i]);
         }
-        if (o.jar == null) { System.err.println("usage: HeadlessRunner [--jad F] [--profile F.json] [--rom-dir DIR] [--script F.inp] [--midlet N] [--realtime] [--max-ms N] [--debug] GAME.jar"); System.exit(2); }
+        if (o.jar == null) { System.err.println("usage: HeadlessRunner [--jad F] [--profile F.json] [--rom-dir DIR] [--script F.inp] [--rms-dir DIR] [--import-jlmod-rms DIR] [--midlet N] [--realtime] [--max-ms N] [--debug] GAME.jar"); System.exit(2); }
         o.out = System.out;
         o.log = System.err;
         Result r = run(o);

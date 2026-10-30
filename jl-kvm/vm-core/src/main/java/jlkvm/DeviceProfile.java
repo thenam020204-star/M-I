@@ -40,6 +40,12 @@ public final class DeviceProfile {
     public final java.util.List<String> apis = new java.util.ArrayList<String>(java.util.Arrays.asList("cldc-1.1", "midp-2.0"));
     /** Whether the pixel memory of an Image is charged to the guest heap (PLAN "Ràng buộc"; a device property). */
     public boolean imagesCountInHeap = false;
+    /** RMS (T26): bytes a MIDlet suite may keep in all its record stores (getSizeAvailable = quota - used); UNVERIFIED defaults. */
+    public int rmsQuotaBytes = 262144;
+    /** RMS: bytes a record store occupies besides its records (counted in getSize and against the quota). */
+    public int rmsStoreOverheadBytes = 16;
+    /** RMS: bytes each record adds to the store size besides its data. */
+    public int rmsRecordOverheadBytes = 8;
     /** Full-screen size and the size of a normal (non full-screen) Canvas, in pixels. */
     public int screenWidth = 240, screenHeight = 320, canvasWidth = 240, canvasHeight = 294;
     public boolean isColor = true, pointerEvents = false, pointerMotionEvents = false, repeatEvents = true, doubleBuffered = true;

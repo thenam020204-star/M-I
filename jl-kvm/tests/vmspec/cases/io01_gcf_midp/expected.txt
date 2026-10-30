@@ -1,0 +1,18 @@
+> http codes: 200 404 302 500 307 505 methods GET,HEAD,POST
+> socket options: 01234
+> hierarchy: javax.microedition.io.HttpConnection is ContentConnection: true, Https is Http: true, Secure is Socket: true, ServerSocket is Notifier: true, UDP is Datagram: true, Comm is Stream: true
+> CertificateException: 3 null null | 7 bad site io=true reasons 1111413
+> push: list=0/0 midlet=null filter=null unregister=false
+> register unknown class: ClassNotFoundException
+> register: ConnectionNotFoundException
+> register null: NullPointerException
+> alarm: ConnectionNotFoundException
+> alarm unknown class: ClassNotFoundException
+> http://127.0.0.1:1/: IOException
+> https://127.0.0.1:1/: IOException
+> socket://127.0.0.1:1: IOException
+> serversocket://:1: IOException
+> datagram://127.0.0.1:1: IOException
+> ssl://127.0.0.1:1: IOException
+> comm:COM0: ConnectionNotFoundException
+> nohandler:x: IOException

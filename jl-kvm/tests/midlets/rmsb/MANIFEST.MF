@@ -1,0 +1,6 @@
+MIDlet-Name: RmsB
+MIDlet-Version: 1.0.0
+MIDlet-Vendor: jl-b
+MIDlet-1: RmsB,,rms.RmsB
+MicroEdition-Configuration: CLDC-1.1
+MicroEdition-Profile: MIDP-2.0
