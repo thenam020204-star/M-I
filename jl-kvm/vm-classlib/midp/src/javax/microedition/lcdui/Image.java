@@ -37,6 +37,15 @@ public class Image {
         return im;
     }
 
+    /** ROM-private (Graphics' LcduiAccess): a mutable Image whose pixels carry alpha, all {@code argb}. */
+    static Image newArgb(int width, int height, int argb) {
+        if (width <= 0 || height <= 0) throw new IllegalArgumentException("size");
+        Image im = new Image(width, height, true);
+        im.peer = im.createArgb0(width, height, argb);
+        if (im.peer == 0) throw new OutOfMemoryError();
+        return im;
+    }
+
     public static Image createImage(Image source) {
         if (source == null) throw new NullPointerException();
         if (!source.mutable) return source;
@@ -144,6 +153,8 @@ public class Image {
 
     private native int create0(int w, int h);
 
+    private native int createArgb0(int w, int h, int argb);
+
     private static native int decode0(byte[] data, int off, int len);
 
     private native int fromRgb0(int[] rgb, int w, int h, boolean alpha);
@@ -154,5 +165,5 @@ public class Image {
 
     private static native void own0(int peer, Image owner);
 
-    private static native void getRGB0(int peer, int[] rgb, int off, int scan, int x, int y, int w, int h);
+    static native void getRGB0(int peer, int[] rgb, int off, int scan, int x, int y, int w, int h);
 }

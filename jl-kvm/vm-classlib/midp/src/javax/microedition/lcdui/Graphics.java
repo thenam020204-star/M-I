@@ -4,6 +4,9 @@
  */
 package javax.microedition.lcdui;
 
+import jlkvm.internal.Access;
+import jlkvm.internal.LcduiAccess;
+
 /**
  * The guest keeps the cheap state (colour, translation, clip, stroke, font); every drawing native gets the state it needs as
  * arguments (target raster handle, colour, absolute clip box, absolute coordinates), so the host keeps no per-Graphics state.
@@ -12,7 +15,49 @@ public class Graphics {
     public static final int HCENTER = 1, VCENTER = 2, LEFT = 4, RIGHT = 8, TOP = 16, BOTTOM = 32, BASELINE = 64;
     public static final int SOLID = 0, DOTTED = 1;
 
+    static {
+        Access.lcdui = new LcduiAccess() {
+            public int argb(Object g) {
+                Graphics gr = (Graphics) g;
+                return ((255 - (gr.rgba >>> 24)) << 24) | gr.color;
+            }
+
+            public void setArgb(Object g, int argb) {
+                ((Graphics) g).setArgb(argb);
+            }
+
+            public Object ext(Object g) {
+                return ((Graphics) g).ext;
+            }
+
+            public void setExt(Object g, Object e) {
+                ((Graphics) g).ext = e;
+            }
+
+            public int targetWidth(Object g) {
+                return ((Graphics) g).tw;
+            }
+
+            public int targetHeight(Object g) {
+                return ((Graphics) g).th;
+            }
+
+            public void getRgb(Object g, int[] out, int off, int scan, int x, int y, int w, int h) {
+                Graphics gr = (Graphics) g;
+                Image.getRGB0(gr.target, out, off, scan, x + gr.tx, y + gr.ty, w, h);
+            }
+
+            public Object newArgbImage(int w, int h, int argb) {
+                return Image.newArgb(w, h, argb);
+            }
+        };
+    }
+
     private final Image image;
+    /** Free slot of the Nokia UI layer (DirectGraphics wrapper). */
+    Object ext;
+    /** Colour handed to the natives: 0x00RRGGBB with the HIGH BYTE = 255 - alpha (0 = opaque; Surface contract). */
+    private int rgba;
     private final int target;
     private final int tw, th;
     private int color;
@@ -37,6 +82,7 @@ public class Graphics {
     /** Back to the state of a new Graphics (Canvas reuses its screen Graphics for every paint: no allocation per frame). */
     void reset() {
         color = 0;
+        rgba = 0;
         tx = ty = 0;
         cx0 = cy0 = 0;
         cx1 = tw;
@@ -81,15 +127,24 @@ public class Graphics {
     public void setColor(int red, int green, int blue) {
         if (red < 0 || red > 255 || green < 0 || green > 255 || blue < 0 || blue > 255) throw new IllegalArgumentException("component");
         color = (red << 16) | (green << 8) | blue;
+        rgba = color;
     }
 
     public void setColor(int RGB) {
         color = RGB & 0xFFFFFF;
+        rgba = color;
+    }
+
+    /** Nokia setARGBColor: the RGB part is the colour, the alpha applies to every primitive until the next setColor (UNVERIFIED, docs/nokia.md). */
+    void setArgb(int argb) {
+        color = argb & 0xFFFFFF;
+        rgba = color | ((255 - (argb >>> 24)) << 24);
     }
 
     public void setGrayScale(int value) {
         if (value < 0 || value > 255) throw new IllegalArgumentException("value");
         color = (value << 16) | (value << 8) | value;
+        rgba = color;
     }
 
     /** UNVERIFIED: full-colour displays return the colour unchanged (profile data arrives with T33). */
@@ -160,42 +215,42 @@ public class Graphics {
 
     public void drawLine(int x1, int y1, int x2, int y2) {
         if (empty()) return;
-        drawLine0(target, color, cx0, cy0, cx1, cy1, x1 + tx, y1 + ty, x2 + tx, y2 + ty, stroke);
+        drawLine0(target, rgba, cx0, cy0, cx1, cy1, x1 + tx, y1 + ty, x2 + tx, y2 + ty, stroke);
     }
 
     public void fillRect(int x, int y, int width, int height) {
         if (empty() || width <= 0 || height <= 0) return;
-        fillRect0(target, color, cx0, cy0, cx1, cy1, x + tx, y + ty, width, height);
+        fillRect0(target, rgba, cx0, cy0, cx1, cy1, x + tx, y + ty, width, height);
     }
 
     public void drawRect(int x, int y, int width, int height) {
         if (empty() || width < 0 || height < 0) return;
-        drawRect0(target, color, cx0, cy0, cx1, cy1, x + tx, y + ty, width, height, stroke);
+        drawRect0(target, rgba, cx0, cy0, cx1, cy1, x + tx, y + ty, width, height, stroke);
     }
 
     public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
         if (empty() || width < 0 || height < 0) return;
-        drawRoundRect0(target, color, cx0, cy0, cx1, cy1, x + tx, y + ty, width, height, arcWidth, arcHeight, stroke);
+        drawRoundRect0(target, rgba, cx0, cy0, cx1, cy1, x + tx, y + ty, width, height, arcWidth, arcHeight, stroke);
     }
 
     public void fillRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight) {
         if (empty() || width <= 0 || height <= 0) return;
-        fillRoundRect0(target, color, cx0, cy0, cx1, cy1, x + tx, y + ty, width, height, arcWidth, arcHeight);
+        fillRoundRect0(target, rgba, cx0, cy0, cx1, cy1, x + tx, y + ty, width, height, arcWidth, arcHeight);
     }
 
     public void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
         if (empty() || width < 0 || height < 0) return;
-        drawArc0(target, color, cx0, cy0, cx1, cy1, x + tx, y + ty, width, height, startAngle, arcAngle, stroke);
+        drawArc0(target, rgba, cx0, cy0, cx1, cy1, x + tx, y + ty, width, height, startAngle, arcAngle, stroke);
     }
 
     public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle) {
         if (empty() || width <= 0 || height <= 0) return;
-        fillArc0(target, color, cx0, cy0, cx1, cy1, x + tx, y + ty, width, height, startAngle, arcAngle);
+        fillArc0(target, rgba, cx0, cy0, cx1, cy1, x + tx, y + ty, width, height, startAngle, arcAngle);
     }
 
     public void fillTriangle(int x1, int y1, int x2, int y2, int x3, int y3) {
         if (empty()) return;
-        fillTriangle0(target, color, cx0, cy0, cx1, cy1, x1 + tx, y1 + ty, x2 + tx, y2 + ty, x3 + tx, y3 + ty);
+        fillTriangle0(target, rgba, cx0, cy0, cx1, cy1, x1 + tx, y1 + ty, x2 + tx, y2 + ty, x3 + tx, y3 + ty);
     }
 
     public void drawString(String str, int x, int y, int anchor) {
@@ -232,7 +287,7 @@ public class Graphics {
         else if (h == RIGHT) x -= w;
         if (v == BASELINE) y -= font.getBaselinePosition();
         else if (v == BOTTOM) y -= font.getHeight();
-        drawChars0(target, color, cx0, cy0, cx1, cy1, font.key(), c, off, len, x + tx, y + ty);
+        drawChars0(target, rgba, cx0, cy0, cx1, cy1, font.key(), c, off, len, x + tx, y + ty);
     }
 
     /** Same as text() for a String: the host reads the characters itself, so nothing is allocated per call. */
@@ -246,7 +301,7 @@ public class Graphics {
         else if (h == RIGHT) x -= w;
         if (v == BASELINE) y -= font.getBaselinePosition();
         else if (v == BOTTOM) y -= font.getHeight();
-        drawStr0(target, color, cx0, cy0, cx1, cy1, font.key(), str, off, len, x + tx, y + ty);
+        drawStr0(target, rgba, cx0, cy0, cx1, cy1, font.key(), str, off, len, x + tx, y + ty);
     }
 
     public void drawImage(Image img, int x, int y, int anchor) {

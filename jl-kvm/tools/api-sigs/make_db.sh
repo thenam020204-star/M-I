@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # make_db.sh : (re)generate tools/api-sigs/db/*.json from the stub jars in tools/env/cache/maven (PLAN T03, V1).
 # Sources: MicroEmulator 2.0.4 stubs (org.microemu:cldcapi10/cldcapi11/midpapi20 on Maven Central).
-# Nokia UI API DBs are NOT generated: stub jars from the S40 SDKs have not been supplied (V1: UNVERIFIED / empty).
+# Nokia UI API DB: tools/api-sigs/db/s40dp2-nokia-ui.json comes from the S40 DP2.0 SDK classes.zip (PLAN V14b), not generated here.
 set -euo pipefail
 D="$(cd "$(dirname "$0")" && pwd)"; ROOT="$D/../.."
 . "$ROOT/tools/env/lib.sh"; . "$ROOT/tools/env/versions.sh"

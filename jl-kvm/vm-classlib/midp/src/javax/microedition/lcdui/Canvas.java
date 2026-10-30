@@ -21,7 +21,18 @@ public abstract class Canvas extends Displayable {
             public void setTap(Object canvas, KeyTap tap) {
                 ((Canvas) canvas).tap = tap;
             }
+
+            public void initFull(Object canvas) {
+                ((Canvas) canvas).initFull();
+            }
         };
+    }
+
+    /** Nokia FullCanvas (through LcduiAccess): full screen from the constructor on, so the size the application knows is the full one. */
+    void initFull() {
+        fullScreen = true;
+        knownW = getWidth();
+        knownH = getHeight();
     }
 
     boolean fullScreen;

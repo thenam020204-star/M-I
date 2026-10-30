@@ -6,8 +6,8 @@ package jlkvm.host.ui;
  * the Android Bitmap / Canvas classes (JL-Mod backend) - NOT done yet, see docs/lcdui-natives.md.
  * <p>
  * Every drawing method gets absolute coordinates (the guest already applied translate and anchor) and the absolute clip box
- * [cx0, cx1) x [cy0, cy1); the implementation further clips to the surface. Colours are 0xRRGGBB (alpha ignored) except where
- * stated. Pixel format of {@link #getRgb} is 0xAARRGGBB, non-premultiplied; surfaces of mutable images are always opaque.
+ * [cx0, cx1) x [cy0, cy1); the implementation further clips to the surface. Colours are 0xRRGGBB; the HIGH BYTE of a colour argument is 255 - alpha (0 = opaque, so a plain 0xRRGGBB is opaque; the Nokia
+ * setARGBColor of PLAN T28): a surface that cannot blend may ignore it. Other exceptions are stated. Pixel format of {@link #getRgb} is 0xAARRGGBB, non-premultiplied; surfaces of mutable images are always opaque.
  */
 public interface Surface {
     int width();

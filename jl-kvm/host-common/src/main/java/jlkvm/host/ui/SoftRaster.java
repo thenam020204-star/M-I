@@ -29,6 +29,12 @@ public final class SoftRaster implements Surface, SurfaceFactory {
         return new SoftRaster(w, h, p, false);
     }
 
+    public Surface createArgb(int w, int h, int argb) {
+        int[] p = new int[w * h];
+        java.util.Arrays.fill(p, argb);
+        return new SoftRaster(w, h, p, true);
+    }
+
     public Surface decode(byte[] data, int off, int len) throws IOException {
         PngDecoder d = PngDecoder.decode(data, off, len);
         return fromRgb(d.argb, d.width, d.height, d.hasAlpha);
@@ -53,14 +59,20 @@ public final class SoftRaster implements Surface, SurfaceFactory {
         bx0 = Math.max(cx0, 0); by0 = Math.max(cy0, 0); bx1 = Math.min(cx1, w); by1 = Math.min(cy1, h);
     }
 
+    /** Colour argument -> 0xAARRGGBB: the high byte of a colour argument is 255 - alpha (0 = opaque, so plain 0xRRGGBB stays opaque; Nokia setARGBColor, T28). */
+    private static int argb(int rgb) { return ((255 - (rgb >>> 24)) << 24) | (rgb & 0xFFFFFF); }
+
+    /** Stores a colour: opaque colours replace, translucent ones are blended with the pixel there. */
+    private void put(int i, int c) { px[i] = (c >>> 24) == 255 ? c : blend(px[i], c); }
+
     private void plot(int x, int y, int c) {
-        if (x >= bx0 && x < bx1 && y >= by0 && y < by1) px[y * w + x] = c;
+        if (x >= bx0 && x < bx1 && y >= by0 && y < by1) put(y * w + x, c);
     }
 
     public void drawLine(int rgb, int cx0, int cy0, int cx1, int cy1, int x1, int y1, int x2, int y2, int stroke) {
         clip(cx0, cy0, cx1, cy1);
         if (bx1 <= bx0 || by1 <= by0) return;
-        line(0xFF000000 | rgb, x1, y1, x2, y2, stroke);
+        line(argb(rgb), x1, y1, x2, y2, stroke);
     }
 
     private void line(int c, int x1, int y1, int x2, int y2, int stroke) {
@@ -82,13 +94,14 @@ public final class SoftRaster implements Surface, SurfaceFactory {
         clip(cx0, cy0, cx1, cy1);
         long ex = (long) x + rw, ey = (long) y + rh;
         int x0 = Math.max(x, bx0), y0 = Math.max(y, by0), x1 = (int) Math.min(ex, bx1), y1 = (int) Math.min(ey, by1);
-        int c = 0xFF000000 | rgb;
-        for (int j = y0; j < y1; j++) java.util.Arrays.fill(px, j * w + x0, j * w + Math.max(x0, x1), c);
+        int c = argb(rgb);
+        if ((c >>> 24) == 255) for (int j = y0; j < y1; j++) java.util.Arrays.fill(px, j * w + x0, j * w + Math.max(x0, x1), c);
+        else for (int j = y0; j < y1; j++) for (int i = x0; i < x1; i++) put(j * w + i, c);
     }
 
     public void drawRect(int rgb, int cx0, int cy0, int cx1, int cy1, int x, int y, int rw, int rh, int stroke) {
         clip(cx0, cy0, cx1, cy1);
-        int c = 0xFF000000 | rgb;
+        int c = argb(rgb);
         line(c, x, y, x + rw, y, stroke);
         if (rh > 0) line(c, x, y + rh, x + rw, y + rh, stroke);
         if (rh > 1) {
@@ -103,7 +116,7 @@ public final class SoftRaster implements Surface, SurfaceFactory {
         aw = clampArc(aw, rw); ah = clampArc(ah, rh);
         if (aw == 0 || ah == 0) { drawRect(rgb, cx0, cy0, cx1, cy1, x, y, rw, rh, stroke); return; }
         clip(cx0, cy0, cx1, cy1);
-        int c = 0xFF000000 | rgb, hw = aw / 2, hh = ah / 2;
+        int c = argb(rgb), hw = aw / 2, hh = ah / 2;
         line(c, x + hw, y, x + rw - hw, y, stroke);
         line(c, x + hw, y + rh, x + rw - hw, y + rh, stroke);
         line(c, x, y + hh, x, y + rh - hh, stroke);
@@ -118,7 +131,7 @@ public final class SoftRaster implements Surface, SurfaceFactory {
         aw = clampArc(aw, rw); ah = clampArc(ah, rh);
         if (aw == 0 || ah == 0) { fillRect(rgb, cx0, cy0, cx1, cy1, x, y, rw, rh); return; }
         clip(cx0, cy0, cx1, cy1);
-        int c = 0xFF000000 | rgb;
+        int c = argb(rgb);
         double rx = aw / 2.0, ry = ah / 2.0;
         for (int j = 0; j < rh; j++) {
             double yc = j + 0.5, inset = 0;
@@ -144,13 +157,13 @@ public final class SoftRaster implements Surface, SurfaceFactory {
 
     public void drawArc(int rgb, int cx0, int cy0, int cx1, int cy1, int x, int y, int rw, int rh, int start, int arc, int stroke) {
         clip(cx0, cy0, cx1, cy1);
-        arcOutline(0xFF000000 | rgb, x, y, rw, rh, start, arc);
+        arcOutline(argb(rgb), x, y, rw, rh, start, arc);
     }
 
     public void fillArc(int rgb, int cx0, int cy0, int cx1, int cy1, int x, int y, int rw, int rh, int start, int arc) {
         clip(cx0, cy0, cx1, cy1);
         if (arc == 0) return;
-        int c = 0xFF000000 | rgb;
+        int c = argb(rgb);
         double rx = rw / 2.0, ry = rh / 2.0, cx = x + rx, cy = y + ry;
         boolean full = arc >= 360 || arc <= -360;
         double lo = arc > 0 ? start : start + arc, span = StrictMath.abs(arc);
@@ -166,14 +179,14 @@ public final class SoftRaster implements Surface, SurfaceFactory {
                     if (d < 0) d += 360.0;
                     if (d > span) continue;
                 }
-                px[j * w + i] = c;
+                put(j * w + i, c);
             }
         }
     }
 
     public void fillTriangle(int rgb, int cx0, int cy0, int cx1, int cy1, int x1, int y1, int x2, int y2, int x3, int y3) {
         clip(cx0, cy0, cx1, cy1);
-        int c = 0xFF000000 | rgb;
+        int c = argb(rgb);
         long ax = 2L * x1, ay = 2L * y1, bx = 2L * x2, by = 2L * y2, cxx = 2L * x3, cyy = 2L * y3;
         long area = (bx - ax) * (cyy - ay) - (by - ay) * (cxx - ax);
         int minx = Math.max(Math.min(x1, Math.min(x2, x3)), bx0), maxx = Math.min(Math.max(x1, Math.max(x2, x3)), bx1 - 1);
@@ -186,7 +199,7 @@ public final class SoftRaster implements Surface, SurfaceFactory {
                 long e1 = (cxx - bx) * (py - by) - (cyy - by) * (pxx - bx);
                 long e2 = (ax - cxx) * (py - cyy) - (ay - cyy) * (pxx - cxx);
                 boolean in = area >= 0 ? (e0 >= 0 && e1 >= 0 && e2 >= 0) : (e0 <= 0 && e1 <= 0 && e2 <= 0);
-                if (in) px[j * w + i] = c;
+                if (in) put(j * w + i, c);
             }
         }
         // the three edges themselves (thin triangles would otherwise lose pixels)
@@ -199,7 +212,7 @@ public final class SoftRaster implements Surface, SurfaceFactory {
         clip(cx0, cy0, cx1, cy1);
         BitmapFonts.Face f = BitmapFonts.face(key);
         boolean bold = BitmapFonts.bold(key), italic = BitmapFonts.italic(key), under = BitmapFonts.underlined(key);
-        int c = 0xFF000000 | rgb, pen = x;
+        int c = argb(rgb), pen = x;
         for (int k = 0; k < len; k++) {
             char ch = chars[off + k];
             int adv = f.advance(ch);
@@ -217,15 +230,28 @@ public final class SoftRaster implements Surface, SurfaceFactory {
         if (under) for (int i = x; i < pen; i++) plot(i, y + f.baseline + 1, c);
     }
 
+    /** Source-over; the destination may be translucent too (a mutable image created with an alpha channel, T28). */
     private static int blend(int dst, int src) {
         int a = src >>> 24;
         if (a == 255) return src;
         if (a == 0) return dst;
-        int ia = 255 - a;
-        int r = (((src >> 16) & 0xFF) * a + ((dst >> 16) & 0xFF) * ia + 127) / 255;
-        int g = (((src >> 8) & 0xFF) * a + ((dst >> 8) & 0xFF) * ia + 127) / 255;
-        int b = ((src & 0xFF) * a + (dst & 0xFF) * ia + 127) / 255;
-        return 0xFF000000 | (r << 16) | (g << 8) | b;
+        int da = dst >>> 24;
+        if (da == 255) {
+            int ia = 255 - a;
+            int r = (((src >> 16) & 0xFF) * a + ((dst >> 16) & 0xFF) * ia + 127) / 255;
+            int g = (((src >> 8) & 0xFF) * a + ((dst >> 8) & 0xFF) * ia + 127) / 255;
+            int b = ((src & 0xFF) * a + (dst & 0xFF) * ia + 127) / 255;
+            return 0xFF000000 | (r << 16) | (g << 8) | b;
+        }
+        if (da == 0) return src;
+        int wd = da * (255 - a);                  // weight of the destination, scaled by 255
+        int ws = a * 255;                         // weight of the source, scaled by 255
+        int tot = ws + wd;
+        int oa = (tot + 127) / 255;
+        int r = (((src >> 16) & 0xFF) * ws + ((dst >> 16) & 0xFF) * wd + tot / 2) / tot;
+        int g = (((src >> 8) & 0xFF) * ws + ((dst >> 8) & 0xFF) * wd + tot / 2) / tot;
+        int b = ((src & 0xFF) * ws + (dst & 0xFF) * wd + tot / 2) / tot;
+        return (oa << 24) | (r << 16) | (g << 8) | b;
     }
 
     public void drawSurface(int cx0, int cy0, int cx1, int cy1, Surface srcS, int sx, int sy, int sw, int sh, int tr, int dx, int dy) {

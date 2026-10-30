@@ -9,4 +9,6 @@ public final class Access {
     }
 
     public static CanvasAccess canvas;
+
+    public static LcduiAccess lcdui;
 }

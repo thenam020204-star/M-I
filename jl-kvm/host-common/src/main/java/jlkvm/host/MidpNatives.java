@@ -160,6 +160,10 @@ public final class MidpNatives {
             int w = c.argInt(1), h = c.argInt(2);
             gs.charge(w * h / 64);
             c.retInt(c.handles().alloc(factory.create(w, h), c.argRef(0))); } });
+        r.register(LCDUI + "Image.createArgb0(III)I", new NativeMethod() { public void invoke(NativeContext c) {
+            int w = c.argInt(1), h = c.argInt(2);
+            gs.charge(w * h / 64);
+            c.retInt(c.handles().alloc(factory.createArgb(w, h, c.argInt(3)), c.argRef(0))); } });
         r.register(LCDUI + "Image.decode0([BII)I", new NativeMethod() { public void invoke(NativeContext c) {
             int arr = c.argRef(0), off = c.argInt(1), len = c.argInt(2);
             byte[] b = new byte[len];
