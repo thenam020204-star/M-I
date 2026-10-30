@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.concurrent.Callable
 import java.util.Locale
 import java.util.Properties
 import java.util.jar.Attributes
@@ -150,8 +151,9 @@ val copyJarscanAssets by tasks.registering(Copy::class) {
     into(jlkvmAssets)
 }
 val copyRomAssets by tasks.registering(Copy::class) {
-    dependsOn(":vm-classlib:buildRom", ":vm-classlib:buildMidpRom", ":vm-classlib:buildJsr135Rom", ":vm-classlib:buildNokiaUiRom",
-        ":vm-classlib:buildWmaRom", ":vm-classlib:buildJsr75FcRom", ":vm-classlib:buildJsr75PimRom")
+    // every ROM layer task of vm-classlib (any task named build*Rom, so a future layer needs no edit here; T32-f1) + the merged base jar
+    // lazy (closure): resolved at task-graph time, after :vm-classlib is configured
+    dependsOn(Callable { project(":vm-classlib").tasks.filter { it.name.startsWith("build") && it.name.endsWith("Rom") } })
     from(rootProject.file("vm-classlib/build/rom")) { include("rom*.jar"); into("jlkvm/rom") }
     into(jlkvmAssets)
 }

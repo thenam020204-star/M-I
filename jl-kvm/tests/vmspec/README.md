@@ -46,3 +46,13 @@ phoneME could not be built (PLAN V4); once it can, re-run `--record` and review 
 | getResourceAsStream tương đối/tuyệt đối, phân biệt hoa thường | j01 |
 | Mã hoá mặc định / UTF-8 / ISO-8859-1 (không viết lại bytecode) | enc01 |
 | Verifier negative: thiếu StackMap, jsr/ret | neg01, neg02 (spec-only, used by T08) |
+
+## Thu tu dung chuan (T32-f1)
+
+1. `env -u JAVA_HOME ./gradlew --no-daemon :vm-core:test :tools:romgen:test :tools:api-sigs:test :tools:jarscan:test :vm-classlib:assemble :host-common:test :host-desktop:test :app:testEmulatorDebugUnitTest :app:assembleEmulatorDebug`
+2. `tests/vmspec/run_vmspec.sh --engine jlkvm` va `JLKVM_ARGS="--gc-stress 1 --gc-verify" tests/vmspec/run_vmspec.sh --engine jlkvm`.
+
+Khong bat buoc dung dung thu tu: cac case co `stubs: jsr75-pim jsr82 jsr179 jsr256 jsr234` bien dich voi jar lop ROM cua chinh du an
+(`vm-core/build/guest-stub/<tang>-rom.jar`); runner tu goi `vm-core/src/test/guest-stub/build.sh` (romgen) khi jar thieu hoac cu hon
+nguon `vm-classlib/*/src`, giong cach `run_jlkvm.sh` dung ROM thu. Nen chay tren cay sach (`rm -rf vm-classlib/build tests/vmspec/build`) van khong FAIL o buoc build.
+Gradle `:app:copyRomAssets` phu thuoc moi task `:vm-classlib:build*Rom` (tu dong, tang moi khong can sua).

@@ -59,6 +59,17 @@ norm() { grep '^> ' || true; }
 ASM="$CACHE/maven/asm-$ASM_VER.jar"
 env -u JAVA_TOOL_OPTIONS java -cp "$ASM" "$HERE/gen/RawGen.java" "$HERE/cases" || { echo "RawGen failed" >&2; exit 2; }
 
+# stub jars of this project's own layers (stubs: jsr75-pim jsr82 ...): built once by guest-stub/build.sh when missing or older than the layer sources
+GSTUB="$ROOT/vm-core/build/guest-stub"; STUBS_BUILT=0
+ensure_stub() {
+  local j="$1"
+  if [ $STUBS_BUILT -eq 0 ] && { [ ! -f "$j" ] || [ -n "$(find "$ROOT"/vm-classlib/*/src "$ROOT/vm-classlib/src" -name '*.java' -newer "$j" 2>/dev/null | head -1)" ]; }; then
+    "$ROOT/vm-core/src/test/guest-stub/build.sh" "$GSTUB/rom.jar" >&2 || { echo "cannot build the stub jars: run vm-core/src/test/guest-stub/build.sh (or gradle :vm-classlib:assemble)" >&2; exit 2; }
+    STUBS_BUILT=1
+  fi
+  [ -f "$j" ] || { echo "stub jar $j missing: run vm-core/src/test/guest-stub/build.sh" >&2; exit 2; }
+}
+
 pass=0; fail=0; flagged=0; specs=0
 for id in "${IDS[@]}"; do
   C="$HERE/cases/$id"; W="$KEEP/$id"; rm -rf "$W"; mkdir -p "$W"
@@ -77,8 +88,10 @@ for id in "${IDS[@]}"; do
       nokia-ui) j="$(mvn_fetch org.microemu microemu-nokiaui "$MICROEMU_VER")" ;;
       wma) j="$(mvn_fetch org.microemu microemu-jsr-120 "$MICROEMU_VER")" ;;
       jsr75-fc) j="$(mvn_fetch org.microemu microemu-jsr-75 "$MICROEMU_VER")" ;;
-      jsr75-pim) j="$ROOT/vm-classlib/build/rom/rom-jsr75-pim.jar" ;;   # no open-source PIM stub on Maven Central: this project's own interfaces (checked against jsr75-pim.json by romgen)
-      jsr82|jsr179|jsr256|jsr234) j="$ROOT/vm-classlib/build/rom/rom-$st.jar" ;;   # T32: this project's own layer jar (its surface is checked against the signature DB by romgen)
+      # no open-source stub for these: this project's own layer jar (delta jar of the layer), built by vm-core/src/test/guest-stub/build.sh (romgen, same
+      # sources as gradle :vm-classlib:build*Rom) into vm-core/build/guest-stub; built here on demand so the runner works on a clean tree (T32-f1)
+      jsr75-pim) j="$GSTUB/pim-rom.jar"; ensure_stub "$j" ;;
+      jsr82|jsr179|jsr256|jsr234) j="$GSTUB/$st-rom.jar"; ensure_stub "$j" ;;
       *) echo "unknown stubs: $st" >&2; j="" ;;
     esac
     J2MEC_EXTRA="${J2MEC_EXTRA:+$J2MEC_EXTRA:}$j"
