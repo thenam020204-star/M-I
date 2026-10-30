@@ -156,3 +156,15 @@ SDK implementation that is in its DB) are real inner classes here and are what d
   an `atan` written in the guest because CLDC 1.1 `Math` has none, `jlkvm.internal.loc.Geo`), `QualifiedCoordinates`, `Criteria` (defaults NO_REQUIREMENT, cost allowed), `AddressInfo`, `Orientation`, `Landmark`.
   `LandmarkStore` is in memory for the run only (no persistence, the default store always exists, `listLandmarkStores()` has it as entry `null`, `getLandmarks` returns `null` when nothing matches).
 * UNVERIFIED: every point above (text format of `convert`, spherical distance, in-memory stores, `null` rather than `LocationException` from `getInstance`, accuracy checks).
+
+## JSR-256 Mobile Sensor (`javax.microedition.sensor`)
+
+* Source as for JSR-179 (freej2me stub, no spec / javadoc / SDK here, everything UNVERIFIED). Corrections to the DB by hand (its `source` field says so): `SensorManager` and `Unit` have no
+  public constructor, `LimitCondition` has the public constructor `(double limit, String operator)`; the six classes `javax/microedition/sensor/control/*` of the stub (a copy of
+  `Control`/`Controllable`/... that is not part of JSR-256) are not in the DB.
+* **No sensor** (a host would register some - Android M6, NOT done): `SensorManager.findSensors(quantity, contextType)` and `findSensors(url)` answer an **empty array** (the contract for "nothing matches";
+  `NullPointerException` for a null quantity / url, `IllegalArgumentException` for a URL that is not `sensor:...`), `addSensorListener` keeps the listener and never calls it, `Connector.open("sensor:...")`
+  (scheme `sensor` is a `LOCAL_SCHEME`, handler `jlkvm.internal.io.sensor.Protocol`) is a `ConnectionNotFoundException`. There is no `SensorInfo`/`SensorConnection`/`Channel`/`Data` implementation (they
+  are interfaces; no object of them is ever created); the host interface is therefore not even a native yet - the M6 task is: a `Sensors` host service + natives and implementations of those interfaces.
+* Data classes complete: `LimitCondition` / `RangeCondition` / `ObjectCondition` (operators `eq ge gt le lt`), `MeasurementRange`, `Unit` (one object per name). Test: vmspec `sen01_nosensor`.
+* UNVERIFIED: all of it; the project's readings: `RangeCondition` needs lower <= upper, lower op `gt`/`ge`, upper op `lt`/`le`; `LimitCondition.isMet(Object)` and `ObjectCondition.isMet(double)` are false.

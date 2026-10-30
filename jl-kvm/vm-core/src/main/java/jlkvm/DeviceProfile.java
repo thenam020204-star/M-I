@@ -30,7 +30,7 @@ public final class DeviceProfile {
      */
     public String networkDefault = "offline";
     public final Map<String, String> network = new HashMap<String, String>();
-    public static final String[] LOCAL_SCHEMES = {"file", "comm", "resource", "storage", "btspp", "btl2cap", "btgoep"};
+    public static final String[] LOCAL_SCHEMES = {"file", "comm", "resource", "storage", "btspp", "btl2cap", "btgoep", "sensor"};
     /** Default TimeZone (TimeZone.getDefault): id and raw offset in milliseconds. CLDC itself only requires GMT. */
     public String timeZoneId = "GMT";
     public int timeZoneOffsetMillis = 0;

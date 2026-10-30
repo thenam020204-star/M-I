@@ -1,0 +1,25 @@
+> findSensors(q, ctx): length 0
+> findSensors(q, null): length 0
+> findSensors(url): length 0
+> quantity null: NullPointerException
+> url null: NullPointerException
+> url bad: IllegalArgumentException
+> open: ConnectionNotFoundException
+> listener null: NullPointerException
+> quantity null listener: NullPointerException
+> remove null: NullPointerException
+> limit ge 10: false true true object false 10.0 ge
+> limit lt/le/gt/eq at 5: false true false true
+> bad op: IllegalArgumentException
+> null op: NullPointerException
+> range (1,5]: false true true false 1.0 gt 5.0 le
+> range bad lower op: IllegalArgumentException
+> range lower > upper: IllegalArgumentException
+> object: true false false on
+> object null: NullPointerException
+> range: -20.0 60.0 0.5
+> range inverted: IllegalArgumentException
+> range neg resolution: IllegalArgumentException
+> unit: m/s2 same true other false
+> unit null: NullPointerException
+> constants: 1248 maxSamplingRate user eq
