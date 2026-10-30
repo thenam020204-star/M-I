@@ -20,7 +20,7 @@
 > writer hello!bcy 9
 > writer closed ex no-exception
 > reader true l 4 ine1 1 5 line2 -1 -1 0
-> reader mark false
+> reader mark true
 > reader ex java.lang.NullPointerException java.lang.NullPointerException java.io.UnsupportedEncodingException java.io.UnsupportedEncodingException
 > InputStream default 5 000a141e28000000 0 false 0 0
 > OutputStream default 17

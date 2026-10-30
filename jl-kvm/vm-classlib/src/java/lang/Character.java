@@ -86,8 +86,10 @@ public final class Character {
         if (ch < 0x80) {
             return ch >= 'a' && ch <= 'z';
         }
-        if (ch == 0xAA || ch == 0xB5 || ch == 0xBA || ch == 0xDF) {
-            return true;
+        if (ch < 0x100) {
+            // CLDC 1.1 javadoc Character.isLowerCase lists exactly: a-z, U+00DF, U+00E0..U+00F6, U+00F8..U+00FF
+            // (not U+00AA, U+00B5, U+00BA, which the JDK counts as lowercase letters) (T05c)
+            return ch == 0xDF || (ch >= 0xE0 && ch != 0xF7);
         }
         return toUpperCase(ch) != ch || (ch == 0x131 || ch == 0x138 || ch == 0x149 || (ch >= 0x1E96 && ch <= 0x1E9D) || ch == 0x1E9F);
     }
@@ -167,9 +169,6 @@ public final class Character {
         if (ch < 0x100) {
             if (ch == 0xFF) {
                 return 'Ÿ';
-            }
-            if (ch == 0xB5) {
-                return 'Μ';
             }
             return ch >= 0xE0 && ch <= 0xFE && ch != 0xF7 ? (char) (ch - 32) : ch;
         }

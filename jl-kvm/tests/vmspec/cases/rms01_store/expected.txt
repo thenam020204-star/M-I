@@ -35,8 +35,9 @@
 > filter+comparator: n=4 order=apple banana kiwi pear
 > at end: hasNext=false hasPrevious=true
 > next at end: InvalidRecordIDException / InvalidRecordIDException
-> previous: pear kiwi then next: kiwi
-> reset: previous at start: hasPrevious=false InvalidRecordIDException first=apple then previous=apple
+> previous: kiwi banana then next: kiwi
+> reset: hasPrevious=true previous as first call=pear kiwi
+> reset: first=apple previous at the first element: hasPrevious=false InvalidRecordIDException then next=banana
 > comparator only: apple banana fig kiwi pear
 > ids ascending by comparator: 2 4
 > filter only: n=4 as set=apple banana kiwi pear

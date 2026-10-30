@@ -60,9 +60,7 @@ public class FloatTextTest {
         assertEquals(5.0, FloatText.parseDouble("5."), 0);
         assertEquals(1.5, FloatText.parseDouble(" 1.5d "), 0);
         assertEquals(1.5f, FloatText.parseFloat("1.5F"), 0);
-        assertTrue(Double.isNaN(FloatText.parseDouble("NaN")));
-        assertEquals(Double.NEGATIVE_INFINITY, FloatText.parseDouble("-Infinity"), 0);
-        for (String bad : new String[] {"", " ", "abc", "1.2.3", "e5", "1e", ".", "-", "+", "0x10", "0x1p3", "1,5", "nan", "inf", "1 2", "--1", "1e+", "Infinit", "NaN1"}) {
+        for (String bad : new String[] {"", " ", "abc", "1.2.3", "e5", "1e", ".", "-", "+", "0x10", "0x1p3", "1,5", "nan", "inf", "1 2", "--1", "1e+", "Infinit", "NaN1", "NaN", "-NaN", "Infinity", "-Infinity", "+Infinity"}) {
             try { FloatText.parseDouble(bad); fail("accepted: '" + bad + "'"); } catch (NumberFormatException expected) { }
         }
     }

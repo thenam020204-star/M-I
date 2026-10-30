@@ -252,6 +252,39 @@ public final class Encoding {
         private final int id;
         private boolean le, started;
         private int pending = -1;
+        /** A byte that was read but not consumed (the byte that ended a malformed UTF-8 sequence): the next read starts with it. */
+        private int held = -1;
+        private boolean sLe, sStarted;
+        private int sPending = -1, sHeld = -1;
+
+        /** Remembers the decoder state together with InputStreamReader.mark (the byte position is marked on the stream itself). */
+        public void mark() {
+            sLe = le;
+            sStarted = started;
+            sPending = pending;
+            sHeld = held;
+        }
+
+        public void reset() {
+            le = sLe;
+            started = sStarted;
+            pending = sPending;
+            held = sHeld;
+        }
+
+        /** True when a char or a byte is waiting inside the decoder (the stream's available() does not count it). */
+        public boolean hasPending() {
+            return pending >= 0 || held >= 0;
+        }
+
+        private int nextByte(InputStream in) throws IOException {
+            if (held >= 0) {
+                int h = held;
+                held = -1;
+                return h;
+            }
+            return in.read();
+        }
 
         public Decoder(int id) {
             this.id = id;
@@ -265,7 +298,7 @@ public final class Encoding {
                 pending = -1;
                 return p;
             }
-            int c = in.read();
+            int c = nextByte(in);
             if (c < 0) {
                 return -1;
             }
@@ -281,19 +314,18 @@ public final class Encoding {
                     int cp = need == 1 ? c & 0x1F : need == 2 ? c & 0x0F : c & 0x07;
                     for (int k = 0; k < need; k++) {
                         if (!in.markSupported()) {
-                            int d = in.read();
+                            int d = nextByte(in);
                             if (d < 0 || (d & 0xC0) != 0x80) {
                                 return 0xFFFD;   // truncated sequence: the byte that broke it is dropped (non-seekable stream)
                             }
                             cp = (cp << 6) | (d & 0x3F);
                         } else {
-                            in.mark(1);
-                            int d = in.read();
+                            int d = nextByte(in);
                             if (d < 0) {
                                 return 0xFFFD;
                             }
                             if ((d & 0xC0) != 0x80) {
-                                in.reset();
+                                held = d;   // not consumed: it starts the next char
                                 return 0xFFFD;
                             }
                             cp = (cp << 6) | (d & 0x3F);
@@ -312,7 +344,7 @@ public final class Encoding {
                 case UTF16:
                 case UTF16BE:
                 case UTF16LE: {
-                    int d = in.read();
+                    int d = nextByte(in);
                     if (d < 0) {
                         return 0xFFFD;
                     }

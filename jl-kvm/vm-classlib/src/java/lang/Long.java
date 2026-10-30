@@ -64,7 +64,8 @@ public final class Long {
             if (first == '-') {
                 neg = true;
                 limit = MIN_VALUE;
-            } else if (first != '+') {
+            } else {
+                // CLDC 1.1 javadoc: only an ASCII minus sign may precede the digits ('+7' is a NumberFormatException; T05c)
                 throw new NumberFormatException("For input string: \"" + s + "\"");
             }
             if (len == 1) {

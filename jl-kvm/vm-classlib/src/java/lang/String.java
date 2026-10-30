@@ -236,7 +236,9 @@ public final class String {
         }
         int sc = str.count;
         if (fromIndex >= count) {
-            return sc == 0 && count == 0 ? 0 : (sc == 0 ? count : -1);
+            // CLDC 1.1 javadoc: a fromIndex greater than the length acts as the length and "-1 is returned"; as in phoneME even
+            // for the empty string at the length ("Hello".indexOf("", 5) == -1) except "".indexOf("", 0) == 0 (T05c)
+            return sc == 0 && count == 0 && fromIndex == 0 ? 0 : -1;
         }
         if (sc == 0) {
             return fromIndex;

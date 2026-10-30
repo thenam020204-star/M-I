@@ -52,7 +52,7 @@ public class InputStreamReader extends Reader {
             }
             cbuf[off] = (char) c;
             int n = 1;
-            while (n < len && in.available() > 0) {
+            while (n < len && (decoder.hasPending() || in.available() > 0)) {
                 c = decoder.read(in);
                 if (c < 0) {
                     break;
@@ -70,20 +70,40 @@ public class InputStreamReader extends Reader {
     public boolean ready() throws IOException {
         synchronized (lock) {
             ensureOpen();
-            return in.available() > 0;
+            return decoder.hasPending() || in.available() > 0;
         }
     }
 
+    /** As the reference implementation (phoneME, T05c): the reader supports mark when the underlying byte stream does. */
     public boolean markSupported() {
-        return false;
+        synchronized (lock) {
+            return in != null && in.markSupported();
+        }
     }
 
     public void mark(int readAheadLimit) throws IOException {
-        throw new IOException("mark() not supported");
+        synchronized (lock) {
+            ensureOpen();
+            if (readAheadLimit < 0) {
+                throw new IllegalArgumentException("Read-ahead limit < 0");
+            }
+            if (!in.markSupported()) {
+                throw new IOException("mark() not supported");
+            }
+            in.mark(readAheadLimit > 0x1FFFFFFF ? Integer.MAX_VALUE : readAheadLimit * 4);   // up to 4 bytes per char
+            decoder.mark();
+        }
     }
 
     public void reset() throws IOException {
-        throw new IOException("reset() not supported");
+        synchronized (lock) {
+            ensureOpen();
+            if (!in.markSupported()) {
+                throw new IOException("reset() not supported");
+            }
+            in.reset();
+            decoder.reset();
+        }
     }
 
     public void close() throws IOException {

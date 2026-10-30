@@ -18,6 +18,7 @@ public class Cl01String extends MIDlet {
         p("length " + s.length() + " charAt " + s.charAt(4));
         p("substring " + s.substring(7) + "|" + s.substring(0, 5) + "|" + s.substring(5, 5) + "|");
         p("indexOf " + s.indexOf('o') + " " + s.indexOf('o', 5) + " " + s.indexOf('z') + " " + s.indexOf("World") + " " + s.indexOf("o", 9) + " " + s.indexOf("") + " " + s.indexOf("", 50) + " " + s.indexOf('l', -4));
+        p("indexOf empty " + s.indexOf("", 11) + " " + s.indexOf("", 12) + " " + s.indexOf("", -1) + " " + "".indexOf("", 0) + " " + "".indexOf("", 1));
         p("lastIndexOf " + s.lastIndexOf('o') + " " + s.lastIndexOf('o', 7) + " " + s.lastIndexOf('H') + " " + s.lastIndexOf('o', -1) + " " + s.lastIndexOf('l', 100));
         p("starts/ends " + s.startsWith("Hello") + s.startsWith("World", 7) + s.startsWith("") + s.startsWith("Hello", 1) + s.startsWith("x", -1) + s.endsWith("World") + s.endsWith("") + s.endsWith("Worlds"));
         p("equals " + s.equals("Hello, World") + s.equals(null) + s.equals("hello, world") + s.equalsIgnoreCase("hELLO, wORLD") + s.equalsIgnoreCase(null) + "".equals(""));

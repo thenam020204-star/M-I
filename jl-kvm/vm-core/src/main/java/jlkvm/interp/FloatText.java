@@ -80,7 +80,7 @@ public final class FloatText {
         return b.toString();
     }
 
-    /** @return the value; throws NumberFormatException (message = the offending text) for text outside the JDK 1.3 grammar. */
+    /** @return the value; throws NumberFormatException (message = the offending text) for text outside CLDC 1.1 Double.valueOf: Sign? FloatingPointLiteral of JLS 3.10.2 (so no "NaN"/"Infinity", T05c). */
     public static double parseDouble(String s) {
         return Double.parseDouble(checked(s));
     }
@@ -94,8 +94,6 @@ public final class FloatText {
         if (t.length() == 0) throw new NumberFormatException(s.length() == 0 ? "empty String" : s);
         int i = 0;
         if (t.charAt(0) == '+' || t.charAt(0) == '-') i++;
-        String rest = t.substring(i);
-        if (rest.equals("NaN") || rest.equals("Infinity")) return t;
         int n = t.length(), digits = 0;
         for (; i < n && Character.isDigit0(t.charAt(i)); i++) digits++;
         if (i < n && t.charAt(i) == '.') {

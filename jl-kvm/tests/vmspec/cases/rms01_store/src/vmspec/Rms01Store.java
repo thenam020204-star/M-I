@@ -189,8 +189,10 @@ public class Rms01Store extends MIDlet {
         p("next at end: " + ex(new Call() { Object go() throws Exception { return e1f.nextRecord(); } }) + " / " + ex(new Call() { Object go() throws Exception { return new Integer(e1f.nextRecordId()); } }));
         p("previous: " + s(e1.previousRecord()) + " " + s(e1.previousRecord()) + " then next: " + s(e1.nextRecord()));
         e1.reset();
-        p("reset: previous at start: hasPrevious=" + e1.hasPreviousElement() + " " + ex(new Call() { Object go() throws Exception { return e1f.previousRecord(); } })
-            + " first=" + s(e1.nextRecord()) + " then previous=" + s(e1.previousRecord()));
+        p("reset: hasPrevious=" + e1.hasPreviousElement() + " previous as first call=" + s(e1.previousRecord()) + " " + s(e1.previousRecord()));
+        e1.reset();
+        p("reset: first=" + s(e1.nextRecord()) + " previous at the first element: hasPrevious=" + e1.hasPreviousElement() + " " + ex(new Call() { Object go() throws Exception { return e1f.previousRecord(); } })
+            + " then next=" + s(e1.nextRecord()));
         RecordEnumeration e2 = en.enumerateRecords(null, new Alpha(), false);
         p("comparator only: " + drain(e2));
         e2.reset();

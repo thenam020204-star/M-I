@@ -1,6 +1,7 @@
 > length 12 charAt o
 > substring World|Hello||
-> indexOf 4 8 -1 7 -1 0 12 2
+> indexOf 4 8 -1 7 -1 0 -1 2
+> indexOf empty 11 -1 0 0 -1
 > lastIndexOf 8 4 0 -1 10
 > starts/ends truetruetruefalsefalsetruetruefalse
 > equals truefalsefalsetruefalsetrue

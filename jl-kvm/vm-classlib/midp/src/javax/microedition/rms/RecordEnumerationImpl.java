@@ -4,8 +4,10 @@
 package javax.microedition.rms;
 
 /**
- * The enumeration of a RecordStore: a snapshot of record ids (filtered, ordered by the comparator or by id) with a cursor BETWEEN
- * elements (nextRecord then previousRecord gives the same record). The data of a record is read when it is returned. Filter and comparator
+ * The enumeration of a RecordStore: a snapshot of record ids (filtered, ordered by the comparator or by id) with a cursor
+ * elements: it sits ON the element last returned (-1 before the first call), as in the MIDP 2.0 javadoc "to return the record data from the previous
+ * consecutive from any given point in the enumeration, call previousRecord()" and as in phoneME (T05c): after nextRecord returned the element k, previousRecord returns
+ * k-1; as first call previousRecord returns the last element. The data of a record is read when it is returned. Filter and comparator
  * run on the calling guest thread while the snapshot is built.
  */
 final class RecordEnumerationImpl implements RecordEnumeration {
@@ -15,7 +17,7 @@ final class RecordEnumerationImpl implements RecordEnumeration {
     private boolean keepUpdated;
     private boolean destroyed;
     private int[] ids = new int[0];
-    private int cur;
+    private int cur = -1;
 
     RecordEnumerationImpl(RecordStore store, RecordFilter filter, RecordComparator comparator, boolean keepUpdated) {
         this.store = store;
@@ -63,8 +65,8 @@ final class RecordEnumerationImpl implements RecordEnumeration {
             r[i] = sel[order[i]];
         }
         ids = r;
-        if (cur > n) {
-            cur = n;
+        if (cur > n - 1) {
+            cur = n - 1;
         }
     }
 
@@ -112,18 +114,18 @@ final class RecordEnumerationImpl implements RecordEnumeration {
         if (!store.isOpen()) {
             throw new RecordStoreNotOpenException("record store is closed");
         }
-        if (cur >= ids.length) {
+        if (cur >= ids.length - 1) {
             throw new InvalidRecordIDException("no next record");
         }
-        return read(ids[cur++]);
+        return read(ids[++cur]);
     }
 
     public int nextRecordId() throws InvalidRecordIDException {
         check();
-        if (cur >= ids.length) {
+        if (cur >= ids.length - 1) {
             throw new InvalidRecordIDException("no next record");
         }
-        return ids[cur++];
+        return ids[++cur];
     }
 
     public byte[] previousRecord() throws InvalidRecordIDException, RecordStoreNotOpenException, RecordStoreException {
@@ -131,18 +133,22 @@ final class RecordEnumerationImpl implements RecordEnumeration {
         if (!store.isOpen()) {
             throw new RecordStoreNotOpenException("record store is closed");
         }
-        if (cur <= 0) {
-            throw new InvalidRecordIDException("no previous record");
-        }
-        return read(ids[--cur]);
+        step();
+        return read(ids[cur]);
     }
 
     public int previousRecordId() throws InvalidRecordIDException {
         check();
-        if (cur <= 0) {
+        step();
+        return ids[cur];
+    }
+
+    /** previous: the last element as first call (cursor -1), else one step back; InvalidRecordIDException at the first element or when empty. */
+    private void step() throws InvalidRecordIDException {
+        if (cur == 0 || ids.length == 0) {
             throw new InvalidRecordIDException("no previous record");
         }
-        return ids[--cur];
+        cur = cur < 0 ? ids.length - 1 : cur - 1;
     }
 
     private byte[] read(int id) throws InvalidRecordIDException {
@@ -155,17 +161,17 @@ final class RecordEnumerationImpl implements RecordEnumeration {
 
     public boolean hasNextElement() {
         check();
-        return cur < ids.length;
+        return ids.length > 0 && store.isOpen() && cur != ids.length - 1;
     }
 
     public boolean hasPreviousElement() {
         check();
-        return cur > 0;
+        return ids.length > 0 && store.isOpen() && cur != 0;
     }
 
     public void reset() {
         check();
-        cur = 0;
+        cur = -1;
     }
 
     public void rebuild() {
