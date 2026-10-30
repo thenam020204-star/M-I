@@ -22,7 +22,7 @@ public class CorpusVerifyTest {
 
     static ClassSource stubs(boolean cldc11) throws Exception {
         MapSource s = new MapSource();
-        File[] fs = {Corpus.stub(cldc11 ? "cldcapi11" : "cldcapi10"), Corpus.stub("midpapi20")};
+        File[] fs = {Corpus.stub(cldc11 ? "cldcapi11" : "cldcapi10"), Corpus.stub("midpapi20"), Corpus.stub("microemu-nokiaui")};
         for (File f : fs) if (f != null) s.m.putAll(Corpus.classes(f));
         return s;
     }

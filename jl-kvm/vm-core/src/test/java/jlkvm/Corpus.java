@@ -44,7 +44,7 @@ public final class Corpus {
 
     public static File stub(String prefix) {
         File[] fs = MAVEN.listFiles();
-        if (fs != null) for (File f : fs) if (f.getName().startsWith(prefix + "-") && f.getName().endsWith(".jar")) return f;
+        if (fs != null) for (File f : fs) if (f.getName().startsWith(prefix + "-") && f.getName().endsWith(".jar") && !f.getName().endsWith("-sources.jar")) return f;
         return null;
     }
 

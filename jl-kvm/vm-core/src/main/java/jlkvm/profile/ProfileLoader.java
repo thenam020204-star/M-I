@@ -7,7 +7,7 @@ import jlkvm.DeviceProfile;
  * Loads a device profile from JSON text (PLAN T20 minimal schema; T33 extends it and adds a validator). Keys:
  * name, heapBytes, timesliceBytecodes, priorityScheduling, threadStackWords, cldc11, maxTraceFrames,
  * properties{key:string} (System.getProperty), network{scheme|"default": "allow"|"deny"|"offline"},
- * timeZone{id, offsetMillis}, apis[string] (ROM layers), imagesCountInHeap, rms{quotaBytes,storeOverheadBytes,recordOverheadBytes}, media{contentTypes[],protocols[],tone}, keyRepeat{delayMs,intervalMs},
+ * timeZone{id, offsetMillis}, apis[string] (ROM layers), imagesCountInHeap, rms{quotaBytes,storeOverheadBytes,recordOverheadBytes}, media{contentTypes[],protocols[],tone}, nokia{pixelFormat,soundFormats[],concurrentTone,concurrentWav}, keyRepeat{delayMs,intervalMs},
  * display{width,height,canvasWidth,canvasHeight,color,numColors,numAlphaLevels,pointerEvents,pointerMotionEvents,repeatEvents,doubleBuffered},
  * keys{name:int} (names of DeviceProfile.keys). Keys starting with "_" (comments, source tags) are ignored. Unknown keys are an error.
  */
@@ -93,6 +93,29 @@ public final class ProfileLoader {
                         for (Object mo : (java.util.List<Object>) te.getValue()) dst.add(str("media." + n + "[]", mo).trim().toLowerCase());
                     } else if (n.equals("tone")) p.mediaTone = bool("media.tone", te.getValue());
                     else throw new IllegalArgumentException("profile: unknown key media." + n);
+                }
+            } else if (k.equals("nokia")) {
+                for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
+                    String n = te.getKey();
+                    if (n.startsWith("_")) continue;
+                    if (n.equals("soundFormats")) {
+                        if (!(te.getValue() instanceof java.util.List)) throw new IllegalArgumentException("profile: nokia.soundFormats must be an array");
+                        p.nokiaSoundFormats.clear();
+                        for (Object so : (java.util.List<Object>) te.getValue()) {
+                            long f = num("nokia.soundFormats[]", so);
+                            if (f != 1 && f != 5) throw new IllegalArgumentException("profile: nokia.soundFormats holds 1 (tone) or 5 (WAV)");
+                            p.nokiaSoundFormats.add(Integer.valueOf((int) f));
+                        }
+                    } else {
+                        long x = num("nokia." + n, te.getValue());
+                        if (n.equals("pixelFormat")) {
+                            if (x != 4444 && x != 444 && x != 565 && x != 555 && x != 1555 && x != 888 && x != 8888) throw new IllegalArgumentException("profile: nokia.pixelFormat must be a TYPE_INT/USHORT format");
+                            p.nokiaPixelFormat = (int) x;
+                        } else if (n.equals("concurrentTone") || n.equals("concurrentWav")) {
+                            if (x < 1 || x > 64) throw new IllegalArgumentException("profile: nokia." + n + " out of range");
+                            if (n.equals("concurrentTone")) p.nokiaConcurrentTone = (int) x; else p.nokiaConcurrentWav = (int) x;
+                        } else throw new IllegalArgumentException("profile: unknown key nokia." + n);
+                    }
                 }
             } else if (k.equals("timeZone")) {
                 for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {

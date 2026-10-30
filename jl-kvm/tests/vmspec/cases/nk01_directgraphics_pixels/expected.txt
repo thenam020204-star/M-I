@@ -1,0 +1,69 @@
+> int8888 opaque ff102030 ffabcdef ffff0000 ff000000
+> int8888 transparency ff102030 ffffffff ffff0000
+> int888 ignores alpha ff123456 ff654321
+> int888 get 123456 654321 0 0
+> int8888 get ff123456 ff654321
+> scanlength ff0000ff ff00ff00 ffff0000 ffffff00
+> short 565 f800 -> ffff0000 true back f800
+> short 565 7e0 -> ff00ff00 true back 7e0
+> short 565 1f -> ff0000ff true back 1f
+> short 565 ffff -> ffffffff true back ffff
+> short 444 f00 -> ffff0000 true back f00
+> short 444 f0 -> ff00ff00 true back f0
+> short 444 f -> ff0000ff true back f
+> short 444 123 -> ff112233 true back 123
+> short 4444 ff00 -> ffff0000 true back ff00
+> short 4444 f0f0 -> ff00ff00 true back f0f0
+> short 4444 f00f -> ff0000ff true back f00f
+> short 4444 f123 -> ff112233 true back f123
+> short 555 7c00 -> ffff0000 true back 7c00
+> short 555 3e0 -> ff00ff00 true back 3e0
+> short 555 1f -> ff0000ff true back 1f
+> short 1555 fc00 -> ffff0000 true back fc00
+> short 1555 83e0 -> ff00ff00 true back 83e0
+> short 1555 801f -> ff0000ff true back 801f
+> 4444 alpha 0 is transparent ffffffff
+> 1555 alpha bit 0 is transparent ffffffff ffffffff
+> 1gray drawn black pixels 51 first row ff000000 ffffffff ff000000
+> 1gray get c1 f0 fc 7f 3d de 7f 1f 87 c1 80 same true
+> 1gray unused bits stay ff
+> 1gray vertical ex1 ff ff e 1c 38 70 e0 ff ff 1 1 0 0 0 0 0 1 1 same true
+> 1gray vertical ex2 0 fe fe fe fe fe 0 0 0 0 0 0 0 0 0 0 3 3 3 3 3 0 0 0 0 0 0 0 0 0
+> byte format 2 first pixels ffffffff ffaaaaaa ff555555 ff000000 round trip true
+> byte format 4 first pixels ffffffff ffaaaaaa ff555555 ff000000 round trip true
+> byte format 8 first pixels ffffffff ffdbdbdb ffb7b7b7 ff939393 ff6f6f6f ff4b4b4b ff272727 ff030303 round trip true
+> byte format 332 first pixels ff0000ff ff244800 ff486d55 ff6d91aa ff91b6ff ffb6ff00 ffff0055 ff0024aa round trip true
+> 332 ffff0000 ff00ffff
+> 1gray mask ff000000 ffffffff ff000000 ffffffff
+> null pixels NullPointerException
+> negative width IllegalArgumentException
+> bad manipulation IllegalArgumentException
+> int array short format IllegalArgumentException
+> short array int format IllegalArgumentException
+> byte array bad format IllegalArgumentException
+> array too small ArrayIndexOutOfBoundsException
+> negative offset ArrayIndexOutOfBoundsException
+> get negative x IllegalArgumentException
+> get small array ArrayIndexOutOfBoundsException
+> get bad format IllegalArgumentException
+> zero size ok none
+> native format 565
+> clip ffff0000 ffff0000 ffffffff ffffffff
+> get ignores clip ffff0000 ffff0000 ffffffff ffffffff
+> same wrapper true initial alpha 255
+> alpha 80 color ff0000
+> translucent fillRect red high true green mid true
+> alpha 0 draws nothing ffffffff
+> opaque ff00ff00 alpha 255
+> setColor makes it opaque 255
+> after setColor ff0000ff
+> setGrayScale 255
+> setColor rgb 255
+> fillPolygon inside ffff0000 ffff0000 outside ffffffff ffffffff color kept ff00
+> fillTriangle ff0000ff ffffffff
+> drawTriangle edge ff000000 closed side ff000000
+> drawPolygon closed ff123456 ff123456 ff123456 ff123456 inside ffffffff
+> fill alpha 0 ffffffff
+> fillPolygon offsets/nPoints inside ff00ff00
+> polygon null NullPointerException
+> polygon range ArrayIndexOutOfBoundsException

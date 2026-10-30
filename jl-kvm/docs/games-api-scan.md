@@ -93,3 +93,12 @@ Kết quả: 25/68 sạch theo CLDC 1.1 + MIDP 2.0.
 | SV/Vương Quốc Sủng Vật - Liệt Hoả.jar | ✘ |  | javax.wireless.messaging |  |
 | SV/Vương Quốc Sủng Vật 5 - Cầu Vồng.jar | ✘ |  | com.nokia.mid.ui, javax.wireless.messaging |  |
 | SV/Sủng Vật Thiên Hạ – Truyền Thuyết Long Linh_320.jar | ✘ |  | javax.wireless.messaging |  |
+
+## Re-scan with the Nokia UI DB (T28, 2026-10-30)
+
+`tools/jarscan/profiles/cldc11-midp20-nokiaui.json` (apis `cldc-1.1`, `midp-2.0`, `s40dp2-nokia-ui`) on the 12 games that reference `com.nokia.mid.*`
+(11 `com.nokia.mid.ui`, 1 also `com.nokia.mid.sound`): **0 MISSING_* about a `com.nokia` class or member**. What is left in these 12 is not Nokia UI:
+`javax.wireless.messaging` (WMA, 9 games, T32), `javax.microedition.io.file` (FileConnection, 2 games, T32), and 2 `MISSING_METHOD` on the games' OWN
+classes that are defects of the (modified) game, not missing API: `q.a(Graphics)` of "Vuong Quoc Sung Vat 3 - Kim" calls `new e(Graphics)` but class `e`
+has no such constructor, and `MainCanvas.keyProcess()` of "Vuong Quoc Sung Vat 2 - Tim" calls `MM.wap()V` that class `MM` does not have. 3 of the 12 games
+(Kiem Linh - Co Kiem Hon Mong, Ma Gioi Chien Ky, Total Tournament) are now clean for CLDC 1.1 + MIDP 2.0 + Nokia UI.

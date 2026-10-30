@@ -1,0 +1,81 @@
+{
+  "_comment": "Minimal TEMPORARY profile (PLAN T20). T33 replaces it by the full schema with a source tag (datasheet/sdk/measured) per value; every value here is UNVERIFIED.",
+  "name": "jlkvm-nokia",
+  "heapBytes": 2097152,
+  "timesliceBytecodes": 2000,
+  "priorityScheduling": true,
+  "threadStackWords": 8192,
+  "cldc11": true,
+  "properties": {
+    "_source": "UNVERIFIED. CLDC 1.1 FR section 6.2 TABLE 1 defines exactly microedition.platform/encoding/configuration/profiles; microedition.locale comes from MIDP 2.0",
+    "microedition.configuration": "CLDC-1.1",
+    "microedition.profiles": "MIDP-2.0",
+    "microedition.platform": "jl-kvm",
+    "microedition.encoding": "ISO-8859-1",
+    "microedition.locale": "en-US"
+  },
+  "network": {
+    "_source": "UNVERIFIED. default offline: no real network traffic in this phase (PLAN scope)",
+    "default": "offline",
+    "http": "deny",
+    "testnet": "allow",
+    "nohandler": "allow"
+  },
+  "timeZone": {
+    "_source": "UNVERIFIED",
+    "id": "GMT",
+    "offsetMillis": 0
+  },
+  "apis": [
+    "cldc-1.1",
+    "midp-2.0",
+    "nokia-ui"
+  ],
+  "rms": {
+    "_source": "UNVERIFIED (T26): per-suite quota and the bytes a store / record occupy besides the data are placeholders; T33 gives them a source tag",
+    "quotaBytes": 262144,
+    "storeOverheadBytes": 16,
+    "recordOverheadBytes": 8
+  },
+  "nokia": {
+    "_source": "UNVERIFIED (T28): native pixel format and sound capabilities of the Nokia UI layer are placeholders; T33 gives them a source tag",
+    "pixelFormat": 565,
+    "soundFormats": [1, 5],
+    "concurrentTone": 1,
+    "concurrentWav": 1
+  },
+  "imagesCountInHeap": false,
+  "_imagesCountInHeap": "UNVERIFIED: whether the pixel memory of an Image is charged to the Java heap is a device property (PLAN \"R\u00e0ng bu\u1ed9c\"); false = host memory only",
+  "display": {
+    "_source": "UNVERIFIED (placeholder 240x320 S40-like screen; T33 gives every number a source tag)",
+    "width": 240,
+    "height": 320,
+    "canvasWidth": 240,
+    "canvasHeight": 294,
+    "color": true,
+    "numColors": 65536,
+    "numAlphaLevels": 256,
+    "pointerEvents": false,
+    "pointerMotionEvents": false,
+    "repeatEvents": true,
+    "doubleBuffered": true
+  },
+  "keys": {
+    "_source": "Nokia key codes from the PLAN task text (soft -6/-7, select -5, arrows -1..-4); UNVERIFIED against a device",
+    "softLeft": -6,
+    "softRight": -7,
+    "select": -5,
+    "up": -1,
+    "down": -2,
+    "left": -3,
+    "right": -4,
+    "clear": -8,
+    "send": -10,
+    "end": -11
+  },
+  "keyRepeat": {
+    "_source": "UNVERIFIED",
+    "delayMs": 500,
+    "intervalMs": 100
+  }
+}

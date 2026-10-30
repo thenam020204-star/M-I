@@ -175,3 +175,7 @@ Not done of JSR-135 (not in `jsr-135-extra.json`): `PitchControl`, `StopTimeCont
     tests/vmspec/run_vmspec.sh --engine jlkvm          # ROM = cldc + midp + test overlay (vm-core/src/test/guest-stub/build.sh)
 
 Script format: `tests/games/README.md` (+ `destroy [0|1]`, `size W H`, `repaint`, `key hold C ms`, `key repeat C`).
+
+## 11. Nokia UI API layer (T28)
+
+See `docs/nokia.md`: `rom-nokiaui.jar` (profile api `nokia-ui`), FullCanvas / DirectGraphics / DirectUtils / DeviceControl / Sound, alpha through the high byte of the Surface colour argument, `SurfaceFactory.createArgb`, Smart Messaging ringing tone parser `Ott`.

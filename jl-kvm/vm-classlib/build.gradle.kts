@@ -86,3 +86,26 @@ val buildJsr135Rom = tasks.register<JavaExec>("buildJsr135Rom") {
 }
 tasks.named("assemble") { dependsOn(buildJsr135Rom) }
 tasks.named("check") { dependsOn(buildJsr135Rom) }
+
+// ---- Nokia UI layer (T28, D10: profile api "nokia-ui"): FullCanvas, DirectGraphics, DirectUtils, DeviceControl, Sound, SoundListener in their
+// OWN jar. Base = CLDC + MIDP merged; the surface is checked against cldc-1.1 + midp-2.0 + s40dp2-nokia-ui (signatures taken from the Nokia
+// S40 DP2.0 SDK 1.1 classes.zip, PLAN V14b).
+val nokiaUiRomJar = layout.buildDirectory.file("rom/rom-nokiaui.jar")
+val buildNokiaUiRom = tasks.register<JavaExec>("buildNokiaUiRom") {
+    group = "build"
+    description = "Compiles vm-classlib/nokiaui/src on top of the CLDC + MIDP ROM into rom-nokiaui.jar (T28)"
+    dependsOn(midpBaseJar)
+    val srcDir = layout.projectDirectory.dir("nokiaui/src")
+    val dbDir = rootProject.layout.projectDirectory.dir("tools/api-sigs/db")
+    inputs.dir(srcDir)
+    inputs.file(midpBaseJar.flatMap { it.archiveFile })
+    inputs.dir(dbDir)
+    outputs.file(nokiaUiRomJar)
+    classpath = romgen
+    mainClass.set("jlkvm.tools.romgen.RomGen")
+    args("--src", srcDir.asFile.path, "--base", layout.buildDirectory.file("rom/base-midp.jar").get().asFile.path, "--delta", "--out", nokiaUiRomJar.get().asFile.path,
+        "--api-db", dbDir.file("cldc-1.1.json").asFile.path, "--api-db", dbDir.file("midp-2.0.json").asFile.path,
+        "--api-db", dbDir.file("s40dp2-nokia-ui.json").asFile.path, "--api-ignore", "jlkvm/internal/")
+}
+tasks.named("assemble") { dependsOn(buildNokiaUiRom) }
+tasks.named("check") { dependsOn(buildNokiaUiRom) }

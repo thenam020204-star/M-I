@@ -16,7 +16,7 @@ import jlkvm.internal.media.tone.ToneSeq;
  * decoder. Parsing happens in the guest (the same code serves the unit tests and T32's ringing tone) - docs/midp.md section 10.
  */
 public final class TonePlayer extends BasePlayer {
-    public static final int DEVICE = 0, TONE_SEQ = 1, RTTTL = 2;
+    public static final int DEVICE = 0, TONE_SEQ = 1, RTTTL = 2, COMPILED = 3;
     private static final int MIN_RATE = 10000, MAX_RATE = 1000000;
 
     private final int kind;
@@ -31,6 +31,13 @@ public final class TonePlayer extends BasePlayer {
         super(contentType);
         this.kind = kind;
         this.data = data;
+    }
+
+    /** A player of an already compiled sequence (Nokia Sound: the Smart Messaging ringing tone parser makes the {@link Seq}). */
+    public TonePlayer(Seq compiled) {
+        super("audio/x-tone-seq");
+        this.kind = COMPILED;
+        this.seq = compiled;
     }
 
     protected void doRealize() throws MediaException {

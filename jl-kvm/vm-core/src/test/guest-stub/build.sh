@@ -10,5 +10,7 @@ mkdir -p "$D"
 "$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/midp/src" --base "$D/cldc-rom.jar" --out "$D/midp-rom.jar" >&2   # surface check: gradle :vm-classlib:buildMidpRom
 # JSR-135 layer (MIDIControl...): present in the flat test ROM; the profile (api "jsr-135") decides whether Manager hands the controls out
 "$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/jsr135/src" --base "$D/midp-rom.jar" --out "$D/jsr135-rom.jar" >&2
-"$ROOT/tools/romgen/romgen" --src "$HERE/src" --base "$D/jsr135-rom.jar" --out "$OUT" >&2
+# Nokia UI layer (FullCanvas, DirectGraphics...): present in the flat test ROM; a profile without "nokia-ui" does not get it from the desktop host (RomLayers)
+"$ROOT/tools/romgen/romgen" --src "$ROOT/vm-classlib/nokiaui/src" --base "$D/jsr135-rom.jar" --out "$D/nokiaui-rom.jar" >&2
+"$ROOT/tools/romgen/romgen" --src "$HERE/src" --base "$D/nokiaui-rom.jar" --out "$OUT" >&2
 echo "built $OUT ($(unzip -l "$OUT" | grep -c '\.class') classes)"

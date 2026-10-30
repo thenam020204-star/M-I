@@ -1,0 +1,4 @@
+mode: spec-only
+stubs: nokia-ui
+source: Nokia UI API 1.1 javadoc (S40 DP2.0 SDK 1.1, tools/env/cache/nokia-sdk, not copied into the repo): DirectGraphics class text (manipulation = FLIP_HORIZONTAL / FLIP_VERTICAL ORed with a degree value; the image is rotated COUNTER-clockwise; combined: first the rotation, then the vertical flip, then the horizontal flip; at most one rotation, one horizontal and one vertical flip; the anchor point is applied after the manipulation) and drawImage / drawPixels (IllegalArgumentException when the manipulation is unknown or the anchor illegal, NullPointerException for a null image).
+notes: the 16 combinations are checked against a rotate/flip routine written from the javadoc sentence; three results are also written out by hand. Oracles are not run (MicroEmulator ignores manipulations; FreeJ2ME and JL-Mod map them to MIDP transforms with the same table as jl-kvm, UNVERIFIED beyond the javadoc sentence).

@@ -56,6 +56,11 @@ public final class MidpNatives {
     /** The audio output (T27); default: a {@code RecordingAudioDevice} (silent, logs). */
     public MidpNatives audioDevice(jlkvm.host.audio.AudioDevice d) { this.audio = d; return this; }
 
+    private jlkvm.host.nokia.NokiaDevice nokia = new jlkvm.host.nokia.RecordingNokiaDevice();
+
+    /** The Nokia DeviceControl features (T28); default: a {@code RecordingNokiaDevice} (logs). */
+    public MidpNatives nokiaDevice(jlkvm.host.nokia.NokiaDevice d) { this.nokia = d; return this; }
+
     private static final String LCDUI = "javax/microedition/lcdui/";
 
     private Surface surf(NativeContext c, int id) {
@@ -75,6 +80,7 @@ public final class MidpNatives {
         new RmsNatives(records, profile, appProps).register(r);
         new NetNatives(profile, http).register(r);
         new AudioNatives(profile, audio).register(r);
+        new NokiaNatives(profile, nokia).register(r);
         // ------------------------------------------------------------ AMS
         r.register("jlkvm/internal/Ams.property0(Ljava/lang/String;)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
             String k = gs.string(c.argRef(0)), v = null;

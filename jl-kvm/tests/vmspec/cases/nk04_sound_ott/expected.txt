@@ -1,0 +1,47 @@
+> constants 1 5 0 1 3
+> supported formats 1 5 concurrent tone 1
+> concurrent 7 IllegalArgumentException
+> new tone state 1 gain 255
+> after play 0
+> after stop 1
+> stop twice 1
+> resume 0
+> play(0) loops 0
+> restart 0
+> after release 3
+> play released 3
+> resume/stop released 3
+> init again 1
+> play(-1) IllegalArgumentException
+> duration 0 IllegalArgumentException
+> duration -5 IllegalArgumentException
+> freq -1 IllegalArgumentException
+> freq 100000 IllegalArgumentException
+> freq 0 (off) 1, 3951 1, 220 1
+> failed init leaves 3
+> gain 100
+> gain -5 -> 0
+> gain 1000 -> 255
+> gain 1 -> 1
+> null data NullPointerException
+> unknown type IllegalArgumentException
+> wav garbage IllegalArgumentException
+> basic song ok state 1
+> temporary song ok state 1
+> tempo/volume/scale + repeated pattern ok state 1
+> unicode title ok state 1
+> empty IllegalArgumentException
+> one byte IllegalArgumentException
+> wrong command IllegalArgumentException
+> song type 3 (midi) IllegalArgumentException
+> digitized song type IllegalArgumentException
+> no patterns IllegalArgumentException
+> pattern without notes IllegalArgumentException
+> cut inside the first note IllegalArgumentException
+> repeat without a pattern IllegalArgumentException
+> unknown instruction first IllegalArgumentException
+> no header id IllegalArgumentException
+> notes then an unknown instruction ok state 1
+> failed init(byte[]) leaves 3
+> re-init with a tone 1
+> listener removed

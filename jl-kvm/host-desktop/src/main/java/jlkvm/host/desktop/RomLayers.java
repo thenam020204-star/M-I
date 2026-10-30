@@ -10,7 +10,7 @@ import jlkvm.DeviceProfile;
 /**
  * The guest ROM of a profile (D10): the layer jars named by {@code profile.apis} are searched in that order, a class of a layer the
  * profile does not declare does not exist. Layer name -> jar file: cldc-1.1 / cldc-1.0 -> rom.jar, midp-2.0 -> rom-midp.jar
- * jsr-135 -> rom-jsr135.jar (MIDIControl / TempoControl, {@code :vm-classlib:buildJsr135Rom}); all built into vm-classlib/build/rom.
+ * jsr-135 -> rom-jsr135.jar (MIDIControl / TempoControl, {@code :vm-classlib:buildJsr135Rom}), nokia-ui -> rom-nokiaui.jar (T28, {@code :vm-classlib:buildNokiaUiRom}); all built into vm-classlib/build/rom.
  */
 public final class RomLayers implements ClassSource {
     private final List<ClassSource> layers = new ArrayList<ClassSource>();
@@ -21,6 +21,7 @@ public final class RomLayers implements ClassSource {
             if (api.startsWith("cldc-")) f = "rom.jar";
             else if (api.equals("midp-2.0") || api.equals("midp-2.1")) f = "rom-midp.jar";
             else if (api.equals("jsr-135")) f = "rom-jsr135.jar";
+            else if (api.equals("nokia-ui")) f = "rom-nokiaui.jar";
             else throw new IOException("no ROM layer for api '" + api + "' yet");
             layers.add(new JarClassSource(new File(romDir, f)));
         }

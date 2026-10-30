@@ -13,4 +13,9 @@ if [ -f "$M/jsr135" ]; then
     -d "$W/j135" $(find "$D/../../vm-classlib/jsr135/src/javax" -name '*.java') 2>&1 | grep -v '^Picked up\|warning' || true
   export J2MEC_EXTRA="$W/j135"
 fi
+# MIDlets that use the Nokia UI API (FullCanvas...) have a file `nokiaui` next to MANIFEST.MF: compile against the MicroEmulator Nokia UI stub (compile time only)
+if [ -f "$M/nokiaui" ]; then
+  . "$D/../../tools/env/lib.sh"; . "$D/../../tools/env/versions.sh"
+  export J2MEC_EXTRA="${J2MEC_EXTRA:+$J2MEC_EXTRA:}$(mvn_fetch org.microemu microemu-nokiaui "$MICROEMU_VER")"
+fi
 "$D/../../tools/env/j2mec.sh" "$W/src" "$M/MANIFEST.MF" "$OUT" "${3:-cldc11}"

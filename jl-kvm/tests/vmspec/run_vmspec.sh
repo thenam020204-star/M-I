@@ -17,6 +17,7 @@
 #   realtime: yes   the case measures wall-clock time: the in-process vm-core VmSpecTest skips it (run here only)
 #   no-gc-stress: yes   do not add env JLKVM_ARGS (e.g. "--gc-stress 1 --gc-verify") to this case
 #   realtime: yes   the case measures wall-clock time: the in-process vm-core VmSpecTest skips it (run here only)
+#   stubs: nokia-ui   compile also against the Nokia UI API stub (MicroEmulator microemu-nokiaui jar, compile-time only; the VM uses its own rom-nokiaui layer)
 #   notes: free text
 # Exit status: 0 when every case passes, 1 otherwise.
 set -uo pipefail
@@ -53,6 +54,7 @@ for id in "${IDS[@]}"; do
     MF="$W/MANIFEST.MF"
     printf 'MIDlet-Name: %s\nMIDlet-Version: 1.0.0\nMIDlet-Vendor: jl-kvm\nMIDlet-1: %s,,vmspec.%s\nMicroEdition-Configuration: CLDC-1.1\nMicroEdition-Profile: MIDP-2.0\n' "$id" "$id" "$MAIN" > "$MF"
   fi
+  if [ "$(meta "$id" stubs)" = nokia-ui ]; then J2MEC_EXTRA="$(mvn_fetch org.microemu microemu-nokiaui "$MICROEMU_VER")"; export J2MEC_EXTRA; else unset J2MEC_EXTRA; fi
   JAR="$W/$id.jar"
   if [ -x "$C/build.sh" ]; then
     "$C/build.sh" "$C" "$JAR" > "$W/build.log" 2>&1 || { echo "FAIL  $id (build.sh failed, see $W/build.log)"; fail=$((fail+1)); continue; }

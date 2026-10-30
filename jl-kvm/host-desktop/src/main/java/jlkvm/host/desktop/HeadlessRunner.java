@@ -42,6 +42,8 @@ public final class HeadlessRunner {
         public File rmsDir;
         /** Audio output (T27); null = a silent {@link jlkvm.host.audio.RecordingAudioDevice} on the virtual clock (returned in {@link Result#audio}). */
         public jlkvm.host.audio.AudioDevice audio;
+        /** Nokia DeviceControl features (T28); null = a {@link jlkvm.host.nokia.RecordingNokiaDevice} (returned in {@link Result#nokia}). */
+        public jlkvm.host.nokia.NokiaDevice nokia;
         /** A JL-Mod data directory whose record stores are imported before the run. */
         public File importJlMod;
     }
@@ -54,6 +56,7 @@ public final class HeadlessRunner {
         public RecordingServices services;
         public HeadlessUi ui;
         public jlkvm.host.audio.AudioDevice audio;
+        public jlkvm.host.nokia.NokiaDevice nokia;
         public Vm vm;
         public DesktopHost host;
         public long virtualMs;
@@ -110,6 +113,8 @@ public final class HeadlessRunner {
         if (ad instanceof jlkvm.host.audio.RecordingAudioDevice) ((jlkvm.host.audio.RecordingAudioDevice) ad).setClock(vclock);
         host.setAudioDevice(ad);
         res.audio = ad;
+        res.nokia = o.nokia != null ? o.nokia : new jlkvm.host.nokia.RecordingNokiaDevice();
+        host.setNokiaDevice(res.nokia);
         res.records = rs;
         host.logStream = o.log;
         HeadlessUi hui = new HeadlessUi();

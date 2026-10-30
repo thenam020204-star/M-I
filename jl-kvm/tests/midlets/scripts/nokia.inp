@@ -1,0 +1,16 @@
+100 key tap -6
+200 key tap -7
+300 key tap -5
+400 key tap -10
+500 key tap -11
+600 key tap -1
+700 key tap -2
+800 key tap -3
+900 key tap -4
+1000 key tap 53
+1100 key tap 49
+1300 key tap 52
+1400 key tap 49
+1450 key tap 50
+1600 key tap 51
+2000 destroy 1

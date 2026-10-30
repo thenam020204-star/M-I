@@ -44,6 +44,8 @@ public final class DesktopHost implements HostPlatform {
 
     /** The audio output (T27); default: a silent logging device on the host clock. */
     public void setAudioDevice(jlkvm.host.audio.AudioDevice d) { this.audio = d; }
+    private jlkvm.host.nokia.NokiaDevice nokia;
+    public void setNokiaDevice(jlkvm.host.nokia.NokiaDevice d) { this.nokia = d; }
 
     /** The high-level UI (Form / List / TextBox / Alert); set before the VM runs. */
     public void setScreenHost(ScreenHost ui) { this.ui = ui; }
@@ -74,6 +76,7 @@ public final class DesktopHost implements HostPlatform {
             } } });
         MidpNatives mn = new MidpNatives(profile, appProps, surfaces, services, ui, records != null ? records : new jlkvm.host.rms.MemoryRecordStorage(profile));
         if (audio != null) mn.audioDevice(audio);
+        if (nokia != null) mn.nokiaDevice(nokia);
         mn.register(r);
     }
 }

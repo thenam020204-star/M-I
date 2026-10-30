@@ -34,7 +34,8 @@ tasks.named("compileJava") { dependsOn(checkNoAndroid) }
 // The tone sequence compiler and the RTTTL parser are guest code (-source 1.3, java.lang only) shared with the unit tests: compiled here too.
 sourceSets.test {
     java.srcDir("../vm-classlib/midp/src")
-    java.include("jlkvm/host/**", "jlkvm/internal/media/tone/**")
+    java.srcDir("../vm-classlib/nokiaui/src")
+    java.include("jlkvm/host/**", "jlkvm/internal/media/tone/**", "jlkvm/internal/nokia/Ott.java")
 }
 
 tasks.test {

@@ -1,0 +1,9 @@
+{
+  "name": "cldc11-midp20-nokiaui",
+  "apis": ["cldc-1.1", "midp-2.0", "s40dp2-nokia-ui"],
+  "maxClassVersion": 49,
+  "floatingPoint": true,
+  "requireStackMap": true,
+  "largeArrayThreshold": 8192,
+  "source": "tools/jarscan scan profile (not a device profile; T33 supersedes); s40dp2-nokia-ui = Nokia UI API of the S40 DP2.0 SDK (PLAN V14b)"
+}

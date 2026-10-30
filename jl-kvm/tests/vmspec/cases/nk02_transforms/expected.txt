@@ -1,0 +1,8 @@
+> all 16 manipulations match: 16/16
+> ROTATE_90 36/25/14
+> FLIP_HORIZONTAL 321/654
+> ROTATE_90|FLIP_VERTICAL 14/25/36
+> anchor after rotate: (4,2)=6 (3,2)=3 (4,5)=ff (3,1)=ff
+> null image NullPointerException
+> bad manipulation IllegalArgumentException
+> bad anchor IllegalArgumentException

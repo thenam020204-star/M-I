@@ -54,6 +54,13 @@ public final class DeviceProfile {
             "audio/x-tone-seq", "audio/midi", "audio/sp-midi", "audio/x-wav", "audio/mpeg", "audio/amr", "audio/x-rtttl", "text/x-rtttl"));
     public final java.util.List<String> mediaProtocols = new java.util.ArrayList<String>(java.util.Arrays.asList("device", "http", "https", "file", "resource"));
     public boolean mediaTone = true;
+    /**
+     * Nokia UI API (T28), profile {@code nokia{}} (layer "nokia-ui"): native pixel format of DirectGraphics, sound formats of com.nokia.mid.sound.Sound
+     * (1 = tone, 5 = WAV) and the number of concurrent sounds per format. UNVERIFIED defaults.
+     */
+    public int nokiaPixelFormat = 565;
+    public final java.util.List<Integer> nokiaSoundFormats = new java.util.ArrayList<Integer>(java.util.Arrays.asList(1, 5));
+    public int nokiaConcurrentTone = 1, nokiaConcurrentWav = 1;
     /** Full-screen size and the size of a normal (non full-screen) Canvas, in pixels. */
     public int screenWidth = 240, screenHeight = 320, canvasWidth = 240, canvasHeight = 294;
     public boolean isColor = true, pointerEvents = false, pointerMotionEvents = false, repeatEvents = true, doubleBuffered = true;
