@@ -1,4 +1,4 @@
-diverges: freej2me
+diverges: freej2me|phoneme
 mode: oracle
 source: oracle: MicroEmulator 2.0.4 and (HotSpot, PLAN D18 level 4-5; FreeJ2ME-Plus fails to run it, see notes); spec: JVMS 2nd ed. 5.4.3.1 (class resolution failure is thrown at the executing instruction and repeats), 5.3.5 (superclass loaded when the class is), checkcast/instanceof (null: no resolution); CLDC 1.1 spec 6.2.7.2 keeps NoClassDefFoundError. UNVERIFIED on a Nokia KVM (V2/V4).
 notes: FreeJ2ME-Plus cannot run this case (its MIDletLoader adapts every class referenced by L01Main eagerly and dies on the missing vmspec.Gone before startApp) - only MicroEmulator is an oracle here. vmspec.Gone and vmspec.GoneSuper are deleted from the jar by build.sh. A verifier that loads classes for assignability would fail the whole class early; none of these methods needs that (only Object targets).

@@ -1,3 +1,3 @@
 mode: oracle
 source: oracle: MicroEmulator 2.0.4; spec: Class.getResourceAsStream javadoc (CLDC 1.1/MIDP 2.0): absolute when starting with '/', otherwise relative to the class's package; jar entry names are case-sensitive. FreeJ2ME-Plus deviates (resolves a relative name against the root and matches names case-insensitively), recorded as known divergence
-diverges: freej2me
+diverges: freej2me|kemulator

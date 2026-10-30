@@ -2,3 +2,4 @@ mode: spec-only
 stubs: jsr75-fc
 source: JSR-75 FileConnection API (FileConnection / FileSystemRegistry as in the open stubs tools/api-sigs/db/jsr75-fc.json; the JSR-75 specification itself is not available in this repo, UNVERIFIED); PLAN T32a: virtual roots (profile file.roots, default c:/ e:/ root1/), a path never leaves its root: ".." (also percent-encoded), backslash, NUL, ':' and empty segments are IllegalArgumentException, a name that is not a root is ConnectionNotFoundException (an IOException), setFileConnection("..") stops at the root.
 notes: UNVERIFIED (docs/jsr.md): the default root names, the exception kinds for a bad URL (IllegalArgumentException) and an unknown root (ConnectionNotFoundException), the root list connection "file:///", case-insensitive root names, percent-decoding UTF-8 of names, host "localhost" accepted. The oracles run on the host disk, so the case is not run on them.
+diverges: phoneme|kemulator

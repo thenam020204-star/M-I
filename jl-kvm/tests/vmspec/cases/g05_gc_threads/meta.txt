@@ -1,3 +1,4 @@
 mode: oracle
 source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus (HotSpot, PLAN D18 level 4-5); the printed totals do not depend on scheduling (everything is printed after join()).
 notes: PLAN D4/D5: stop-the-world collection with threads parked in sleep / wait / monitor-enter / preempted states. Under the project VM it is also run with --gc-stress and a small heap (GcTest).
+diverges: phoneme

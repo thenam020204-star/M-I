@@ -2,3 +2,4 @@ mode: spec-only
 stubs: jsr75-fc
 source: PLAN T32a: profile file.permission (readwrite default | read | deny). JSR-75 FileConnection: SecurityException "if the application does not have permission" (Connector.open, FileSystemRegistry.addFileSystemListener); the signatures come from tools/api-sigs/db/jsr75-fc.json (open stubs).
 notes: UNVERIFIED (docs/jsr.md): which call reports a refused permission (open of a WRITE / READ_WRITE connection under "read", every open and the roots under "deny"). The oracles run on the host disk, so the case is not run on them.
+diverges: kemulator

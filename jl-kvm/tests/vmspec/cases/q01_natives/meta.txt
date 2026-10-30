@@ -2,3 +2,4 @@ no-gc-stress: yes
 mode: spec-only
 source: spec: PLAN T15 / "Interface giữa module" (NativeContext.block parks only the calling guest thread; natives registered by key "lớp.tên(descriptor)"; a missing native throws a guest Error - CLDC has no UnsatisfiedLinkError, java.lang.Error is the nearest CLDC class, CLDC 4.2/5.1.4); natives vmspec/Nat.* are provided by the test host (vm-core/src/test/java/jlkvm/tmp/TempHost.java), so the oracles cannot run it.
 notes: expected values by hand (mixl = -3 * 2^40; blockFill writes (byte)(ms+i)). Run with a small heap in vm-core NativesTest so that collections happen while a thread is parked (the blocked call keeps its array argument valid across compaction).
+diverges: phoneme|kemulator

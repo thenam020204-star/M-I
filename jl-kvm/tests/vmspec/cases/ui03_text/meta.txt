@@ -1,3 +1,4 @@
 mode: spec-only
 source: MIDP 2.0 javadoc of TextField / TextBox (constraints, maxSize, insert / delete / getChars / setChars, exceptions: insert position < 0 prepends and >= size appends; delete / getChars / setChars range exceptions; setConstraints empties contents that no longer match); the oracles were run and compared, see notes
 notes: oracle differences (jl-kvm follows the javadoc). MicroEmulator: accepts unknown constraint bits, setString(null) throws NullPointerException, insert in the middle and out-of-range positions fail, delete(-1,..) accepted, setConstraints keeps the old text, TextBox title / ticker setters fail, delete wrong. FreeJ2ME: insert with a position outside 0..size throws IllegalArgumentException, setConstraints keeps non matching text, setChars range exception class differs. The caret position is not compared (the javadoc only says "current position").
+diverges: phoneme|kemulator

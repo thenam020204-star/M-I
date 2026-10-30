@@ -1,2 +1,3 @@
 mode: spec-only
 source: PLAN D9/T18 (classes outside the CLDC API must not exist for the game: NoClassDefFoundError / ClassNotFoundException); CLDC 1.1 javadoc Class.forName. java.util.ArrayList is not in CLDC 1.1 (javadoc).
+diverges: kemulator

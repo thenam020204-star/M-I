@@ -1,3 +1,4 @@
 mode: oracle
 source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus agree (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM) on the printed lines only. Behaviour of exceptions escaping paint()/Thread.run()/callSerially() is implementation-dependent (UNVERIFIED for Nokia KVM); paint counts differ between the oracles and are not compared
 notes: T11: IllegalStateException replaced by IllegalArgumentException (IllegalStateException is not a CLDC 1.1 class, a CLDC VM must not find it)
+diverges: phoneme

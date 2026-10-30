@@ -145,7 +145,7 @@ for id in "${IDS[@]}"; do
     else st=MISMATCH; ok=0; diff -u "$C/expected.txt" "$W/$o.out" > "$W/$o.diff"; fi
     msg="$msg $o=$st"; printf '%s\t%s\t%s\n' "$id" "$o" "$st" >> "$KEEP/results.tsv"
   done
-  if [ "$mode" = spec-only ]; then echo "PROBE $id [$msg ] (spec-only case run on the oracles for information)"
+  if [ "$mode" = spec-only ] && [ "$ENGINE" != jlkvm ]; then echo "PROBE $id [$msg ] (spec-only case run on the oracles for information)"
   elif [ $ok -eq 1 ]; then echo "PASS  $id [$msg ]"; pass=$((pass+1)); else echo "FAIL  $id [$msg ] (diffs in $W/*.diff)"; fail=$((fail+1)); fi
 done
 echo "summary: pass=$pass fail=$fail spec-only=$specs flagged=$flagged"

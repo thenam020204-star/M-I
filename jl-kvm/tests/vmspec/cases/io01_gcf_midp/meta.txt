@@ -1,3 +1,4 @@
 mode: spec-only
 source: MIDP 2.0 javadoc of javax.microedition.io (HttpConnection constants, interface hierarchy, PushRegistry), javax.microedition.pki.CertificateException; Connector behaviour under the default DeviceProfile of the runner (no network entry: every network scheme offline, the local scheme comm has no handler) as defined in T20; deny / allow are covered by host-desktop NetHostTest
 notes: the oracles open real sockets / have their own policy, so they cannot check the profile behaviour; jl-kvm has no push delivery (registerConnection / registerAlarm -> ConnectionNotFoundException after the arguments are checked, which the javadoc allows for a runtime without push)
+diverges: phoneme|kemulator

@@ -1,2 +1,3 @@
 mode: oracle
 source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus (JVM-hosted); CLDC 1.1 javadoc Character: only Basic Latin and Latin-1 are required, other ranges follow Unicode in J2SE and are informational here
+diverges: phoneme

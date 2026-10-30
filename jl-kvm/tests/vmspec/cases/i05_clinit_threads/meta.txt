@@ -1,3 +1,4 @@
 mode: oracle
 source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus (HotSpot, PLAN D18 level 4-5); spec: JVMS 2nd ed. 5.5 (steps 2-3: wait while another thread initialises; step 9: failed initialisation -> waiting threads get NoClassDefFoundError). ExceptionInInitializerError is shown by its JVMS name from the message on a CLDC VM (java.lang.Error, CLDC 4.2/5.1.4).
 notes: Timing: main sleeps 100 ms, the initialisers sleep 300 ms; after Slow completes main sleeps another 100 ms so that T1 is already initialising SlowFail when main touches it. All lines that depend on which thread finishes first are printed after join().
+diverges: phoneme

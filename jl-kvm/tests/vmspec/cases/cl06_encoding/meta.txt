@@ -1,2 +1,3 @@
 mode: oracle
 source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM; T18/T19 classlib tests); API subset = CLDC 1.1 javadoc
+diverges: phoneme

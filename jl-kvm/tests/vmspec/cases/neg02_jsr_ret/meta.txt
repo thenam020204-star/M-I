@@ -1,3 +1,4 @@
 mode: spec-only
 source: spec: CLDC 1.1 preverification rules (section number not verified): jsr/ret are not allowed in preverified classes (rejected, VerifyError assumed, UNVERIFIED). Oracles accept them
 notes-T11: expected class changed to java.lang.Error after CLDC 1.1 spec 4.2/5.1.4: an Error not in the CLDC list is replaced by its nearest CLDC superclass (VerifyError/ExceptionInInitializerError -> java.lang.Error). Whether a Nokia KVM throws or halts is UNVERIFIED (V2/V4).
+diverges: kemulator

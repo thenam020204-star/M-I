@@ -1,3 +1,4 @@
 mode: oracle
 source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus (HotSpot, PLAN D18 level 4-5) for the JVMS error names; spec: JVMS 2nd ed. 5.4.3.1-5.4.3.4 (resolution), 5.4.4 (access control), invokestatic/invokevirtual/invokeinterface/getfield/putstatic "Linking Exceptions" and "Runtime Exceptions", checkcast/instanceof ("if objectref is null ... the class is not resolved"). CLDC 1.1 spec 4.2/5.1.4: on a CLDC VM these errors surface as java.lang.Error (NoClassDefFoundError stays) - kind() in L02Main prints the JVMS name from the message so the line is the same on the oracles and on the project VM; the "# N class=" lines show the real class.
 notes: Whether a Nokia KVM performs every access check is UNVERIFIED (V2/V4). The project VM follows JVMS (CLDC 5.1.4 allows extra checks if the mapped error is thrown). One bootstrap namespace (CLDC 5.1.1): "same package" = same package name.
+diverges: phoneme

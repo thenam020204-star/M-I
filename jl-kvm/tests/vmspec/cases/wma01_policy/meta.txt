@@ -2,3 +2,4 @@ mode: spec-only
 stubs: wma
 source: WMA 1.1 javadoc (S40 DP2.0 SDK 1.1: tools/env/cache/nokia-sdk/sdk/api/WirelessMessaging_1.1, not copied into the repo): Connector.open "SecurityException - if a requested protocol handler is not permitted"; PLAN T32a: profile sms.mode deny is the default, a denied scheme is refused BEFORE the URL is parsed (like the network policy of T20); mms is not a WMA 1.1 scheme, so it falls under the network policy (offline by default).
 notes: the oracles have their own SMS policy (MicroEmulator: a dialog / no handler), so the case is not run on them. UNVERIFIED: the real devices ask the user at send time; refusing at open is this project's choice.
+diverges: phoneme|kemulator
