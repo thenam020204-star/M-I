@@ -72,6 +72,25 @@ public class JsrHostTest {
         assertNull(new RomLayers(romDir, onlyWma).readClass("javax/microedition/io/file/FileConnection"));
     }
 
+    /** T32: JSR-82 / 179 / 256 / 234 are separate layers, each present only when the profile declares it. */
+    @Test public void bluetoothLocationSensorAmmsLayersOnlyWithTheirApi() throws Exception {
+        File romDir = HeadlessRunner.findRomDir();
+        String[][] layers = {{"jsr82", "javax/bluetooth/LocalDevice"}, {"jsr82", "jlkvm/internal/io/btspp/Protocol"},
+            {"jsr179", "javax/microedition/location/LocationProvider"}, {"jsr256", "javax/microedition/sensor/SensorManager"},
+            {"jsr234", "javax/microedition/amms/GlobalManager"}};
+        String[] all = {"jsr82", "jsr179", "jsr256", "jsr234"};
+        for (String[] l : layers) {
+            DeviceProfile only = ProfileLoader.fromJson("{\"apis\": [\"cldc-1.1\", \"midp-2.0\", \"" + l[0] + "\"]}");
+            assertNotNull(l[1], new RomLayers(romDir, only).readClass(l[1]));
+            for (String other : all) {
+                if (other.equals(l[0])) continue;
+                DeviceProfile o = ProfileLoader.fromJson("{\"apis\": [\"cldc-1.1\", \"midp-2.0\", \"" + other + "\"]}");
+                assertNull(l[1] + " must not exist with only " + other, new RomLayers(romDir, o).readClass(l[1]));
+            }
+            assertNull(l[1], new RomLayers(romDir, ProfileLoader.fromJson("{\"apis\": [\"cldc-1.1\", \"midp-2.0\"]}")).readClass(l[1]));
+        }
+    }
+
     private static String guest(HeadlessRunner.Result r) { return DesktopTestSupport.onlyGuestLines(r.stdout); }
 
     @Test public void smsDenyAndOfflineSendNothingAndAcceptNothing() throws Exception {

@@ -1,0 +1,16 @@
+> getSpectator: MediaException
+> createSoundSource3D: MediaException
+> createEffectModule: MediaException
+> createMediaProcessor: MediaException
+> createMediaProcessor(null): NullPointerException
+> 3D player types: 0
+> processor input types: 0
+> getControls: 0
+> getControl: null
+> getControl(null): NullPointerException
+> Spectator interface: true
+> ZoomControl interface: true
+> LocationControl interface: true
+> TunerControl interface: true
+> MediaProcessor interface: true
+> MediaProcessor states: 100 200 300 400 -1

@@ -144,3 +144,4 @@ registerLayer("buildJsr82Rom", "jsr82", "rom-jsr82.jar", "s40dp2-jsr82.json", "T
 // JSR-179 / 256 / 234: signature DBs from open-source stubs (freej2me), UNVERIFIED, see docs/jsr.md
 registerLayer("buildJsr179Rom", "jsr179", "rom-jsr179.jar", "jsr179-location.json", "T32")
 registerLayer("buildJsr256Rom", "jsr256", "rom-jsr256.jar", "jsr256-sensor.json", "T32")
+registerLayer("buildJsr234Rom", "jsr234", "rom-jsr234.jar", "jsr234-amms.json", "T32")

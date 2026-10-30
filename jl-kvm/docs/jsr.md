@@ -168,3 +168,22 @@ SDK implementation that is in its DB) are real inner classes here and are what d
   are interfaces; no object of them is ever created); the host interface is therefore not even a native yet - the M6 task is: a `Sensors` host service + natives and implementations of those interfaces.
 * Data classes complete: `LimitCondition` / `RangeCondition` / `ObjectCondition` (operators `eq ge gt le lt`), `MeasurementRange`, `Unit` (one object per name). Test: vmspec `sen01_nosensor`.
 * UNVERIFIED: all of it; the project's readings: `RangeCondition` needs lower <= upper, lower op `gt`/`ge`, upper op `lt`/`le`; `LimitCondition.isMet(Object)` and `ObjectCondition.isMet(double)` are false.
+
+## JSR-234 AMMS (`javax.microedition.amms`) - surface level
+
+* Source as for JSR-179 / 256 (freej2me stub, nothing verified). Corrections to the DB by hand (its `source` field says so): `GlobalManager` is final with no public constructor, `Spectator` is an interface
+  that only inherits `Controllable`. The 43 classes are the interfaces of the controls (`control/**`: audio effects, 3D audio, camera, image effects, tuner) plus `Module`, `EffectModule`, `SoundSource3D`,
+  `MediaProcessor`, `MediaProcessorListener`, `Spectator`; they compile on top of the MIDP `javax.microedition.media` subset (`Control`, `Controllable`, `Player`, `MediaException`), so the layer needs only
+  `midp-2.0` in the profile (`ProfileValidator`).
+* **No service** (the profile has no AMMS hardware; a host would add effects / 3D audio / camera control - Android M6, NOT done): `GlobalManager.getSpectator()`, `createSoundSource3D()`, `createEffectModule()`,
+  `createMediaProcessor(type)` -> `MediaException` ("not supported"), `getSupportedSoundSource3DPlayerTypes()` / `getSupportedMediaProcessorInputTypes()` / `getControls()` -> empty arrays, `getControl(type)` -> `null`;
+  null arguments of `createMediaProcessor` / `getControl` -> `NullPointerException`. No `Control` or `Module` implementation exists, so no game can obtain one. `Manager.getControl` of the MIDP media
+  subset is unchanged (no AMMS control is reachable through a `Player` either). Test: vmspec `amms01_nosupport`.
+* Not done: any implementation of the control interfaces (they would have to drive the host audio / camera), `javax.microedition.media` JSR-135 full (`Manager.createPlayer` for the media processor).
+* UNVERIFIED: all of it.
+
+## Not done in T32 (priority P2 / out of reach, recorded)
+
+JSR-120 2.0 (WMA 2.0 / MMS: `MultipartMessage`, `MessagePart`, `mms://`) - no source for the API; JSR-226 SVG and JSR-172 (XML/JAX-RPC) - no stub on Maven Central under `org.microemu`, and the
+freej2me jar carries only `javax/microedition/m2g` (JSR-226 draft, 7 classes) and `javax/microedition/xml` / `javax/xml/rpc` (JSR-172) stubs that were not turned into a layer; `docs/games-api-scan.md` (68 games) lists
+none of them as used. Same procedure as above would apply (`api-sigs extract` from the stub, `registerLayer`, `RomLayers`, vmspec case).

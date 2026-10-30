@@ -1,0 +1,2506 @@
+{
+  "format": 1,
+  "name": "jsr234-amms",
+  "source": "javax.microedition.amms.* signatures only, taken from the stub classes in freej2me_plus.jar (local, GPL, not redistributed; no code copied); UNVERIFIED against the JSR spec / an SDK (PLAN T32, A9); CORRECTED by hand against the JSR-234 API as remembered (the stub looks like an implementation): GlobalManager is final and has no public constructor, Spectator is an interface that only inherits Controllable",
+  "classes": [
+    {
+      "name": "javax/microedition/amms/EffectModule",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/Module"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": []
+    },
+    {
+      "name": "javax/microedition/amms/GlobalManager",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 17,
+      "fields": [],
+      "methods": [
+        {
+          "name": "createEffectModule",
+          "desc": "()Ljavax/microedition/amms/EffectModule;",
+          "access": 9,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "createMediaProcessor",
+          "desc": "(Ljava/lang/String;)Ljavax/microedition/amms/MediaProcessor;",
+          "access": 9,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "createSoundSource3D",
+          "desc": "()Ljavax/microedition/amms/SoundSource3D;",
+          "access": 9,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getControl",
+          "desc": "(Ljava/lang/String;)Ljavax/microedition/media/Control;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getControls",
+          "desc": "()[Ljavax/microedition/media/Control;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getSpectator",
+          "desc": "()Ljavax/microedition/amms/Spectator;",
+          "access": 9,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getSupportedMediaProcessorInputTypes",
+          "desc": "()[Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedSoundSource3DPlayerTypes",
+          "desc": "()[Ljava/lang/String;",
+          "access": 9,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/MediaProcessor",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Controllable"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "REALIZED",
+          "desc": "I",
+          "access": 25,
+          "constant": "200",
+          "constantType": "I"
+        },
+        {
+          "name": "STARTED",
+          "desc": "I",
+          "access": 25,
+          "constant": "400",
+          "constantType": "I"
+        },
+        {
+          "name": "STOPPED",
+          "desc": "I",
+          "access": 25,
+          "constant": "300",
+          "constantType": "I"
+        },
+        {
+          "name": "UNKNOWN",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1",
+          "constantType": "I"
+        },
+        {
+          "name": "UNREALIZED",
+          "desc": "I",
+          "access": 25,
+          "constant": "100",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "abort",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "addMediaProcessorListener",
+          "desc": "(Ljavax/microedition/amms/MediaProcessorListener;)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "complete",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getProgress",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getState",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "removeMediaProcessorListener",
+          "desc": "(Ljavax/microedition/amms/MediaProcessorListener;)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setInput",
+          "desc": "(Ljava/io/InputStream;I)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setInput",
+          "desc": "(Ljava/lang/Object;)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setOutput",
+          "desc": "(Ljava/io/OutputStream;)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "start",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "stop",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/MediaProcessorListener",
+      "superName": "java/lang/Object",
+      "interfaces": [],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "PROCESSING_ABORTED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "processingAborted",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "PROCESSING_COMPLETED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "processingCompleted",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "PROCESSING_ERROR",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "processingError",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "PROCESSING_STARTED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "processingStarted",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "PROCESSING_STOPPED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "processingStopped",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "PROCESSOR_REALIZED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "processRealized",
+          "constantType": "Ljava/lang/String;"
+        }
+      ],
+      "methods": [
+        {
+          "name": "mediaProcessorUpdate",
+          "desc": "(Ljavax/microedition/amms/MediaProcessor;Ljava/lang/String;Ljava/lang/Object;)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/Module",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Controllable"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "addMIDIChannel",
+          "desc": "(Ljavax/microedition/media/Player;I)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "addPlayer",
+          "desc": "(Ljavax/microedition/media/Player;)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "removeMIDIChannel",
+          "desc": "(Ljavax/microedition/media/Player;I)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "removePlayer",
+          "desc": "(Ljavax/microedition/media/Player;)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/SoundSource3D",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/Module"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": []
+    },
+    {
+      "name": "javax/microedition/amms/Spectator",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Controllable"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": []
+    },
+    {
+      "name": "javax/microedition/amms/control/AudioFormatControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/FormatControl"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": []
+    },
+    {
+      "name": "javax/microedition/amms/control/ContainerFormatControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/FormatControl"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "setFormat",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/EffectControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "SCOPE_LIVE_AND_RECORD",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "SCOPE_LIVE_ONLY",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "SCOPE_RECORD_ONLY",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getPreset",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getPresetNames",
+          "desc": "()[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getScope",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isEnabled",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isEnforced",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setEnabled",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setEnforced",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setPreset",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setScope",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/EffectOrderControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getEffectOrder",
+          "desc": "(Ljavax/microedition/amms/control/EffectControl;)I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getEffectOrders",
+          "desc": "()[Ljavax/microedition/amms/control/EffectControl;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setEffectOrder",
+          "desc": "(Ljavax/microedition/amms/control/EffectControl;I)I",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/FormatControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "METADATA_NOT_SUPPORTED",
+          "desc": "I",
+          "access": 25,
+          "constant": "0",
+          "constantType": "I"
+        },
+        {
+          "name": "METADATA_SUPPORTED_FIXED_KEYS",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "METADATA_SUPPORTED_FREE_KEYS",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "PARAM_BITRATE",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "bitrate",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "PARAM_BITRATE_TYPE",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "bitrate ype",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "PARAM_FRAMERATE",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "frame rate",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "PARAM_QUALITY",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "quality",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "PARAM_SAMPLERATE",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "sample rate",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "PARAM_VERSION_TYPE",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "version type",
+          "constantType": "Ljava/lang/String;"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getEstimatedBitRate",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getFormat",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getIntParameterValue",
+          "desc": "(Ljava/lang/String;)I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMetadataOverride",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMetadataSupportMode",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getStrParameterValue",
+          "desc": "(Ljava/lang/String;)Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedFormats",
+          "desc": "()[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedIntParameterRange",
+          "desc": "(Ljava/lang/String;)[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedIntParameters",
+          "desc": "()[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedMetadataKeys",
+          "desc": "()[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedStrParameterValues",
+          "desc": "(Ljava/lang/String;)[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedStrParameters",
+          "desc": "()[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setFormat",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setMetadata",
+          "desc": "(Ljava/lang/String;Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setMetadataOverride",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setParameter",
+          "desc": "(Ljava/lang/String;I)I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setParameter",
+          "desc": "(Ljava/lang/String;Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/ImageFormatControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/FormatControl"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getEstimatedImageSize",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/MIDIChannelControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getChannelControl",
+          "desc": "(Ljava/lang/String;I)Ljavax/microedition/media/Control;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getChannelControls",
+          "desc": "(I)[Ljavax/microedition/media/Control;",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/PanControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getPan",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setPan",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/PriorityControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getPriority",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setPriority",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/VideoFormatControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/FormatControl"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": []
+    },
+    {
+      "name": "javax/microedition/amms/control/audio3d/CommitControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "commit",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isDeferred",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setDeferred",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/audio3d/DirectivityControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/audio3d/OrientationControl"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getParameters",
+          "desc": "()[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setParameters",
+          "desc": "(III)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/audio3d/DistanceAttenuationControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getMaxDistance",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMinDistance",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMuteAfterMax",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getRolloffFactor",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setParameters",
+          "desc": "(IIZI)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/audio3d/DopplerControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getVelocityCartesian",
+          "desc": "()[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isEnabled",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setEnabled",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setVelocityCartesian",
+          "desc": "(III)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setVelocitySpherical",
+          "desc": "(III)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/audio3d/LocationControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getCartesian",
+          "desc": "()[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setCartesian",
+          "desc": "(III)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setSpherical",
+          "desc": "(III)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/audio3d/MacroscopicControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/audio3d/OrientationControl"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getSize",
+          "desc": "()[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setSize",
+          "desc": "(III)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/audio3d/ObstructionControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getHFLevel",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getLevel",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setHFLevel",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setLevel",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/audio3d/OrientationControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getOrientationVectors",
+          "desc": "()[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setOrientation",
+          "desc": "(III)V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setOrientation",
+          "desc": "([I[I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/audioeffect/AudioVirtualizerControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/EffectControl"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": []
+    },
+    {
+      "name": "javax/microedition/amms/control/audioeffect/ChorusControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/EffectControl"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getAverageDelay",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMaxAverageDelay",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMaxModulationDepth",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMaxModulationRate",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMinModulationRate",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getModulationDepth",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getModulationRate",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getWetLevel",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setAverageDelay",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setModulationDepth",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setModulationRate",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setWetLevel",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/audioeffect/EqualizerControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/EffectControl"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "UNDEFINED",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1004",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getBand",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getBandLevel",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "getBass",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getCenterFreq",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "getMaxBandLevel",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMinBandLevel",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getNumberOfBands",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getTreble",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setBandLevel",
+          "desc": "(II)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setBass",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setTreble",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/audioeffect/ReverbControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/EffectControl"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getReverbLevel",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getReverbTime",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setReverbLevel",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setReverbTime",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "javax/microedition/media/MediaException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/audioeffect/ReverbSourceControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "DISCONNECT",
+          "desc": "I",
+          "access": 25,
+          "constant": "2147483647",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getRoomLevel",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setRoomLevel",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/camera/CameraControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "ROTATE_LEFT",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "ROTATE_NONE",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "ROTATE_RIGHT",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "UNKNOWN",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1004",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "enableShutterFeedback",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getCameraRotation",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getExposureMode",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getStillResolution",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedExposureModes",
+          "desc": "()[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedStillResolutions",
+          "desc": "()[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedVideoResolutions",
+          "desc": "()[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getVideoResolution",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isShutterFeedbackEnabled",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setExposureMode",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setStillResolution",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setVideoResolution",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/IllegalStateException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/camera/ExposureControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getExposureCompensation",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getExposureTime",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getExposureValue",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getFStop",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getISO",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getLightMetering",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMaxExposureTime",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMinExposureTime",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedExposureCompensations",
+          "desc": "()[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedFStops",
+          "desc": "()[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedISOs",
+          "desc": "()[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedLightMeterings",
+          "desc": "()[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setExposureCompensation",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setExposureTime",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setFStop",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setISO",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setLightMetering",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/camera/FlashControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "AUTO",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        },
+        {
+          "name": "AUTO_WITH_REDEYEREDUCE",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "FILLIN",
+          "desc": "I",
+          "access": 25,
+          "constant": "6",
+          "constantType": "I"
+        },
+        {
+          "name": "FORCE",
+          "desc": "I",
+          "access": 25,
+          "constant": "4",
+          "constantType": "I"
+        },
+        {
+          "name": "FORCE_WITH_REDEYEREDUCE",
+          "desc": "I",
+          "access": 25,
+          "constant": "5",
+          "constantType": "I"
+        },
+        {
+          "name": "OFF",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getMode",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getSupportedModes",
+          "desc": "()[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isFlashReady",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setMode",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/camera/FocusControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "AUTO",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1000",
+          "constantType": "I"
+        },
+        {
+          "name": "AUTO_LOCK",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1005",
+          "constantType": "I"
+        },
+        {
+          "name": "NEXT",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1001",
+          "constantType": "I"
+        },
+        {
+          "name": "PREVIOUS",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1002",
+          "constantType": "I"
+        },
+        {
+          "name": "UNKNOWN",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1004",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getFocus",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getFocusSteps",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMacro",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMinFocus",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isAutoFocusSupported",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isMacroSupported",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isManualFocusSupported",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setFocus",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setMacro",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/camera/SnapshotControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "FREEZE",
+          "desc": "I",
+          "access": 25,
+          "constant": "-2",
+          "constantType": "I"
+        },
+        {
+          "name": "FREEZE_AND_CONFIRM",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1",
+          "constantType": "I"
+        },
+        {
+          "name": "SHOOTING_STOPPED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "SHOOTING_STOPPED",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "STORAGE_ERROR",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "STORAGE_ERROR",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "WAITING_UNFREEZE",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "WAITING_UNFREEZE",
+          "constantType": "Ljava/lang/String;"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getDirectory",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getFilePrefix",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getFileSuffix",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setDirectory",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException",
+            "java/lang/SecurityException"
+          ]
+        },
+        {
+          "name": "setFilePrefix",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setFileSuffix",
+          "desc": "(Ljava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "start",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/SecurityException"
+          ]
+        },
+        {
+          "name": "stop",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "unfreeze",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": []
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/camera/ZoomControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "NEXT",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1001",
+          "constantType": "I"
+        },
+        {
+          "name": "PREVIOUS",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1002",
+          "constantType": "I"
+        },
+        {
+          "name": "UNKNOWN",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1004",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getDigitalZoom",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getDigitalZoomLevels",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMaxDigitalZoom",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMaxOpticalZoom",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMinFocalLength",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getOpticalZoom",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getOpticalZoomLevels",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setDigitalZoom",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setOpticalZoom",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/imageeffect/ImageEffectControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/EffectControl"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": []
+    },
+    {
+      "name": "javax/microedition/amms/control/imageeffect/ImageTonalityControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/EffectControl"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "AUTO",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1000",
+          "constantType": "I"
+        },
+        {
+          "name": "NEXT",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1001",
+          "constantType": "I"
+        },
+        {
+          "name": "PREVIOUS",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1002",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getBrightness",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getBrightnessLevels",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getContrast",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getContrastLevels",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getGamma",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getGammaLevels",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setBrightness",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setContrast",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setGamma",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/imageeffect/ImageTransformControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/EffectControl"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "getSourceHeight",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalStateException"
+          ]
+        },
+        {
+          "name": "getSourceWidth",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalStateException"
+          ]
+        },
+        {
+          "name": "setSourceRect",
+          "desc": "(IIII)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setTargetSize",
+          "desc": "(III)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/imageeffect/OverlayControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/EffectControl"
+      ],
+      "access": 1537,
+      "fields": [],
+      "methods": [
+        {
+          "name": "clear",
+          "desc": "()V",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getImage",
+          "desc": "(I)Ljava/lang/Object;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "insertImage",
+          "desc": "(Ljava/lang/Object;III)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "insertImage",
+          "desc": "(Ljava/lang/Object;IIII)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "numberOfImages",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "removeImage",
+          "desc": "(Ljava/lang/Object;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/imageeffect/WhiteBalanceControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/amms/control/EffectControl"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "AUTO",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1000",
+          "constantType": "I"
+        },
+        {
+          "name": "NEXT",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1001",
+          "constantType": "I"
+        },
+        {
+          "name": "PREVIOUS",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1002",
+          "constantType": "I"
+        },
+        {
+          "name": "UNKNOWN",
+          "desc": "I",
+          "access": 25,
+          "constant": "-1004",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getColorTemp",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMaxColorTemp",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMinColorTemp",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getNumberOfSteps",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setColorTemp",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/tuner/RDSControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "RADIO_CHANGED",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "radio_changed",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "RDS_NEW_ALARM",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "RDS_ALARM",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "RDS_NEW_DATA",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "RDS_NEW_DATA",
+          "constantType": "Ljava/lang/String;"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getAutomaticSwitching",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getAutomaticTA",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getCT",
+          "desc": "()Ljava/util/Date;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getFreqsByPTY",
+          "desc": "(S)[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getFreqsByTA",
+          "desc": "(Z)[[I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getPI",
+          "desc": "()S",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getPS",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getPSByPTY",
+          "desc": "(S)[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getPSByTA",
+          "desc": "(Z)[Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getPTY",
+          "desc": "()S",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getPTYString",
+          "desc": "(Z)Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getRT",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getTA",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getTP",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "isRDSSignal",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "setAutomaticSwitching",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setAutomaticTA",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "javax/microedition/amms/control/tuner/TunerControl",
+      "superName": "java/lang/Object",
+      "interfaces": [
+        "javax/microedition/media/Control"
+      ],
+      "access": 1537,
+      "fields": [
+        {
+          "name": "AUTO",
+          "desc": "I",
+          "access": 25,
+          "constant": "3",
+          "constantType": "I"
+        },
+        {
+          "name": "MODULATION_AM",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "am",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "MODULATION_FM",
+          "desc": "Ljava/lang/String;",
+          "access": 25,
+          "constant": "fm",
+          "constantType": "Ljava/lang/String;"
+        },
+        {
+          "name": "MONO",
+          "desc": "I",
+          "access": 25,
+          "constant": "1",
+          "constantType": "I"
+        },
+        {
+          "name": "STEREO",
+          "desc": "I",
+          "access": 25,
+          "constant": "2",
+          "constantType": "I"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getFrequency",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getMaxFreq",
+          "desc": "(Ljava/lang/String;)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "getMinFreq",
+          "desc": "(Ljava/lang/String;)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "getModulation",
+          "desc": "()Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getNumberOfPresets",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getPresetFrequency",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "getPresetModulation",
+          "desc": "(I)Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "getPresetName",
+          "desc": "(I)Ljava/lang/String;",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "getPresetStereoMode",
+          "desc": "(I)I",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getSignalStrength",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "getSquelch",
+          "desc": "()Z",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "getStereoMode",
+          "desc": "()I",
+          "access": 1025,
+          "exceptions": []
+        },
+        {
+          "name": "seek",
+          "desc": "(ILjava/lang/String;Z)I",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setFrequency",
+          "desc": "(ILjava/lang/String;)I",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setPreset",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setPreset",
+          "desc": "(IILjava/lang/String;I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setPresetName",
+          "desc": "(ILjava/lang/String;)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "setSquelch",
+          "desc": "(Z)V",
+          "access": 1025,
+          "exceptions": [
+            "javax/microedition/media/MediaException"
+          ]
+        },
+        {
+          "name": "setStereoMode",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        },
+        {
+          "name": "usePreset",
+          "desc": "(I)V",
+          "access": 1025,
+          "exceptions": [
+            "java/lang/IllegalArgumentException"
+          ]
+        }
+      ]
+    }
+  ]
+}

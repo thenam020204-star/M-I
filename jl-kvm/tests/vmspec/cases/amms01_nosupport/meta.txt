@@ -1,0 +1,5 @@
+mode: spec-only
+stubs: jsr234
+source: JSR-234 (Advanced Multimedia Supplements) as remembered - there is no javadoc or SDK for it in the repo (PLAN V15 line): GlobalManager.createEffectModule / createSoundSource3D / getSpectator "MediaException - if ... is not supported", createMediaProcessor "MediaException - if the content type is not supported", getSupportedSoundSource3DPlayerTypes / getSupportedMediaProcessorInputTypes (empty when unsupported), getControl "null if the Control is not supported", getControls (empty array); MediaProcessor state constants equal Player's (100 200 300 400, UNKNOWN -1).
+notes: UNVERIFIED (docs/jsr.md): all of it, including null-argument NullPointerExceptions of createMediaProcessor / getControl. The oracles are not run.
+diverges: phoneme|kemulator
