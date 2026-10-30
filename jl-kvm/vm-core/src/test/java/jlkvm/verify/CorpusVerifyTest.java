@@ -22,8 +22,9 @@ public class CorpusVerifyTest {
 
     static ClassSource stubs(boolean cldc11) throws Exception {
         MapSource s = new MapSource();
-        File[] fs = {Corpus.stub(cldc11 ? "cldcapi11" : "cldcapi10"), Corpus.stub("midpapi20"), Corpus.stub("microemu-nokiaui")};
-        for (File f : fs) if (f != null) s.m.putAll(Corpus.classes(f));
+        File[] fs = {Corpus.stub(cldc11 ? "cldcapi11" : "cldcapi10"), Corpus.stub("midpapi20"), Corpus.stub("microemu-nokiaui"),
+            Corpus.stub("microemu-jsr-120"), Corpus.stub("microemu-jsr-75"), new File(Corpus.ROOT, "vm-classlib/build/rom/rom-jsr75-pim.jar")};   // T32a: WMA / FileConnection stubs, PIM = this project's own layer (no open stub)
+        for (File f : fs) if (f != null && f.isFile()) s.m.putAll(Corpus.classes(f));
         return s;
     }
 

@@ -94,6 +94,7 @@ public final class MemoryFs implements HostFs {
         Node n = nodes.get(path);
         if (n == null) throw new IOException("does not exist");
         if (path.endsWith("/")) throw new IOException("a root cannot be renamed");
+        if (newName.length() == 0 || newName.indexOf('/') >= 0) throw new IOException("a bare name is needed to rename");
         String target = parent(path) + newName;
         check(target);
         if (nodes.containsKey(target)) throw new IOException("target exists");

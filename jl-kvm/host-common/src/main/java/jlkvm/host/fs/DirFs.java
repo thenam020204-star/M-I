@@ -109,6 +109,7 @@ public final class DirFs implements HostFs {
         File f = resolve(path);
         if (path.equals(HostFs.validate(roots, path))) throw new IOException("a root cannot be renamed");
         if (!f.exists()) throw new IOException("does not exist");
+        if (newName.length() == 0 || newName.indexOf('/') >= 0) throw new IOException("a bare name is needed to rename");
         String target = path.substring(0, path.lastIndexOf('/') + 1) + newName;
         File t = resolve(target);
         if (t.exists()) throw new IOException("target exists");

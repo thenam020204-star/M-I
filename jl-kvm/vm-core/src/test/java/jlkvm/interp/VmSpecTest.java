@@ -43,6 +43,8 @@ public class VmSpecTest {
             if (meta.contains("driven-by-test:")) continue;   // needs a host driver: has its own test (T16 InputReplayTest)
             boolean cldc10 = meta.contains("cldc: cldc10"), noverify = meta.contains("--noverify");
             if (stress > 0 && (noverify || c.getName().startsWith("g0"))) continue;   // no type maps without verification; g0x have their own stress tests (GcTest)
+            File prof = new File(c, "profile.json");   // T32a: a case may bring its own device profile (sms.mode, file.permission...)
+            RunJar.profileJson = prof.isFile() ? prof.getPath() : null;
             ByteArrayOutputStream bo = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(bo, true, "UTF-8");
             boolean done = stress == 0 ? RunJar.run(rom.getPath(), jar.getPath(), cldc10, noverify, false, false, 60, ps)
@@ -51,6 +53,7 @@ public class VmSpecTest {
             for (String l : new String(bo.toByteArray(), "UTF-8").split("\n")) if (l.startsWith("> ")) got.add(l);
             List<String> want = new ArrayList<String>();
             for (String l : new String(Files.readAllBytes(exp.toPath()), "UTF-8").split("\n")) if (l.startsWith("> ")) want.add(l);
+            RunJar.profileJson = null;
             n++;
             if (!done) bad.append("\n  ").append(c.getName()).append(": timeout");
             else if (!got.equals(want)) bad.append("\n  ").append(c.getName()).append(": got ").append(got).append(" want ").append(want);

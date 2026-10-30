@@ -103,3 +103,8 @@ real key codes when the profile uses non-Nokia codes (the FullCanvas constants a
 Not done: `Graphics` primitives other than the ones through `Surface` natives ignore alpha only on hosts that cannot blend (android `SurfaceFactory`
 is M6); `DirectUtils.getFont/setHeader`, `DeviceControl.getUserInactivityTime` (S40 6th, T29); real vibration/backlight on host-android (M6); WAV
 through a real decoder (host AudioDevice, M6).
+
+## T28-f1 (done with T32a)
+
+`DirectGraphicsImp.read()` no longer allocates the `{x0, y0, x1, y1}` array on every `getPixels`: it fills the wrapper's own `vis` field and returns it (valid until the next `read`); behaviour unchanged (`nk01_directgraphics_pixels`, `nk02_transforms` pass).
+WMA / JSR-75 layers are described in `docs/jsr.md`.

@@ -51,7 +51,7 @@ public class NetHostTest {
 
     private static String others(String cls, String comm) {
         return "> https://127.0.0.1:9/: " + cls + "\n> socket://127.0.0.1:9: " + cls + "\n> serversocket://:9: " + cls + "\n> datagram://127.0.0.1:9: " + cls
-            + "\n> ssl://127.0.0.1:9: " + cls + "\n> comm:COM0: " + comm + "\n> sms://+1234567: " + cls + "\n";
+            + "\n> ssl://127.0.0.1:9: " + cls + "\n> comm:COM0: " + comm + "\n> mms://+1234567: " + cls + "\n";
     }
 
     @Test public void offlineGivesIOException() throws Exception {
@@ -109,7 +109,7 @@ public class NetHostTest {
         s.start();
         try {
             String url = "http://127.0.0.1:" + s.getAddress().getPort();
-            HeadlessRunner.Result r = run("{\"default\": \"offline\", \"http\": \"allow\", \"https\": \"allow\", \"socket\": \"allow\", \"serversocket\": \"allow\", \"datagram\": \"allow\", \"ssl\": \"allow\", \"sms\": \"allow\"}", url);
+            HeadlessRunner.Result r = run("{\"default\": \"offline\", \"http\": \"allow\", \"https\": \"allow\", \"socket\": \"allow\", \"serversocket\": \"allow\", \"datagram\": \"allow\", \"ssl\": \"allow\", \"mms\": \"allow\"}", url);
             String out = DesktopTestSupport.onlyGuestLines(r.stdout);
             assertEquals("> http open: ok true\n"
                 + "> parts: protocol=http host=127.0.0.1 port>0=true file=/hello query=x=1 ref=frag\n"

@@ -28,7 +28,7 @@ public class NetMIDlet extends MIDlet {
     protected void startApp() {
         try {
             String base = getAppProperty("Test-Url");
-            String[] others = {"https://127.0.0.1:9/", "socket://127.0.0.1:9", "serversocket://:9", "datagram://127.0.0.1:9", "ssl://127.0.0.1:9", "comm:COM0", "sms://+1234567"};
+            String[] others = {"https://127.0.0.1:9/", "socket://127.0.0.1:9", "serversocket://:9", "datagram://127.0.0.1:9", "ssl://127.0.0.1:9", "comm:COM0", "mms://+1234567"};
             try {
                 Connection c = Connector.open(base + "/hello?x=1#frag");
                 p("http open: ok " + (c instanceof HttpConnection));

@@ -102,3 +102,15 @@ Kết quả: 25/68 sạch theo CLDC 1.1 + MIDP 2.0.
 classes that are defects of the (modified) game, not missing API: `q.a(Graphics)` of "Vuong Quoc Sung Vat 3 - Kim" calls `new e(Graphics)` but class `e`
 has no such constructor, and `MainCanvas.keyProcess()` of "Vuong Quoc Sung Vat 2 - Tim" calls `MM.wap()V` that class `MM` does not have. 3 of the 12 games
 (Kiem Linh - Co Kiem Hon Mong, Ma Gioi Chien Ky, Total Tournament) are now clean for CLDC 1.1 + MIDP 2.0 + Nokia UI.
+
+## Re-scan with the WMA 1.1 and JSR-75 DBs (T32a, 2026-10-30)
+
+`tools/jarscan/profiles/cldc11-midp20-nokiaui-jsr.json` (apis `cldc-1.1`, `midp-2.0`, `s40dp2-nokia-ui`, `s40dp2-wma-1.1`, `jsr75-fc`, `jsr75-pim`) on all 68 JARs (WIPI excluded):
+**0 MISSING_* about `javax.wireless.messaging`, `javax.microedition.io.file` or `javax.microedition.pim`** (33 + 9 + 3 games). What is left in the 68: 6 `MISSING_CLASS` of 1 game
+(`javax.microedition.media.control.MIDIControl`, The Oregon Trail: JSR-135, T27, not in this scan profile) and 3 `MISSING_METHOD` on the games' OWN classes (defects of the modified games, see above:
+`MM.wap()V`, `e.<init>(Graphics)`, `ac.a(Lcm;III[BIII)V`). 58/68 are J2ME-safe with these APIs (the rest: missing StackMap / class version 50, unchanged).
+
+What the games call (constant-pool scan of the 68 JARs; the URL strings are `sms://`, `sms://+`, `file:///root1/`, `file:///e:/`, `file:///c:/`, `file:///root/`, `file:///`):
+`MessageConnection.newMessage(String)` 34 games, `newMessage(String,String)` 3, `send` 32, `close` 13, `numberOfSegments` 5, `receive` 3, `setMessageListener` 3, `TextMessage.setPayloadText` 34,
+`Message/TextMessage.setAddress` 14, `getAddress` 1; `FileConnection.create/exists/close` 9, `delete` 8, `openInputStream/openOutputStream` 8, `openDataInputStream/openDataOutputStream` 1,
+`FileSystemRegistry.listRoots` 8; `PIM.getInstance/listPIMLists/openPIMList(IILString)` 3, `ContactList.items/close` 3, `Contact.getString(II)` 3. All of them are in `docs/jsr.md`.
