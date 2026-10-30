@@ -1,3 +1,4 @@
 mode: oracle
 source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM; T18/T19 classlib tests); API subset = CLDC 1.1 javadoc
-diverges: phoneme
+diverges: microemu|freej2me|kemulator|phoneme
+notes: T05c: Integer.parseInt("+7") is a NumberFormatException (CLDC 1.1 javadoc: only an ASCII minus sign may be the first character; phoneME agrees), the JDK-hosted oracles accept it. phoneME differs on Character.toUpperCase(U+00FF) (it gives U+00DF, a table bug), kept as JDK-like U+0178. See docs/oracles.md.

@@ -1,3 +1,4 @@
 mode: oracle
 source: oracle: MicroEmulator 2.0.4 and FreeJ2ME-Plus (both JVM-hosted, PLAN D18 level 4-5, not a CLDC VM; T18/T19 classlib tests); API subset = CLDC 1.1 javadoc
-diverges: phoneme
+diverges: microemu|freej2me|kemulator
+notes: T05c: InputStreamReader.markSupported() is true when the byte stream supports mark (phoneME); the JDK-hosted oracles return false. See docs/oracles.md "Quyết định T05c".
