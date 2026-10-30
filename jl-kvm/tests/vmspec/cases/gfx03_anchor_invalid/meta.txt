@@ -1,0 +1,4 @@
+mode: spec-only
+source: MIDP 2.0 javax.microedition.lcdui.Graphics javadoc, anchor section: exactly one horizontal (LEFT/HCENTER/RIGHT) and one vertical (TOP/BOTTOM/VCENTER, BASELINE for text only) value, or zero (== TOP|LEFT); drawImage/drawRegion/copyArea/drawString/drawChar(s)/drawSubstring throw IllegalArgumentException otherwise ("IAE if anchor is not a legal value"). BASELINE is not legal for images, VCENTER is not legal for text.
+diverges: microemu|freej2me
+notes: oracles are lenient (FreeJ2ME never throws for drawRegion/copyArea nor for BASELINE on images; MicroEmulator aborts at copyArea), so expected.txt is the spec. T23-f1.

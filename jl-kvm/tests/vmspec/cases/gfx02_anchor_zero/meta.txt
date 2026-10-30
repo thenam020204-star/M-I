@@ -1,0 +1,3 @@
+mode: oracle
+source: MIDP 2.0 javax.microedition.lcdui.Graphics javadoc ("Using zero for the anchor point value gives results identical to using TOP | LEFT."; BASELINE invalid for images, VCENTER invalid for text; two horizontal or two vertical values -> IllegalArgumentException). Output is pixel equality (getRGB) between anchor 0 and TOP|LEFT, so it does not depend on glyph rasterisation.
+notes: T23-f1 regression (game IMARPG22 drew the map with drawRegion anchor 0 -> IAE every frame).

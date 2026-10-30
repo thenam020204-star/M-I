@@ -1,0 +1,8 @@
+> drawImage 0==TL true drawn true
+> drawRegion 0==TL true drawn true
+> drawRegion rot90 0==TL true drawn true
+> drawRegion whole 0==TL true
+> drawString 0==TL true drawn true
+> drawSubstring 0==TL true
+> drawChar 0==TL true
+> drawChars 0==TL true

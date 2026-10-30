@@ -1,0 +1,10 @@
+> copyArea 0==TL true
+> drawImage invalid IAE IAE IAE IAE IAE IAE IAE 
+> drawRegion invalid IAE IAE IAE IAE IAE IAE IAE 
+> drawString invalid IAE IAE IAE IAE IAE IAE IAE 
+> drawChar invalid IAE IAE IAE IAE IAE IAE IAE 
+> drawChars invalid IAE IAE IAE IAE IAE IAE IAE 
+> drawSubstring invalid IAE IAE IAE IAE IAE IAE IAE 
+> BASELINE img=IAE region=IAE string=ok char=ok
+> VCENTER img=ok region=ok string=IAE
+> valid combinations ok true

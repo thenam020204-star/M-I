@@ -278,6 +278,7 @@ public class Graphics {
     }
 
     private void text(char[] c, int off, int len, int x, int y, int anchor) {
+        if (anchor == 0) anchor = TOP | LEFT; // javadoc: zero anchor == TOP | LEFT
         int h = anchor & (LEFT | HCENTER | RIGHT), v = anchor & (TOP | BASELINE | BOTTOM | VCENTER);
         if ((h != LEFT && h != HCENTER && h != RIGHT) || (v != TOP && v != BASELINE && v != BOTTOM) || (anchor & ~(h | v)) != 0)
             throw new IllegalArgumentException("anchor");
@@ -292,6 +293,7 @@ public class Graphics {
 
     /** Same as text() for a String: the host reads the characters itself, so nothing is allocated per call. */
     private void textStr(String str, int off, int len, int x, int y, int anchor) {
+        if (anchor == 0) anchor = TOP | LEFT; // javadoc: zero anchor == TOP | LEFT
         int h = anchor & (LEFT | HCENTER | RIGHT), v = anchor & (TOP | BASELINE | BOTTOM | VCENTER);
         if ((h != LEFT && h != HCENTER && h != RIGHT) || (v != TOP && v != BASELINE && v != BOTTOM) || (anchor & ~(h | v)) != 0)
             throw new IllegalArgumentException("anchor");
@@ -348,6 +350,7 @@ public class Graphics {
 
     /** Anchor handling of images / copyArea (BASELINE is invalid there): x / y of the top-left corner. The checks are in placeX (called first). */
     private static int placeX(int x, int w, int anchor) {
+        if (anchor == 0) anchor = TOP | LEFT; // javadoc: zero anchor == TOP | LEFT
         int hh = anchor & (LEFT | HCENTER | RIGHT), vv = anchor & (TOP | VCENTER | BOTTOM);
         if ((hh != LEFT && hh != HCENTER && hh != RIGHT) || (vv != TOP && vv != VCENTER && vv != BOTTOM) || (anchor & ~(hh | vv)) != 0)
             throw new IllegalArgumentException("anchor");
@@ -355,6 +358,7 @@ public class Graphics {
     }
 
     private static int placeY(int y, int h, int anchor) {
+        if (anchor == 0) anchor = TOP | LEFT;
         int vv = anchor & (TOP | VCENTER | BOTTOM);
         return vv == VCENTER ? y - (h >> 1) : vv == BOTTOM ? y - h : y;
     }

@@ -158,7 +158,7 @@ public class Gfx01Graphics extends MIDlet {
         Image img = Image.createImage(8, 8);
         try {
             switch (k) {
-                case 0: g.drawString("x", 0, 0, 0); break;
+                case 0: g.drawString("x", 0, 0, Graphics.LEFT | Graphics.RIGHT | Graphics.TOP); break;
                 case 1: g.drawImage(img, 0, 0, Graphics.BASELINE | Graphics.LEFT); break;
                 case 2: g.drawImage(null, 0, 0, 0); break;
                 case 3: g.drawRegion(img, 0, 0, 4, 4, 9, 0, 0, Graphics.TOP | Graphics.LEFT); break;
