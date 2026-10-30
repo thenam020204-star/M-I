@@ -1,0 +1,52 @@
+> length 12 charAt o
+> substring World|Hello||
+> indexOf 4 8 -1 7 -1 0 12 2
+> lastIndexOf 8 4 0 -1 10
+> starts/ends truetruetruefalsefalsetruetruefalse
+> equals truefalsefalsetruefalsetrue
+> compareTo -1 1 -1 1 0 -7
+> trim [a b] [] [x]
+> replace bonono banana
+> case MIXED 123 mixed 123
+> concat abcd ab
+> hashCode 0 97 -505841268 -609428141
+> valueOf 12-34truecnullxyzyz
+> toCharArray 12Hd
+> getChars 0World
+> ctor 0abcabcbsb
+> substring-same truetruetrue
+> literal intern truefalsetrue
+> regionMatches truetruefalsefalsefalsetrue
+> toString true
+> ex charAt java.lang.StringIndexOutOfBoundsException
+> ex charAt-1 java.lang.StringIndexOutOfBoundsException
+> ex substring java.lang.StringIndexOutOfBoundsException
+> ex substring2 java.lang.StringIndexOutOfBoundsException
+> ex substring3 java.lang.StringIndexOutOfBoundsException
+> ex null-concat java.lang.NullPointerException
+> ex ctor-null java.lang.NullPointerException
+> ex ctor-range java.lang.StringIndexOutOfBoundsException
+> ex ctor-neg java.lang.StringIndexOutOfBoundsException
+> ex compareTo-null java.lang.NullPointerException
+> ex indexOf-null java.lang.NullPointerException
+> ex startsWith-null java.lang.NullPointerException
+> ex getChars java.lang.StringIndexOutOfBoundsException
+> ex getChars2 IndexOutOfBoundsException-family
+> sb1 a1c2truexynullnull 18
+> sb2 a1c 3
+> sb3 falseq7aZZ1c
+> sb4 c1ZZa7qeslaf
+> sb5 TZ7qeslaf Z
+> sb6 TZ7qeslaf
+> sb cap true true true
+> sb7 abcdef true
+> sb getChars bcd
+> ex sb insert java.lang.StringIndexOutOfBoundsException
+> ex sb charAt java.lang.StringIndexOutOfBoundsException
+> ex sb setLength java.lang.StringIndexOutOfBoundsException
+> ex sb delete no-exception
+> ex sb delete2 java.lang.StringIndexOutOfBoundsException
+> ex sb deleteCharAt java.lang.StringIndexOutOfBoundsException
+> ex sb ctor java.lang.NegativeArraySizeException
+> ex sb ctor null java.lang.NullPointerException
+> ex sb setCharAt java.lang.StringIndexOutOfBoundsException

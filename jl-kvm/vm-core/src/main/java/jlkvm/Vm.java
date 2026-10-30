@@ -169,6 +169,12 @@ public final class Vm implements ExecutionEngine, GuestServices {
         int tobj = heap.allocObject(linker.find("java/lang/Thread").id);
         heap.putInt(tobj, threadVmId, t.id);
         t.threadObj = tobj;
+        if (threadPriority >= 0) heap.putInt(tobj, threadPriority, 5);   // Thread.NORM_PRIORITY: the VM builds this object without running a constructor
+        jlkvm.link.RField nf = linker.find("java/lang/Thread").findDeclaredField("name", null);
+        if (nf != null) {
+            int nm = newString("main");   // may collect: tobj is a root through t.threadObj
+            if (nm != 0) heap.putInt(t.threadObj, nf.slot, nm);
+        }
         t.initFirst = c;   // JVMS 5.5: the class of a static method is initialised before the method runs
         int s = arg == null ? 0 : newString(arg);
         enterFrame(t, m, s);

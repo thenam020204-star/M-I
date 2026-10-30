@@ -71,4 +71,80 @@ public class RomGenTest {
         List<String> p = RomGen.check(jar(m));
         assertEquals(p.toString(), 3, p.size());
     }
+
+    // ------------------------------------------------------------------ end to end (needs /opt/jdk8: javac 1.3 target)
+
+    private static final java.nio.file.Path ROOT = java.nio.file.Paths.get("..", "..").toAbsolutePath().normalize();
+    private static final java.nio.file.Path JDK8 = java.nio.file.Paths.get(System.getenv("JDK8_HOME") != null ? System.getenv("JDK8_HOME") : "/opt/jdk8");
+
+    private static void needJdk8() {
+        org.junit.Assume.assumeTrue("JDK 8 not found", Files.isExecutable(JDK8.resolve("bin/javac")));
+    }
+
+    private static Path src(String objectBody, String... extra) throws Exception {
+        Path d = Files.createTempDirectory("romsrc");
+        Path obj = d.resolve("java/lang/Object.java");
+        Files.createDirectories(obj.getParent());
+        Files.write(obj, ("package java.lang; public class Object { public Object() { } " + objectBody + " }").getBytes("UTF-8"));
+        for (int i = 0; i + 1 < extra.length; i += 2) {
+            Path f = d.resolve(extra[i]);
+            Files.createDirectories(f.getParent());
+            Files.write(f, extra[i + 1].getBytes("UTF-8"));
+        }
+        return d;
+    }
+
+    @Test
+    public void realLibraryBuildsVerifiesAndMatchesCldc11() throws Exception {
+        needJdk8();
+        Path out = Files.createTempFile("realrom", ".jar");
+        int n = RomGen.build(java.util.Collections.singletonList(ROOT.resolve("vm-classlib/src")), out, null, null, JDK8,
+                ROOT.resolve("tools/api-sigs/db/cldc-1.1.json"), java.util.Collections.singletonList("jlkvm/internal/"), true);
+        assertTrue("classes: " + n, n >= 81);
+        assertEquals(new ArrayList<String>(), RomGen.check(out));
+    }
+
+    @Test
+    public void guestSourceUsingJavaSeIsRejected() throws Exception {
+        needJdk8();
+        Path s = src("", "a/Bad.java", "package a; public class Bad { Object m() { return new java.util.HashMap(); } }");
+        try {
+            RomGen.build(java.util.Collections.singletonList(s), Files.createTempFile("bad", ".jar"), null, null, JDK8, null, new ArrayList<String>(), true);
+            fail("a guest class using java.util.HashMap must not build");
+        } catch (RomGen.RomException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("javac failed"));
+        }
+    }
+
+    @Test
+    public void guestSourceUsingAnUnlistedLibraryClassIsRejected() throws Exception {
+        needJdk8();
+        // String is not part of this tiny library: javac sees only the library itself (D11), never rt.jar
+        Path s = src("public String toString() { return null; }");
+        try {
+            RomGen.build(java.util.Collections.singletonList(s), Files.createTempFile("bad", ".jar"), null, null, JDK8, null, new ArrayList<String>(), true);
+            fail("String is outside the library");
+        } catch (RomGen.RomException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("javac failed"));
+        }
+    }
+
+    @Test
+    public void surfaceDifferenceFailsTheBuild() throws Exception {
+        needJdk8();
+        Path db = Files.createTempFile("db", ".json");
+        // DB of a library with only java/lang/Object { Object() }, then a build with one more public method
+        Path ok = src("");
+        Path okJar = Files.createTempFile("ok", ".jar");
+        RomGen.build(java.util.Collections.singletonList(ok), okJar, null, null, JDK8, null, new ArrayList<String>(), true);
+        jlkvm.tools.apisigs.Extractor.extract("t", "t", null, okJar).write(db);
+        RomGen.build(java.util.Collections.singletonList(ok), Files.createTempFile("ok2", ".jar"), null, null, JDK8, db, new ArrayList<String>(), true);   // same surface: passes
+        Path extra = src("public void extra() { }");
+        try {
+            RomGen.build(java.util.Collections.singletonList(extra), Files.createTempFile("x", ".jar"), null, null, JDK8, db, new ArrayList<String>(), true);
+            fail("an additional public method must fail the diff (D9)");
+        } catch (RomGen.RomException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains("API surface differs") && e.getMessage().contains("extra"));
+        }
+    }
 }

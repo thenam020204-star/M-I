@@ -1,0 +1,6 @@
+> jlkvm.internal.Encoding ClassNotFoundException
+> jlkvm.internal.io.ConnectionBase ClassNotFoundException
+> jlkvm.Anything ClassNotFoundException
+> java.util.Vector found java.util.Vector
+> java.util.ArrayList ClassNotFoundException
+> java.lang.String[] found [Ljava.lang.String;

@@ -89,7 +89,7 @@ public final class Character {
         if (ch == 0xAA || ch == 0xB5 || ch == 0xBA || ch == 0xDF) {
             return true;
         }
-        return toUpperCase(ch) != ch || (ch == 0x131 || ch == 0x138 || ch == 0x149 || (ch >= 0x1E96 && ch <= 0x1E9D));
+        return toUpperCase(ch) != ch || (ch == 0x131 || ch == 0x138 || ch == 0x149 || (ch >= 0x1E96 && ch <= 0x1E9D) || ch == 0x1E9F);
     }
 
     public static boolean isUpperCase(char ch) {

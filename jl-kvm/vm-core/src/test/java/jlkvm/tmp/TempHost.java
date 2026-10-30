@@ -33,15 +33,13 @@ public final class TempHost implements HostPlatform {
     public ClassSource rom() { return rom; }
 
     public void registerNatives(final NativeRegistry r) {
-        r.register("java/io/PrintStream.write0(ILjava/lang/String;)V", new NativeMethod() { public void invoke(NativeContext c) {
-            String s = r.services().string(c.argRef(1));
-            if (c.argInt(0) == 2) System.err.print(s);
-            else { stdout.print(s); stdout.flush(); }
+        r.register("java/lang/ConsoleOutputStream.write0(I[BII)V", new NativeMethod() { public void invoke(NativeContext c) {
+            int arr = c.argRef(1), off = c.argInt(2), len = c.argInt(3);
+            byte[] b = new byte[len];
+            for (int i = 0; i < len; i++) b[i] = c.heap().getByte(arr, off + i);
+            java.io.PrintStream o = c.argInt(0) == 2 ? System.err : stdout;
+            o.write(b, 0, b.length); o.flush();
         } });
-        r.register("java/lang/Float.toString(F)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
-            c.retRef(r.services().newString(Float.toString(c.argFloat(0)))); } });
-        r.register("java/lang/Double.toString(D)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
-            c.retRef(r.services().newString(Double.toString(c.argDouble(0)))); } });
         r.register("javax/microedition/midlet/MIDlet.getAppProperty0(Ljava/lang/String;)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
             String k = r.services().string(c.argRef(0));
             String v = null;

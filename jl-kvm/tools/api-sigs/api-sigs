@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
-# Launcher: builds the tool on first use, then runs it. Usage: tools/api-sigs/api-sigs diff A.json B.json
+# Launcher: builds the tool on first use (and when its sources changed), then runs it.
+# Usage: tools/api-sigs/api-sigs diff [--ignore INTERNAL_NAME_PREFIX]... A.json B.json | extract ... | count DB.json
 D="$(cd "$(dirname "$0")" && pwd)"; ROOT="$D/../.."
 LIB="$D/build/install/api-sigs/lib"
-[ -d "$LIB" ] || (cd "$ROOT" && ./gradlew -q :tools:api-sigs:installDist >&2) || exit 1
+if [ ! -d "$LIB" ] || [ -n "$(find "$D/src" -name '*.java' -newer "$LIB" 2>/dev/null | head -1)" ]; then
+  (cd "$ROOT" && env -u JAVA_HOME ./gradlew --no-daemon -q :tools:api-sigs:installDist >&2) || exit 1
+  touch "$LIB"
+fi
 exec java -cp "$LIB/*" jlkvm.tools.apisigs.Main "$@" 2> >(grep -v '^Picked up' >&2)

@@ -29,6 +29,7 @@ public final class RunJar {
             else if (a[i].equals("--gc-stats")) stats = true;
             else if (a[i].equals("--heap-kb")) heapKb = Long.parseLong(a[++i]);
             else if (a[i].equals("--deterministic")) deterministic = true;
+            else if (a[i].equals("--profile-json")) profileJson = a[++i];
             else if (a[i].equals("--seed")) hashSeed = Integer.parseInt(a[++i]);
             else if (a[i].equals("--record")) rec = a[++i];
             else if (a[i].equals("--replay")) rep = a[++i];
@@ -68,6 +69,8 @@ public final class RunJar {
 
     /** T14 (D14): deterministic mode (virtual clock) and identity-hash seed for the next runs; hashSeed < 0 = default. */
     public static boolean deterministic;
+    /** T20: device profile JSON (profiles/*.json) for the next runs; null = built-in defaults. */
+    public static String profileJson;
     public static int hashSeed = -1;
 
     /** Extra configuration of the next runs (T16 options: record/replay, profiler...) and a callback when the Vm exists. */
@@ -86,8 +89,9 @@ public final class RunJar {
         cfg.gcVerify = gcVerify;
         cfg.deterministic = deterministic;
         if (hashSeed >= 0) cfg.hashSeed = hashSeed;
-        DeviceProfile p = new DeviceProfile();
-        p.heapBytes = (int) heapBytes;
+        DeviceProfile p = profileJson == null ? new DeviceProfile()
+                : jlkvm.profile.ProfileLoader.fromJson(new String(java.nio.file.Files.readAllBytes(java.nio.file.Paths.get(profileJson)), "UTF-8"));
+        if (profileJson == null || heapBytes != (32L << 20)) p.heapBytes = (int) heapBytes;
         if (cldc10) { p.cldc11 = false; cfg.verifyRom = false; /* the stub ROM is a CLDC 1.1 library */ }
         if (lenient) cfg.strictVerify = false;
         if (debug) cfg.debug = true;

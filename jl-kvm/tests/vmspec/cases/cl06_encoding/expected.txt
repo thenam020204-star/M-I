@@ -1,0 +1,19 @@
+> utf8 encode 61007fc280c3bfc480dfbfe0a080efbfbf
+> latin1 encode 61007f80ff3f3f3f3f
+> utf8 decode 61 7f 80 7ff 800 ffff 
+> latin1 decode 61 80 ff 0 
+> empty |||
+> names c3a9 c3a9 e9 e9 UEE UEE
+> range 42 43 44 | 42 43 44 | |
+> range ex java.lang.StringIndexOutOfBoundsException
+> range ex java.lang.StringIndexOutOfBoundsException
+> null ex java.lang.NullPointerException
+> null enc java.lang.NullPointerException
+> unsupported java.io.UnsupportedEncodingException
+> writer utf8 61007fc280c3bfc480dfbfe0a080efbfbf
+> writer latin1 41e93f
+> reader utf8 chunks 41 e9 20ac 7ff 
+> reader latin1 e9 ff 41 
+> roundtrip utf8 true 28305 9539
+> latin1 len 9539 0 35 63
+> ascii default 48656c6c6f20313233 Hello 123 123

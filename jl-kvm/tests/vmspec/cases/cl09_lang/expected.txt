@@ -1,0 +1,35 @@
+> arraycopy overlap 1123412344
+> arraycopy ex java.lang.ArrayIndexOutOfBoundsException java.lang.ArrayIndexOutOfBoundsException java.lang.ArrayIndexOutOfBoundsException java.lang.NullPointerException java.lang.ArrayStoreException java.lang.ArrayStoreException no-exception
+> arraycopy store ArrayStoreException
+> class vmspec.Cl09Lang$Plain true true false false false true true
+> class2 true true false true true true [I [Ljava.lang.String; [[I java.lang.String java.lang.String [I
+> forName ClassNotFoundException
+> forName null java.lang.NullPointerException
+> newInstance nodefault java.lang.InstantiationException
+> newInstance abstract java.lang.InstantiationException
+> newInstance interface java.lang.InstantiationException
+> newInstance private java.lang.IllegalAccessException
+> resource relative 114
+> resource absolute 114
+> resource missing true true true
+> throwable msg java.lang.Throwable: msg null java.lang.Exception java.lang.Exception: m r java.lang.Error: e
+> exceptions java.lang.IllegalArgumentException Array index out of range: 3 String index out of range: 4 java.lang.NumberFormatException: n java.lang.IndexOutOfBoundsException: i
+> exception types truetruetruetruetruetruetruetruetruetruetruetruetruetruetruetrue
+> weak get true
+> weak clear true
+> weak collected true
+> main thread true 5 true
+> thread new false worker 5
+> thread prio 10 java.lang.IllegalArgumentException java.lang.IllegalArgumentException
+> thread joined false 1
+> restart IllegalThreadStateException
+> sleeper interrupted
+> sleeper dead true
+> subclass run sub true
+> Thread consts 1510
+> sleep ex java.lang.IllegalArgumentException
+> waiter woke 7
+> wait ex java.lang.IllegalMonitorStateException java.lang.IllegalMonitorStateException java.lang.IllegalArgumentException
+> timed wait true
+> object truefalsetruetrue true true [I
+> runtime truetruetrue true

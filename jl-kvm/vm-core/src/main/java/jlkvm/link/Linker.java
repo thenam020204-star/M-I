@@ -94,6 +94,14 @@ public final class Linker implements ClassHierarchy {
         return internalName.startsWith("java/") || internalName.startsWith("javax/microedition/") || internalName.startsWith("com/nokia/mid/");
     }
 
+    /**
+     * ROM-private helper classes (package jlkvm.internal, PLAN T18): public in the ROM because the library's own packages use them,
+     * but not part of any device API, so application classes must not see them (NoClassDefFoundError, as on a device that lacks the class).
+     */
+    public static boolean isRomPrivate(String internalName) {
+        return internalName.startsWith("jlkvm/internal/");
+    }
+
     // ------------------------------------------------------------------ access control (JVMS 2nd ed. 5.4.4)
 
     private static boolean samePackage(ClassInfo a, ClassInfo b) { return a.pkg.equals(b.pkg); }
@@ -148,7 +156,9 @@ public final class Linker implements ClassHierarchy {
         if (!loading.add(name)) throw Errors.error("java/lang/ClassCircularityError", name);
         try {
             ClassInfo sup = null;
+            boolean appClass = !romNames.contains(name);
             if (cf.superName != null) {
+                if (appClass && isRomPrivate(cf.superName)) throw Errors.noClassDef(cf.superName);
                 sup = find(cf.superName);
                 if ((sup.access & ClassFile.ACC_PUBLIC) == 0 && !sup.pkg.equals(pkgOf(name)))
                     throw Errors.error("java/lang/IllegalAccessError", name + " cannot access super class " + sup.name);
@@ -157,6 +167,7 @@ public final class Linker implements ClassHierarchy {
             } else if (!name.equals("java/lang/Object")) throw Errors.error("java/lang/ClassFormatError", name + " has no super class");
             ClassInfo[] ifs = new ClassInfo[cf.interfaces.length];
             for (int i = 0; i < ifs.length; i++) {
+                if (appClass && isRomPrivate(cf.interfaces[i])) throw Errors.noClassDef(cf.interfaces[i]);
                 ifs[i] = find(cf.interfaces[i]);
                 if (!ifs[i].isInterface) throw Errors.error("java/lang/IncompatibleClassChangeError", name + ": " + ifs[i].name + " is not an interface");
                 if ((ifs[i].access & ClassFile.ACC_PUBLIC) == 0 && !ifs[i].pkg.equals(pkgOf(name)))
@@ -317,7 +328,9 @@ public final class Linker implements ClassHierarchy {
     public ClassInfo resolveClass(ClassInfo from, int idx) {
         Object o = from.resolved[idx];
         if (o instanceof ClassInfo) return (ClassInfo) o;
-        ClassInfo c = find(from.cf.pool.className(idx));
+        String cn = from.cf.pool.className(idx);
+        if (!from.fromRom && isRomPrivate(cn)) throw Errors.noClassDef(cn);
+        ClassInfo c = find(cn);
         checkClass(from, c);
         from.resolved[idx] = c;
         return c;

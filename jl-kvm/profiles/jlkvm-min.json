@@ -1,0 +1,29 @@
+{
+  "_comment": "Minimal TEMPORARY profile (PLAN T20). T33 replaces it by the full schema with a source tag (datasheet/sdk/measured) per value; every value here is UNVERIFIED.",
+  "name": "jlkvm-min",
+  "heapBytes": 2097152,
+  "timesliceBytecodes": 2000,
+  "priorityScheduling": true,
+  "threadStackWords": 8192,
+  "cldc11": true,
+  "properties": {
+    "_source": "UNVERIFIED. CLDC 1.1 FR section 6.2 TABLE 1 defines exactly microedition.platform/encoding/configuration/profiles; microedition.locale comes from MIDP 2.0",
+    "microedition.configuration": "CLDC-1.1",
+    "microedition.profiles": "MIDP-2.0",
+    "microedition.platform": "jl-kvm",
+    "microedition.encoding": "ISO-8859-1",
+    "microedition.locale": "en-US"
+  },
+  "network": {
+    "_source": "UNVERIFIED. default offline: no real network traffic in this phase (PLAN scope)",
+    "default": "offline",
+    "http": "deny",
+    "testnet": "allow",
+    "nohandler": "allow"
+  },
+  "timeZone": {
+    "_source": "UNVERIFIED",
+    "id": "GMT",
+    "offsetMillis": 0
+  }
+}

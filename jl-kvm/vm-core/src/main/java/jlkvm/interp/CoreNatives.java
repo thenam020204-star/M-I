@@ -4,6 +4,7 @@ import jlkvm.Vm;
 import jlkvm.heap.Heap;
 import jlkvm.link.ClassInfo;
 import jlkvm.link.Errors;
+import jlkvm.link.Linker;
 import jlkvm.link.RMethod;
 import jlkvm.link.VmThrow;
 import jlkvm.natives.NativeContext;
@@ -43,6 +44,8 @@ public final class CoreNatives {
             if (n == null) { c.throwNew("java/lang/NullPointerException", null); return; }
             ClassInfo k;
             try {
+                RMethod caller = x(c).th.method;
+                if (Linker.isRomPrivate(n.replace('.', '/')) && caller != null && !caller.owner.fromRom) throw Errors.noClassDef(n.replace('.', '/'));
                 k = vm.linker.find(n.replace('.', '/'));
             } catch (VmThrow t) {
                 // only the requested class itself missing is a ClassNotFoundException; a missing superclass stays a NoClassDefFoundError
@@ -124,6 +127,12 @@ public final class CoreNatives {
         r.register("java/lang/System.getProperty0(Ljava/lang/String;)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
             String v = vm.profile.properties.get(vm.string(c.argRef(0)));
             c.retRef(v == null ? 0 : vm.newString(v)); } });
+        r.register("javax/microedition/io/Connector.policy0(Ljava/lang/String;)I", new NativeMethod() { public void invoke(NativeContext c) {
+            c.retInt(vm.profile.networkPolicy(vm.string(c.argRef(0)))); } });
+        r.register("java/util/TimeZone.defaultId0()Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
+            c.retRef(vm.newString(vm.profile.timeZoneId)); } });
+        r.register("java/util/TimeZone.defaultOffset0()I", new NativeMethod() { public void invoke(NativeContext c) {
+            c.retInt(vm.profile.timeZoneOffsetMillis); } });
         r.register("java/lang/Runtime.freeMemory()J", new NativeMethod() { public void invoke(NativeContext c) { c.retLong(heap.freeMemory()); } });
         r.register("java/lang/Runtime.totalMemory()J", new NativeMethod() { public void invoke(NativeContext c) { c.retLong(heap.totalMemory()); } });
         r.register("java/lang/Runtime.gc()V", new NativeMethod() { public void invoke(NativeContext c) { vm.collectGarbage(); } });
@@ -138,6 +147,16 @@ public final class CoreNatives {
             c.retRef(vm.newString(vm.traceText(c.argRef(0)))); } });
 
         // ---- bit conversions, Math
+        r.register("java/lang/Float.toString(F)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
+            c.retRef(vm.newString(FloatText.toString(c.argFloat(0)))); } });
+        r.register("java/lang/Double.toString(D)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
+            c.retRef(vm.newString(FloatText.toString(c.argDouble(0)))); } });
+        r.register("java/lang/Float.parseFloat0(Ljava/lang/String;)F", new NativeMethod() { public void invoke(NativeContext c) {
+            try { c.retFloat(FloatText.parseFloat(vm.string(c.argRef(0)))); }
+            catch (NumberFormatException e) { c.throwNew("java/lang/NumberFormatException", e.getMessage()); } } });
+        r.register("java/lang/Double.parseDouble0(Ljava/lang/String;)D", new NativeMethod() { public void invoke(NativeContext c) {
+            try { c.retDouble(FloatText.parseDouble(vm.string(c.argRef(0)))); }
+            catch (NumberFormatException e) { c.throwNew("java/lang/NumberFormatException", e.getMessage()); } } });
         r.register("java/lang/Float.floatToIntBits(F)I", new NativeMethod() { public void invoke(NativeContext c) { c.retInt(Float.floatToIntBits(c.argFloat(0))); } });
         r.register("java/lang/Float.intBitsToFloat(I)F", new NativeMethod() { public void invoke(NativeContext c) { c.retFloat(Float.intBitsToFloat(c.argInt(0))); } });
         r.register("java/lang/Double.doubleToLongBits(D)J", new NativeMethod() { public void invoke(NativeContext c) { c.retLong(Double.doubleToLongBits(c.argDouble(0))); } });

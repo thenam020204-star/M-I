@@ -24,6 +24,28 @@ public final class DeviceProfile {
     /** System properties ({@code System.getProperty}); unknown keys give null. */
     public final Map<String, String> properties = new HashMap<String, String>();
 
+    /**
+     * Network policy of Connector.open (T20): per scheme "allow" / "deny" / "offline"; a scheme without entry gets {@link #networkDefault}.
+     * Schemes that never use the network ({@link #LOCAL_SCHEMES}) are not subject to it. Real network traffic is out of scope (PLAN).
+     */
+    public String networkDefault = "offline";
+    public final Map<String, String> network = new HashMap<String, String>();
+    public static final String[] LOCAL_SCHEMES = {"file", "comm", "resource", "storage"};
+    /** Default TimeZone (TimeZone.getDefault): id and raw offset in milliseconds. CLDC itself only requires GMT. */
+    public String timeZoneId = "GMT";
+    public int timeZoneOffsetMillis = 0;
+
+    public static final int NET_DENY = 0, NET_OFFLINE = 1, NET_ALLOW = 2, NET_LOCAL = 3;
+
+    /** @return NET_DENY / NET_OFFLINE / NET_ALLOW, or NET_LOCAL for a scheme that does not use the network. */
+    public int networkPolicy(String scheme) {
+        String s = scheme.toLowerCase();
+        for (int i = 0; i < LOCAL_SCHEMES.length; i++) if (LOCAL_SCHEMES[i].equals(s)) return NET_LOCAL;
+        String v = network.get(s);
+        if (v == null) v = networkDefault;
+        return v.equals("allow") ? NET_ALLOW : v.equals("deny") ? NET_DENY : NET_OFFLINE;
+    }
+
     public DeviceProfile() {
         properties.put("microedition.configuration", "CLDC-1.1");
         properties.put("microedition.profiles", "MIDP-2.0");

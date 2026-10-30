@@ -1,0 +1,4 @@
+mode: oracle
+source: oracle FreeJ2ME-Plus on JDK 21 (shortest digits, per CLDC 1.1 javadoc Double.toString); MicroEmulator on JDK 8 diverges (see notes)
+diverges: microemu
+notes: Double/Float.toString of the MicroEmulator run (JDK 8 FloatingDecimal) is NOT the shortest digit string for 1.0E23, 8.41E21 and Float.MIN_NORMAL (9.999999999999999E22, 8.409999999999999E21, 1.17549435E-38: JDK bug 4511638, fixed in JDK 19). CLDC 1.1 javadoc Double.toString requires "as many, but only as many, digits as are needed to uniquely distinguish the argument value from adjacent values", i.e. the shortest digits = FreeJ2ME run (JDK 21). Expected follows the javadoc/FreeJ2ME. What a real Nokia KVM prints is UNVERIFIED (R2).

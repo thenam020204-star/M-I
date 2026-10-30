@@ -1,0 +1,4 @@
+mode: oracle
+source: oracle MicroEmulator 2.0.4 (except thread name and the notes below); API per CLDC 1.1 javadoc
+diverges: microemu|freej2me
+notes: oracle quirks, expected follows the CLDC javadoc: MicroEmulator names threads "MIDletThread-<name>" (Thread(Runnable,String) must keep the name); FreeJ2ME resolves a relative getResourceAsStream("rootdata.txt") also at the jar root (javadoc: relative to the class package) and its JVM does not collect the WeakReference on System.gc() (allowed, but the VM collects it deterministically).

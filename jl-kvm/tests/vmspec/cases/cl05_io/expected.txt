@@ -1,0 +1,29 @@
+> bais 6 1 true
+> bais2 3 02030400000000000000 1 1 200 -1 -1 0 -1 -1
+> bais reset 5 2
+> bais part 2 8 7 -1
+> bais ex java.lang.IndexOutOfBoundsException java.lang.NullPointerException java.lang.IndexOutOfBoundsException
+> skip neg 0 0
+> baos 4 41434441 ACDA
+> baos reset 0 
+> baos ex java.lang.IllegalArgumentException java.lang.IndexOutOfBoundsException
+> dos 70 01fefffffd23450041004201020304ffffffff0102030405060708fffffffffffffffe3fc00000c0020000000000000002686900000008c3a9e282acc0807800610062070809
+> dis true -2 -1 -3 9029 A 66 16909060 -1 72623859790382856 -2 1.5 -2.25
+> dis utf hi|0|4 233 8364 0 ab 7 2
+> dis fully 0809 0 -1
+> dis ex java.io.EOFException java.io.EOFException java.io.EOFException java.io.EOFException java.io.UTFDataFormatException java.io.UTFDataFormatException java.lang.NullPointerException
+> dis skip 3 2
+> dos ex java.io.UTFDataFormatException
+> utf len 000dc0807fc280dfbfe0a080efbfbf
+> printstream 49 s12truec1.52.5xynullnull/L/7/q/false/0.5/z/sb/ACD
+> printstream err false
+> writer hello!bcy 9
+> writer closed ex no-exception
+> reader true l 4 ine1 1 5 line2 -1 -1 0
+> reader mark false
+> reader ex java.lang.NullPointerException java.lang.NullPointerException java.io.UnsupportedEncodingException java.io.UnsupportedEncodingException
+> InputStream default 5 000a141e28000000 0 false 0 0
+> OutputStream default 17
+> Reader default 97 1 b 1 false false
+> Writer default ABCDEFHI
+> exceptions m null u
