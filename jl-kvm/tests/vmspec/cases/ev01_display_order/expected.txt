@@ -1,0 +1,17 @@
+> startApp
+> startApp returns
+> current null before=true
+> c1 isShown before=false
+> c1 showNotify isShown=false
+> A shown and painted, isShown=true
+> c1 paint #1 clipIsFull=true
+> B serviced +paints=1
+> c1 paint #2 clipIsFull=true
+> C serviced (event thread survived the exception) +paints=2
+> c1 paint #3 clipIsFull=true
+> run R1
+> run R2
+> D done +paints=3
+> c1 hideNotify
+> c2 showNotify isShown=false
+> E c1 isShown=false c2 isShown=true

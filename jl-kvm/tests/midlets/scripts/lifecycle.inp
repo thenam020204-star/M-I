@@ -1,0 +1,8 @@
+200 pause
+400 resume
+600 key tap 49
+1200 pause
+1400 resume
+1600 key tap 50
+1800 destroy 0
+2000 destroy 1

@@ -22,9 +22,11 @@ public final class TempHost implements HostPlatform {
     /** Host objects disposed by the collector because their guest owner died (Peer test). */
     public int gcDisposed;
 
-    private static final class Img { final int w, h; final int[] px; Img(int w, int h) { this.w = w; this.h = h; px = new int[w * h]; Arrays.fill(px, 0xFFFFFFFF); } }
+    private final jlkvm.DeviceProfile profile;
+    /** Platform services of the MIDP layer (frames, platformRequest, vibration) - tests inspect it. */
+    public final jlkvm.host.RecordingServices services = new jlkvm.host.RecordingServices();
 
-    public TempHost(ClassSource rom, VmConfig cfg) { this.rom = rom; this.cfg = cfg; }
+    public TempHost(ClassSource rom, VmConfig cfg, jlkvm.DeviceProfile profile) { this.rom = rom; this.cfg = cfg; this.profile = profile; }
 
     public long hostNanoTime() { return System.nanoTime(); }
     /** Everything the VM logged (tests read it). */
@@ -40,11 +42,6 @@ public final class TempHost implements HostPlatform {
             java.io.PrintStream o = c.argInt(0) == 2 ? System.err : stdout;
             o.write(b, 0, b.length); o.flush();
         } });
-        r.register("javax/microedition/midlet/MIDlet.getAppProperty0(Ljava/lang/String;)Ljava/lang/String;", new NativeMethod() { public void invoke(NativeContext c) {
-            String k = r.services().string(c.argRef(0));
-            String v = null;
-            for (java.util.Map.Entry<String, String> e : cfg.appProperties.entrySet()) if (e.getKey().equalsIgnoreCase(k)) v = e.getValue();
-            c.retRef(v == null ? 0 : r.services().newString(v)); } });
         // ---- T13 peer cleanup test (tests/vmspec/cases/g04_gc_handles): a host object owned by a guest Peer object
         r.register("vmspec/Peer.attach0()I", new NativeMethod() { public void invoke(NativeContext c) {
             c.retInt(c.handles().alloc(new jlkvm.natives.Disposable() { public void dispose() { gcDisposed++; } }, c.argRef(0))); } });
@@ -94,24 +91,7 @@ public final class TempHost implements HostPlatform {
             c.block(new jlkvm.natives.Blocker() { public boolean poll(NativeContext cc) {
                 if (System.nanoTime() < end) return false;
                 cc.retLong(cc.argLong(0) * 2); return true; } }); } });
-        r.register("javax/microedition/lcdui/Image.create0(II)I", new NativeMethod() { public void invoke(final NativeContext c) {
-            int w = c.argInt(0), h = c.argInt(1);
-            r.services().charge(w * h / 64);
-            c.retInt(c.handles().alloc(new Img(w, h), 0)); } });
-        r.register("javax/microedition/lcdui/Graphics.fillRect0(IIIIII)V", new NativeMethod() { public void invoke(NativeContext c) {
-            Img im = (Img) c.handles().get(c.argInt(0));
-            int argb = 0xFF000000 | c.argInt(1), x = c.argInt(2), y = c.argInt(3), w = c.argInt(4), h = c.argInt(5);
-            r.services().charge(Math.max(0, w) * Math.max(0, h) / 64);
-            for (int j = Math.max(0, y); j < Math.min(im.h, y + h); j++)
-                for (int i = Math.max(0, x); i < Math.min(im.w, x + w); i++) im.px[j * im.w + i] = argb;
-        } });
-        r.register("javax/microedition/lcdui/Image.getRGB0(I[IIIIIII)V", new NativeMethod() { public void invoke(NativeContext c) {
-            Img im = (Img) c.handles().get(c.argInt(0));
-            Heap hp = c.heap();
-            int arr = c.argRef(1), off = c.argInt(2), scan = c.argInt(3), x = c.argInt(4), y = c.argInt(5), w = c.argInt(6), h = c.argInt(7);
-            r.services().charge(w * h / 64);
-            for (int j = 0; j < h; j++)
-                for (int i = 0; i < w; i++) hp.putIntElem(arr, off + j * scan + i, im.px[(y + j) * im.w + x + i]);
-        } });
+        // ---- MIDP layer (T21-T23): the natives of host-common over the software raster; frames are recorded in {@link #services}
+        new jlkvm.host.MidpNatives(profile, cfg.appProperties, new jlkvm.host.ui.SoftRaster(), services).register(r);
     }
 }

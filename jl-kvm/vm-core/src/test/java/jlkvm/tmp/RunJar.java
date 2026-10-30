@@ -104,11 +104,11 @@ public final class RunJar {
         if (configHook != null) configHook.apply(cfg);
         String m1 = cfg.appProperties.get("MIDlet-1");
         String cls = m1.substring(m1.lastIndexOf(',') + 1).trim();
-        TempHost host = new TempHost(new JarSource(rom), cfg);
+        TempHost host = new TempHost(new JarSource(rom), cfg, p);
         host.stdout = out;
         Vm vm = Vm.create(cfg, host, new JarSource(app), p);
         if (onCreate != null) onCreate.inspect(vm);
-        vm.launch("javax/microedition/midlet/MIDletBoot", "run", "(Ljava/lang/String;)V", cls);
+        vm.launch("jlkvm/internal/Ams", "run", "(Ljava/lang/String;)V", cls);
         long end = System.nanoTime() + timeoutSec * 1000000000L;
         for (;;) {
             int r = vm.runSlice(20000);

@@ -1,0 +1,64 @@
+> init d6b041c5 size 64x48 mutable true
+> defaults color=0 tx=0 clip=0,0,64,48 stroke=0
+> fillRect 46db4271
+> drawRect a8159871
+> drawLine 20c8857
+> dotted d5bf431d
+> offscreen+empty 9aaeb147
+> clip1 8,8,20,12
+> clipFill bfe9a1c5
+> clip2 15,10,13,10
+> clipRect 887b2bc5
+> tr 10,5 clip=5,5,13,10
+> translate b0040879
+> emptyclip 0x0
+> emptyclip-fill b0040879
+> bigclip -100,-100,1000,1000
+> drawRoundRect 98a12cd9
+> fillRoundRect 10c0e218
+> drawArc 4a6fc811
+> fillArc 6932f540
+> fillTriangle 7a14134e
+> text (differs between rasterisers) 3d076860
+> src 4x3 mutable false px0=ff141e00 px1=80501e14 px2=8c1e28
+> drawImage anchors d58a738d
+> drawRegion t0 efcd3137
+> createImage t0 4x3 first=ff141e00 last=ffc8be8c
+> drawRegion t1 8f527733
+> createImage t1 4x3 first=ff14be50 last=ffc81e3c
+> drawRegion t2 e0ebf113
+> createImage t2 4x3 first=ffc81e3c last=ff14be50
+> drawRegion t3 4001b05f
+> createImage t3 4x3 first=ffc8be8c last=ff141e00
+> drawRegion t4 7e855933
+> createImage t4 3x4 first=ff141e00 last=ffc8be8c
+> drawRegion t5 c78d62bf
+> createImage t5 3x4 first=ff14be50 last=ffc81e3c
+> drawRegion t6 b5cff49f
+> createImage t6 3x4 first=ffc81e3c last=ff14be50
+> drawRegion t7 c17fd26b
+> createImage t7 3x4 first=ffc8be8c last=ff141e00
+> drawRGB alpha 8dce8ae9
+> drawRGB opaque 52698821
+> drawRGB offset 3c80326f
+> getRGB ffffffff ffddddff ffffffff ffff3333 untouched=0,0,-1114130
+> copyArea 289a495d
+> copyArea overlap acc3a7da
+> drawImage self aad528b5
+> /gfx/rgba.png 4x3 mutable=false: ff000000 8050003c a00078 fff000b4 8000643c 506478 ffa064b4 80f064f0 c878 ff50c8b4 80a0c8f0 f0c82c
+> /gfx/pal.png 5x2 mutable=false: ffff0000 8000ff00 ff0000ff ffffff00 8000ff00 ffffff00 ff0000ff 8000ff00 ffff0000 ff0000ff
+> /gfx/grey.png 3x3 mutable=false: ff000000 ff404040 ff808080 ffc0c0c0 ffffffff ff202020 ff101010 ff606060 ffa0a0a0
+> /gfx/rgb.png 2x2 mutable=false: ffff0000 ff00ff00 ff0000ff ffffffff
+> missing: IOException
+> garbage: IllegalArgumentException
+> iae anchor java.lang.IllegalArgumentException
+> iae baseline-image java.lang.IllegalArgumentException
+> npe image java.lang.NullPointerException
+> iae transform java.lang.IllegalArgumentException
+> iae color java.lang.IllegalArgumentException
+> iae stroke java.lang.IllegalArgumentException
+> iae createImage java.lang.IllegalArgumentException
+> ise immutable.getGraphics java.lang.IllegalStateException
+> iae drawRegion bounds java.lang.IllegalArgumentException
+> npe drawString java.lang.NullPointerException
+> iae drawRegion self java.lang.IllegalArgumentException

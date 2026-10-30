@@ -130,7 +130,28 @@ public final class Vm implements ExecutionEngine, GuestServices {
 
     // ------------------------------------------------------------------ ExecutionEngine
 
-    public int runSlice(int maxBytecodes) { return sched.runSlice(maxBytecodes); }
+    public int runSlice(int maxBytecodes) {
+        if (DebugFlags.ENABLED) checkVmThread();
+        return sched.runSlice(maxBytecodes);
+    }
+
+    private Thread vmThread;
+    /** Debug (D13/D15): number of guest entries (runSlice) made from a thread other than the vm-thread. */
+    public volatile int threadViolations;
+    /**
+     * D13 assertion (debug builds): the first thread that runs the VM is the vm-thread; every later guest entry must come from it.
+     * A violation is logged, counted and raised as IllegalStateException. Android: the UI thread may only call postEvent/requestExit.
+     */
+    public synchronized void checkVmThread() {
+        Thread t = Thread.currentThread();
+        if (vmThread == null) { vmThread = t; return; }
+        if (vmThread != t) {
+            threadViolations++;
+            String m = "guest entered from thread '" + t.getName() + "' but the vm-thread is '" + vmThread.getName() + "' (PLAN D13)";
+            host.log(3, "vm", m);
+            throw new IllegalStateException(m);
+        }
+    }
     public long idleUntilNanos() { return sched.idleUntilNanos(); }
 
     /** Thread-safe: queued for the guest event loop (D13). */
@@ -143,12 +164,20 @@ public final class Vm implements ExecutionEngine, GuestServices {
         if (DebugFlags.ENABLED && inputLog != null) return inputLog.take(nanoTime() - baseNanos, inputLog.replaying() ? null : events.poll());
         return events.poll();
     }
-    /** D14 replay: virtual time of the next recorded event (Long.MAX_VALUE = none). */
+    /**
+     * Absolute {@link #nanoTime()} of the next input the host will post (scripted input of host-desktop, D14); in deterministic mode
+     * the virtual clock never jumps past it, so an input arrives at exactly its time. Long.MAX_VALUE = none. Set by the host between slices.
+     */
+    public volatile long hostEventAtNanos = Long.MAX_VALUE;
+    /** D14: virtual time at which the scheduler must stop jumping (next recorded event of a replay, next scripted host input). */
     public long nextReplayNanos() {
-        if (!DebugFlags.ENABLED || inputLog == null || !inputLog.replaying()) return Long.MAX_VALUE;
+        long s = hostEventAtNanos;
+        if (!DebugFlags.ENABLED || inputLog == null || !inputLog.replaying()) return s;
         long n = inputLog.nextReplayNanos();
-        return n == Long.MAX_VALUE ? n : baseNanos + n;
+        return Math.min(s, n == Long.MAX_VALUE ? n : baseNanos + n);
     }
+    /** nanoTime() at which the VM was created (script times are relative to it). */
+    public long baseNanos() { return baseNanos; }
     public void requestExit() { exitRequested = true; if (DebugFlags.ENABLED && inputLog != null) inputLog.close(); }
 
     /** Virtual elapsed time of deterministic mode (D14), advanced by the scheduler. */

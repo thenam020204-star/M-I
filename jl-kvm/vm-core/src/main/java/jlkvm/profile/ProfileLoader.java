@@ -7,7 +7,9 @@ import jlkvm.DeviceProfile;
  * Loads a device profile from JSON text (PLAN T20 minimal schema; T33 extends it and adds a validator). Keys:
  * name, heapBytes, timesliceBytecodes, priorityScheduling, threadStackWords, cldc11, maxTraceFrames,
  * properties{key:string} (System.getProperty), network{scheme|"default": "allow"|"deny"|"offline"},
- * timeZone{id, offsetMillis}. Keys starting with "_" (comments, source tags) are ignored. Unknown keys are an error.
+ * timeZone{id, offsetMillis}, apis[string] (ROM layers), imagesCountInHeap, keyRepeat{delayMs,intervalMs},
+ * display{width,height,canvasWidth,canvasHeight,color,numColors,numAlphaLevels,pointerEvents,pointerMotionEvents,repeatEvents,doubleBuffered},
+ * keys{name:int} (names of DeviceProfile.keys). Keys starting with "_" (comments, source tags) are ignored. Unknown keys are an error.
  */
 public final class ProfileLoader {
     private ProfileLoader() {}
@@ -37,6 +39,38 @@ public final class ProfileLoader {
                     String pol = str(ne.getKey(), ne.getValue());
                     if (!pol.equals("allow") && !pol.equals("deny") && !pol.equals("offline")) throw new IllegalArgumentException("profile: network policy '" + pol + "'");
                     if (ne.getKey().equals("default")) p.networkDefault = pol; else p.network.put(ne.getKey().toLowerCase(), pol);
+                }
+            } else if (k.equals("apis")) {
+                if (!(v instanceof java.util.List)) throw new IllegalArgumentException("profile: 'apis' must be an array");
+                p.apis.clear();
+                for (Object a : (java.util.List<Object>) v) p.apis.add(str("apis[]", a));
+            } else if (k.equals("imagesCountInHeap")) p.imagesCountInHeap = bool(k, v);
+            else if (k.equals("keyRepeat")) {
+                for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
+                    if (te.getKey().startsWith("_")) continue;
+                    if (te.getKey().equals("delayMs")) p.keyRepeatDelayMs = (int) num("keyRepeat.delayMs", te.getValue());
+                    else if (te.getKey().equals("intervalMs")) p.keyRepeatIntervalMs = (int) num("keyRepeat.intervalMs", te.getValue());
+                    else throw new IllegalArgumentException("profile: unknown key keyRepeat." + te.getKey());
+                }
+            } else if (k.equals("keys")) {
+                for (Map.Entry<String, Object> te : obj(k, v).entrySet()) if (!te.getKey().startsWith("_")) p.keys.put(te.getKey(), Integer.valueOf((int) num("keys." + te.getKey(), te.getValue())));
+            } else if (k.equals("display")) {
+                for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
+                    String n = te.getKey(), w = "display." + n;
+                    Object x = te.getValue();
+                    if (n.startsWith("_")) continue;
+                    if (n.equals("width")) p.screenWidth = (int) num(w, x);
+                    else if (n.equals("height")) p.screenHeight = (int) num(w, x);
+                    else if (n.equals("canvasWidth")) p.canvasWidth = (int) num(w, x);
+                    else if (n.equals("canvasHeight")) p.canvasHeight = (int) num(w, x);
+                    else if (n.equals("color")) p.isColor = bool(w, x);
+                    else if (n.equals("numColors")) p.numColors = (int) num(w, x);
+                    else if (n.equals("numAlphaLevels")) p.numAlphaLevels = (int) num(w, x);
+                    else if (n.equals("pointerEvents")) p.pointerEvents = bool(w, x);
+                    else if (n.equals("pointerMotionEvents")) p.pointerMotionEvents = bool(w, x);
+                    else if (n.equals("repeatEvents")) p.repeatEvents = bool(w, x);
+                    else if (n.equals("doubleBuffered")) p.doubleBuffered = bool(w, x);
+                    else throw new IllegalArgumentException("profile: unknown key " + w);
                 }
             } else if (k.equals("timeZone")) {
                 for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {

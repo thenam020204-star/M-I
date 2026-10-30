@@ -1,0 +1,19 @@
+100 key tap 49
+200 key tap -1
+300 key tap -2
+400 key tap -3
+500 key tap -4
+600 key tap -5
+700 key tap 50
+800 key tap 53
+900 key hold 52 1200
+2300 key tap -6
+2500 key tap -7
+2700 key tap 48
+2900 key tap -6
+3100 key tap 48
+3300 size 320 240
+3500 ptr press 10 10
+3600 pause
+3700 resume
+3800 destroy 1

@@ -1,0 +1,7 @@
+MIDlet-Name: d01_input_replay
+MIDlet-Version: 1.0.0
+MIDlet-Vendor: jl-kvm
+MIDlet-1: d01_input_replay,,vmspec.D01Main
+JLKVM-No-Event-Loop: yes
+MicroEdition-Configuration: CLDC-1.1
+MicroEdition-Profile: MIDP-2.0

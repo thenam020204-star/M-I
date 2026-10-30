@@ -21,6 +21,7 @@ tasks.withType<JavaCompile>().configureEach {
 
 dependencies {
     testImplementation(libs.junit)
+    testImplementation(project(":host-common"))   // the MIDP natives (T21-T23) used by the test host
 }
 
 // D2: vm-core is pure Java. Fail the build if any source references the Android SDK.

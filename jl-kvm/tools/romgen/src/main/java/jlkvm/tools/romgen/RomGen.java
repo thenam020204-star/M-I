@@ -42,7 +42,7 @@ import java.util.zip.ZipFile;
  *
  * <pre>
  * RomGen --src DIR [--src DIR]... --out ROM.jar [--base BASE_ROM.jar] [--work DIR] [--jdk8 HOME]
- *        [--api-db DB.json [--api-ignore PREFIX]...] [--no-verify]
+ *        [--api-db DB.json]... [--api-ignore PREFIX]... [--delta] [--no-verify]
  * </pre>
  *
  * Checks (any failure = exit 1, no jar written):
@@ -63,7 +63,9 @@ public final class RomGen {
 
     public static void main(String[] args) throws Exception {
         List<Path> srcs = new ArrayList<>();
-        Path out = null, base = null, work = null, apiDb = null;
+        Path out = null, base = null, work = null;
+        List<Path> apiDb = new ArrayList<>();
+        boolean delta = false;
         String jdk8 = System.getenv("JDK8_HOME") != null ? System.getenv("JDK8_HOME") : "/opt/jdk8";
         List<String> apiIgnore = new ArrayList<>();
         boolean verify = true;
@@ -74,7 +76,8 @@ public final class RomGen {
                 case "--base": base = Paths.get(args[++i]); break;
                 case "--work": work = Paths.get(args[++i]); break;
                 case "--jdk8": jdk8 = args[++i]; break;
-                case "--api-db": apiDb = Paths.get(args[++i]); break;
+                case "--api-db": apiDb.add(Paths.get(args[++i])); break;
+                case "--delta": delta = true; break;
                 case "--api-ignore": apiIgnore.add(args[++i]); break;
                 case "--no-verify": verify = false; break;
                 default: usage();
@@ -82,7 +85,7 @@ public final class RomGen {
         }
         if (srcs.isEmpty() || out == null) usage();
         try {
-            build(srcs, out, base, work, Paths.get(jdk8), apiDb, apiIgnore, verify);
+            build(srcs, out, base, work, Paths.get(jdk8), apiDb, apiIgnore, verify, delta);
         } catch (RomException e) {
             System.err.println("romgen: FAILED: " + e.getMessage());
             System.exit(1);
@@ -90,7 +93,7 @@ public final class RomGen {
     }
 
     private static void usage() {
-        System.err.println("usage: RomGen --src DIR... --out ROM.jar [--base BASE.jar] [--work DIR] [--jdk8 HOME] [--api-db DB.json [--api-ignore PREFIX]...] [--no-verify]");
+        System.err.println("usage: RomGen --src DIR... --out ROM.jar [--base BASE.jar] [--work DIR] [--jdk8 HOME] [--api-db DB.json]... [--api-ignore PREFIX]... [--delta] [--no-verify]\n  --api-db may be repeated (the databases are merged: the ROM surface must equal their union); --delta writes only the classes compiled from --src (a layer jar), the checks still see base + layer");
         System.exit(2);
     }
 
@@ -101,6 +104,11 @@ public final class RomGen {
 
     /** @return the number of classes in the ROM written to {@code out}. */
     public static int build(List<Path> srcs, Path out, Path base, Path work, Path jdk8, Path apiDb, List<String> apiIgnore, boolean verify)
+            throws Exception {
+        return build(srcs, out, base, work, jdk8, apiDb == null ? new ArrayList<Path>() : java.util.Collections.singletonList(apiDb), apiIgnore, verify, false);
+    }
+
+    public static int build(List<Path> srcs, Path out, Path base, Path work, Path jdk8, List<Path> apiDbs, List<String> apiIgnore, boolean verify, boolean delta)
             throws Exception {
         boolean tmp = work == null;
         Path w = tmp ? Files.createTempDirectory("romgen") : work;
@@ -170,12 +178,19 @@ public final class RomGen {
             // 6. optional API surface check (D9)
             Path tmpJar = w.resolve("check.jar");
             writeJar(rom, tmpJar);
-            if (apiDb != null) {
+            if (!apiDbs.isEmpty()) {
                 ApiDb actual = Extractor.extract("rom", "romgen", null, tmpJar);
-                List<String> diff = Differ.diff(ApiDb.read(apiDb), actual, apiIgnore.toArray(new String[0]));
-                if (!diff.isEmpty()) throw new RomException("API surface differs from " + apiDb.getFileName() + " (" + diff.size() + "):\n  " + String.join("\n  ", diff));
-                System.out.println("romgen: api surface == " + apiDb.getFileName());
+                ApiDb expected = ApiDb.read(apiDbs.get(0));
+                StringBuilder names = new StringBuilder(apiDbs.get(0).getFileName().toString());
+                for (int i = 1; i < apiDbs.size(); i++) {
+                    expected.classes.addAll(ApiDb.read(apiDbs.get(i)).classes);
+                    names.append(" + ").append(apiDbs.get(i).getFileName());
+                }
+                List<String> diff = Differ.diff(expected, actual, apiIgnore.toArray(new String[0]));
+                if (!diff.isEmpty()) throw new RomException("API surface differs from " + names + " (" + diff.size() + "):\n  " + String.join("\n  ", diff));
+                System.out.println("romgen: api surface == " + names);
             }
+            if (delta) writeJar(mine, tmpJar);
             Files.createDirectories(out.toAbsolutePath().getParent());
             Files.copy(tmpJar, out, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
             System.out.println("romgen: wrote " + out + " (" + rom.size() + " classes, " + mine.size() + " compiled)");

@@ -1,0 +1,4 @@
+mode: oracle
+source: jlkvm (this VM; rules in docs/lcdui-natives.md; MIDP 2.0 Graphics/Image javadoc for anchors, clip, 8 transforms, exceptions). Exact match with MicroEmulator 2.0.4 on fillRect/drawRect/drawLine/clip/translate/drawImage anchors/createImage transforms/PNG decode/exceptions.
+diverges: microemu|freej2me
+notes: differences from the oracles (full table in docs/lcdui-natives.md): DOTTED stroke pattern (microemu: solid, freej2me: 2 on 2 off, jl-kvm: every 2nd pixel); drawRect/line clipping of a rectangle larger than the image; getClip after clipRect to an empty area (microemu returns negative sizes, jl-kvm 0x0); ellipse / round rect / triangle edge pixels and glyph bitmaps (AWT vs jl-kvm software raster); drawRGB / drawRegion with per-pixel alpha (microemu ignores alpha, freej2me keeps an alpha channel in the destination and rounds differently, jl-kvm blends onto an opaque destination as the MIDP spec describes); copyArea overlap.

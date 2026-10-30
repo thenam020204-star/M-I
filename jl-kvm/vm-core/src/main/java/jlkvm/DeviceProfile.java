@@ -35,6 +35,20 @@ public final class DeviceProfile {
     public String timeZoneId = "GMT";
     public int timeZoneOffsetMillis = 0;
 
+    // ---- T21-T23 (MIDP layer). Every value is UNVERIFIED until T33 (source tags).
+    /** API layers present in the ROM (D10): a class of MIDP exists only when "midp-2.0" is listed. */
+    public final java.util.List<String> apis = new java.util.ArrayList<String>(java.util.Arrays.asList("cldc-1.1", "midp-2.0"));
+    /** Whether the pixel memory of an Image is charged to the guest heap (PLAN "Ràng buộc"; a device property). */
+    public boolean imagesCountInHeap = false;
+    /** Full-screen size and the size of a normal (non full-screen) Canvas, in pixels. */
+    public int screenWidth = 240, screenHeight = 320, canvasWidth = 240, canvasHeight = 294;
+    public boolean isColor = true, pointerEvents = false, pointerMotionEvents = false, repeatEvents = true, doubleBuffered = true;
+    public int numColors = 65536, numAlphaLevels = 256;
+    /** Key codes by name: softLeft, softRight, select, up, down, left, right, clear, send, end, num0..num9, star, pound. */
+    public final Map<String, Integer> keys = new HashMap<String, Integer>();
+    /** Key repeat: first repeat after {@code keyRepeatDelayMs}, then every {@code keyRepeatIntervalMs} (host drivers use them). */
+    public int keyRepeatDelayMs = 500, keyRepeatIntervalMs = 100;
+
     public static final int NET_DENY = 0, NET_OFFLINE = 1, NET_ALLOW = 2, NET_LOCAL = 3;
 
     /** @return NET_DENY / NET_OFFLINE / NET_ALLOW, or NET_LOCAL for a scheme that does not use the network. */
@@ -46,7 +60,13 @@ public final class DeviceProfile {
         return v.equals("allow") ? NET_ALLOW : v.equals("deny") ? NET_DENY : NET_OFFLINE;
     }
 
+    public int key(String name) { Integer k = keys.get(name); return k == null ? 0 : k.intValue(); }
+
     public DeviceProfile() {
+        String[][] k = {{"softLeft", "-6"}, {"softRight", "-7"}, {"select", "-5"}, {"up", "-1"}, {"down", "-2"}, {"left", "-3"}, {"right", "-4"},
+                {"clear", "-8"}, {"send", "-10"}, {"end", "-11"}, {"star", "42"}, {"pound", "35"}};
+        for (int i = 0; i < k.length; i++) keys.put(k[i][0], Integer.valueOf(Integer.parseInt(k[i][1])));
+        for (int i = 0; i < 10; i++) keys.put("num" + i, Integer.valueOf(48 + i));
         properties.put("microedition.configuration", "CLDC-1.1");
         properties.put("microedition.profiles", "MIDP-2.0");
         properties.put("microedition.platform", "jl-kvm");

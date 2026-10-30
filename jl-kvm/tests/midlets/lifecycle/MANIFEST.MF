@@ -1,0 +1,9 @@
+MIDlet-Name: LifecycleTest
+MIDlet-Version: 1.0.0
+MIDlet-Vendor: jl-kvm
+MIDlet-1: Lifecycle,,lc.LifecycleMIDlet
+MIDlet-2: Second,,lc.SecondMIDlet
+Manifest-Only: from-manifest
+Shared: from-manifest
+MicroEdition-Configuration: CLDC-1.1
+MicroEdition-Profile: MIDP-2.0

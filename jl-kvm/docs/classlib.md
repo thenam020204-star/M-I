@@ -9,8 +9,8 @@
 4. The project's strict verifier (D6, CLDC 1.1) on every compiled class.
 5. Optional `--api-db DB.json [--api-ignore PREFIX]...`: public/protected surface == DB (D9). Any failure = exit 1, no jar.
 
-Test ROM of vm-core = real CLDC ROM + overlay `vm-core/src/test/guest-stub/src` (MIDlet/MIDletBoot/tiny lcdui, handler `testnet`),
-built by `vm-core/src/test/guest-stub/build.sh` -> `vm-core/build/guest-stub/rom.jar`. M4 (T21-T23) replaces the overlay by the real MIDP classes.
+Test ROM of vm-core = real CLDC ROM + the real MIDP 2.0 layer (`vm-classlib/midp/src`, see docs/midp.md) + a small test overlay `vm-core/src/test/guest-stub/src` (handler `testnet`),
+built by `vm-core/src/test/guest-stub/build.sh` -> `vm-core/build/guest-stub/rom.jar` (T21-T23 replaced the temporary MIDlet/lcdui overlay).
 
 ## API surface (T18, D9)
 * `api-sigs diff --ignore jlkvm/internal/ tools/api-sigs/db/cldc-1.1.json ROM.json` = 0. Without `--ignore` exactly three public

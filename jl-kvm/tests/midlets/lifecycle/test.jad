@@ -1,0 +1,7 @@
+MIDlet-Name: LifecycleTest
+MIDlet-Version: 1.0.0
+MIDlet-Vendor: jl-kvm
+MIDlet-Jar-URL: lifecycle.jar
+MIDlet-Jar-Size: 1000
+Jad-Only: from-jad
+Shared: from-jad

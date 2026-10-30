@@ -1,0 +1,4 @@
+fonts.bin is a bitmap rendering (1 bit per pixel, sizes 10/13/17 px) of DejaVu Sans and DejaVu Sans Mono, baked by tools/fontgen/BakeFont.java.
+DejaVu fonts are derived from Bitstream Vera (Copyright (c) 2003 Bitstream, Inc.) with changes in the public domain; the licence allows
+embedding and redistribution of the fonts and derivative works provided the copyright and licence notice is kept
+(https://dejavu-fonts.github.io/License.html). This file is that notice.
