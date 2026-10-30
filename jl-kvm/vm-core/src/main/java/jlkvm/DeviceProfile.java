@@ -85,6 +85,20 @@ public final class DeviceProfile {
     /** JSR-75 PIM (layer "jsr75-pim"), profile {@code pim{permission}}: "allow" (default) | "deny" (SecurityException at openPIMList / listPIMLists). */
     public String pimPermission = "allow";
 
+    // ---- T33 / T30 (device identity and limits). 0 = unlimited / not enforced.
+    /** Informational identity: platform family ("s40"), edition ("dp2.0") and the model the numbers come from. */
+    public String deviceFamily = "", deviceEdition = "", deviceModel = "";
+    /** Largest MIDlet-Jar-Size the device installs (bytes); 0 = no limit. */
+    public long jarMaxBytes = 0;
+    /** Highest class-file major version accepted for APPLICATION classes (ROM classes are not checked); 0 = the parser limit (49). */
+    public int maxClassMajor = 0;
+    /** Emulated CPU speed in bytecodes per second for the throttle of T38; 0 = unthrottled. */
+    public long cpuBytecodesPerSecond = 0;
+    /** Pixel heights of Font.SIZE_SMALL / MEDIUM / LARGE of the device; 0 = the host font set decides (not consumed by the host yet). */
+    public int fontSmallHeight = 0, fontMediumHeight = 0, fontLargeHeight = 0;
+    /** Nokia JAD attributes (T30) this device acts on, see {@code jlkvm.host.ams.NokiaJad}. */
+    public final java.util.List<String> jadHonored = new java.util.ArrayList<String>();
+
     public static final int NET_DENY = 0, NET_OFFLINE = 1, NET_ALLOW = 2, NET_LOCAL = 3;
 
     /** @return NET_DENY / NET_OFFLINE / NET_ALLOW, or NET_LOCAL for a scheme that does not use the network. */

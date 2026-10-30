@@ -79,6 +79,8 @@ public final class Linker implements ClassHierarchy {
         else {
             try {
                 ClassFile c = ClassParser.parse(b);
+                if (!fromRom && vm.profile.maxClassMajor > 0 && c.major > vm.profile.maxClassMajor)
+                    throw new ClassFormatException("unsupported class file version " + c.major + "." + c.minor + " (device maximum " + vm.profile.maxClassMajor + ")");
                 o = c.name.equals(n) ? c : new ClassFormatException("class name " + c.name + " does not match " + n);
                 if (fromRom) romNames.add(n);
             } catch (ClassFormatException e) {

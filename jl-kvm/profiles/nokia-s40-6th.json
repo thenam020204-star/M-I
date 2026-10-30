@@ -1,0 +1,216 @@
+{
+  "name": "nokia-s40-6th",
+  "_comment": "Series 40 6th Edition. No SDK for this edition is available: every number that is not cited below is UNVERIFIED; where the DP2.0 SDK value is reused (heap, JAR limit) the tag says so and it is NOT a datasheet figure. Source tags: sdk: / datasheet: / measured: / UNVERIFIED (ProfileValidator).",
+  "_sources": {
+    "heapBytes": "UNVERIFIED (placeholder copied from the nokia-s40-dp2.0 SDK value for the Nokia 6230; this edition's figure is not available)",
+    "jarMaxBytes": "UNVERIFIED (placeholder copied from the nokia-s40-dp2.0 SDK value for the Nokia 6230; this edition's figure is not available)",
+    "maxClassMajor": "UNVERIFIED (preverify1.1.exe in the SDK output class version 48 for CLDC1.1? not verified; 49 is the parser limit)",
+    "timesliceBytecodes": "UNVERIFIED (value of the VM design, D5; the KVM time slice of the device is unknown)",
+    "priorityScheduling": "UNVERIFIED (V2/V4: Nokia KVM thread scheduling not measured)",
+    "threadStackWords": "UNVERIFIED",
+    "cldc11": "UNVERIFIED (assumed CLDC 1.1 as in DP2.0)",
+    "maxTraceFrames": "UNVERIFIED",
+    "apis": "UNVERIFIED (layers this VM can provide; real per-edition JSR lists are not available)",
+    "imagesCountInHeap": "UNVERIFIED",
+    "device": "UNVERIFIED",
+    "cpu": "UNVERIFIED (the SDK slider only throttles the emulator: UG 'Setting MIDlet KVM speed' maximum average bytecode time 500 microseconds; not a device speed. 0 = unthrottled)"
+  },
+  "device": {
+    "family": "s40",
+    "edition": "6th",
+    "model": ""
+  },
+  "heapBytes": 1024000,
+  "jarMaxBytes": 357000,
+  "maxClassMajor": 49,
+  "timesliceBytecodes": 2000,
+  "priorityScheduling": true,
+  "threadStackWords": 8192,
+  "cldc11": true,
+  "imagesCountInHeap": false,
+  "cpu": {
+    "bytecodesPerSecond": 0
+  },
+  "fonts": {
+    "_source": "UNVERIFIED (font heights of the 6230 are not in the SDK docs; 0 = host font set decides)",
+    "smallHeight": 0,
+    "mediumHeight": 0,
+    "largeHeight": 0
+  },
+  "properties": {
+    "_sources": {
+      "microedition.configuration": "UNVERIFIED (copied from nokia-s40-dp2.0 SDK table; not checked for this edition)",
+      "microedition.profiles": "UNVERIFIED (copied from nokia-s40-dp2.0 SDK table; not checked for this edition)",
+      "microedition.encoding": "UNVERIFIED (copied from nokia-s40-dp2.0 SDK table; not checked for this edition)",
+      "microedition.media.version": "UNVERIFIED (copied from nokia-s40-dp2.0 SDK table; not checked for this edition)",
+      "supports.mixing": "UNVERIFIED (copied from nokia-s40-dp2.0 SDK table; not checked for this edition)",
+      "supports.audio.capture": "UNVERIFIED (copied from nokia-s40-dp2.0 SDK table; not checked for this edition)",
+      "supports.video.capture": "UNVERIFIED (copied from nokia-s40-dp2.0 SDK table; not checked for this edition)",
+      "supports.recording": "UNVERIFIED (copied from nokia-s40-dp2.0 SDK table; not checked for this edition)",
+      "microedition.platform": "UNVERIFIED (copied from nokia-s40-dp2.0 SDK table; not checked for this edition)",
+      "microedition.locale": "UNVERIFIED (copied from nokia-s40-dp2.0 SDK table; not checked for this edition)"
+    },
+    "microedition.configuration": "CLDC-1.1",
+    "microedition.profiles": "MIDP-2.0",
+    "microedition.platform": "Nokia",
+    "microedition.encoding": "ISO-8859-1",
+    "microedition.locale": "en-US",
+    "microedition.media.version": "1.1",
+    "supports.mixing": "false",
+    "supports.audio.capture": "false",
+    "supports.video.capture": "false",
+    "supports.recording": "false"
+  },
+  "network": {
+    "_source": "UNVERIFIED (offline by default: no real network traffic in this phase, PLAN scope)",
+    "default": "offline",
+    "http": "deny",
+    "testnet": "allow",
+    "nohandler": "allow"
+  },
+  "timeZone": {
+    "_source": "UNVERIFIED",
+    "id": "GMT",
+    "offsetMillis": 0
+  },
+  "apis": [
+    "cldc-1.1",
+    "midp-2.0",
+    "nokia-ui",
+    "wma-1.1",
+    "jsr-135",
+    "jsr75-fc",
+    "jsr75-pim"
+  ],
+  "media": {
+    "_sources": {
+      "contentTypes": "UNVERIFIED (SDK device.profile device.load-types lists audio/midi, x-midi, sp-midi, amr: that is the SDK content loader, not Manager.getSupportedContentTypes; audio/x-tone-seq is mandatory in the MMAPI 1.1 javadoc)",
+      "protocols": "UNVERIFIED",
+      "tone": "sdk: sdk/api/MobileMedia_1.1 Manager.playTone/device://tone (MMAPI 1.1 requires them); Release_Notes.txt JSR 135 audio only"
+    },
+    "contentTypes": [
+      "audio/x-tone-seq",
+      "audio/midi",
+      "audio/x-midi",
+      "audio/sp-midi",
+      "audio/amr",
+      "audio/x-wav"
+    ],
+    "protocols": [
+      "device",
+      "http",
+      "file",
+      "resource"
+    ],
+    "tone": true
+  },
+  "sms": {
+    "_source": "UNVERIFIED (policy of the VM, not a device property; docs/jsr.md)",
+    "mode": "deny"
+  },
+  "rms": {
+    "_source": "UNVERIFIED (per-suite quota and overheads of the 6230 are not in the SDK docs; T26 placeholders)",
+    "quotaBytes": 262144,
+    "storeOverheadBytes": 16,
+    "recordOverheadBytes": 8
+  },
+  "nokia": {
+    "_source": "UNVERIFIED (native pixel format / concurrent sounds of the 6230 are not in the SDK docs)",
+    "pixelFormat": 565,
+    "soundFormats": [
+      1,
+      5
+    ],
+    "concurrentTone": 1,
+    "concurrentWav": 1
+  },
+  "display": {
+    "_sources": {
+      "width": "UNVERIFIED (6th edition resolution is not stated in the Wikipedia article; QVGA assumed)",
+      "height": "UNVERIFIED (6th edition resolution is not stated in the Wikipedia article; QVGA assumed)",
+      "canvasWidth": "UNVERIFIED (= full width)",
+      "canvasHeight": "UNVERIFIED (upper bound: full screen height; the normal Canvas height is not available)",
+      "color": "UNVERIFIED",
+      "numColors": "UNVERIFIED",
+      "numAlphaLevels": "UNVERIFIED",
+      "pointerEvents": "UNVERIFIED",
+      "pointerMotionEvents": "UNVERIFIED",
+      "repeatEvents": "UNVERIFIED",
+      "doubleBuffered": "UNVERIFIED"
+    },
+    "width": 240,
+    "height": 320,
+    "canvasWidth": 240,
+    "canvasHeight": 320,
+    "color": true,
+    "numColors": 65536,
+    "numAlphaLevels": 256,
+    "pointerEvents": false,
+    "pointerMotionEvents": false,
+    "repeatEvents": true,
+    "doubleBuffered": true
+  },
+  "keys": {
+    "_sources": {
+      "softLeft": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_SOFTKEY1 = -6 (DP2.0 SDK; same API constants assumed)",
+      "softRight": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_SOFTKEY2 = -7 (DP2.0 SDK; same API constants assumed)",
+      "select": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_SOFTKEY3 = -5 (DP2.0 SDK; same API constants assumed)",
+      "up": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_UP_ARROW = -1 (DP2.0 SDK; same API constants assumed)",
+      "down": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_DOWN_ARROW = -2 (DP2.0 SDK; same API constants assumed)",
+      "left": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_LEFT_ARROW = -3 (DP2.0 SDK; same API constants assumed)",
+      "right": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_RIGHT_ARROW = -4 (DP2.0 SDK; same API constants assumed)",
+      "clear": "UNVERIFIED (no constant in the SDK javadoc; value of the Nokia C key from JL-Mod/KEmulator practice)",
+      "send": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_SEND = -10 (DP2.0 SDK; same API constants assumed)",
+      "end": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_END = -11 (DP2.0 SDK; same API constants assumed)",
+      "num0": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM0 = 48 (DP2.0 SDK; same API constants assumed)",
+      "num1": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM1 = 49 (DP2.0 SDK; same API constants assumed)",
+      "num2": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM2 = 50 (DP2.0 SDK; same API constants assumed)",
+      "num3": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM3 = 51 (DP2.0 SDK; same API constants assumed)",
+      "num4": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM4 = 52 (DP2.0 SDK; same API constants assumed)",
+      "num5": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM5 = 53 (DP2.0 SDK; same API constants assumed)",
+      "num6": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM6 = 54 (DP2.0 SDK; same API constants assumed)",
+      "num7": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM7 = 55 (DP2.0 SDK; same API constants assumed)",
+      "num8": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM8 = 56 (DP2.0 SDK; same API constants assumed)",
+      "num9": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM9 = 57 (DP2.0 SDK; same API constants assumed)",
+      "star": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_STAR = 42 (DP2.0 SDK; same API constants assumed)",
+      "pound": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_POUND = 35 (DP2.0 SDK; same API constants assumed)"
+    },
+    "softLeft": -6,
+    "softRight": -7,
+    "select": -5,
+    "up": -1,
+    "down": -2,
+    "left": -3,
+    "right": -4,
+    "clear": -8,
+    "send": -10,
+    "end": -11,
+    "num0": 48,
+    "num1": 49,
+    "num2": 50,
+    "num3": 51,
+    "num4": 52,
+    "num5": 53,
+    "num6": 54,
+    "num7": 55,
+    "num8": 56,
+    "num9": 57,
+    "star": 42,
+    "pound": 35
+  },
+  "keyRepeat": {
+    "_source": "UNVERIFIED",
+    "delayMs": 500,
+    "intervalMs": 100
+  },
+  "jad": {
+    "_source": "UNVERIFIED (Nokia-MIDlet-Category: sdk DP2.0 only; the other listed attributes come from Nokia developer documentation not available here)",
+    "honored": [
+      "Nokia-MIDlet-Category",
+      "Nokia-MIDlet-Original-Display-Size",
+      "Nokia-MIDlet-Target-Display-Size",
+      "Nokia-MIDlet-On-Screen-Keypad",
+      "Nokia-MIDlet-App-Orientation"
+    ]
+  }
+}

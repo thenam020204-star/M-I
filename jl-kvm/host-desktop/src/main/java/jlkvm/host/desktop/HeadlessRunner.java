@@ -68,6 +68,7 @@ public final class HeadlessRunner {
         public DesktopHost host;
         public long virtualMs;
         public MidletSuite suite;
+        public jlkvm.host.ams.NokiaJad.Plan nokiaPlan;
         public jlkvm.host.rms.RecordStorage records;
         public jlkvm.host.rms.JlModRmsImport.Result rmsImport;
     }
@@ -91,9 +92,14 @@ public final class HeadlessRunner {
         byte[] jad = o.jad == null ? null : Files.readAllBytes(o.jad.toPath());
         MidletSuite suite = MidletSuite.load(mf, jad);
         MidletSuite.Entry entry = suite.midlet(o.midlet);
+        String refused = jlkvm.host.ams.NokiaJad.checkInstall(profile, suite.attributes);
+        if (refused != null) throw new IllegalStateException("install refused: " + refused);
+        jlkvm.host.ams.NokiaJad.Plan plan = jlkvm.host.ams.NokiaJad.plan(profile, suite.attributes);
+        jlkvm.host.ams.NokiaJad.apply(profile, plan);
 
         Result res = new Result();
         res.suite = suite;
+        res.nokiaPlan = plan;
         ByteArrayOutputStream cap = new ByteArrayOutputStream();
         PrintStream out = o.out != null ? o.out : new PrintStream(cap, true, "UTF-8");
         Clock clock = o.realtime ? new Clock.Real() : new Clock.Virtual();

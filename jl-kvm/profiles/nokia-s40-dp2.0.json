@@ -1,0 +1,210 @@
+{
+  "name": "nokia-s40-dp2.0",
+  "_comment": "Series 40 Developer Platform 2.0 (reference phone Nokia 6230), numbers from the Nokia S40 DP2.0 SDK 1.1 (local, gitignored, not in the repo). Source tags: sdk: / datasheet: / measured: / UNVERIFIED (ProfileValidator). SDK files: UG = User Guide pdf, RN = Release_Notes.txt, EM = emulator S40_DP20_1_1_em.dll (string table of the native emulator), API = sdk/api javadoc.",
+  "_sources": {
+    "heapBytes": "sdk: Nokia_S40_DP20_SDK_1_1_User_Guide.pdf 'Setting the KVM heapsize': maximum heapsize for the Nokia 6230 is 1,024,000 bytes",
+    "jarMaxBytes": "sdk: Nokia_S40_DP20_SDK_1_1_User_Guide.pdf 'Running MIDlets in non-provisioning mode': maximum JAR size that the Nokia 6230 can use is 357,000 bytes",
+    "maxClassMajor": "UNVERIFIED (preverify1.1.exe in the SDK output class version 48 for CLDC1.1? not verified; 49 is the parser limit)",
+    "timesliceBytecodes": "UNVERIFIED (value of the VM design, D5; the KVM time slice of the device is unknown)",
+    "priorityScheduling": "UNVERIFIED (V2/V4: Nokia KVM thread scheduling not measured)",
+    "threadStackWords": "UNVERIFIED",
+    "cldc11": "sdk: Nokia_S40_DP20_SDK_1_1_Release_Notes.txt 'Features': CLDC 1.1 (JSR 139); EM property microedition.configuration = CLDC-1.1",
+    "maxTraceFrames": "UNVERIFIED",
+    "apis": "sdk: Release_Notes.txt 'Features' JSR list: 139, 118, 185, 120 v1.1 (WMA), 135 audio only, 82. JSR 82 has no layer yet; JSR-75 is not in the list, so no jsr75-*",
+    "imagesCountInHeap": "UNVERIFIED",
+    "device": "sdk: Nokia_S40_DP20_SDK_1_1_User_Guide.pdf / Release_Notes.txt: 'The SDK is based on the Nokia 6230 phone'",
+    "cpu": "UNVERIFIED (the SDK slider only throttles the emulator: UG 'Setting MIDlet KVM speed' maximum average bytecode time 500 microseconds; not a device speed. 0 = unthrottled)"
+  },
+  "device": {
+    "family": "s40",
+    "edition": "dp2.0",
+    "model": "Nokia 6230"
+  },
+  "heapBytes": 1024000,
+  "jarMaxBytes": 357000,
+  "maxClassMajor": 49,
+  "timesliceBytecodes": 2000,
+  "priorityScheduling": true,
+  "threadStackWords": 8192,
+  "cldc11": true,
+  "imagesCountInHeap": false,
+  "cpu": {
+    "bytecodesPerSecond": 0
+  },
+  "fonts": {
+    "_source": "UNVERIFIED (font heights of the 6230 are not in the SDK docs; 0 = host font set decides)",
+    "smallHeight": 0,
+    "mediumHeight": 0,
+    "largeHeight": 0
+  },
+  "properties": {
+    "_sources": {
+      "microedition.configuration": "sdk: S40_DP20_1_1_em.dll string table: 'microedition.configuration' followed by 'CLDC-1.1'; Release_Notes.txt JSR 139",
+      "microedition.profiles": "sdk: S40_DP20_1_1_em.dll string table: 'microedition.profiles' followed by 'MIDP-2.0'; Release_Notes.txt JSR 118",
+      "microedition.encoding": "sdk: S40_DP20_1_1_em.dll string table: 'microedition.encoding' followed by 'ISO-8859-1'",
+      "microedition.media.version": "sdk: sdk/api/MobileMedia_1.1/overview-summary.html 'System Properties': \"1.1\" for this version of the specification; Release_Notes.txt JSR 135",
+      "supports.mixing": "sdk: S40_DP20_1_1_em.dll string table: 'supports.mixing' followed by 'false'",
+      "supports.audio.capture": "sdk: S40_DP20_1_1_em.dll string table: 'supports.audio.capture' followed by 'false'",
+      "supports.video.capture": "sdk: S40_DP20_1_1_em.dll string table: 'supports.video.capture' followed by 'false'",
+      "supports.recording": "sdk: S40_DP20_1_1_em.dll string table: 'supports.recording' followed by 'false'",
+      "microedition.platform": "UNVERIFIED (the emulator string table has the model id 'Nokia6230' next to 'Nokia 6230'/'RH-12'; the exact getProperty value is not shown)",
+      "microedition.locale": "UNVERIFIED (SDK default language is English; the exact tag is not shown)"
+    },
+    "microedition.configuration": "CLDC-1.1",
+    "microedition.profiles": "MIDP-2.0",
+    "microedition.platform": "Nokia6230",
+    "microedition.encoding": "ISO-8859-1",
+    "microedition.locale": "en-US",
+    "microedition.media.version": "1.1",
+    "supports.mixing": "false",
+    "supports.audio.capture": "false",
+    "supports.video.capture": "false",
+    "supports.recording": "false"
+  },
+  "network": {
+    "_source": "UNVERIFIED (offline by default: no real network traffic in this phase, PLAN scope)",
+    "default": "offline",
+    "http": "deny",
+    "testnet": "allow",
+    "nohandler": "allow"
+  },
+  "timeZone": {
+    "_source": "UNVERIFIED",
+    "id": "GMT",
+    "offsetMillis": 0
+  },
+  "apis": [
+    "cldc-1.1",
+    "midp-2.0",
+    "nokia-ui",
+    "wma-1.1",
+    "jsr-135"
+  ],
+  "media": {
+    "_sources": {
+      "contentTypes": "UNVERIFIED (SDK device.profile device.load-types lists audio/midi, x-midi, sp-midi, amr: that is the SDK content loader, not Manager.getSupportedContentTypes; audio/x-tone-seq is mandatory in the MMAPI 1.1 javadoc)",
+      "protocols": "UNVERIFIED",
+      "tone": "sdk: sdk/api/MobileMedia_1.1 Manager.playTone/device://tone (MMAPI 1.1 requires them); Release_Notes.txt JSR 135 audio only"
+    },
+    "contentTypes": [
+      "audio/x-tone-seq",
+      "audio/midi",
+      "audio/x-midi",
+      "audio/sp-midi",
+      "audio/amr",
+      "audio/x-wav"
+    ],
+    "protocols": [
+      "device",
+      "http",
+      "file",
+      "resource"
+    ],
+    "tone": true
+  },
+  "sms": {
+    "_source": "UNVERIFIED (policy of the VM, not a device property; docs/jsr.md)",
+    "mode": "deny"
+  },
+  "rms": {
+    "_source": "UNVERIFIED (per-suite quota and overheads of the 6230 are not in the SDK docs; T26 placeholders)",
+    "quotaBytes": 262144,
+    "storeOverheadBytes": 16,
+    "recordOverheadBytes": 8
+  },
+  "nokia": {
+    "_source": "UNVERIFIED (native pixel format / concurrent sounds of the 6230 are not in the SDK docs)",
+    "pixelFormat": 565,
+    "soundFormats": [
+      1,
+      5
+    ],
+    "concurrentTone": 1,
+    "concurrentWav": 1
+  },
+  "display": {
+    "_sources": {
+      "width": "sdk: Nokia_S40_DP20_SDK_1_1_User_Guide.pdf 'Modifying how the SDK GUI displays' / 'Looking at content': display area 128 by 128 pixels",
+      "height": "sdk: Nokia_S40_DP20_SDK_1_1_User_Guide.pdf 'Looking at content': display area 128 by 128 pixels",
+      "canvasWidth": "sdk: Nokia_S40_DP20_SDK_1_1_User_Guide.pdf 'Modifying how the SDK GUI displays': the canvas size remains constant at 128 x 128 pixels",
+      "canvasHeight": "UNVERIFIED (upper bound: the 128 high full-screen area; the height of a normal Canvas below title and soft key labels is not in the SDK docs)",
+      "color": "UNVERIFIED",
+      "numColors": "UNVERIFIED",
+      "numAlphaLevels": "UNVERIFIED",
+      "pointerEvents": "UNVERIFIED (Release_Notes.txt: key-layout phone, no touch screen mentioned)",
+      "pointerMotionEvents": "UNVERIFIED",
+      "repeatEvents": "UNVERIFIED",
+      "doubleBuffered": "UNVERIFIED"
+    },
+    "width": 128,
+    "height": 128,
+    "canvasWidth": 128,
+    "canvasHeight": 128,
+    "color": true,
+    "numColors": 65536,
+    "numAlphaLevels": 256,
+    "pointerEvents": false,
+    "pointerMotionEvents": false,
+    "repeatEvents": true,
+    "doubleBuffered": true
+  },
+  "keys": {
+    "_sources": {
+      "softLeft": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_SOFTKEY1 = -6",
+      "softRight": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_SOFTKEY2 = -7",
+      "select": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_SOFTKEY3 = -5",
+      "up": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_UP_ARROW = -1",
+      "down": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_DOWN_ARROW = -2",
+      "left": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_LEFT_ARROW = -3",
+      "right": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_RIGHT_ARROW = -4",
+      "clear": "UNVERIFIED (no constant in the SDK javadoc; value of the Nokia C key from JL-Mod/KEmulator practice)",
+      "send": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_SEND = -10",
+      "end": "sdk: sdk/api/NokiaUI_1.1/constant-values.html (com.nokia.mid.ui.FullCanvas) KEY_END = -11",
+      "num0": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM0 = 48",
+      "num1": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM1 = 49",
+      "num2": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM2 = 50",
+      "num3": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM3 = 51",
+      "num4": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM4 = 52",
+      "num5": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM5 = 53",
+      "num6": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM6 = 54",
+      "num7": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM7 = 55",
+      "num8": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM8 = 56",
+      "num9": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_NUM9 = 57",
+      "star": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_STAR = 42",
+      "pound": "sdk: sdk/api/MIDP_2.0/javax/microedition/lcdui/Canvas.html (Canvas.KEY_*) KEY_POUND = 35"
+    },
+    "softLeft": -6,
+    "softRight": -7,
+    "select": -5,
+    "up": -1,
+    "down": -2,
+    "left": -3,
+    "right": -4,
+    "clear": -8,
+    "send": -10,
+    "end": -11,
+    "num0": 48,
+    "num1": 49,
+    "num2": 50,
+    "num3": 51,
+    "num4": 52,
+    "num5": 53,
+    "num6": 54,
+    "num7": 55,
+    "num8": 56,
+    "num9": 57,
+    "star": 42,
+    "pound": 35
+  },
+  "keyRepeat": {
+    "_source": "UNVERIFIED",
+    "delayMs": 500,
+    "intervalMs": 100
+  },
+  "jad": {
+    "_source": "sdk: User Guide 'About MIDP MIDlets' and S40_DP20_1_1_em.dll string table list Nokia-MIDlet-Category (and Nokia-Update, Nokia-SMS-Handler-n, not acted on); display/keypad/orientation attributes are not in this SDK",
+    "honored": [
+      "Nokia-MIDlet-Category"
+    ]
+  }
+}

@@ -1,6 +1,15 @@
 {
-  "_comment": "Minimal TEMPORARY profile (PLAN T20). T33 replaces it by the full schema with a source tag (datasheet/sdk/measured) per value; every value here is UNVERIFIED.",
   "name": "jlkvm-nokia",
+  "_sources": {
+    "heapBytes": "UNVERIFIED (temporary profile of T20; T33 sources are in the nokia-s40-* profiles)",
+    "timesliceBytecodes": "UNVERIFIED (temporary profile of T20; T33 sources are in the nokia-s40-* profiles)",
+    "priorityScheduling": "UNVERIFIED (temporary profile of T20; T33 sources are in the nokia-s40-* profiles)",
+    "threadStackWords": "UNVERIFIED (temporary profile of T20; T33 sources are in the nokia-s40-* profiles)",
+    "cldc11": "UNVERIFIED (temporary profile of T20; T33 sources are in the nokia-s40-* profiles)",
+    "apis": "UNVERIFIED (temporary profile of T20; T33 sources are in the nokia-s40-* profiles)",
+    "imagesCountInHeap": "UNVERIFIED (temporary profile of T20; T33 sources are in the nokia-s40-* profiles)"
+  },
+  "_comment": "Minimal TEMPORARY profile (PLAN T20). T33 replaces it by the full schema with a source tag (datasheet/sdk/measured) per value; every value here is UNVERIFIED.",
   "heapBytes": 2097152,
   "timesliceBytecodes": 2000,
   "priorityScheduling": true,
@@ -40,7 +49,11 @@
   },
   "file": {
     "_source": "UNVERIFIED (T32a): root names, permission and size of the virtual file system behind JSR-75 FileConnection (the roots are mapped to a private directory of the suite on the host). See docs/jsr.md",
-    "roots": ["c:/", "e:/", "root1/"],
+    "roots": [
+      "c:/",
+      "e:/",
+      "root1/"
+    ],
     "permission": "readwrite",
     "quotaBytes": 8388608
   },
@@ -57,7 +70,10 @@
   "nokia": {
     "_source": "UNVERIFIED (T28): native pixel format and sound capabilities of the Nokia UI layer are placeholders; T33 gives them a source tag",
     "pixelFormat": 565,
-    "soundFormats": [1, 5],
+    "soundFormats": [
+      1,
+      5
+    ],
     "concurrentTone": 1,
     "concurrentWav": 1
   },
@@ -78,7 +94,7 @@
     "doubleBuffered": true
   },
   "keys": {
-    "_source": "Nokia key codes from the PLAN task text (soft -6/-7, select -5, arrows -1..-4); UNVERIFIED against a device",
+    "_source": "UNVERIFIED. Nokia key codes from the PLAN task text (soft -6/-7, select -5, arrows -1..-4); UNVERIFIED against a device",
     "softLeft": -6,
     "softRight": -7,
     "select": -5,

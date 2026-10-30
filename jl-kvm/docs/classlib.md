@@ -47,10 +47,10 @@ built by `vm-core/src/test/guest-stub/build.sh` -> `vm-core/build/guest-stub/rom
   Greek, Cyrillic (partial, informational; the CLDC javadoc only requires the first two).
 
 ## System / Runtime / GCF (T20)
-* Profile JSON (`profiles/jlkvm-min.json`, loader `jlkvm.profile.ProfileLoader`, schema in its javadoc; T33 extends it).
+* Profile JSON (`profiles/jlkvm-min.json`, loader `jlkvm.profile.ProfileLoader`, schema in its javadoc; T33 extended it and added `ProfileValidator`; shipped Nokia profiles `profiles/nokia-s40-*.json`, system properties table in `docs/nokia.md` "T30").
   `System.getProperty(key)`: value from `properties` of the profile, unknown key (case sensitive) -> `null`, `null` key -> NPE,
   empty key -> IllegalArgumentException. CLDC 1.1 defines only `microedition.platform/encoding/configuration/profiles`
-  (spelling `CLDC-1.1`; JL-Mod had `CDLC-1.1`); `microedition.locale` is a MIDP property. All values UNVERIFIED until T33.
+  (spelling `CLDC-1.1`; JL-Mod had `CDLC-1.1`); `microedition.locale` is a MIDP property. Source of each value: the profile `_sources` tags (T33).
 * `Runtime.totalMemory/freeMemory/gc` = arena figures / full collection; `System.currentTimeMillis` = host clock, or the virtual
   clock in deterministic mode (D14); default `TimeZone` from `timeZone` of the profile.
 * `Connector.open(url[,mode[,timeouts]])`: scheme validation (IllegalArgumentException), then the profile's network policy per

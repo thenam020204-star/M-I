@@ -9,7 +9,8 @@ import jlkvm.DeviceProfile;
  * properties{key:string} (System.getProperty), network{scheme|"default": "allow"|"deny"|"offline"},
  * timeZone{id, offsetMillis}, apis[string] (ROM layers), imagesCountInHeap, rms{quotaBytes,storeOverheadBytes,recordOverheadBytes}, media{contentTypes[],protocols[],tone}, nokia{pixelFormat,soundFormats[],concurrentTone,concurrentWav}, keyRepeat{delayMs,intervalMs},
  * display{width,height,canvasWidth,canvasHeight,color,numColors,numAlphaLevels,pointerEvents,pointerMotionEvents,repeatEvents,doubleBuffered},
- * keys{name:int} (names of DeviceProfile.keys). Keys starting with "_" (comments, source tags) are ignored. Unknown keys are an error.
+ * keys{name:int} (names of DeviceProfile.keys), device{family,edition,model}, jarMaxBytes, maxClassMajor, cpu{bytecodesPerSecond},
+ * fonts{smallHeight,mediumHeight,largeHeight}, jad{honored[]} (T33/T30). Source tags ("_sources", "_source") are checked by {@link ProfileValidator}, not here. Keys starting with "_" (comments, source tags) are ignored. Unknown keys are an error.
  */
 public final class ProfileLoader {
     private ProfileLoader() {}
@@ -44,6 +45,41 @@ public final class ProfileLoader {
                 if (!(v instanceof java.util.List)) throw new IllegalArgumentException("profile: 'apis' must be an array");
                 p.apis.clear();
                 for (Object a : (java.util.List<Object>) v) p.apis.add(str("apis[]", a));
+            } else if (k.equals("jarMaxBytes")) p.jarMaxBytes = nonNeg(k, v);
+            else if (k.equals("maxClassMajor")) {
+                long m = num(k, v);
+                if (m != 0 && (m < 45 || m > 49)) throw new IllegalArgumentException("profile: maxClassMajor must be 0 or 45..49");
+                p.maxClassMajor = (int) m;
+            } else if (k.equals("device")) {
+                for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
+                    String n = te.getKey();
+                    if (n.startsWith("_")) continue;
+                    String x = str("device." + n, te.getValue());
+                    if (n.equals("family")) p.deviceFamily = x; else if (n.equals("edition")) p.deviceEdition = x; else if (n.equals("model")) p.deviceModel = x;
+                    else throw new IllegalArgumentException("profile: unknown key device." + n);
+                }
+            } else if (k.equals("cpu")) {
+                for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
+                    if (te.getKey().startsWith("_")) continue;
+                    if (te.getKey().equals("bytecodesPerSecond")) p.cpuBytecodesPerSecond = nonNeg("cpu.bytecodesPerSecond", te.getValue());
+                    else throw new IllegalArgumentException("profile: unknown key cpu." + te.getKey());
+                }
+            } else if (k.equals("fonts")) {
+                for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
+                    String n = te.getKey();
+                    if (n.startsWith("_")) continue;
+                    int h = (int) nonNeg("fonts." + n, te.getValue());
+                    if (n.equals("smallHeight")) p.fontSmallHeight = h; else if (n.equals("mediumHeight")) p.fontMediumHeight = h; else if (n.equals("largeHeight")) p.fontLargeHeight = h;
+                    else throw new IllegalArgumentException("profile: unknown key fonts." + n);
+                }
+            } else if (k.equals("jad")) {
+                for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
+                    String n = te.getKey();
+                    if (n.startsWith("_")) continue;
+                    if (!n.equals("honored") || !(te.getValue() instanceof java.util.List)) throw new IllegalArgumentException("profile: jad accepts only honored[]");
+                    p.jadHonored.clear();
+                    for (Object ho : (java.util.List<Object>) te.getValue()) p.jadHonored.add(str("jad.honored[]", ho));
+                }
             } else if (k.equals("imagesCountInHeap")) p.imagesCountInHeap = bool(k, v);
             else if (k.equals("keyRepeat")) {
                 for (Map.Entry<String, Object> te : obj(k, v).entrySet()) {
@@ -174,6 +210,12 @@ public final class ProfileLoader {
     private static Map<String, Object> obj(String k, Object v) {
         if (!(v instanceof Map)) throw new IllegalArgumentException("profile: '" + k + "' must be an object");
         return (Map<String, Object>) v;
+    }
+
+    private static long nonNeg(String k, Object v) {
+        long n = num(k, v);
+        if (n < 0) throw new IllegalArgumentException("profile: '" + k + "' must be >= 0");
+        return n;
     }
 
     private static String str(String k, Object v) {

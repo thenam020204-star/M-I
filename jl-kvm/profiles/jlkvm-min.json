@@ -1,6 +1,15 @@
 {
-  "_comment": "Minimal TEMPORARY profile (PLAN T20). T33 replaces it by the full schema with a source tag (datasheet/sdk/measured) per value; every value here is UNVERIFIED.",
   "name": "jlkvm-min",
+  "_sources": {
+    "heapBytes": "UNVERIFIED (temporary profile of T20; T33 sources are in the nokia-s40-* profiles)",
+    "timesliceBytecodes": "UNVERIFIED (temporary profile of T20; T33 sources are in the nokia-s40-* profiles)",
+    "priorityScheduling": "UNVERIFIED (temporary profile of T20; T33 sources are in the nokia-s40-* profiles)",
+    "threadStackWords": "UNVERIFIED (temporary profile of T20; T33 sources are in the nokia-s40-* profiles)",
+    "cldc11": "UNVERIFIED (temporary profile of T20; T33 sources are in the nokia-s40-* profiles)",
+    "apis": "UNVERIFIED (temporary profile of T20; T33 sources are in the nokia-s40-* profiles)",
+    "imagesCountInHeap": "UNVERIFIED (temporary profile of T20; T33 sources are in the nokia-s40-* profiles)"
+  },
+  "_comment": "Minimal TEMPORARY profile (PLAN T20). T33 replaces it by the full schema with a source tag (datasheet/sdk/measured) per value; every value here is UNVERIFIED.",
   "heapBytes": 2097152,
   "timesliceBytecodes": 2000,
   "priorityScheduling": true,
@@ -53,7 +62,7 @@
     "doubleBuffered": true
   },
   "keys": {
-    "_source": "Nokia key codes from the PLAN task text (soft -6/-7, select -5, arrows -1..-4); UNVERIFIED against a device",
+    "_source": "UNVERIFIED. Nokia key codes from the PLAN task text (soft -6/-7, select -5, arrows -1..-4); UNVERIFIED against a device",
     "softLeft": -6,
     "softRight": -7,
     "select": -5,

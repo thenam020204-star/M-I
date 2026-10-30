@@ -108,3 +108,53 @@ through a real decoder (host AudioDevice, M6).
 
 `DirectGraphicsImp.read()` no longer allocates the `{x0, y0, x1, y1}` array on every `getPixels`: it fills the wrapper's own `vis` field and returns it (valid until the next `read`); behaviour unchanged (`nk01_directgraphics_pixels`, `nk02_transforms` pass).
 WMA / JSR-75 layers are described in `docs/jsr.md`.
+
+## T33 - device profiles (`profiles/nokia-s40-*.json`)
+
+| File | Source quality |
+|---|---|
+| `nokia-s40-dp2.0.json` | **Reference, SDK-sourced** (Nokia S40 Developer Platform 2.0 SDK 1.1, phone Nokia 6230): heap 1,024,000 B, JAR limit 357,000 B, display/canvas area 128x128, FullCanvas/Canvas key codes, CLDC-1.1 / MIDP-2.0 / ISO-8859-1, `microedition.media.version` 1.1, `supports.*` false, JSR list (139, 118, 185, 120 v1.1, 135 audio only, 82; so `apis` has `nokia-ui`, `wma-1.1`, `jsr-135`, no `jsr75-*`, JSR-82 has no layer yet) |
+| `nokia-s40-2nd.json`, `-3rd`, `-5th`, `-6th` | No SDK for these editions here. Screen: 2nd 208x208 and 3rd 240x320 are `datasheet:` (Wikipedia "Series 40" edition text, fetched 2026-10-30); 5th/6th QVGA assumed (UNVERIFIED). Heap and JAR limit are the DP2.0 numbers copied and tagged UNVERIFIED (not datasheet figures). `jsr75-fc/pim` on 3rd+ and the `jad.honored` lists are UNVERIFIED. |
+| `jlkvm-min.json`, `jlkvm-nokia.json` | T20 temporary profiles; every value tagged UNVERIFIED. |
+
+Schema additions: `device{family,edition,model}`, `jarMaxBytes` (install refused above it, `NokiaJad.checkInstall`; 0 = none), `maxClassMajor` (45..49: an application class
+with a higher major version fails to link like a malformed class; ROM classes exempt; 0 = parser limit 49), `cpu{bytecodesPerSecond}` (0 = unthrottled, for T38; the SDK's
+"KVM speed" slider, max average 500 microseconds per bytecode, throttles the emulator and is not a device speed), `fonts{small,medium,largeHeight}` (0; stored, not yet used
+by `BitmapFonts`), `jad{honored[]}`.
+**Source tags** (`ProfileValidator`, run on every `profiles/*.json` by `ProfileValidatorTest`): a value is covered by top-level `_sources.<key>`, or (sections) by the
+section's `_source`, or by `_sources.<leaf>` for every leaf. A tag starts with `sdk:` / `datasheet:` / `measured:` (then file + section, at least 8 characters) or `UNVERIFIED`.
+The validator also checks apis vs. layers, `microedition.profiles/configuration` vs. `apis`/`cldc11`, canvas inside the screen, key table, `jad.honored` names.
+The SDK itself is local and gitignored (EULA); only numbers and short citations are in the profiles. Where the numbers came from: `User_Guide.pdf` ("Setting the KVM
+heapsize", "Running MIDlets in non-provisioning mode", "Modifying how the SDK GUI displays"), `Release_Notes.txt` ("Features"), `sdk/api` javadoc (Canvas, FullCanvas
+`constant-values.html`, MMAPI `overview-summary.html`), and the string table of the emulator `S40_DP20_1_1_em.dll` (inside `bin_zg_ia_sf.jar`; the device
+configuration is compiled into it - no config file lists screen/heap/fonts).
+
+## T30 - system properties and JAD attributes
+
+System properties (`System.getProperty`, profile `properties`; a key not listed gives `null`):
+
+| Key | Value in DP2.0 | Source |
+|---|---|---|
+| `microedition.configuration`, `.profiles`, `.encoding` | `CLDC-1.1`, `MIDP-2.0`, `ISO-8859-1` | sdk: emulator string table (key followed by value) |
+| `microedition.media.version` | `1.1` | sdk: MMAPI 1.1 javadoc "System Properties" |
+| `supports.mixing`, `supports.audio.capture`, `supports.video.capture`, `supports.recording` | `false` | sdk: emulator string table |
+| `microedition.platform` | `Nokia6230` | UNVERIFIED (model id string exists; exact property value not shown) |
+| `microedition.locale` | `en-US` | UNVERIFIED |
+| `microedition.hostname`, `microedition.commports`, `microedition.jtwi.version`, `audio.encodings`, `video.encodings`, `video.snapshot.encodings`, `streamable.contents`, `wireless.messaging.sms.smsc`, `network.location`, `com.nokia.network.access`, `com.nokia.mid.dateformat`, `com.nokia.mid.timeformat`, `com.nokia.mid.settings.email-send-protocol`, `com.nokia.mid.settings.email-receive-protocol` | not set (`null`) | sdk: the KEY exists in the emulator string table (some also in the javadoc); the VALUE is not shown anywhere, so none is invented |
+
+JAD attributes (`jlkvm.host.ams.NokiaJad`; `Descriptor` keeps every attribute for `getAppProperty`, the host acts on the ones the profile lists in `jad.honored`):
+
+| Attribute | Effect | Source |
+|---|---|---|
+| `Nokia-MIDlet-Category` | `Plan.category`; `isGame` only for `Games` (User Guide: only that string installs into the Games folder) | sdk: User Guide "About MIDP MIDlets" + emulator string table. Also in the table, not acted on: `Nokia-Update`, `Nokia-SMS-Handler-n` |
+| `Nokia-MIDlet-Original-Display-Size` `w,h` | the game sees a screen of that size (normal Canvas = size minus the profile's chrome); the frame is scaled to the screen, aspect kept, centered | UNVERIFIED (not in this SDK) |
+| `Nokia-MIDlet-Target-Display-Size` `w,h` | scales into that box instead of the screen; needs a valid Original size | UNVERIFIED |
+| `Nokia-MIDlet-On-Screen-Keypad` `no`/`gameactions`/`navigationkeys` | `Plan.virtualKeys` (up/down/left/right/select [+ softLeft/softRight]) for the host's touch keypad | UNVERIFIED (names and the key sets are this project's reading) |
+| `Nokia-MIDlet-App-Orientation` `portrait`/`landscape` | frame and box turned to match | UNVERIFIED |
+
+Bad values and not-honored attributes are ignored and listed in `Plan.ignored` (never an install error); only `MIDlet-Jar-Size` above `jarMaxBytes` refuses an install.
+Tests: `NokiaJadTest` (host-common: scale, centering, bad values, keypad sets, orientation, apply, JAR limit), `NokiaProfileHostTest` (host-desktop: a MIDlet paints 176x182 / 176x208 under
+`Original-Display-Size: 176,208`; the DP2.0 profile ignores it; all five profiles boot a MIDlet; JAR limit; class version limit), `ProfileValidatorTest`.
+**Android (M6)**: read `HeadlessRunner.Result.nokiaPlan`-style data (`NokiaJad.plan(profile, suite.attributes)`; `apply` before starting the VM): draw the frame at
+`presentX/Y/W/H` (scale `Plan.scale`), show the buttons of `virtualKeys` (hidden for `no`), lock the activity orientation to `orientation`, and refuse installs with
+`NokiaJad.checkInstall`.
