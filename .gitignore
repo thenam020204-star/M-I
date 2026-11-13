@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 java/build_tmp/
+mmf/mmf_project/out/*.sf2
+mmf/mmf_project/out/*.wav
+__pycache__/
