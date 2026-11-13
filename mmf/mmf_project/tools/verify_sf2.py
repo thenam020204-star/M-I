@@ -80,7 +80,8 @@ def click_table(sf, inst, verbose=False):
             step = abs(d[j - 1]); sl = abs(dd[j - 2])
             r1 = step / (np.median(np.abs(d)) + 1e-9); r2 = sl / (np.median(np.abs(dd)) + 1e-9)
             r1p = step / (np.percentile(np.abs(d), 99) + 1e-9)
-            rows.append((iname, nm(name), r1, r2, r1p, tail_ok, abs(z[j] - z[j - 1]) / (np.sqrt(np.mean(z ** 2)) + 1e-9)))
+            rank = float((np.abs(dd) < sl).mean())          # percentile rank of the join slope-step among all local |ddx|
+            rows.append((iname, nm(name), r1, r2, r1p, tail_ok, abs(z[j] - z[j - 1]) / (np.sqrt(np.mean(z ** 2)) + 1e-9), rank))
     return rows
 
 def fluid_load(path):
@@ -90,7 +91,8 @@ def fluid_load(path):
         syn = fluidsynth.Synth(samplerate=44100.0)
         sfid = syn.sfload(path)
         ok = {}
-        for bank, pn in [(0, 25), (128, 0)]:
+        sf = load(path); _, _, pres = structure(sf)
+        for bank, pn, *_ in [pres[0]] + [p for p in pres if p[0] == 128][:1]:
             ok[(bank, pn)] = syn.program_select(0, sfid, bank, pn)
         syn.delete()
     finally:
@@ -152,6 +154,8 @@ if __name__ == '__main__':
         print('  %-20s %5d %8.2f %8.2f %8.2f %8.2f %8.2f' % (v, len(rr), max(r[2] for r in rr), np.mean([r[2] for r in rr]), max(r[3] for r in rr), np.mean([r[3] for r in rr]), max(r[4] for r in rr)))
     print('  ALL: step max %.2f avg %.2f | slope max %.2f avg %.2f | step/p99 max %.2f | step/rms max %.3f' % (
         max(r[2] for r in rows), np.mean([r[2] for r in rows]), max(r[3] for r in rows), np.mean([r[3] for r in rows]), max(r[4] for r in rows), max(r[6] for r in rows)))
+    rk = np.array([r[7] for r in rows])
+    print('  join slope-step percentile rank among local |ddx| (0 = smoother than everything nearby): median %.2f, p95 %.2f, >0.99: %d of %d' % (np.median(rk), np.percentile(rk, 95), (rk > 0.99).sum(), len(rk)))
     sfid, log = fluid_load(path)
     print('\nFluidSynth sfload id', sfid, '| stderr:', repr(log) if log.strip() else '(empty)')
     if '--synth-compare' in sys.argv:

@@ -14,13 +14,13 @@ Design (PLAN GD2):
    otherwise one-shot cut at -60 dB (cap 4 s). Loop length = integer multiple of the f0 period (and ~ LFO period if EAM/EVB active);
  * the SF2 writer is hand-made (RIFF sfbk); sf2utils is only used by the verification step.
 """
-import sys, os, struct, hashlib, math, csv
+import sys, os, struct, hashlib, math, csv, pickle
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
 from scipy.signal import resample_poly, correlate
 import ma3_synth as S
-from ma3_voice import parse_sysex_voice
-from smaf_parse import parse_mmf, two_pass_notes, channel_setup
+from ma3_voice import VoiceBank, pcm_wave_id
+from smaf_parse import parse_mmf, two_pass_timeline
 
 OUT_SR = 44100
 MIN_ROOT, MAX_ROOT = 24, 96          # minimum multisample coverage (union with used range +-12)
@@ -44,18 +44,13 @@ def warn(msg):
     LOG.append(msg); print('WARN:', msg, file=sys.stderr)
 
 # ---------------------------------------------------------------- song / voice collection
-def split_sysex(mtsu):
-    p = 0
-    while p < len(mtsu):
-        if mtsu[p] != 0xf0:
-            raise ValueError('bad sysex start at %d' % p)
-        ln = mtsu[p + 1]; body = mtsu[p + 2:p + 2 + ln]; p += 2 + ln
-        if not body or body[-1] != 0xf7:
-            raise ValueError('sysex without F7')
-        yield body
+def vhash(v, drum=False):
+    pay = v['raw'][10:-1]
+    return hashlib.sha1((bytes([v['drumnote']]) if drum else b'') + bytes(pay)).hexdigest()[:10]
 
-def load_song(path):
-    """-> dict(name, melody{pc:(hash,fm,lo,hi)}, drums{key:hash}, drum_voice{hash:key}, chans{ch:pc}, drum_keys_used) or None."""
+def load_song(path, bank_off=0, drum_off=0):
+    """-> dict(name, grp, melody{(msb,lsb,pc):(hash,fm,lo,hi)}, drums{key:(hash,voice)}, rows[...]) or None (unusable file, reason warned).
+    Voices that no note ever plays are not exported. Bank/program changes inside the song are honoured (state at each note start)."""
     name = os.path.splitext(os.path.basename(path))[0]
     try:
         info = parse_mmf(path)
@@ -63,41 +58,39 @@ def load_song(path):
         warn('%s: cannot read (%s) -> skipped' % (path, e)); return None
     if info.get('format') != 2:
         warn('%s: MTR format 0x%02x is not Mobile Standard (MA-3 layout assumed) -> skipped' % (name, info.get('format', -1))); return None
-    if 'mtsp' in info:
-        warn('%s: has Mtsp (PCM waves) -> PCM voices unsupported, FM voices kept' % name)
     try:
-        defs = {}; drums = {}
-        for body in split_sysex(info.get('mtsu', b'')):
-            if body[:5] != b'\x43\x79\x06\x7f\x01':
-                continue
-            v = parse_sysex_voice(body)
-            if v is None:
-                continue
-            pay = bytes(body[10:-1])
-            if v['bank_msb'] == 0x7c and v['vtype'] == 0:
-                defs[v['pc']] = (hashlib.sha1(pay).hexdigest()[:10], v['fm'])
-            elif v['bank_msb'] == 0x7d and v['vtype'] == 1:
-                drums[v['drumnote']] = hashlib.sha1(bytes([v['drumnote']]) + pay).hexdigest()[:10]
-            else:
-                warn('%s: unsupported voice bank %02x type %d pc=%d -> ignored' % (name, v['bank_msb'], v['vtype'], v['pc']))
-        setup = channel_setup(info)
-        lay, notes = two_pass_notes(info)
+        vb = VoiceBank(info.get('mtsu', b''))
+        lay, notes, _ = two_pass_timeline(info)
     except Exception as e:
         warn('%s: parse failure (%s) -> skipped' % (name, e)); return None
-    melody = {}; chans = {}; dkeys = set()
+    for sk in vb.skipped:
+        warn('%s: voice bank %02x/%02x pc=%d type %d unsupported -> ignored' % ((name,) + tuple(sk)))
+    if 'mtsp' in info:
+        warn('%s: has Mtsp (PCM waves) -> PCM voices unsupported, FM voices kept' % name)
+    melody = {}; drums = {}; rows = {}; seen_warn = set()
     for n in notes:
-        if n['ch'] == 9:
-            if n['key'] in drums: dkeys.add(n['key'])
-            else: warn('%s: drum key %d has no supported voice' % (name, n['key']))
+        bank, prog, ch, key = n['bank'], n['prog'], n['ch'], n['key']
+        isd = bank[0] == 0x7d
+        v = vb.find(bank, prog, key)
+        rk = (ch, bank[0], bank[1], prog, key if isd else None)
+        if v is None or (not isd and 'fm' not in v):
+            if rk not in seen_warn:
+                seen_warn.add(rk); warn('%s: ch%d bank %02x/%02x prog %d%s has no supported voice -> notes skipped' % (name, ch, bank[0], bank[1], prog, ' key %d' % key if isd else ''))
+                rows[rk] = dict(h='', note='no voice defined/supported -> skipped')
             continue
-        pc = setup[n['ch']]['prog']
-        if pc not in defs:
-            warn('%s: ch%d prog %d has no supported FM voice' % (name, n['ch'], pc)); continue
-        h, fm = defs[pc]
-        lo, hi = melody.get(pc, (h, fm, 127, 0))[2:]
-        melody[pc] = (h, fm, min(lo, n['key']), max(hi, n['key']))
-        chans[n['ch']] = pc
-    return dict(name=name, melody=melody, drums={k: drums[k] for k in dkeys}, chans=chans)
+        if isd:
+            h = vhash(v, True)
+            drums.setdefault(key, (h, v))
+            note = ('PCM wave=0x%02x ROM approx' % pcm_wave_id(v)) if 'pcm_raw' in v else 'FM drum %dop pitch=%d' % (v['fm']['nop'], v['fm']['drumkey'])
+        else:
+            h = vhash(v)
+            pk = (bank[0], bank[1], prog)
+            lo, hi = melody.get(pk, (h, v['fm'], 127, 0))[2:]
+            melody[pk] = (h, v['fm'], min(lo, key), max(hi, key))
+            note = '%dop alg%d' % (v['fm']['nop'], v['fm']['alg'])
+        rows.setdefault(rk, dict(h=h, note=note))
+    return dict(name=name, melody=melody, drums={k: drums[k] for k in sorted(drums)}, rows=rows, bank_off=bank_off, drum_off=drum_off,
+                waves=dict(vb.waves))
 
 # ---------------------------------------------------------------- sample rendering
 def env_db(x, blk):
@@ -230,7 +223,10 @@ def render_melody_sample(fm, root):
     pk = e.max()
     rc0, t60 = release_tc(fm, root)
     rc, rel_slope = measure_release_tc(x, sr, ANALYSIS_GATE_S, rc0)
-    pcorr = -int(round(1200 * math.log2(base_hz(root, fm['bo']) / (440.0 * 2 ** ((root - 69) / 12)))))   # SF2: correction = cents to ADD to play in tune
+    cents = 1200 * math.log2(base_hz(root, fm['bo']) / (440.0 * 2 ** ((root - 69) / 12)))
+    semis = int(round(cents / 100.0))                 # BO != 1 shifts the voice by whole octaves (synth: fnum << (block+3-bo))
+    rootkey = min(max(root + semis, 0), 127)
+    pcorr = -int(round(cents - 100.0 * semis))        # SF2: correction = cents to ADD to play in tune
     st = dict(kind='oneshot', rel_dbps=rel_slope)
     lfo_on, half = voice_traits(fm)
     env = analyse_envelope(x, sr) if len(x) > (A_MIN_S + 1.5) * sr else dict(ok=False, why='note too short')
@@ -292,7 +288,7 @@ def render_melody_sample(fm, root):
                 hold_tc = int(round(1200 * math.log2(max(a_s / sr - 0.001, 0.001))))
                 decay_tc = int(min(round(1200 * math.log2(DECAY_FULL_DB / abs(s))), 8000))
                 sust = SUSTAIN_CB
-            return dict(x=y, loop=(a_s, b), rel=rc, hold_tc=hold_tc, decay_tc=decay_tc, sust_cb=sust, pcorr=pcorr, st=st)
+            return dict(x=y, loop=(a_s, b), rel=rc, hold_tc=hold_tc, decay_tc=decay_tc, sust_cb=sust, pcorr=pcorr, rootkey=rootkey, st=st)
     st['why'] = env['why']
     # one-shot: cut at -60 dB (cap 4 s)
     cap = int(NONLOOP_CAP_S * sr)
@@ -302,16 +298,17 @@ def render_melody_sample(fm, root):
     y = x[:end].copy()
     f = min(int(0.04 * sr), end // 4); y[-f:] *= np.linspace(1, 0, f)
     st['end_s'] = end / sr; st['capped'] = end >= cap
-    return dict(x=y, loop=None, rel=rc, hold_tc=None, decay_tc=None, sust_cb=None, pcorr=pcorr, st=st)
+    return dict(x=y, loop=None, rel=rc, hold_tc=None, decay_tc=None, sust_cb=None, pcorr=pcorr, rootkey=rootkey, st=st)
 
-def render_drum_sample(key):
-    x = S.render_drum(key, 0) * S.DRUM_GAIN
+def render_drum_sample(key, wave=None, fm=None):
+    """One-shot drum sample: PCM drum voice (approximated from its ROM WaveID / key, as in V1) or FM drum voice (synth at its drumkey pitch)."""
+    x = S.render_fm_drum(fm, key) if fm is not None else S.render_drum(key, 0, wave) * S.DRUM_GAIN
     x = to_44k(x)
     e = env_db(x, 441); pk = e.max()
     idx = np.nonzero(e > pk * 1e-3)[0]
     end = min(len(x), (idx[-1] + 2) * 441)
     y = x[:end].copy(); f = min(int(0.02 * OUT_SR), end // 4); y[-f:] *= np.linspace(1, 0, f)
-    return dict(x=y, loop=None, rel=7500, hold_tc=None, decay_tc=None, sust_cb=None, pcorr=0, st=dict(kind='oneshot', end_s=end / OUT_SR))
+    return dict(x=y, loop=None, rel=7500, hold_tc=None, decay_tc=None, sust_cb=None, pcorr=0, rootkey=None, st=dict(kind='oneshot', end_s=end / OUT_SR))
 
 # ---------------------------------------------------------------- SF2 writer
 def zstr(s, n=None):
@@ -386,55 +383,108 @@ def write_sf2(path, samples, instruments, presets, title):
         f.write(b'RIFF' + struct.pack('<I', len(body)) + body)
 
 # ---------------------------------------------------------------- assembly
+def _task(a):
+    kind = a[0]
+    if kind == 'm':
+        _, h, fm, root = a
+        return ('m', h, root), render_melody_sample(fm, root)
+    _, h, key, wave, fm = a
+    return ('d', h, key), render_drum_sample(key, wave, fm)
+
+def render_all(tasks, cache_dir, jobs):
+    """tasks: list of ('m', hash, fm, root) / ('d', hash, key, wave, fm); returns {key: result}. Disk cache by (kind, hash, root/key)."""
+    out = {}; todo = []
+    for t in tasks:
+        k = (t[0], t[1], t[3] if t[0] == 'm' else t[2])
+        cf = os.path.join(cache_dir, '%s_%s_%s.pkl' % k) if cache_dir else None
+        if cf and os.path.exists(cf):
+            with open(cf, 'rb') as f: out[k] = pickle.load(f)
+        else:
+            todo.append(t)
+    if todo:
+        print('rendering %d samples (%d cached) with %d process(es)' % (len(todo), len(out), jobs), file=sys.stderr)
+        if jobs > 1:
+            import multiprocessing as mp
+            _task(todo[0]) if False else None
+            with mp.get_context('fork').Pool(jobs) as pool:
+                it = pool.imap_unordered(_task, todo, chunksize=2)
+                for i, (k, res) in enumerate(it):
+                    out[k] = res
+                    if cache_dir: pickle.dump(res, open(os.path.join(cache_dir, '%s_%s_%s.pkl' % k), 'wb'))
+        else:
+            for t in todo:
+                k, res = _task(t); out[k] = res
+                if cache_dir: pickle.dump(res, open(os.path.join(cache_dir, '%s_%s_%s.pkl' % k), 'wb'))
+    return out
+
 def main():
-    args = [a for a in sys.argv[1:] if a != '--verbose']; mapp = None
-    if '--map' in args:
-        i = args.index('--map'); mapp = args[i + 1]; del args[i:i + 2]
-    outp = args[0]; srcs = args[1:]
-    songs = [s for s in (load_song(p) for p in srcs) if s]
+    args = [a for a in sys.argv[1:] if a != '--verbose']
+    opt = dict(map=None, cache=None, jobs=1, step=3, min_root=MIN_ROOT, max_root=MAX_ROOT)
+    bank_off = drum_off = 0; files = []
+    i = 0; outp = None
+    while i < len(args):
+        a = args[i]
+        if a in ('--map', '--cache'): opt[a[2:]] = args[i + 1]; i += 2
+        elif a in ('--jobs', '--step', '--min-root', '--max-root'): opt[a[2:].replace('-', '_')] = int(args[i + 1]); i += 2
+        elif a == '--bank-offset': bank_off = int(args[i + 1]); i += 2          # applies to the .mmf files that FOLLOW
+        elif a == '--drum-offset': drum_off = int(args[i + 1]); i += 2
+        elif outp is None: outp = a; i += 1
+        else: files.append((a, bank_off, drum_off)); i += 1
+    if opt['cache']: os.makedirs(opt['cache'], exist_ok=True)
+    songs = [s for s in (load_song(p, b, d) for p, b, d in files) if s]
     if not songs:
         print('no usable songs'); sys.exit(1)
-    # --- registry of unique voices
+    step = opt['step']
+    # --- registry of unique voices (shared samples/instruments by content hash); preset layout is per (bank_off, drum_off) group
     fm_voice = {}      # hash -> dict(fm, lo, hi, song)
-    drum_voice = {}    # hash -> dict(key, song)
-    prog_variants = {} # pc -> [hash,...] (index = bank)
-    kits = []          # list of {key: hash}
-    rows = []
+    drum_voice = {}    # hash -> dict(key, song, voice)
+    groups = {}        # (bank_off, drum_off) -> dict(prog_variants{pc:[hash]}, kits[{key:hash}])
     for s in songs:
-        for pc, (h, fm, lo, hi) in s['melody'].items():
+        g = groups.setdefault((s['bank_off'], s['drum_off']), dict(prog_variants={}, kits=[]))
+        for (msb, lsb, pc), (h, fm, lo, hi) in s['melody'].items():
             v = fm_voice.setdefault(h, dict(fm=fm, lo=lo, hi=hi, song=s['name']))
             v['lo'] = min(v['lo'], lo); v['hi'] = max(v['hi'], hi)
-            var = prog_variants.setdefault(pc, [])
+            var = g['prog_variants'].setdefault(pc, [])
             if h not in var: var.append(h)
-        for k, h in s['drums'].items():
-            drum_voice.setdefault(h, dict(key=k, song=s['name']))
+        for k, (h, dv) in s['drums'].items():
+            drum_voice.setdefault(h, dict(key=k, song=s['name'], voice=dv))
+        kd = {k: h for k, (h, dv) in s['drums'].items()}
         kit_i = None
-        for j, kit in enumerate(kits):
-            if all(kit.get(k, h) == h for k, h in s['drums'].items()): kit_i = j; break
-        if kit_i is None and s['drums']:
-            kits.append({}); kit_i = len(kits) - 1
-        if s['drums']: kits[kit_i].update(s['drums'])
+        for j, kit in enumerate(g['kits']):
+            if all(kit.get(k, h) == h for k, h in kd.items()): kit_i = j; break
+        if kit_i is None and kd:
+            g['kits'].append({}); kit_i = len(g['kits']) - 1
+        if kd: g['kits'][kit_i].update(kd)
         s['kit'] = kit_i
-    # --- render samples
-    samples = []; instruments = []; inst_of = {}
-    report = []
+    # --- render samples (parallel, optionally cached)
+    plan = []; tasks = []
     for h, v in fm_voice.items():
-        lo = (min(MIN_ROOT, max(v['lo'] - 12, 0)) // 3) * 3
-        hi = -(-max(MAX_ROOT, min(v['hi'] + 12, 120)) // 3) * 3
-        roots = list(range(lo, hi + 1, 3))
-        zones = []
+        lo = (min(opt['min_root'], max(v['lo'] - 12, 0)) // step) * step
+        hi = -(-max(opt['max_root'], min(v['hi'] + 12, 120)) // step) * step
+        roots = list(range(lo, hi + 1, step))
+        plan.append((h, roots))
+        tasks += [('m', h, v['fm'], r) for r in roots]
+    for h, v in drum_voice.items():
+        dv = v['voice']
+        tasks.append(('d', h, v['key'], pcm_wave_id(dv) if 'pcm_raw' in dv else None, dv.get('fm')))
+    if opt['jobs'] > 1 and tasks: render_melody_sample(tasks[0][2], tasks[0][3]) if tasks[0][0] == 'm' else None   # numba warm-up before fork
+    results = render_all(tasks, opt['cache'], opt['jobs'])
+    samples = []; instruments = []; inst_of = {}; report = []
+    for h, roots in plan:
+        v = fm_voice[h]; zones = []
         for r in roots:
-            res = render_melody_sample(v['fm'], r)
+            res = results[('m', h, r)]
             sid = len(samples)
-            samples.append(dict(name='%s_%03d' % (h[:6], r), x=res['x'], loop=res['loop'], root=r, pcorr=res['pcorr']))
-            zones.append(dict(lo=0 if r == roots[0] else r - 1, hi=127 if r == roots[-1] else r + 1,
-                              sample=sid, rel=res['rel'], loop=res['loop'] is not None, root=r,
+            samples.append(dict(name='%s_%03d' % (h[:6], r), x=res['x'], loop=res['loop'], root=res['rootkey'], pcorr=res['pcorr']))
+            zlo = 0 if r == roots[0] else r - step // 2
+            zhi = 127 if r == roots[-1] else r + step - 1 - step // 2
+            zones.append(dict(lo=zlo, hi=zhi, sample=sid, rel=res['rel'], loop=res['loop'] is not None, root=res['rootkey'],
                               hold_tc=res['hold_tc'], decay_tc=res['decay_tc'], sust_cb=res['sust_cb']))
             report.append((h, r, res))
         inst_of[('f', h)] = len(instruments)
         instruments.append(dict(name=('%s %s' % (h[:6], v['song']))[:19], zones=zones))
     for h, v in drum_voice.items():
-        res = render_drum_sample(v['key'])
+        res = results[('d', h, v['key'])]
         sid = len(samples)
         samples.append(dict(name='D%03d_%s' % (v['key'], h[:6]), x=res['x'], loop=None, root=v['key']))
         inst_of[('d', h)] = len(instruments)
@@ -450,34 +500,52 @@ def main():
     presets = []
     first_song = {}
     for s in songs:
-        for pc, (h, fm, lo, hi) in s['melody'].items():
+        for pk, (h, fm, lo, hi) in s['melody'].items():
             first_song.setdefault(h, s['name'])
-    for pc, var in prog_variants.items():
-        for bank, h in enumerate(var):
-            presets.append(dict(name=('P%03d %s' % (pc, first_song[h]))[:19], bank=bank, preset=pc, inst=inst_of[('f', h)]))
-    for j, kit in enumerate(kits):
-        # one instrument per kit: all zones of the kit's voices
-        zs = []
-        for k, h in sorted(kit.items()):
-            zs += instruments[inst_of[('d', h)]]['zones']
-        instruments.append(dict(name='MA3 Drums' if j == 0 else 'MA3 Drums %d' % (j + 1), zones=zs))
-        presets.append(dict(name='MA3 Drums' if j == 0 else 'MA3 Drums %d' % (j + 1), bank=128, preset=j, inst=len(instruments) - 1))
+    kit_preset = {}
+    for (boff, doff), grp in groups.items():
+        for pc, var in grp['prog_variants'].items():
+            for bank, h in enumerate(var):
+                presets.append(dict(name=('P%03d %s' % (pc, first_song[h]))[:19], bank=boff + bank, preset=pc, inst=inst_of[('f', h)]))
+        for j, kit in enumerate(grp['kits']):
+            zs = []
+            for k, h in sorted(kit.items()):
+                zs += instruments[inst_of[('d', h)]]['zones']
+            nm_ = 'MA3 Drums' if j + doff == 0 else 'MA3 Drums %d' % (j + doff + 1)
+            instruments.append(dict(name=nm_, zones=zs))
+            presets.append(dict(name=nm_, bank=128, preset=j + doff, inst=len(instruments) - 1))
     presets.sort(key=lambda p: (p['bank'], p['preset']))
+    seen = {}
+    for p_ in presets:
+        if (p_['bank'], p_['preset']) in seen:
+            warn('preset collision bank %d preset %d: %s vs %s' % (p_['bank'], p_['preset'], seen[(p_['bank'], p_['preset'])], p_['name']))
+        seen[(p_['bank'], p_['preset'])] = p_['name']
     write_sf2(outp, samples, instruments, presets, 'MA3 FM bgm')
-    # --- map csv
-    csvp = mapp or os.path.join(os.path.dirname(os.path.abspath(outp)), 'sf2_map.csv')
+    # --- map csv (one row per distinct (song, channel, bank, program[, key]) that really plays notes; no duplicates)
+    csvp = opt['map'] or os.path.join(os.path.dirname(os.path.abspath(outp)), 'sf2_map.csv')
+    written = set(); nrows = 0
     with open(csvp, 'w', newline='') as f:
-        w = csv.writer(f); w.writerow(['song', 'channel', 'smaf_prog', 'drum_key', 'sf2_bank', 'sf2_preset', 'voice_hash'])
+        w = csv.writer(f)
+        w.writerow(['song', 'channel', 'bank_msb', 'bank_lsb', 'smaf_prog', 'drum_key', 'sf2_bank', 'sf2_preset', 'voice_hash', 'note'])
         for s in songs:
-            for ch, pc in sorted(s['chans'].items()):
-                h = s['melody'][pc][0]
-                w.writerow([s['name'], ch, pc, '', prog_variants[pc].index(h), pc, h])
-            for k, h in sorted(s['drums'].items()):
-                w.writerow([s['name'], 9, '', k, 128, s['kit'], h])
+            grp = groups[(s['bank_off'], s['drum_off'])]
+            for (ch, msb, lsb, prog, key), r in sorted(s['rows'].items(), key=lambda kv: (kv[0][0], kv[0][1], kv[0][2], kv[0][3], kv[0][4] or -1)):
+                if key is None:
+                    sb = sp = ''
+                    if r['h']: sb, sp = s['bank_off'] + grp['prog_variants'][prog].index(r['h']), prog
+                else:
+                    sb, sp = (128, s['kit'] + s['drum_off']) if r['h'] else ('', '')
+                row = (s['name'], ch, msb, lsb, prog, '' if key is None else key, sb, sp, r['h'], r['note'])
+                if row in written: continue
+                written.add(row); w.writerow(row); nrows += 1
     # --- report
-    nloop = sum(1 for s in samples if s['loop'])
-    print('samples %d (loop %d), instruments %d, presets %d, file %d B, gain %.4f' % (len(samples), nloop, len(instruments), len(presets), os.path.getsize(outp), g))
     from collections import Counter
+    nloop = sum(1 for s in samples if s['loop'])
+    nbytes = sum(len(s['pcm']) for s in samples) * 2
+    print('songs %d, samples %d (loop %d), instruments %d, presets %d, file %d B (pcm %.1f MB), gain %.4f, map rows %d' % (
+        len(songs), len(samples), nloop, len(instruments), len(presets), os.path.getsize(outp), nbytes / 1e6, g, nrows))
+    print('unique voices: melody %d, drum %d; kits per group %s; preset banks %s' % (
+        len(fm_voice), len(drum_voice), {k: len(v['kits']) for k, v in groups.items()}, dict(sorted(Counter(p['bank'] for p in presets).items()))))
     for h, v in fm_voice.items():
         rr = [(r, res) for hh, r, res in report if hh == h]
         kinds = Counter(res['st']['kind'] for r, res in rr)

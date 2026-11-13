@@ -110,11 +110,9 @@ def parse_mmf(path, mode='standard'):
 
 def parse_voices(mtsu):
     """Split Mtsu into sysex messages; classify."""
-    voices = []; p = 0
-    while p < len(mtsu):
-        assert mtsu[p] == 0xf0, p
-        ln = mtsu[p+1]; body = mtsu[p+2:p+2+ln]; p += 2 + ln
-        assert body[-1] == 0xf7
+    from ma3_voice import split_sysex
+    voices = []
+    for body in split_sysex(mtsu):
         if body[:5] == b'\x43\x79\x06\x7f\x01' and body[5] == 0x7c:
             voices.append(dict(kind='melody', bank=(body[5], body[6]), prog=body[7], data=body[8:-1], raw=body))
         elif body[:5] == b'\x43\x79\x06\x7f\x01' and body[5] == 0x7d:
@@ -160,35 +158,75 @@ HEAD_LEAD_MS = 100.0   # silence kept before the first note
 TAIL_MS = -200.0       # end = last note-off of pass 2 minus 200 ms (already deep inside the 8 s fade)
 FADE_MS = 8000.0
 
+def loop_ticks(info):
+    """(st_tick, sp_tick) or (None, None) when the file has no usable MspI loop."""
+    try:
+        st, sp = loop_times(info)
+    except Exception:
+        return None, None
+    if st is None or sp is None or sp <= st:
+        return None, None
+    return st, sp
+
 def layout(info):
-    """PLAN design #4: pass 1 whole, then [st, sp] once more, 8 s fade at the end.
+    """PLAN design #4: pass 1 whole (events before sp), then [st, sp) once more, 8 s fade at the end. No MspI loop => one pass only.
     Head silence trimmed to HEAD_LEAD_MS; tail trimmed to last note-off + TAIL_MS."""
-    st_tick, sp_tick = loop_times(info)
-    ev = info['events']
-    notes = [e for e in ev if e['type'] == 'note']
+    st_tick, sp_tick = loop_ticks(info)
+    notes = [e for e in info['events'] if e['type'] == 'note']
     first = min(e['t'] for e in notes) * TICK_MS
-    L = (sp_tick - st_tick) * TICK_MS
-    last_end = max(e['t'] + e['gate'] for e in notes) * TICK_MS
+    if st_tick is None:
+        L = 0.0
+        last_end = max(e['t'] + e['gate'] for e in notes) * TICK_MS
+    else:
+        L = (sp_tick - st_tick) * TICK_MS
+        inl = [e for e in notes if st_tick <= e['t'] < sp_tick]
+        last_end = max((e['t'] + e['gate'] for e in inl), default=0) * TICK_MS
     shift = first - HEAD_LEAD_MS
-    total = L + last_end - shift + TAIL_MS   # pass 2 is offset by L (st_tick==0 here)
+    total = L + last_end - shift + TAIL_MS
     return dict(st_tick=st_tick, sp_tick=sp_tick, L_ms=L, first_ms=first, last_end_ms=last_end,
-                shift_ms=shift, total_ms=total)
+                shift_ms=shift, total_ms=total, looped=st_tick is not None)
+
+def two_pass_timeline(info):
+    """-> (layout, notes, ctrl). Rendered-time (ms, trimmed) notes AND channel events of both passes, in order, plus the per-channel
+    state (bank msb/lsb, prog, vol, pan) in force when each note starts (program/bank changes inside the song are honoured)."""
+    lay = layout(info)
+    st, sp = lay['st_tick'], lay['sp_tick']
+    raw = []
+    for p in (0, 1):
+        if p == 1 and not lay['looped']:
+            break
+        for e in info['events']:
+            if e['type'] not in ('note', 'cc', 'prog'):
+                continue
+            if lay['looped']:
+                if p == 0 and e['t'] >= sp: continue
+                if p == 1 and not (st <= e['t'] < sp): continue
+            t0 = e['t'] * TICK_MS + p * lay['L_ms'] - lay['shift_ms']
+            raw.append((t0, p, e))
+    # controllers before notes at equal time; stable otherwise
+    raw.sort(key=lambda r: (r[0], 0 if r[2]['type'] != 'note' else 1))
+    state = {i: dict(vol=100, pan=64, bank=(0, 0), prog=0) for i in range(16)}
+    notes = []; ctrl = []
+    for t0, p, e in raw:
+        c = state[e['ch']]
+        if e['type'] == 'cc':
+            if e['cc'] == 7: c['vol'] = e['val']
+            elif e['cc'] == 10: c['pan'] = e['val']
+            elif e['cc'] == 0: c['bank'] = (e['val'], c['bank'][1])
+            elif e['cc'] == 32: c['bank'] = (c['bank'][0], e['val'])
+            ctrl.append(dict(t_ms=t0, ch=e['ch'], type='cc', cc=e['cc'], val=e['val']))
+        elif e['type'] == 'prog':
+            c['prog'] = e['prog']
+            ctrl.append(dict(t_ms=t0, ch=e['ch'], type='prog', prog=e['prog']))
+        else:
+            notes.append(dict(ch=e['ch'], key=e['key'], vel=e['vel'], t_ms=t0, dur_ms=e['gate'] * TICK_MS, pas=p,
+                              bank=c['bank'], prog=c['prog'], vol=c['vol'], pan=c['pan']))
+    notes.sort(key=lambda n: (n['t_ms'], n['ch'], n['key']))
+    return lay, notes, ctrl
 
 def two_pass_notes(info):
-    """Notes (ms, trimmed) for both passes. Setup events (all at the loop-start tick) are
-    static (no later CC/PC in this file) so they are not replayed in pass 2."""
-    lay = layout(info)
-    out = []
-    for p in (0, 1):
-        for e in info['events']:
-            if e['type'] != 'note':
-                continue
-            if e['t'] < lay['st_tick'] or e['t'] >= lay['sp_tick']:
-                continue
-            t0 = (e['t'] - lay['st_tick']) * TICK_MS + p * lay['L_ms'] - lay['shift_ms']
-            out.append(dict(ch=e['ch'], key=e['key'], vel=e['vel'], t_ms=t0, dur_ms=e['gate'] * TICK_MS, pas=p))
-    out.sort(key=lambda n: (n['t_ms'], n['ch'], n['key']))
-    return lay, out
+    lay, notes, ctrl = two_pass_timeline(info)
+    return lay, notes
 
 def channel_setup(info):
     """Final static per-channel state from tick-0 CC/PC: dict ch -> {vol, pan, bank(msb,lsb), prog}."""

@@ -1,0 +1,520 @@
+song,channel,bank_msb,bank_lsb,smaf_prog,drum_key,sf2_bank,sf2_preset,voice_hash,note
+bgm_00,0,124,1,30,,0,30,a6ba6ebabd,4op alg3
+bgm_00,1,124,1,39,,0,39,97815d07fa,4op alg5
+bgm_00,2,124,1,37,,0,37,601f09ccc9,4op alg4
+bgm_00,3,124,1,1,,0,1,0359b9d336,4op alg3
+bgm_00,4,124,1,37,,0,37,601f09ccc9,4op alg4
+bgm_00,5,124,1,39,,0,39,97815d07fa,4op alg5
+bgm_00,6,124,1,37,,0,37,601f09ccc9,4op alg4
+bgm_00,7,124,1,37,,0,37,601f09ccc9,4op alg4
+bgm_00,9,125,0,2,36,128,0,57a21c8ca6,PCM wave=0x03 ROM approx
+bgm_00,9,125,0,2,40,128,0,7838065211,PCM wave=0x0b ROM approx
+bgm_00,9,125,0,2,41,128,0,f8ffa4fa75,PCM wave=0x0d ROM approx
+bgm_00,9,125,0,2,43,128,0,6368694f82,PCM wave=0x0d ROM approx
+bgm_00,9,125,0,2,46,128,0,83ce6ad76f,PCM wave=0x0c ROM approx
+bgm_00,9,125,0,2,49,128,0,40e491f9eb,PCM wave=0x15 ROM approx
+bgm_00,9,125,0,2,52,128,0,38737ecbca,PCM wave=0x15 ROM approx
+bgm_00,9,125,0,2,57,128,0,52d22629bf,PCM wave=0x15 ROM approx
+bgm_01,1,124,1,88,,0,88,8efda39acc,4op alg5
+bgm_01,2,124,1,31,,0,31,480693411b,4op alg5
+bgm_01,3,124,1,84,,0,84,646ad317d5,4op alg5
+bgm_01,4,124,1,94,,0,94,22e63ccf71,4op alg5
+bgm_01,5,124,1,92,,0,92,9473bc89b3,4op alg3
+bgm_01,6,124,1,84,,0,84,646ad317d5,4op alg5
+bgm_01,7,124,1,94,,0,94,22e63ccf71,4op alg5
+bgm_01,8,124,1,92,,0,92,9473bc89b3,4op alg3
+bgm_01,9,125,0,2,36,128,0,57a21c8ca6,PCM wave=0x03 ROM approx
+bgm_01,9,125,0,2,38,128,0,0159e07699,PCM wave=0x0b ROM approx
+bgm_01,9,125,0,2,41,128,0,f8ffa4fa75,PCM wave=0x0d ROM approx
+bgm_01,9,125,0,2,43,128,0,6368694f82,PCM wave=0x0d ROM approx
+bgm_01,9,125,0,2,49,128,0,40e491f9eb,PCM wave=0x15 ROM approx
+bgm_01,9,125,0,2,52,128,0,38737ecbca,PCM wave=0x15 ROM approx
+bgm_01,9,125,0,2,61,128,0,442b2990c0,PCM wave=0x02 ROM approx
+bgm_01,9,125,0,2,62,128,0,622392460b,PCM wave=0x01 ROM approx
+bgm_01,9,125,0,2,63,128,0,03f7d8d1bd,PCM wave=0x06 ROM approx
+bgm_02,0,124,1,10,,0,10,ca72b37445,4op alg5
+bgm_02,1,124,1,88,,1,88,480693411b,4op alg5
+bgm_02,2,124,1,114,,0,114,969a11567b,4op alg5
+bgm_02,3,124,1,114,,0,114,969a11567b,4op alg5
+bgm_02,4,124,1,26,,0,26,22e63ccf71,4op alg5
+bgm_02,5,124,1,26,,0,26,22e63ccf71,4op alg5
+bgm_02,6,124,1,5,,0,5,b22da207b8,4op alg5
+bgm_02,7,124,1,5,,0,5,b22da207b8,4op alg5
+bgm_02,9,125,0,2,35,128,0,8f6089669a,PCM wave=0x03 ROM approx
+bgm_02,9,125,0,2,36,128,0,57a21c8ca6,PCM wave=0x03 ROM approx
+bgm_02,9,125,0,2,38,128,0,0159e07699,PCM wave=0x0b ROM approx
+bgm_02,9,125,0,2,39,128,0,b1abdfe729,PCM wave=0x04 ROM approx
+bgm_02,9,125,0,2,40,128,0,7838065211,PCM wave=0x0b ROM approx
+bgm_02,9,125,0,2,41,128,0,f8ffa4fa75,PCM wave=0x0d ROM approx
+bgm_02,9,125,0,2,45,128,0,ed9505d992,PCM wave=0x0d ROM approx
+bgm_02,9,125,0,2,49,128,0,40e491f9eb,PCM wave=0x15 ROM approx
+bgm_02,9,125,0,2,51,128,0,f898bbf810,PCM wave=0x12 ROM approx
+bgm_02,9,125,0,2,65,128,0,ba94e97521,PCM wave=0x06 ROM approx
+bgm_03,0,124,1,2,,0,2,d073ec675b,4op alg3
+bgm_03,1,124,1,2,,0,2,d073ec675b,4op alg3
+bgm_03,2,124,1,91,,0,91,b4d9946099,4op alg4
+bgm_03,3,124,1,55,,0,55,fe4c405444,4op alg5
+bgm_03,4,124,1,55,,0,55,fe4c405444,4op alg5
+bgm_03,5,124,1,23,,0,23,a398daa9e1,4op alg5
+bgm_03,6,124,1,23,,0,23,a398daa9e1,4op alg5
+bgm_04,0,124,1,70,,0,70,8efda39acc,4op alg5
+bgm_04,1,124,1,73,,0,73,480693411b,4op alg5
+bgm_04,2,124,1,70,,0,70,8efda39acc,4op alg5
+bgm_04,3,124,1,25,,0,25,a6ba6ebabd,4op alg3
+bgm_04,4,124,1,46,,0,46,646ad317d5,4op alg5
+bgm_04,5,124,1,46,,0,46,646ad317d5,4op alg5
+bgm_04,6,124,1,63,,0,63,a2a65c7715,4op alg5
+bgm_04,7,124,1,16,,0,16,78bee3e6bb,4op alg5
+bgm_04,8,124,1,13,,0,13,0359b9d336,4op alg3
+bgm_04,9,125,0,2,35,128,0,8f6089669a,PCM wave=0x03 ROM approx
+bgm_04,9,125,0,2,40,128,0,7838065211,PCM wave=0x0b ROM approx
+bgm_04,9,125,0,2,41,128,0,f8ffa4fa75,PCM wave=0x0d ROM approx
+bgm_04,9,125,0,2,42,128,0,4ba5747ab3,PCM wave=0x04 ROM approx
+bgm_04,9,125,0,2,43,128,0,6368694f82,PCM wave=0x0d ROM approx
+bgm_04,9,125,0,2,45,128,0,ed9505d992,PCM wave=0x0d ROM approx
+bgm_04,9,125,0,2,46,128,0,83ce6ad76f,PCM wave=0x0c ROM approx
+bgm_04,9,125,0,2,47,128,0,53efee55b5,PCM wave=0x0d ROM approx
+bgm_04,9,125,0,2,49,128,0,40e491f9eb,PCM wave=0x15 ROM approx
+bgm_04,9,125,0,2,57,128,0,52d22629bf,PCM wave=0x15 ROM approx
+bgm_04,10,124,1,16,,0,16,78bee3e6bb,4op alg5
+bgm_05,0,124,1,108,,0,108,0e161548e7,4op alg3
+bgm_05,1,124,1,67,,0,67,197bbee337,4op alg7
+bgm_05,2,124,1,22,,0,22,1b0689a6b0,4op alg2
+bgm_05,4,124,1,69,,0,69,f758fd09e6,4op alg4
+bgm_05,5,124,1,20,,0,20,c3528d0e01,4op alg5
+bgm_05,6,124,1,67,,0,67,197bbee337,4op alg7
+bgm_05,7,124,1,69,,0,69,f758fd09e6,4op alg4
+bgm_05,8,124,1,20,,0,20,c3528d0e01,4op alg5
+bgm_05,9,125,0,2,36,128,0,57a21c8ca6,PCM wave=0x03 ROM approx
+bgm_05,9,125,0,2,40,128,0,7838065211,PCM wave=0x0b ROM approx
+bgm_05,9,125,0,2,41,128,0,f8ffa4fa75,PCM wave=0x0d ROM approx
+bgm_05,9,125,0,2,42,128,0,4ba5747ab3,PCM wave=0x04 ROM approx
+bgm_05,9,125,0,2,46,128,0,83ce6ad76f,PCM wave=0x0c ROM approx
+bgm_05,9,125,0,2,49,128,0,40e491f9eb,PCM wave=0x15 ROM approx
+bgm_05,9,125,0,2,57,128,0,52d22629bf,PCM wave=0x15 ROM approx
+bgm_06,0,124,1,107,,0,107,d073ec675b,4op alg3
+bgm_06,1,124,1,65,,0,65,b4d9946099,4op alg4
+bgm_06,2,124,1,67,,1,67,786335a439,4op alg5
+bgm_06,3,124,1,107,,0,107,d073ec675b,4op alg3
+bgm_06,4,124,1,67,,1,67,786335a439,4op alg5
+bgm_06,9,125,0,2,61,128,1,442b2990c0,PCM wave=0x02 ROM approx
+bgm_06,9,125,0,2,62,128,1,40ca79766c,PCM wave=0x01 ROM approx
+bgm_06,9,125,0,2,63,128,1,d0c5c91c32,PCM wave=0x06 ROM approx
+bgm_06,9,125,0,2,64,128,1,479239215e,PCM wave=0x06 ROM approx
+bgm_06,9,125,0,2,69,128,1,78069f1234,FM drum 4op pitch=73
+bgm_07,0,124,1,67,,2,67,a6ba6ebabd,4op alg3
+bgm_07,1,124,1,64,,0,64,dbfb684d01,4op alg5
+bgm_07,2,124,1,72,,0,72,b9382c8a2c,4op alg5
+bgm_07,3,124,1,72,,0,72,b9382c8a2c,4op alg5
+bgm_07,9,125,0,2,35,128,0,8f6089669a,PCM wave=0x03 ROM approx
+bgm_07,9,125,0,2,38,128,0,0159e07699,PCM wave=0x0b ROM approx
+bgm_07,9,125,0,2,41,128,0,f8ffa4fa75,PCM wave=0x0d ROM approx
+bgm_07,9,125,0,2,43,128,0,6368694f82,PCM wave=0x0d ROM approx
+bgm_07,9,125,0,2,45,128,0,ed9505d992,PCM wave=0x0d ROM approx
+bgm_07,9,125,0,2,49,128,0,40e491f9eb,PCM wave=0x15 ROM approx
+bgm_07,9,125,0,2,52,128,0,38737ecbca,PCM wave=0x15 ROM approx
+bgm_07,9,125,0,2,57,128,0,52d22629bf,PCM wave=0x15 ROM approx
+bgm_08,0,124,1,90,,0,90,a6ba6ebabd,4op alg3
+bgm_08,1,124,1,111,,0,111,e14b3be272,4op alg5
+bgm_08,2,124,1,82,,0,82,78bee3e6bb,4op alg5
+bgm_08,3,124,1,41,,0,41,0359b9d336,4op alg3
+bgm_08,4,124,1,82,,0,82,78bee3e6bb,4op alg5
+bgm_08,5,124,1,12,,0,12,a29c9dd7c2,4op alg5
+bgm_08,6,124,1,12,,0,12,a29c9dd7c2,4op alg5
+bgm_08,7,124,1,12,,0,12,a29c9dd7c2,4op alg5
+bgm_08,8,124,1,111,,0,111,e14b3be272,4op alg5
+bgm_08,9,125,0,2,36,128,0,57a21c8ca6,PCM wave=0x03 ROM approx
+bgm_08,9,125,0,2,40,128,0,7838065211,PCM wave=0x0b ROM approx
+bgm_08,9,125,0,2,41,128,0,f8ffa4fa75,PCM wave=0x0d ROM approx
+bgm_08,9,125,0,2,42,128,0,4ba5747ab3,PCM wave=0x04 ROM approx
+bgm_08,9,125,0,2,43,128,0,6368694f82,PCM wave=0x0d ROM approx
+bgm_08,9,125,0,2,49,128,0,40e491f9eb,PCM wave=0x15 ROM approx
+bgm_08,9,125,0,2,52,128,0,38737ecbca,PCM wave=0x15 ROM approx
+bgm_09,0,124,1,32,,0,32,bd83be52cc,4op alg3
+bgm_09,1,124,1,59,,0,59,dbfb684d01,4op alg5
+bgm_09,2,124,1,6,,0,6,a29c9dd7c2,4op alg5
+bgm_09,3,124,1,101,,0,101,46031121e7,4op alg5
+bgm_09,4,124,1,110,,0,110,68bf6e7ac0,4op alg5
+bgm_09,5,124,1,6,,0,6,a29c9dd7c2,4op alg5
+bgm_09,9,125,0,2,36,128,0,57a21c8ca6,PCM wave=0x03 ROM approx
+bgm_09,9,125,0,2,40,128,0,7838065211,PCM wave=0x0b ROM approx
+bgm_09,9,125,0,2,41,128,0,f8ffa4fa75,PCM wave=0x0d ROM approx
+bgm_09,9,125,0,2,43,128,0,6368694f82,PCM wave=0x0d ROM approx
+bgm_09,9,125,0,2,45,128,0,ed9505d992,PCM wave=0x0d ROM approx
+bgm_09,9,125,0,2,46,128,0,83ce6ad76f,PCM wave=0x0c ROM approx
+bgm_09,9,125,0,2,49,128,0,40e491f9eb,PCM wave=0x15 ROM approx
+bgm_10,0,124,1,30,,1,30,3bad2e5a18,4op alg3
+bgm_10,1,124,1,55,,1,55,cf5b4069d9,4op alg5
+bgm_10,2,124,1,97,,0,97,8efda39acc,4op alg5
+bgm_10,3,124,1,66,,0,66,774af1055e,4op alg3
+bgm_10,4,124,1,97,,0,97,8efda39acc,4op alg5
+bgm_10,5,124,1,66,,0,66,774af1055e,4op alg3
+bgm_10,6,124,1,110,,1,110,2a43b65ce1,4op alg5
+bgm_10,9,125,0,2,36,128,0,57a21c8ca6,PCM wave=0x03 ROM approx
+bgm_10,9,125,0,2,40,128,0,7838065211,PCM wave=0x0b ROM approx
+bgm_10,9,125,0,2,41,128,0,f8ffa4fa75,PCM wave=0x0d ROM approx
+bgm_10,9,125,0,2,42,128,0,4ba5747ab3,PCM wave=0x04 ROM approx
+bgm_10,9,125,0,2,43,128,0,6368694f82,PCM wave=0x0d ROM approx
+bgm_10,9,125,0,2,45,128,0,ed9505d992,PCM wave=0x0d ROM approx
+bgm_10,9,125,0,2,46,128,0,83ce6ad76f,PCM wave=0x0c ROM approx
+bgm_10,9,125,0,2,49,128,0,40e491f9eb,PCM wave=0x15 ROM approx
+bgm_10,9,125,0,2,52,128,0,38737ecbca,PCM wave=0x15 ROM approx
+bgm_11,0,124,1,106,,0,106,d073ec675b,4op alg3
+bgm_11,1,124,1,44,,0,44,8efda39acc,4op alg5
+bgm_11,2,124,1,79,,0,79,45f1a1ecef,4op alg3
+bgm_11,3,124,1,110,,2,110,7b46831fa3,4op alg3
+bgm_11,4,124,1,83,,0,83,a20513eaf7,4op alg5
+bgm_11,5,124,1,13,,1,13,2a43b65ce1,4op alg5
+bgm_11,6,124,1,26,,1,26,081dc463ff,4op alg3
+bgm_11,7,124,1,106,,0,106,d073ec675b,4op alg3
+bgm_11,8,124,1,44,,0,44,8efda39acc,4op alg5
+bgm_11,9,125,0,2,36,128,0,57a21c8ca6,PCM wave=0x03 ROM approx
+bgm_11,9,125,0,2,38,128,0,0159e07699,PCM wave=0x0b ROM approx
+bgm_11,9,125,0,2,40,128,0,7838065211,PCM wave=0x0b ROM approx
+bgm_11,9,125,0,2,43,128,0,6368694f82,PCM wave=0x0d ROM approx
+bgm_11,9,125,0,2,46,128,0,83ce6ad76f,PCM wave=0x0c ROM approx
+bgm_11,9,125,0,2,49,128,0,40e491f9eb,PCM wave=0x15 ROM approx
+bgm_11,9,125,0,2,81,128,0,899c920749,FM drum 4op pitch=110
+bgm_11,10,124,1,17,,0,17,422c1fd1e3,4op alg5
+bgm_11,11,124,1,26,,1,26,081dc463ff,4op alg3
+bgm_12,0,124,1,0,,0,0,64011057a0,4op alg5
+bgm_12,1,124,1,97,,1,97,76282a1701,4op alg5
+bgm_12,2,124,1,25,,1,25,b3aa4ea81c,4op alg5
+bgm_12,3,124,1,101,,1,101,2a43b65ce1,4op alg5
+bgm_12,4,124,1,38,,0,38,cadc30f848,4op alg5
+bgm_12,5,124,1,71,,0,71,66f2194cd6,4op alg5
+bgm_12,6,124,1,0,,0,0,64011057a0,4op alg5
+bgm_12,7,124,1,38,,0,38,cadc30f848,4op alg5
+bgm_12,8,124,1,25,,1,25,b3aa4ea81c,4op alg5
+bgm_12,9,125,0,2,36,128,0,57a21c8ca6,PCM wave=0x03 ROM approx
+bgm_12,9,125,0,2,40,128,0,7838065211,PCM wave=0x0b ROM approx
+bgm_12,9,125,0,2,41,128,0,f8ffa4fa75,PCM wave=0x0d ROM approx
+bgm_12,9,125,0,2,49,128,0,40e491f9eb,PCM wave=0x15 ROM approx
+bgm_12,9,125,0,2,82,128,0,609d305c5f,FM drum 4op pitch=39
+bgm_13,0,124,1,63,,1,63,91bb4be4f1,4op alg5
+bgm_13,1,124,1,103,,0,103,6a2de9ef78,4op alg5
+bgm_13,2,124,1,67,,3,67,b4d9946099,4op alg4
+bgm_13,3,124,1,39,,1,39,b9befd8304,4op alg3
+bgm_13,4,124,1,54,,0,54,ad4a035af3,4op alg5
+bgm_13,5,124,1,63,,1,63,91bb4be4f1,4op alg5
+bgm_13,6,124,1,103,,0,103,6a2de9ef78,4op alg5
+bgm_13,7,124,1,39,,1,39,b9befd8304,4op alg3
+bgm_13,9,125,0,2,35,128,0,8f6089669a,PCM wave=0x03 ROM approx
+bgm_13,9,125,0,2,61,128,0,442b2990c0,PCM wave=0x02 ROM approx
+bgm_13,9,125,0,2,62,128,0,622392460b,PCM wave=0x01 ROM approx
+bgm_13,9,125,0,2,63,128,0,03f7d8d1bd,PCM wave=0x06 ROM approx
+bgm_13,9,125,0,2,70,128,0,8bec2aec6d,FM drum 4op pitch=89
+bgm_14,0,124,1,68,,0,68,90ac08e957,4op alg3
+bgm_14,1,124,1,66,,1,66,f705f73c58,4op alg3
+bgm_14,2,124,1,14,,0,14,a2afc1e8ab,4op alg5
+bgm_14,3,124,1,81,,0,81,8efda39acc,4op alg5
+bgm_14,4,124,1,51,,0,51,a98aa54ec7,4op alg5
+bgm_14,5,124,1,68,,0,68,90ac08e957,4op alg3
+bgm_14,6,124,1,14,,0,14,a2afc1e8ab,4op alg5
+bgm_14,7,124,1,51,,0,51,a98aa54ec7,4op alg5
+bgm_14,9,125,0,2,33,128,0,162afa17bf,PCM wave=0x03 ROM approx
+bgm_14,9,125,0,2,39,128,0,b1abdfe729,PCM wave=0x04 ROM approx
+bgm_14,9,125,0,2,44,128,0,64ef287b82,PCM wave=0x04 ROM approx
+bgm_14,9,125,0,2,46,128,0,83ce6ad76f,PCM wave=0x0c ROM approx
+bgm_14,9,125,0,2,52,128,0,38737ecbca,PCM wave=0x15 ROM approx
+bgm_15,0,124,1,59,,1,59,9850c1b0d2,4op alg3
+bgm_15,1,124,1,61,,0,61,8efda39acc,4op alg5
+bgm_15,2,124,1,13,,2,13,d073ec675b,4op alg3
+bgm_15,3,124,1,86,,0,86,b22da207b8,4op alg5
+bgm_15,4,124,1,59,,1,59,9850c1b0d2,4op alg3
+bgm_15,5,124,1,13,,2,13,d073ec675b,4op alg3
+bgm_15,6,124,1,86,,0,86,b22da207b8,4op alg5
+bgm_16,8,124,1,13,,3,13,1f53fa045f,4op alg7
+bgm_16,10,124,1,47,,0,47,b22da207b8,4op alg5
+bgm_16,13,124,1,47,,0,47,b22da207b8,4op alg5
+bgm_16,15,124,1,13,,3,13,1f53fa045f,4op alg7
+bgm_17,0,124,1,32,,1,32,646ad317d5,4op alg5
+bgm_17,1,124,1,32,,1,32,646ad317d5,4op alg5
+bgm_17,2,124,1,5,,1,5,1f53fa045f,4op alg7
+bgm_17,3,124,1,111,,1,111,ca72b37445,4op alg5
+bgm_17,4,124,1,65,,1,65,7d089d3949,4op alg5
+bgm_17,5,124,1,32,,1,32,646ad317d5,4op alg5
+bgm_17,6,124,1,5,,1,5,1f53fa045f,4op alg7
+bgm_17,7,124,1,65,,1,65,7d089d3949,4op alg5
+bgm_18,0,124,1,3,,0,3,b7ff74837f,4op alg4
+bgm_18,1,124,1,64,,1,64,44c6138a12,4op alg5
+bgm_18,2,124,1,49,,0,49,8efda39acc,4op alg5
+bgm_18,3,124,1,84,,1,84,5224119b60,4op alg5
+bgm_18,4,124,1,63,,2,63,70e084f1e1,4op alg5
+bgm_18,5,124,1,3,,0,3,b7ff74837f,4op alg4
+bgm_18,6,124,1,64,,1,64,44c6138a12,4op alg5
+bgm_18,7,124,1,84,,1,84,5224119b60,4op alg5
+bgm_18,8,124,1,17,,1,17,9ac1e976af,4op alg5
+bgm_19,0,124,1,114,,1,114,3bad2e5a18,4op alg3
+bgm_19,1,124,1,28,,0,28,601f09ccc9,4op alg4
+bgm_19,2,124,1,28,,0,28,601f09ccc9,4op alg4
+bgm_19,3,124,1,26,,2,26,97815d07fa,4op alg5
+bgm_19,4,124,1,48,,0,48,be3ce042bf,4op alg7
+bgm_19,5,124,1,28,,0,28,601f09ccc9,4op alg4
+bgm_19,6,124,1,28,,0,28,601f09ccc9,4op alg4
+bgm_19,7,124,1,26,,2,26,97815d07fa,4op alg5
+bgm_19,9,125,0,2,36,128,0,57a21c8ca6,PCM wave=0x03 ROM approx
+bgm_19,9,125,0,2,40,128,0,7838065211,PCM wave=0x0b ROM approx
+bgm_19,9,125,0,2,41,128,0,f8ffa4fa75,PCM wave=0x0d ROM approx
+bgm_19,9,125,0,2,43,128,0,6368694f82,PCM wave=0x0d ROM approx
+bgm_19,9,125,0,2,45,128,0,ed9505d992,PCM wave=0x0d ROM approx
+bgm_19,9,125,0,2,46,128,0,83ce6ad76f,PCM wave=0x0c ROM approx
+bgm_19,9,125,0,2,49,128,0,40e491f9eb,PCM wave=0x15 ROM approx
+bgm_19,9,125,0,2,52,128,0,38737ecbca,PCM wave=0x15 ROM approx
+bgm_20,0,124,1,25,,2,25,c59623f0de,4op alg3
+bgm_20,1,124,1,47,,1,47,bd21c03f36,4op alg3
+bgm_20,2,124,1,69,,1,69,45f1a1ecef,4op alg3
+bgm_20,3,124,1,18,,0,18,cadc30f848,4op alg5
+bgm_20,4,124,1,40,,0,40,30c3ed0b42,4op alg5
+bgm_20,5,124,1,79,,1,79,8efda39acc,4op alg5
+bgm_20,6,124,1,62,,0,62,59e97c2ecc,4op alg5
+bgm_20,7,124,1,113,,0,113,422c1fd1e3,4op alg5
+bgm_20,8,124,1,35,,0,35,1f53fa045f,4op alg7
+bgm_20,9,125,0,2,35,128,0,8f6089669a,PCM wave=0x03 ROM approx
+bgm_20,9,125,0,2,36,128,0,57a21c8ca6,PCM wave=0x03 ROM approx
+bgm_20,9,125,0,2,40,128,0,7838065211,PCM wave=0x0b ROM approx
+bgm_20,9,125,0,2,41,128,0,f8ffa4fa75,PCM wave=0x0d ROM approx
+bgm_20,9,125,0,2,45,128,0,ed9505d992,PCM wave=0x0d ROM approx
+bgm_20,9,125,0,2,49,128,0,40e491f9eb,PCM wave=0x15 ROM approx
+bgm_20,9,125,0,2,52,128,0,38737ecbca,PCM wave=0x15 ROM approx
+bgm_20,10,124,1,54,,1,54,b22da207b8,4op alg5
+bgm_20,11,124,1,10,,1,10,7d089d3949,4op alg5
+bgm_20,12,124,1,101,,1,101,2a43b65ce1,4op alg5
+bgm_20,13,124,1,54,,1,54,b22da207b8,4op alg5
+bgm_20,14,124,1,79,,1,79,8efda39acc,4op alg5
+bgm_20,15,124,1,35,,0,35,1f53fa045f,4op alg7
+BGM_00,0,124,1,107,,16,107,a31bdd4fad,2op alg0
+BGM_00,1,124,1,107,,16,107,a31bdd4fad,2op alg0
+BGM_00,2,124,1,48,,16,48,41d30197eb,2op alg0
+BGM_00,3,124,1,105,,16,105,e0e007534e,2op alg0
+BGM_00,9,125,0,2,13,128,16,e62d08b2d7,PCM wave=0x03 ROM approx
+BGM_00,9,125,0,2,70,128,16,bf063ceea4,PCM wave=0x15 ROM approx
+BGM_01,0,124,1,107,,17,107,edf7d473af,2op alg0
+BGM_01,1,124,1,107,,17,107,edf7d473af,2op alg0
+BGM_01,2,124,1,53,,16,53,64855789ef,2op alg0
+BGM_01,3,124,1,53,,16,53,64855789ef,2op alg0
+BGM_02,0,124,1,86,,16,86,c419be5a16,2op alg1
+BGM_02,1,124,1,32,,16,32,04dd66defe,2op alg0
+BGM_02,2,124,1,6,,16,6,52d3cb3da2,2op alg0
+BGM_02,3,124,1,6,,16,6,52d3cb3da2,2op alg0
+BGM_02,4,124,1,43,,16,43,cd96f5f3bb,2op alg0
+BGM_02,5,124,1,60,,16,60,6d4b827452,2op alg1
+BGM_02,6,124,1,6,,16,6,52d3cb3da2,2op alg0
+BGM_02,9,125,0,2,18,128,16,42e468c74b,PCM wave=0x15 ROM approx
+BGM_02,9,125,0,2,19,128,16,fe1752bf0a,PCM wave=0x15 ROM approx
+BGM_02,9,125,0,2,22,128,16,e2b0f05663,PCM wave=0x03 ROM approx
+BGM_02,9,125,0,2,23,128,16,00a332fd86,PCM wave=0x0b ROM approx
+BGM_02,9,125,0,2,29,128,16,02a5a3cb3e,PCM wave=0x03 ROM approx
+BGM_02,9,125,0,2,30,128,16,a8abc111ca,PCM wave=0x0d ROM approx
+BGM_02,9,125,0,2,31,128,16,40043c7dda,PCM wave=0x15 ROM approx
+BGM_02,9,125,0,2,44,128,16,64ef287b82,PCM wave=0x04 ROM approx
+BGM_02,9,125,0,2,46,128,16,83ce6ad76f,PCM wave=0x0c ROM approx
+BGM_02,9,125,0,2,84,128,16,ff0de53f6f,PCM wave=0x15 ROM approx
+BGM_03,0,124,1,26,,16,26,22bd6c734d,2op alg0
+BGM_03,1,124,1,26,,16,26,22bd6c734d,2op alg0
+BGM_03,2,124,1,93,,16,93,7bcb9fe10c,2op alg0
+BGM_03,4,124,1,65,,16,65,08e3916875,2op alg0
+BGM_03,5,124,1,27,,16,27,c27198aa45,2op alg0
+BGM_03,6,124,1,113,,16,113,0b9826ccd2,2op alg0
+BGM_03,7,124,1,65,,16,65,08e3916875,2op alg0
+BGM_03,8,124,1,27,,16,27,c27198aa45,2op alg0
+BGM_03,9,125,0,2,13,128,16,e62d08b2d7,PCM wave=0x03 ROM approx
+BGM_03,9,125,0,2,23,128,16,00a332fd86,PCM wave=0x0b ROM approx
+BGM_03,9,125,0,2,42,128,16,4ba5747ab3,PCM wave=0x04 ROM approx
+BGM_03,9,125,0,2,44,128,16,64ef287b82,PCM wave=0x04 ROM approx
+BGM_03,9,125,0,2,46,128,16,83ce6ad76f,PCM wave=0x0c ROM approx
+BGM_03,9,125,0,2,86,128,16,859d6bccdf,PCM wave=0x15 ROM approx
+BGM_03,9,125,0,2,87,128,16,ba57678f8e,FM drum 2op pitch=109
+BGM_04,0,124,1,84,,16,84,a31bdd4fad,2op alg0
+BGM_04,1,124,1,57,,16,57,af0de69be8,2op alg0
+BGM_04,2,124,1,57,,16,57,af0de69be8,2op alg0
+BGM_04,3,124,1,28,,16,28,ea8b92be1a,2op alg0
+BGM_04,4,124,1,65,,17,65,e0e007534e,2op alg0
+BGM_04,5,124,1,84,,16,84,a31bdd4fad,2op alg0
+BGM_05,1,124,1,73,,16,73,af0de69be8,2op alg0
+BGM_05,2,124,1,62,,16,62,c27198aa45,2op alg0
+BGM_05,4,124,1,35,,16,35,9906682991,2op alg0
+BGM_05,5,124,1,34,,16,34,71ff46fe3b,2op alg1
+BGM_05,6,124,1,113,,17,113,c4f272d136,2op alg1
+BGM_05,7,124,1,62,,16,62,c27198aa45,2op alg0
+BGM_05,8,124,1,35,,16,35,9906682991,2op alg0
+BGM_05,9,125,0,2,21,128,17,db4fc40916,PCM wave=0x15 ROM approx
+BGM_05,9,125,0,2,22,128,17,e2b0f05663,PCM wave=0x03 ROM approx
+BGM_05,9,125,0,2,25,128,17,e90fe21d85,PCM wave=0x03 ROM approx
+BGM_05,9,125,0,2,31,128,17,2522c06287,PCM wave=0x0b ROM approx
+BGM_05,9,125,0,2,42,128,17,4ba5747ab3,PCM wave=0x04 ROM approx
+BGM_05,9,125,0,2,46,128,17,83ce6ad76f,PCM wave=0x0c ROM approx
+BGM_05,9,125,0,2,82,128,17,4bb0889848,PCM wave=0x0b ROM approx
+BGM_05,10,124,1,113,,17,113,c4f272d136,2op alg1
+BGM_06,0,124,1,17,,16,17,6dfb44696e,2op alg0
+BGM_06,1,124,1,104,,16,104,46d1be955b,2op alg0
+BGM_06,2,124,1,47,,16,47,a31bdd4fad,2op alg0
+BGM_06,4,124,1,38,,16,38,af0de69be8,2op alg0
+BGM_06,5,124,1,38,,16,38,af0de69be8,2op alg0
+BGM_06,6,124,1,38,,16,38,af0de69be8,2op alg0
+BGM_06,7,124,1,64,,16,64,22bd6c734d,2op alg0
+BGM_06,8,124,1,47,,16,47,a31bdd4fad,2op alg0
+BGM_06,10,124,1,104,,16,104,46d1be955b,2op alg0
+BGM_07,0,124,1,21,,16,21,6dfb44696e,2op alg0
+BGM_07,1,124,1,63,,16,63,479a645f15,2op alg1
+BGM_07,2,124,1,57,,17,57,1c9f1e2749,2op alg0
+BGM_07,3,124,1,44,,16,44,cd96f5f3bb,2op alg0
+BGM_07,4,124,1,36,,16,36,4d5d1e92ef,2op alg0
+BGM_07,5,124,1,57,,17,57,1c9f1e2749,2op alg0
+BGM_07,6,124,1,63,,16,63,479a645f15,2op alg1
+BGM_07,7,124,1,36,,16,36,4d5d1e92ef,2op alg0
+BGM_07,9,125,0,2,17,128,16,52049a6c89,FM drum 2op pitch=100
+BGM_07,9,125,0,2,21,128,16,a62493dc39,PCM wave=0x03 ROM approx
+BGM_08,0,124,1,5,,16,5,22bd6c734d,2op alg0
+BGM_08,1,124,1,5,,16,5,22bd6c734d,2op alg0
+BGM_08,4,124,1,20,,16,20,a22761f234,2op alg0
+BGM_09,0,124,1,32,,17,32,c419be5a16,2op alg1
+BGM_09,1,124,1,89,,16,89,22bd6c734d,2op alg0
+BGM_09,2,124,1,89,,16,89,22bd6c734d,2op alg0
+BGM_09,3,124,1,107,,18,107,78e33b1309,2op alg0
+BGM_09,5,124,1,35,,17,35,ea8b92be1a,2op alg0
+BGM_09,9,125,0,2,19,128,17,e7e4480840,PCM wave=0x15 ROM approx
+BGM_09,9,125,0,2,88,128,17,cafd6bb6fb,PCM wave=0x0b ROM approx
+BGM_09,10,124,1,37,,16,37,4731291ed8,2op alg0
+BGM_09,11,124,1,80,,16,80,7bcb9fe10c,2op alg0
+BGM_09,12,124,1,16,,16,16,1c0bc62031,2op alg0
+BGM_10,0,124,1,9,,16,9,af0de69be8,2op alg0
+BGM_10,1,124,1,9,,16,9,af0de69be8,2op alg0
+BGM_10,2,124,1,9,,16,9,af0de69be8,2op alg0
+BGM_10,3,124,1,58,,16,58,0b9826ccd2,2op alg0
+BGM_10,4,124,1,83,,16,83,7bcb9fe10c,2op alg0
+BGM_10,5,124,1,111,,16,111,3b597314fb,2op alg0
+BGM_10,6,124,1,74,,16,74,b63a808cfd,2op alg0
+BGM_10,7,124,1,5,,17,5,1c9f1e2749,2op alg0
+BGM_10,8,124,1,62,,16,62,c27198aa45,2op alg0
+BGM_10,9,125,0,2,17,128,17,5337c18236,PCM wave=0x03 ROM approx
+BGM_10,9,125,0,2,23,128,17,73c97f8867,PCM wave=0x0b ROM approx
+BGM_10,9,125,0,2,29,128,17,d3d99422aa,PCM wave=0x0b ROM approx
+BGM_10,9,125,0,2,87,128,17,8d3bf09305,PCM wave=0x03 ROM approx
+BGM_10,10,124,1,41,,16,41,46d1be955b,2op alg0
+BGM_10,11,124,1,1,,16,1,e0e007534e,2op alg0
+BGM_10,12,124,1,68,,16,68,5a6d71cd09,2op alg0
+BGM_10,13,124,1,9,,16,9,af0de69be8,2op alg0
+BGM_10,14,124,1,21,,17,21,a22761f234,2op alg0
+BGM_10,15,124,1,95,,16,95,08e3916875,2op alg0
+BGM_11,0,124,1,5,,18,5,cd96f5f3bb,2op alg0
+BGM_11,1,124,1,42,,16,42,cdb5ce694a,2op alg0
+BGM_11,3,124,1,27,,17,27,74596ab8d6,2op alg0
+BGM_11,4,124,1,16,,17,16,52d3cb3da2,2op alg0
+BGM_11,5,124,1,50,,16,50,46d1be955b,2op alg0
+BGM_11,9,125,0,2,15,128,18,07663a6708,PCM wave=0x15 ROM approx
+BGM_11,9,125,0,2,18,128,18,1ddf33ed24,PCM wave=0x0d ROM approx
+BGM_11,9,125,0,2,21,128,18,8f7345bfd5,PCM wave=0x0d ROM approx
+BGM_11,9,125,0,2,24,128,18,f990fe3caf,PCM wave=0x0d ROM approx
+BGM_11,9,125,0,2,25,128,18,d7b68d786a,PCM wave=0x15 ROM approx
+BGM_11,9,125,0,2,27,128,18,8681206d80,PCM wave=0x0d ROM approx
+BGM_11,9,125,0,2,30,128,18,a8abc111ca,PCM wave=0x0d ROM approx
+BGM_11,9,125,0,2,31,128,18,6492f84f2d,PCM wave=0x15 ROM approx
+BGM_11,9,125,0,2,42,128,18,4ba5747ab3,PCM wave=0x04 ROM approx
+BGM_11,9,125,0,2,44,128,18,64ef287b82,PCM wave=0x04 ROM approx
+BGM_11,9,125,0,2,46,128,18,83ce6ad76f,PCM wave=0x0c ROM approx
+BGM_11,9,125,0,2,70,128,18,d0c8914adc,PCM wave=0x0b ROM approx
+BGM_11,9,125,0,2,82,128,18,03b246992b,FM drum 2op pitch=111
+BGM_11,9,125,0,2,88,128,18,47177b12f7,PCM wave=0x12 ROM approx
+BGM_11,9,125,0,2,90,128,18,96b4789905,PCM wave=0x03 ROM approx
+BGM_11,9,125,0,2,91,128,18,35f23c845b,PCM wave=0x0d ROM approx
+BGM_12,0,124,1,71,,16,71,46d1be955b,2op alg0
+BGM_12,1,124,1,36,,17,36,3b597314fb,2op alg0
+BGM_12,2,124,1,80,,17,80,047c6ea9f0,2op alg0
+BGM_12,3,124,1,27,,18,27,a0c487adf6,2op alg0
+BGM_12,4,124,1,72,,16,72,c27198aa45,2op alg0
+BGM_12,5,124,1,90,,16,90,08e3916875,2op alg0
+BGM_12,6,124,1,8,,16,8,9906682991,2op alg0
+BGM_12,7,124,1,73,,17,73,7bcb9fe10c,2op alg0
+BGM_12,8,124,1,112,,16,112,a31bdd4fad,2op alg0
+BGM_12,9,125,0,2,27,128,16,922927b8ba,PCM wave=0x15 ROM approx
+BGM_12,9,125,0,2,90,128,16,ad2713c4f7,PCM wave=0x0b ROM approx
+BGM_12,10,124,1,11,,16,11,22bd6c734d,2op alg0
+BGM_12,11,124,1,11,,16,11,22bd6c734d,2op alg0
+BGM_12,13,124,1,82,,16,82,e425be4888,2op alg1
+BGM_12,15,124,1,50,,17,50,4215309fc2,2op alg0
+BGM_13,0,124,1,32,,18,32,af0de69be8,2op alg0
+BGM_13,2,124,1,110,,16,110,22bd6c734d,2op alg0
+BGM_13,3,124,1,2,,16,2,321450897c,2op alg0
+BGM_13,5,124,1,61,,16,61,08e3916875,2op alg0
+BGM_13,8,124,1,45,,16,45,3b597314fb,2op alg0
+BGM_13,9,125,0,2,19,128,19,e9c7c13517,PCM wave=0x0b ROM approx
+BGM_13,9,125,0,2,46,128,19,83ce6ad76f,PCM wave=0x0c ROM approx
+BGM_13,9,125,0,2,70,128,19,d0c8914adc,PCM wave=0x0b ROM approx
+BGM_13,9,125,0,2,86,128,19,c5b59a8f0b,PCM wave=0x15 ROM approx
+BGM_13,9,125,0,2,87,128,19,ba57678f8e,FM drum 2op pitch=109
+BGM_13,9,125,0,2,91,128,19,45868e1474,FM drum 2op pitch=74
+BGM_13,10,124,1,36,,18,36,1c9f1e2749,2op alg0
+BGM_13,11,124,1,110,,16,110,22bd6c734d,2op alg0
+BGM_13,13,124,1,40,,16,40,e0e007534e,2op alg0
+BGM_13,14,124,1,88,,16,88,5a6d71cd09,2op alg0
+BGM_13,15,124,1,3,,16,3,ea8b92be1a,2op alg0
+BGM_14,0,124,1,10,,16,10,0b9826ccd2,2op alg0
+BGM_14,6,124,1,10,,16,10,0b9826ccd2,2op alg0
+BGM_14,9,125,0,2,20,128,19,1fd27e401a,FM drum 2op pitch=43
+BGM_14,9,125,0,2,21,128,19,db4fc40916,PCM wave=0x15 ROM approx
+BGM_14,9,125,0,2,23,128,19,d9fee8e7bf,FM drum 2op pitch=33
+BGM_14,9,125,0,2,26,128,19,2a72994ae1,FM drum 2op pitch=76
+BGM_14,9,125,0,2,29,128,19,9b5792b0c7,FM drum 2op pitch=19
+BGM_14,9,125,0,2,31,128,19,2522c06287,PCM wave=0x0b ROM approx
+BGM_14,9,125,0,2,44,128,19,64ef287b82,PCM wave=0x04 ROM approx
+BGM_14,11,124,1,97,,16,97,e425be4888,2op alg1
+BGM_14,12,124,1,97,,16,97,e425be4888,2op alg1
+BGM_14,13,124,1,97,,16,97,e425be4888,2op alg1
+BGM_14,14,124,1,97,,16,97,e425be4888,2op alg1
+BGM_14,15,124,1,97,,16,97,e425be4888,2op alg1
+BGM_15,0,124,1,61,,17,61,22bd6c734d,2op alg0
+BGM_15,1,124,1,61,,17,61,22bd6c734d,2op alg0
+BGM_15,2,124,1,61,,17,61,22bd6c734d,2op alg0
+BGM_15,3,124,1,61,,17,61,22bd6c734d,2op alg0
+BGM_15,4,124,1,61,,17,61,22bd6c734d,2op alg0
+BGM_15,5,124,1,61,,17,61,22bd6c734d,2op alg0
+BGM_15,6,124,1,61,,17,61,22bd6c734d,2op alg0
+BGM_15,7,124,1,28,,17,28,db8b957155,2op alg0
+BGM_16,0,124,1,16,,18,16,a31bdd4fad,2op alg0
+BGM_16,1,124,1,16,,18,16,a31bdd4fad,2op alg0
+BGM_16,2,124,1,16,,18,16,a31bdd4fad,2op alg0
+BGM_16,3,124,1,106,,16,106,c27198aa45,2op alg0
+BGM_16,4,124,1,73,,18,73,41d30197eb,2op alg0
+BGM_16,5,124,1,106,,16,106,c27198aa45,2op alg0
+BGM_16,9,125,0,2,13,128,17,e62d08b2d7,PCM wave=0x03 ROM approx
+BGM_16,9,125,0,2,15,128,17,07663a6708,PCM wave=0x15 ROM approx
+BGM_16,9,125,0,2,27,128,17,e158b982f6,PCM wave=0x0b ROM approx
+BGM_17,0,124,1,17,,17,17,52d3cb3da2,2op alg0
+BGM_17,1,124,1,31,,16,31,af0de69be8,2op alg0
+BGM_17,2,124,1,72,,17,72,c419be5a16,2op alg1
+BGM_17,3,124,1,110,,17,110,cd96f5f3bb,2op alg0
+BGM_17,4,124,1,17,,17,17,52d3cb3da2,2op alg0
+BGM_17,9,125,0,2,13,128,20,81034423fd,PCM wave=0x12 ROM approx
+BGM_17,9,125,0,2,31,128,20,bea6d21c94,PCM wave=0x03 ROM approx
+BGM_17,9,125,0,2,42,128,20,4ba5747ab3,PCM wave=0x04 ROM approx
+BGM_17,9,125,0,2,46,128,20,83ce6ad76f,PCM wave=0x0c ROM approx
+BGM_17,9,125,0,2,70,128,20,bf063ceea4,PCM wave=0x15 ROM approx
+BGM_17,9,125,0,2,90,128,20,ad2713c4f7,PCM wave=0x0b ROM approx
+BGM_18,0,124,1,21,,18,21,1d5e6e9e47,2op alg0
+BGM_18,1,124,1,31,,17,31,d39af33c42,2op alg0
+BGM_18,2,124,1,17,,18,17,4d5d1e92ef,2op alg0
+BGM_18,3,124,1,9,,17,9,cd96f5f3bb,2op alg0
+BGM_18,4,124,1,21,,18,21,1d5e6e9e47,2op alg0
+BGM_18,5,124,1,31,,17,31,d39af33c42,2op alg0
+BGM_18,6,124,1,17,,18,17,4d5d1e92ef,2op alg0
+BGM_18,9,125,0,2,19,128,20,e9b961db47,PCM wave=0x03 ROM approx
+BGM_18,9,125,0,2,20,128,20,7b3360a3c1,FM drum 2op pitch=74
+BGM_18,9,125,0,2,42,128,20,4ba5747ab3,PCM wave=0x04 ROM approx
+BGM_18,9,125,0,2,44,128,20,64ef287b82,PCM wave=0x04 ROM approx
+BGM_18,9,125,0,2,46,128,20,83ce6ad76f,PCM wave=0x0c ROM approx
+BGM_18,9,125,0,2,82,128,20,de21105620,PCM wave=0x15 ROM approx
+BGM_19,0,124,1,55,,16,55,46d1be955b,2op alg0
+BGM_19,1,124,1,110,,18,110,3b597314fb,2op alg0
+BGM_19,2,124,1,106,,16,106,c27198aa45,2op alg0
+BGM_19,3,124,1,42,,17,42,7bcb9fe10c,2op alg0
+BGM_19,4,124,1,24,,16,24,d39af33c42,2op alg0
+BGM_19,5,124,1,99,,16,99,1c9f1e2749,2op alg0
+BGM_19,6,124,1,43,,17,43,af0de69be8,2op alg0
+BGM_19,7,124,1,43,,17,43,af0de69be8,2op alg0
+BGM_19,8,124,1,43,,17,43,af0de69be8,2op alg0
+BGM_19,9,125,0,2,25,128,19,c1261ab51a,PCM wave=0x0b ROM approx
+BGM_19,9,125,0,2,86,128,19,c5b59a8f0b,PCM wave=0x15 ROM approx
+BGM_19,9,125,0,2,89,128,19,298a3e523a,FM drum 2op pitch=99
+BGM_19,10,124,1,43,,17,43,af0de69be8,2op alg0
+BGM_19,13,124,1,55,,16,55,46d1be955b,2op alg0

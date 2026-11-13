@@ -4,7 +4,7 @@ Operator/envelope/LFO/KSL/waveform models follow the measured YMF825/MA-5 clone 
 read as documentation). MA-3 (YMU762) is parameter-compatible but NOT measured -> timing/level details are MEDIUM confidence.
 Drum voices in this file are PCM (type 01) that reference chip-internal waves -> approximated, LOW confidence.
 
-Usage: python3 -I ma3_synth.py in.mmf out_dir [v1|v2|both]
+Usage: python3 -I ma3_synth.py in.mmf out_dir [v1|v2|both] [name_stem]
 """
 import sys, os, math
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -246,7 +246,7 @@ def render_fm_note(fm, note, gate_samples):
     return x
 
 # ---- drums: PCM voices (type 01) referencing chip-internal waves -> approximation (LOW confidence)
-def render_drum(key, gate_samples):
+def _render_drum_key(key):
     rng = np.random.default_rng(key)
     t = lambda sec: np.arange(int(sec * SR)) / SR
     if key in (35, 36):                         # kick (wave id 0x03)
@@ -275,6 +275,65 @@ def render_drum(key, gate_samples):
         return x
     raise KeyError(key)
 
+
+# SMAF drum voices (PCM type 1) the original 7-key renderer was tuned for: key -> chip ROM WaveID (kick 03, snare 0b, tom 0d, cymbal 15)
+_OLD_DRUM_WAVE = {35: 0x03, 36: 0x03, 40: 0x0b, 41: 0x0d, 45: 0x0d, 49: 0x15, 52: 0x15}
+_WAVE_FAMILY = {0x03: 'kick', 0x0b: 'snare', 0x0d: 'tom', 0x15: 'cym'}
+
+def _key_family(key):
+    """General-MIDI percussion family of a key (used when the WaveID is not one of the four ROM ids above). LOW confidence."""
+    if key in (35, 36): return 'kick'
+    if key in (38, 40): return 'snare'
+    if key in (37, 39, 31, 32, 33, 34): return 'clap'
+    if key in (41, 43, 45, 47, 48, 50): return 'tom'
+    if key in (42, 44): return 'hatc'
+    if key == 46: return 'hato'
+    if key in (49, 51, 52, 53, 55, 57, 59): return 'cym'
+    if 60 <= key <= 70 or key in (54, 56, 58): return 'perc'
+    return 'noise'
+
+def render_drum(key, gate_samples, wave=None):
+    """PCM drum voice approximation. Keys/waves the V1 renderer was written for are bit-identical to V1; any other (key, WaveID) is
+    synthesised from the voice's ROM WaveID family if known, else from the key's GM percussion family (LOW confidence)."""
+    if key in _OLD_DRUM_WAVE and (wave is None or wave == _OLD_DRUM_WAVE[key]):
+        return _render_drum_key(key)
+    fam = _WAVE_FAMILY.get(wave) or _key_family(key)
+    rng = np.random.default_rng(key * 256 + (wave or 0))
+    t = lambda sec: np.arange(int(sec * SR)) / SR
+    fk = 440.0 * 2 ** ((key - 69) / 12)
+    if fam == 'kick':
+        tt = t(0.35); f = 45 + 110 * np.exp(-tt * 28)
+        return 0.9 * np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 11) + 0.2 * rng.standard_normal(len(tt)) * np.exp(-tt * 200)
+    if fam == 'snare':
+        tt = t(0.30); n = lfilter([1, -1], [1, -0.55], rng.standard_normal(len(tt)))
+        return 0.6 * (0.7 * n * np.exp(-tt * 16) + 0.5 * np.sin(2 * np.pi * 190 * tt) * np.exp(-tt * 28))
+    if fam == 'tom':
+        f1 = max(fk, 70.0); tt = t(0.55); f = f1 + 0.5 * f1 * np.exp(-tt * 18)
+        return 0.9 * np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 7)
+    if fam == 'cym':
+        tt = t(1.4); n = lfilter([1, -1], [1, -0.35], rng.standard_normal(len(tt)))
+        return 0.5 * n * np.exp(-tt * 3.5)
+    if fam == 'hatc':
+        tt = t(0.07); return 0.5 * lfilter([1, -1], [1, -0.2], rng.standard_normal(len(tt))) * np.exp(-tt * 55)
+    if fam == 'hato':
+        tt = t(0.45); return 0.45 * lfilter([1, -1], [1, -0.2], rng.standard_normal(len(tt))) * np.exp(-tt * 9)
+    if fam == 'clap':
+        tt = t(0.12); return 0.6 * lfilter([1, -1], [1, -0.4], rng.standard_normal(len(tt))) * np.exp(-tt * 38)
+    if fam == 'perc':
+        f1 = min(max(fk, 150.0), 1200.0); tt = t(0.25); f = f1 * (1 + 0.25 * np.exp(-tt * 30))
+        return 0.8 * np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 14) + 0.15 * rng.standard_normal(len(tt)) * np.exp(-tt * 120)
+    tt = t(0.12); return 0.5 * rng.standard_normal(len(tt)) * np.exp(-tt * 30)
+
+def render_fm_drum(fm, key):
+    """FM drum voice (bank 7D, type 0): played at the voice's own pitch (global drumkey byte), fixed 0.6 s gate, cut at -60 dB (cap 2.5 s)."""
+    pitch = fm['drumkey'] if 12 <= fm['drumkey'] <= 108 else key
+    x = render_fm_note(fm, pitch, int(0.6 * SR))
+    e = np.sqrt(np.mean(x[:len(x) // 480 * 480].reshape(-1, 480) ** 2, axis=1) + 1e-30)
+    idx = np.nonzero(e > e.max() * 1e-3)[0]
+    end = min(int(2.5 * SR), (idx[-1] + 2) * 480, len(x)) if len(idx) else 480
+    x = x[:end].copy(); f = min(int(0.03 * SR), end // 4); x[-f:] *= np.linspace(1, 0, f)
+    return x
+
 def pan_gains(pan):
     a = math.pi * 0.5 * min(max(pan, 0), 127) / 127.0
     return math.cos(a), math.sin(a)
@@ -297,40 +356,44 @@ def reverb_stereo(x, wet=0.16):
     return np.stack(outs, axis=1) * wet
 
 def synth(info):
-    voices = decode_all(info['mtsu'])
-    fm_by_pc = {v['pc']: v['fm'] for v in voices if 'fm' in v and v['bank_msb'] == 0x7c}
-    drum_keys = {v['drumnote'] for v in voices if 'pcm_raw' in v}
-    setup = channel_setup(info)
-    lay, notes = two_pass_notes(info)
+    from ma3_voice import VoiceBank, pcm_wave_id
+    from smaf_parse import two_pass_timeline
+    vb = VoiceBank(info['mtsu'])
+    lay, notes, _ = two_pass_timeline(info)
     n_total = int(round(lay['total_ms'] / 1000 * SR))
     mono = np.zeros(n_total + 8 * SR)
     stereo = np.zeros((n_total + 8 * SR, 2))
     cache = {}
     stats = dict(fm=0, drum=0, skipped=0)
     for n in notes:
-        s = setup[n['ch']]
         gate = int(round(n['dur_ms'] / 1000 * SR))
         if gate <= 0:
             continue
-        if n['ch'] == 9:
-            if n['key'] not in drum_keys:
-                stats['skipped'] += 1; continue
-            ck = ('d', n['key']); stats['drum'] += 1
-            if ck not in cache: cache[ck] = render_drum(n['key'], gate)
+        v = vb.find(n['bank'], n['prog'], n['key'])
+        is_drum = n['bank'][0] == 0x7d
+        if v is None or (not is_drum and 'fm' not in v):
+            stats['skipped'] += 1; continue
+        if is_drum:
+            stats['drum'] += 1
+            if 'fm' in v:
+                ck = ('df', n['bank'], n['key'], v['pc'])
+                if ck not in cache: cache[ck] = render_fm_drum(v['fm'], n['key'])
+                w = cache[ck]
+            else:
+                wid = pcm_wave_id(v)
+                ck = ('d', n['key'], wid)
+                if ck not in cache: cache[ck] = render_drum(n['key'], gate, wid)
+                w = cache[ck] * DRUM_GAIN
         else:
-            fm = fm_by_pc.get(s['prog'])
-            if fm is None:
-                stats['skipped'] += 1; continue
-            ck = ('f', s['prog'], n['key'], gate); stats['fm'] += 1
-            if ck not in cache: cache[ck] = render_fm_note(fm, n['key'], gate)
-        w = cache[ck]
-        if n['ch'] == 9: w = w * DRUM_GAIN
-        att = VOLTAB[s['vol'] >> 2] * VOLTAB[127 >> 2] * VOLTAB[n['vel'] >> 2]
+            ck = ('f', n['bank'], n['prog'], n['key'], gate); stats['fm'] += 1
+            if ck not in cache: cache[ck] = render_fm_note(v['fm'], n['key'], gate)
+            w = cache[ck]
+        att = VOLTAB[n['vol'] >> 2] * VOLTAB[127 >> 2] * VOLTAB[n['vel'] >> 2]
         pos = int(round(n['t_ms'] / 1000 * SR))
         end = min(pos + len(w), len(mono))
         seg = w[:end - pos] * att
         mono[pos:end] += seg
-        gl, gr = pan_gains(s['pan'])
+        gl, gr = pan_gains(n['pan'])
         stereo[pos:end, 0] += seg * gl; stereo[pos:end, 1] += seg * gr
     stats['unique_rendered'] = len(cache)
     return lay, n_total, mono[:n_total], stereo[:n_total], stats
@@ -342,6 +405,7 @@ def dc_block(x, r=0.9975):
 def main():
     src, outdir = sys.argv[1], sys.argv[2]
     which = sys.argv[3] if len(sys.argv) > 3 else 'both'
+    stem = sys.argv[4] if len(sys.argv) > 4 else 'bgm_20'          # output name stem
     info = parse_mmf(src)
     lay, n_total, mono, stereo, stats = synth(info)
     print('synth stats', stats, 'samples', n_total, 'raw peak mono %.3f stereo %.3f' % (np.abs(mono).max(), np.abs(stereo).max()))
@@ -349,13 +413,13 @@ def main():
     if which in ('v1', 'both'):
         x = resample_poly(dc_block(mono), 147, 160)          # 48k -> 44.1k
         x = master(x, 44100)
-        write_flac(x, 44100, os.path.join(outdir, 'bgm_20_v1_ma3_fm_goc.flac'), 16)
+        write_flac(x, 44100, os.path.join(outdir, stem + '_v1_ma3_fm_goc.flac'), 16)
         print('wrote v1')
     if which in ('v2', 'both'):
         wetp = reverb_stereo(stereo)
         y = dc_block(stereo + wetp)
         y = master(y, SR)
-        write_flac(y, SR, os.path.join(outdir, 'bgm_20_v2_ma3_fm_hifi.flac'), 24)
+        write_flac(y, SR, os.path.join(outdir, stem + '_v2_ma3_fm_hifi.flac'), 24)
         print('wrote v2')
 
 if __name__ == '__main__':
