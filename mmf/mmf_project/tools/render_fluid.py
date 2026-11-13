@@ -16,8 +16,9 @@ def main():
     syn = fluidsynth.Synth(samplerate=float(sr), gain=gain)
     sfid = syn.sfload(sfp)
     assert sfid >= 0
-    for c in range(16):
-        syn.program_select(c, sfid, 128 if c == 9 else 0, 0)
+    for c in range(16):        # only where preset 0 exists (the MIDI itself sends bank/program at tick 0)
+        bank = 128 if c == 9 else 0
+        if syn.sfpreset_name(sfid, bank, 0): syn.program_select(c, sfid, bank, 0)
     if rev:
         syn.set_reverb(roomsize=0.5, damping=0.3, width=0.8, level=0.6)
     else:

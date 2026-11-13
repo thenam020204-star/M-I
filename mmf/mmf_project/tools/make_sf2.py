@@ -1,13 +1,17 @@
 """Build a SoundFont (SF2 2.01) from the MA-3 FM voices of one or more SMAF (.mmf) files, using the V1 synth (ma3_synth.py).
 
-Usage: python3 -I make_sf2.py out.sf2 a.mmf [b.mmf ...]   (also writes sf2_map.csv next to out.sf2)
+Usage: python3 -I make_sf2.py out.sf2 a.mmf [b.mmf ...] [--map out/sf2_map_x.csv]
+       (map csv defaults to sf2_map.csv next to out.sf2)
 
 Design (PLAN GD2):
  * voices are de-duplicated by byte content (FM: 36 payload bytes; drum: key + PCM payload) -> one INSTRUMENT / one set of samples per voice;
  * preset = (bank, program): the first voice seen for a program number goes to bank 0, different voices with the same program
    number go to bank 1, 2, ... (same program number); two identical voices under different program numbers = two presets, one shared instrument;
  * drums: bank 128, preset 0 = first kit; a song whose (key, voice) pairs conflict with kit 0 goes to kit 1, 2, ...
- * melody voices: multisample every 3 semitones (roots = multiples of 3), baked envelope, loop if the voice sustains;
+ * melody voices: multisample every 3 semitones (roots = multiples of 3), baked envelope. Loop design (PLAN GD4 "Thiet ke sua T7"):
+   the dB-envelope of the rendered note is fitted by a line from the earliest point `a` on; slope ~0 -> plain loop, slope<0 ->
+   loop on a gain-flattened region + SF2 hold(a)/decay(96 dB/|slope|)/sustain(max) generators (SF2 decay is linear in dB, like the synth),
+   otherwise one-shot cut at -60 dB (cap 4 s). Loop length = integer multiple of the f0 period (and ~ LFO period if EAM/EVB active);
  * the SF2 writer is hand-made (RIFF sfbk); sf2utils is only used by the verification step.
 """
 import sys, os, struct, hashlib, math, csv
@@ -20,9 +24,20 @@ from smaf_parse import parse_mmf, two_pass_notes, channel_setup
 
 OUT_SR = 44100
 MIN_ROOT, MAX_ROOT = 24, 96          # minimum multisample coverage (union with used range +-12)
-LOOP_START_S = 2.0                   # loop searched after this point (voice should have settled)
+ANALYSIS_GATE_S = 8.0                # note length used to analyse the envelope / find the loop
+A_MIN_S, A_MAX_S = 0.25, 3.0         # earliest / latest loop start considered
+FIT_MAX_S, FIT_MIN_S = 4.0, 0.6      # linear-dB fit window (from a)
+FIT_FLOOR_DB = 60.0                  # the fit window stops where the smoothed level is 60 dB under its peak (inaudible beyond)
+FAINT_DB = -40.0                     # loop start quieter than this (rel. peak) -> not worth a loop, one-shot
+SMOOTH_S = 0.5                       # power-mean window for the dB envelope (kills LFO/beat ripple)
+TOL_DB, TOL_FLAT_DB = 0.7, 3.5       # decaying voices: max |residual| of the line; flat voices: RMS residual (beat/LFO ripple allowed)
+FLAT_SLOPE = 0.9                     # |slope| (dB/s) below this = plain loop (SF2 cannot decay slower than ~0.95 dB/s: 8000 tc)
+XFADE_S = 0.05
+STEEP_SLOPE = -30.0                  # steeper than this -> one-shot (dies in < 2.4 s anyway)
 LOOP_MIN_S, LOOP_MAX_S = 0.25, 0.70
 NONLOOP_CAP_S = 4.0
+DECAY_FULL_DB = 96.0                 # FluidSynth: decayVolEnv = time for a 96 dB fall (calibrated in the T7 test, see PLAN)
+SUSTAIN_CB = 1000
 LOG = []
 
 def warn(msg):
@@ -106,47 +121,188 @@ def release_tc(fm, note, forced=None):
     t_sf2 = t60 * 96.0 / 60.0                       # SF2 release = time to fall 96 dB (linear in dB), synth: 60 dB time t60
     return int(min(max(round(1200 * math.log2(max(t_sf2, 1e-3))), -12000), 8000)), t60
 
+_BASE_FM = None
+def base_hz(note, bo):
+    """Frequency the synth really gives to a MULTI=1, DT=0 operator (fnum quantisation included)."""
+    global _BASE_FM
+    if _BASE_FM is None:
+        op = dict(sr=0, xof=0, sus=1, ksr=0, rr=5, dr=0, ar=15, sl=0, tl=20, ksl=0, dam=0, eam=0, dvb=0, evb=0, multi=1, dt=0, ws=0, fb=0)
+        _BASE_FM = dict(bo=1, lfo=0, alg=1, ops=[op] * 4)
+    fm = dict(_BASE_FM); fm['bo'] = bo
+    return S.note_params(fm, note)[0, 0] * S.SR
+
+def voice_traits(fm):
+    nops = 2 if fm['alg'] < 2 else 4
+    ops = fm['ops'][:nops]
+    lfo = any(o['eam'] or (o['evb'] and o['dvb'] >= 1) for o in ops)
+    half = any(o['multi'] == 0 for o in ops)
+    return lfo, half
+
+def power_db(x, win, hop):
+    """Centered sliding mean-power in dB -> (centre sample indexes, dB)."""
+    c = np.concatenate([[0.0], np.cumsum(x * x)])
+    st = np.arange(0, len(x) - win + 1, hop)
+    m = (c[st + win] - c[st]) / win
+    return st + win // 2, 10 * np.log10(m + 1e-20)
+
+def analyse_envelope(x, sr):
+    """Earliest point a (s) from which the smoothed dB envelope is a straight line over >= FIT_MIN_S
+    (window extended up to FIT_MAX_S or to -60 dB). -> dict(ok, a, slope, resid, why)."""
+    win = int(SMOOTH_S * sr); hop = int(0.02 * sr)
+    tc, es = power_db(x[:int(ANALYSIS_GATE_S * sr)], win, hop)
+    t = tc / sr; pk = es.max()
+    a = A_MIN_S; why = 'no linear dB segment'
+    while a <= A_MAX_S + 1e-9:
+        i0 = int(np.searchsorted(t, a))
+        if i0 >= len(t): break
+        low = np.nonzero(es[i0:] < pk - FIT_FLOOR_DB)[0]
+        i1 = i0 + (low[0] if len(low) else len(es) - i0)       # exclusive
+        i1 = min(i1, int(np.searchsorted(t, a + FIT_MAX_S)))
+        if i1 - i0 < 3 or t[i1 - 1] - a < FIT_MIN_S:
+            why = 'dies (-60 dB) before 0.6 s of line'; break
+        tt, yy = t[i0:i1], es[i0:i1]
+        c = np.polyfit(tt, yy, 1); r = np.abs(yy - np.polyval(c, tt)).max()
+        s = c[0]
+        rms = float(np.sqrt(np.mean((yy - np.polyval(c, tt)) ** 2)))
+        flat = abs(s) < FLAT_SLOPE
+        if ((flat and rms <= TOL_FLAT_DB) or (not flat and r <= TOL_DB)) and s <= FLAT_SLOPE:
+            return dict(ok=True, a=float(tt[0]), slope=float(s), resid=float(rms if flat else r), mean_db=float(10 * np.log10(np.mean(10 ** (yy / 10)))), span=float(tt[-1] - tt[0]),
+                        lvl_db=float(np.polyval(c, tt[0]) - pk))
+        a += 0.02
+    return dict(ok=False, why=why)
+
+def loop_candidates(T, sr, lfo_on, tl):
+    out = set()
+    if lfo_on:
+        m = 1
+        while m * tl <= 1.0 * sr:
+            Lt = m * tl
+            if Lt >= LOOP_MIN_S * sr:
+                tol = max(T, 0.01 * sr)
+                k0, k1 = int(math.ceil((Lt - tol) / T)), int(math.floor((Lt + tol) / T))
+                ks = [k for k in range(max(k0, 1), k1 + 1)]
+                good = [k for k in ks if abs(k * T - round(k * T)) <= 0.1]
+                if len(good) < 3: good = sorted(ks, key=lambda k: abs(k * T - round(k * T)))[:6]
+                out.update(good)
+            m += 1
+        if out: return sorted(out)
+    k0, k1 = int(math.ceil(LOOP_MIN_S * sr / T)), int(math.floor(LOOP_MAX_S * sr / T))
+    ks = list(range(max(k0, 1), max(k1, k0) + 1))
+    good = [k for k in ks if abs(k * T - round(k * T)) <= 0.1]
+    if len(good) < 6: good = sorted(ks, key=lambda k: abs(k * T - round(k * T)))[:10]
+    return sorted(good)
+
+def joint_metrics(y, a, b):
+    """Click metrics on the looped signal: value step and slope step at the join relative to local medians."""
+    n0 = min(4000, b - a)
+    z = np.concatenate([y[b - n0:b], y[a:a + 4000]]); j = n0
+    d = np.diff(z)                          # d[i] = z[i+1]-z[i]; join step is d[j-1]
+    step = abs(d[j - 1]); med = np.median(np.abs(d)) + 1e-12
+    dd = np.diff(d); sl = abs(dd[j - 2]); med2 = np.median(np.abs(dd)) + 1e-12
+    return float(step / med), float(sl / med2)
+
+def measure_release_tc(x, sr, gate_s, fallback_tc):
+    """Release time (SF2 timecents) from the synth's own note-off tail: fit a straight line (dB vs time) to the 20 ms RMS of the
+    first 40 dB after the key-off; SF2 release is linear in dB (96 dB per release time in FluidSynth). Falls back to the RR-based
+    estimate when the note has already died before the gate or the tail is too short."""
+    g = int(gate_s * sr)
+    if len(x) < g + int(0.1 * sr):
+        return fallback_tc, None
+    blk = int(0.02 * sr)
+    e = 20 * np.log10(env_db(x[g - 5 * blk:], blk) + 1e-12)
+    ref = e[:5].max(); tail = e[5:]
+    lim = np.nonzero(tail < ref - 40)[0]
+    n = lim[0] if len(lim) else len(tail)
+    if n < 3:
+        return fallback_tc, None
+    t = (np.arange(n) + 0.5) * 0.02
+    c = np.polyfit(np.concatenate([[0.0], t]), np.concatenate([[ref], tail[:n]]), 1)
+    slope = -c[0]
+    if slope < 0.5:
+        return fallback_tc, None
+    return int(min(max(round(1200 * math.log2(DECAY_FULL_DB / slope)), -12000), 8000)), float(slope)
+
 def render_melody_sample(fm, root):
-    """-> dict(x float 44.1k, loop (a,b)|None, release_tc, stats)."""
-    x = to_44k(S.render_fm_note(fm, root, int(5 * S.SR)))
+    """-> dict(x float 44.1k, loop (a,b)|None, rel, hold_tc, decay_tc, sust_cb, pcorr, st)."""
     sr = OUT_SR
+    x = to_44k(S.render_fm_note(fm, root, int(ANALYSIS_GATE_S * S.SR)))
     e = env_db(x, 2205)                               # 50 ms blocks
     pk = e.max()
-    def seg(t0, t1):
-        return e[int(t0 / 0.05):int(t1 / 0.05)]
-    rc, t60 = release_tc(fm, root)
-    st = dict(sustain=False)
-    if len(x) > 3.2 * sr:
-        m1 = np.mean(seg(2.0, 2.5) ** 2) ** .5; m2 = np.mean(seg(2.6, 3.1) ** 2) ** .5
-        ratio = m2 / (m1 + 1e-30)
-        st.update(m_db=20 * math.log10(m1 / pk + 1e-30), ratio=ratio)
-        st['sustain'] = (m1 > pk * 10 ** (-50 / 20)) and 0.9 < ratio < 1.1
-    if st['sustain']:
-        a = int(LOOP_START_S * sr); W = 2048
-        ref = x[a:a + W]
-        lo, hi = int(LOOP_MIN_S * sr), int(LOOP_MAX_S * sr)
-        tgt = x[a + lo:a + hi + W]
-        c = correlate(tgt, ref, mode='valid', method='fft')
-        en = np.sqrt(np.convolve(tgt ** 2, np.ones(W), mode='valid') * np.sum(ref ** 2) + 1e-30)
-        ncc = c / en
-        L = lo + int(np.argmax(ncc)); st['ncc'] = float(ncc.max())
-        b = a + L
-        X = min(L // 3, int(0.06 * sr))
-        y = x[:b + 8].copy()
-        w = (np.arange(1, X + 1) / X)
-        y[b - X:b] = (1 - w) * x[b - X:b] + w * x[a - X:a]
-        y[b:b + 8] = x[a:a + 8]
-        st['xfade_ms'] = 1000 * X / sr
-        return dict(x=y, loop=(a, b), rel=rc, st=st)
-    # non-looping: cut at -60 dB (cap 4 s)
+    rc0, t60 = release_tc(fm, root)
+    rc, rel_slope = measure_release_tc(x, sr, ANALYSIS_GATE_S, rc0)
+    pcorr = -int(round(1200 * math.log2(base_hz(root, fm['bo']) / (440.0 * 2 ** ((root - 69) / 12)))))   # SF2: correction = cents to ADD to play in tune
+    st = dict(kind='oneshot', rel_dbps=rel_slope)
+    lfo_on, half = voice_traits(fm)
+    env = analyse_envelope(x, sr) if len(x) > (A_MIN_S + 1.5) * sr else dict(ok=False, why='note too short')
+    if env['ok'] and env['slope'] < STEEP_SLOPE:
+        env = dict(ok=False, why='steep decay %.1f dB/s' % env['slope'])
+    if env['ok'] and env['lvl_db'] < FAINT_DB:
+        env = dict(ok=False, why='faint at loop start (%.0f dB)' % env['lvl_db'])
+    if env['ok']:
+        s = env['slope']; plain = abs(s) < FLAT_SLOPE
+        a0 = int(env['a'] * sr)
+        T = sr / (base_hz(root, fm['bo']) / (2.0 if half else 1.0))
+        tl = sr / S.LFO_HZ[fm['lfo']]
+        cand = loop_candidates(T, sr, lfo_on, tl)
+        W = 4096
+        tt = np.arange(len(x)) / sr
+        flat_s = 0.0 if plain else s
+        xf = x * 10 ** (-flat_s * (tt - env['a']) / 20)
+        # a_s: position within 50 ms of a0 whose natural sample step / slope step (the loop join, after the crossfade) is smallest
+        # relative to the local median |dx|, |ddx|
+        lo_i = a0; hi_i = a0 + int(0.05 * sr)
+        seg = xf[lo_i - 2:hi_i + 1]
+        d1 = np.abs(np.diff(seg)); d2 = np.abs(np.diff(seg, 2))
+        md1 = np.median(np.abs(np.diff(xf[a0:a0 + int(3 * T) + 64]))) + 1e-9
+        md2 = np.median(np.abs(np.diff(xf[a0:a0 + int(3 * T) + 64], 2))) + 1e-9
+        sc = d1[:len(d2)] / md1 + d2 / md2                                 # index j <-> position lo_i - 1 + j
+        a_s = lo_i - 1 + int(np.argmin(sc))
+        ref = xf[a_s:a_s + W]; refp = xf[a_s - W:a_s]
+        den = np.sum(ref ** 2) + np.sum(refp ** 2) + 1e-30
+        best = None
+        for k in cand:
+            L = int(round(k * T))
+            if a_s + L + W + 8 > len(xf): continue
+            fr = abs(k * T - L)
+            cost = (np.sum((ref - xf[a_s + L:a_s + L + W]) ** 2) + np.sum((refp - xf[a_s + L - W:a_s + L]) ** 2)) / den + 0.1 * fr * fr
+            cost += 0.15 * L / sr                                                # prefer short loops (file size)
+            if plain:                                                            # loop level should equal the long-term mean level
+                dm = 10 * math.log10(np.mean(xf[a_s:a_s + L] ** 2) + 1e-20) - env['mean_db']
+                cost += 0.05 * dm * dm
+            if best is None or cost < best[0]: best = (cost, L, k, fr)
+        if best is None:
+            env = dict(ok=False, why='no loop candidate fits the analysed note')
+        else:
+            cost, L, k, fr = best; b = a_s + L
+            nm = float((np.sum((ref - xf[b:b + W]) ** 2) + np.sum((refp - xf[b - W:b]) ** 2)) / den)
+            y0 = np.concatenate([x[:a_s], xf[a_s:b + 8]]); y0[b:b + 8] = y0[a_s:a_s + 8]
+            X = min(L // 3, int(XFADE_S * sr))
+            A, B = xf[b - X:b], xf[a_s - X:a_s]
+            rho = float(np.clip(np.dot(A, B) / (np.sqrt(np.dot(A, A) * np.dot(B, B)) + 1e-30), -0.5, 1.0))
+            w = np.arange(1, X + 1) / X
+            y1 = y0.copy()
+            y1[b - X:b] = ((1 - w) * A + w * B) / np.sqrt((1 - w) ** 2 + w ** 2 + 2 * w * (1 - w) * rho)   # power-preserving crossfade
+            y1[b:b + 8] = y1[a_s:a_s + 8]
+            m1 = joint_metrics(y1, a_s, b)
+            y = y1
+            st.update(kind='loop' if plain else 'loop+decay', a=a_s / sr, L=L / sr, k=k, frac=fr, nmse=nm, rho=rho, slope=s,
+                      resid=env['resid'], xfade_ms=1000 * X / sr, joint=m1, lvl_db=env['lvl_db'])
+            hold_tc = decay_tc = sust = None
+            if not plain:
+                hold_tc = int(round(1200 * math.log2(max(a_s / sr - 0.001, 0.001))))
+                decay_tc = int(min(round(1200 * math.log2(DECAY_FULL_DB / abs(s))), 8000))
+                sust = SUSTAIN_CB
+            return dict(x=y, loop=(a_s, b), rel=rc, hold_tc=hold_tc, decay_tc=decay_tc, sust_cb=sust, pcorr=pcorr, st=st)
+    st['why'] = env['why']
+    # one-shot: cut at -60 dB (cap 4 s)
     cap = int(NONLOOP_CAP_S * sr)
     idx = np.nonzero(e > pk * 1e-3)[0]
     end = min(cap, (idx[-1] + 2) * 2205) if len(idx) else 2205
     end = min(end, len(x))
     y = x[:end].copy()
     f = min(int(0.04 * sr), end // 4); y[-f:] *= np.linspace(1, 0, f)
-    st['end_s'] = end / sr
-    return dict(x=y, loop=None, rel=rc, st=st)
+    st['end_s'] = end / sr; st['capped'] = end >= cap
+    return dict(x=y, loop=None, rel=rc, hold_tc=None, decay_tc=None, sust_cb=None, pcorr=pcorr, st=st)
 
 def render_drum_sample(key):
     x = S.render_drum(key, 0) * S.DRUM_GAIN
@@ -155,7 +311,7 @@ def render_drum_sample(key):
     idx = np.nonzero(e > pk * 1e-3)[0]
     end = min(len(x), (idx[-1] + 2) * 441)
     y = x[:end].copy(); f = min(int(0.02 * OUT_SR), end // 4); y[-f:] *= np.linspace(1, 0, f)
-    return dict(x=y, loop=None, rel=7500, st=dict(end_s=end / OUT_SR))
+    return dict(x=y, loop=None, rel=7500, hold_tc=None, decay_tc=None, sust_cb=None, pcorr=0, st=dict(kind='oneshot', end_s=end / OUT_SR))
 
 # ---------------------------------------------------------------- SF2 writer
 def zstr(s, n=None):
@@ -173,7 +329,7 @@ def lst(kind, parts):
 def name20(s):
     return s.encode('ascii', 'replace')[:19].ljust(20, b'\0')
 
-GEN = dict(keyRange=43, releaseVolEnv=38, sampleModes=54, rootKey=58, sampleID=53, instrument=41)
+GEN = dict(holdVolEnv=35, decayVolEnv=36, sustainVolEnv=37, releaseVolEnv=38, instrument=41, keyRange=43, sampleID=53, sampleModes=54, rootKey=58)   # SF2 2.01 sec. 8.1.2
 
 def gen_bytes(oper, val):
     if oper == GEN['keyRange']: return struct.pack('<HBB', oper, val[0], val[1])
@@ -190,8 +346,9 @@ def write_sf2(path, samples, instruments, presets, title):
         end = len(smpl) // 2
         smpl += bytes(46 * 2)
         if s['loop']: ls, le = start + s['loop'][0], start + s['loop'][1]
-        else: ls, le = start, start
-        shdr += name20(s['name']) + struct.pack('<IIIIIBbHH', start, end, ls, le, OUT_SR, s['root'], 0, 0, 1)
+        else:                                   # not looping: harmless but valid-looking points (some tools warn on ls==le)
+            m = min(64, len(s['pcm']) // 4); ls, le = start + m, end - m
+        shdr += name20(s['name']) + struct.pack('<IIIIIBbHH', start, end, ls, le, OUT_SR, s['root'], s.get('pcorr', 0), 0, 1)
     shdr += name20('EOS') + struct.pack('<IIIIIBbHH', 0, 0, 0, 0, 0, 0, 0, 0, 0)
     ibag = b''; igen = b''; inst = b''
     for it in instruments:
@@ -199,6 +356,9 @@ def write_sf2(path, samples, instruments, presets, title):
         for z in it['zones']:
             ibag += struct.pack('<HH', len(igen) // 4, 0)
             igen += gen_bytes(GEN['keyRange'], (z['lo'], z['hi']))
+            if z.get('hold_tc') is not None: igen += gen_bytes(GEN['holdVolEnv'], z['hold_tc'])
+            if z.get('decay_tc') is not None: igen += gen_bytes(GEN['decayVolEnv'], z['decay_tc'])
+            if z.get('sust_cb') is not None: igen += gen_bytes(GEN['sustainVolEnv'], z['sust_cb'])
             igen += gen_bytes(GEN['releaseVolEnv'], z['rel'])
             if z['loop']: igen += gen_bytes(GEN['sampleModes'], 1)
             igen += gen_bytes(GEN['rootKey'], z['root'])
@@ -227,7 +387,10 @@ def write_sf2(path, samples, instruments, presets, title):
 
 # ---------------------------------------------------------------- assembly
 def main():
-    outp = sys.argv[1]; srcs = sys.argv[2:]
+    args = [a for a in sys.argv[1:] if a != '--verbose']; mapp = None
+    if '--map' in args:
+        i = args.index('--map'); mapp = args[i + 1]; del args[i:i + 2]
+    outp = args[0]; srcs = args[1:]
     songs = [s for s in (load_song(p) for p in srcs) if s]
     if not songs:
         print('no usable songs'); sys.exit(1)
@@ -263,9 +426,10 @@ def main():
         for r in roots:
             res = render_melody_sample(v['fm'], r)
             sid = len(samples)
-            samples.append(dict(name='%s_%03d' % (h[:6], r), x=res['x'], loop=res['loop'], root=r))
+            samples.append(dict(name='%s_%03d' % (h[:6], r), x=res['x'], loop=res['loop'], root=r, pcorr=res['pcorr']))
             zones.append(dict(lo=0 if r == roots[0] else r - 1, hi=127 if r == roots[-1] else r + 1,
-                              sample=sid, rel=res['rel'], loop=res['loop'] is not None, root=r))
+                              sample=sid, rel=res['rel'], loop=res['loop'] is not None, root=r,
+                              hold_tc=res['hold_tc'], decay_tc=res['decay_tc'], sust_cb=res['sust_cb']))
             report.append((h, r, res))
         inst_of[('f', h)] = len(instruments)
         instruments.append(dict(name=('%s %s' % (h[:6], v['song']))[:19], zones=zones))
@@ -301,7 +465,7 @@ def main():
     presets.sort(key=lambda p: (p['bank'], p['preset']))
     write_sf2(outp, samples, instruments, presets, 'MA3 FM bgm')
     # --- map csv
-    csvp = os.path.join(os.path.dirname(os.path.abspath(outp)), 'sf2_map.csv')
+    csvp = mapp or os.path.join(os.path.dirname(os.path.abspath(outp)), 'sf2_map.csv')
     with open(csvp, 'w', newline='') as f:
         w = csv.writer(f); w.writerow(['song', 'channel', 'smaf_prog', 'drum_key', 'sf2_bank', 'sf2_preset', 'voice_hash'])
         for s in songs:
@@ -313,10 +477,16 @@ def main():
     # --- report
     nloop = sum(1 for s in samples if s['loop'])
     print('samples %d (loop %d), instruments %d, presets %d, file %d B, gain %.4f' % (len(samples), nloop, len(instruments), len(presets), os.path.getsize(outp), g))
+    from collections import Counter
     for h, v in fm_voice.items():
-        rs = [r for hh, r, res in report if hh == h]
-        lp = [res for hh, r, res in report if hh == h and res['loop']]
-        print('  voice %s (%s) roots %d..%d: %s' % (h[:6], v['song'], min(rs), max(rs), 'LOOP %d/%d' % (len(lp), len(rs)) if lp else 'no loop'))
+        rr = [(r, res) for hh, r, res in report if hh == h]
+        kinds = Counter(res['st']['kind'] for r, res in rr)
+        nsm = sum(len(res['x']) for r, res in rr)
+        print('  voice %s (%s) roots %d..%d: %s, %d smp (%.1f MB)' % (h[:6], v['song'], rr[0][0], rr[-1][0],
+              ' '.join('%s=%d' % kv for kv in sorted(kinds.items())), nsm, nsm * 2 / 1e6))
+        if '--verbose' in sys.argv:
+            for r, res in rr:
+                print('     root %3d %s' % (r, {k: (round(x, 3) if isinstance(x, float) else x) for k, x in res['st'].items()}))
     print('presets:', [(p['bank'], p['preset'], p['name']) for p in presets])
     if LOG: print('warnings:', len(LOG))
     return report, samples, g
